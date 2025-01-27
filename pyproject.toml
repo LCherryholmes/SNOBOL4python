@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=75.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SNOBOL4python"
+version = "0.1.0"
+description = "A Python library for SNOBOL4-style pattern matching"
+readme = "README.md"
+authors = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["python", "SNOBOL4", "string pattern matching"]
+dependencies = []
+requires-python = ">=3.10.14"
+
+[project.urls]
+Homepage = "https://github.com/LCherryholmes/SNOBOL4python"
+Issues = "https://github.com/LCherryholmes/SNOBOL4python/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["SNOBOL4python*"]
+exclude = ["tests*"]
