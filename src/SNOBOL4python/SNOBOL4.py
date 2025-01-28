@@ -1,26 +1,21 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
+#>python3 src/SNOBOL4python/SNOBOL4.py
+#>python -m build
+#>python -m pip install .\dist\snobol4python-0.1.0.tar.gz
+#>python3 tests/test01.py
 import copy
 class PATTERN(object):
     def __init__(self, func, args, kwargs):
-#       print(f"__init__({func})")
         self.func = func
         self.args = copy.copy(args)
         self.kwargs = copy.copy(kwargs)
         self.local_copy = self.func(*self.args, **self.kwargs)
-
     def __iter__(self):
         self.local_copy = self.func(*self.args, **self.kwargs)
-#       print(f"__iter__({self})")
-#       print(f"__iter__({self}) = {self.local_copy}")
         return self.local_copy
-
-    def __next__(self):
-#       print(f"__next__({self})")
-        return next(self.local_copy)
-
+    def __next__(self): return next(self.local_copy)
     def __repr__(self): return f"{self.func}(*{len(self.args)})"
-
     def __add__(self, other):       return SEQ(self, other) # binary '+'
     def __radd__(self, other):      return SEQ(other, self) # binary '+'
     def __or__(self, other):        return ALT(self, other) # binary '|'
@@ -30,98 +25,173 @@ class PATTERN(object):
     def __matmul__(self, other):    return assign(self, other) # binary '@'
     def __xor__(self, other):       return self # binary '^'
     def __invert__(self):           return self # unary '~'
-
-#from functools import wraps
+#------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
-#   @wraps(func)
-#   def _PATTERN_(*args, **kwargs):
-#       return PATTERN(func, args, kwargs)
-#   return _PATTERN_
     return lambda *args, **kwargs: PATTERN(func, args, kwargs)
-
 #------------------------------------------------------------------------------
 # Built-in pattern matching
-#
 pos = 0
 subject = ""
-results = None
 
+_ALPHABET = [c for c in range(256)]
 _UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LCASE = "abcdefghijklmnopqrstuvwxyz"
 _digits = "0123456789"
-
-def _(S):
-    return LIT(S)
-
-def FAIL():
-    raise StopIteration
-
+#------------------------------------------------------------------------------
+def CHAR(n: int) -> str: return chr(n)
+def ASCII(c: str) -> int: return ord(c)
+def SIZE(o: object) -> int: return len(o)
+def DUPL(s: str, n: int) -> str: return s * n
+def LPAD(s: str, n: int) -> str: return ' ' * (n - len(s)) + s
+def RPAD(s: str, n: int) -> str: return s + ' ' * (n - len(s))
+def TRIM(s: str) -> str: return s.strip()
+def REVERSE(s: str) -> str: return s.reverse() # s[::-1]
+def DATATYPE(o: object) -> str: None
+def REPLACE(s: str, old: str, new: str) -> str: return s.translate(str.maketrans(old, new))
+#------------------------------------------------------------------------------
+def FAIL() -> None: raise StopIteration
+def ABORT() -> None: raise StopIteration
 def SUCCESS():
-    while True:
-        yield ""    
-
+    while True: yield ""
+#------------------------------------------------------------------------------
+def _(s) -> PATTERN: return LIT(s)
 @pattern
-def ε(): yield ""    
-
+def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
 @pattern
-def assign(P, V):
-    global results
-    for _1 in P:
-        results[V] = _1
-#       print(f"{V} = {_1}")
-        yield _1
-#       print(f"{V} deleted")
-        del results[V]
-
-@pattern
-def FENCE(p):
+def FENCE(p) -> PATTERN:
     yield next(p)
-
 @pattern
-def POS(n):
+def IDENT(x, y) -> PATTERN: # *IDENT()
+    if x is y: yield ""
+@pattern
+def DIFFER(x, y) -> PATTERN: # *DIFFER()
+    if not x is y: yield ""
+def INTEGER(x) -> PATTERN: # *INTEGER()
+    try:
+        int(x)
+        yield ""
+    except ValueError:
+        return
+#------------------------------------------------------------------------------
+@pattern
+def EQ(x, y) -> PATTERN: # *EQ()
+    if int(x) == int(y): yield ""
+    else: return
+@pattern
+def LT(x, y) -> PATTERN: # *LT()
+    if int(x) < int(y): yield ""
+    else: return
+@pattern
+def GT(x, y) -> PATTERN: # *GT()
+    if int(x) > int(y): yield ""
+    else: return
+@pattern
+def NE(x, y) -> PATTERN: # *NE()
+    if int(x) != int(y): yield ""
+    else: return
+@pattern
+def LE(x, y) -> PATTERN: # *LE()
+    if int(x) <= int(y): yield ""
+    else: return
+@pattern
+def GE(x, y) -> PATTERN: # *GE()
+    if int(x) >= int(y): yield ""
+    else: return
+#------------------------------------------------------------------------------
+@pattern
+def LEQ(x, y) -> PATTERN: # *EQ()
+    if str(x) == str(y): yield ""
+    else: return
+@pattern
+def LLT(x, y) -> PATTERN: # *LT()
+    if str(x) < str(y): yield ""
+    else: return
+@pattern
+def LGT(x, y) -> PATTERN: # *GT()
+    if str(x) > str(y): yield ""
+    else: return
+@pattern
+def LNE(x, y) -> PATTERN: # *NE()
+    if str(x) != str(y): yield ""
+    else: return
+@pattern
+def LLE(x, y) -> PATTERN: # *LE()
+    if str(x) <= str(y): yield ""
+    else: return
+@pattern
+def LGE(x, y) -> PATTERN: # *GE()
+    if str(x) >= str(y): yield ""
+    else: return
+#------------------------------------------------------------------------------
+@pattern
+def eq(x, y) -> PATTERN: # *(x == y)
+    if x == y: yield ""
+    else: return
+@pattern
+def lt(x, y) -> PATTERN: # *(x < y)
+    if x < y: yield ""
+    else: return
+@pattern
+def gt(x, y) -> PATTERN: # *(x > y)
+    if x > y: yield ""
+    else: return
+@pattern
+def ne(x, y) -> PATTERN: # *(x != y)
+    if x != y: yield ""
+    else: return
+@pattern
+def le(x, y) -> PATTERN: # *(x <= y)
+    if x <= y: yield ""
+    else: return
+@pattern
+def ge(x, y) -> PATTERN: # *(x >= y)
+    if x >= y: yield ""
+    else: return
+#------------------------------------------------------------------------------
+@pattern
+def assign(P, V) -> PATTERN:
+    for _1 in P:
+        globals()[V] = _1
+        yield _1
+        del globals()[V]
+#------------------------------------------------------------------------------
+@pattern
+def POS(n) -> PATTERN:
     global pos
     if pos == n:
 #       print(f">>> POS({n})")
         yield ""
 #       print(f"<<< POS({n})")
-   
+#------------------------------------------------------------------------------
 @pattern
-def RPOS(n):
+def RPOS(n) -> PATTERN:
     global pos, subject
     if pos == len(subject) - n:
 #       print(f">>> RPOS({n})")
         yield ""
 #       print(f"<<< RPOS({n})")
-
+#------------------------------------------------------------------------------
 @pattern
-def REM():
-    global pos, subject
-    pos0 = pos
-    pos = len(subject)
-    yield subject[pos0:]
-    pos = pos0
-    
-@pattern
-def LEN(n):
+def LEN(n) -> PATTERN:
     global pos, subject
     if pos + n <= len(subject):
         pos += n
         yield subject[pos - n:pos]
         pos -= n
-        
+#------------------------------------------------------------------------------
 @pattern
-def LIT(lit):
+def LIT(s) -> PATTERN:
     global pos, subject
-    if pos + len(lit) <= len(subject):
-        if lit == subject[pos:pos + len(lit)]:
-            pos += len(lit)
+    if pos + len(s) <= len(subject):
+        if s == subject[pos:pos + len(s)]:
+            pos += len(s)
 #           print(f">>> LIT({lit}) = {pos - len(lit)}, {len(lit)}")
-            yield lit
+            yield s
 #           print(f"<<< LIT({lit})")
-            pos -= len(lit)
-
+            pos -= len(s)
+#------------------------------------------------------------------------------
 @pattern
-def TAB(n):
+def TAB(n) -> PATTERN:
     global pos, subject
     if n <= len(subject):
         if n >= pos:
@@ -129,9 +199,9 @@ def TAB(n):
             pos = n
             yield subject[pos0:n]
             pos = pos0
-        
+#------------------------------------------------------------------------------
 @pattern
-def RTAB(n):
+def RTAB(n) -> PATTERN:
     global pos, subject
     if n <= len(subject):
         n = len(subject) - n
@@ -140,27 +210,35 @@ def RTAB(n):
             pos = n
             yield subject[pos0:n]
             pos = pos0
-    
+#------------------------------------------------------------------------------
 @pattern
-def ANY(characters):
+def REM() -> PATTERN:
+    global pos, subject
+    pos0 = pos
+    pos = len(subject)
+    yield subject[pos0:]
+    pos = pos0
+#------------------------------------------------------------------------------
+@pattern
+def ANY(characters) -> PATTERN:
     global pos, subject
     if pos < len(subject):
         if subject[pos] in characters:
             pos += 1
             yield subject[pos - 1]
             pos -= 1
-
+#------------------------------------------------------------------------------
 @pattern 
-def NOTANY(characters):
+def NOTANY(characters) -> PATTERN:
     global pos, subject
     if pos < len(subject):
         if not subject[pos] in characters:
             pos += 1
             yield subject[pos - 1]
             pos -= 1
-    
+#------------------------------------------------------------------------------
 @pattern 
-def SPAN(characters):
+def SPAN(characters) -> PATTERN:
     global pos, subject
     pos0 = pos
     while True:
@@ -171,9 +249,9 @@ def SPAN(characters):
     if pos > pos0:
         yield subject[pos0:pos]
         pos = pos0
-
+#------------------------------------------------------------------------------
 @pattern 
-def BREAK(characters):
+def BREAK(characters) -> PATTERN:
     global pos, subject
     pos0 = pos
     while True:
@@ -184,9 +262,35 @@ def BREAK(characters):
     if pos < len(subject):
         yield subject[pos0:pos]
         pos = pos0
-
+#------------------------------------------------------------------------------
 @pattern
-def ARBNO(P):
+def ARB() -> PATTERN: # ARB
+    global pos, subject
+    pos0 = pos
+    while pos <= len(subject):
+        yield subject[pos0 : pos]
+        pos += 1
+    pos = pos0
+#------------------------------------------------------------------------------
+@pattern
+def BAL() -> PATTERN: # BAL
+    global pos, subject
+    pos0 = pos
+    nest = 0
+    pos += 1
+    while pos <= len(subject):
+        ch = subject[pos - 1 : pos]
+        match ch:
+            case '(': nest += 1
+            case ')': nest -= 1
+        if nest < 0: break
+        elif nest > 0 and pos >= len(subject): break
+        elif nest == 0: yield subject[pos0 : pos]
+        pos += 1
+    pos = pos0
+#------------------------------------------------------------------------------
+@pattern
+def ARBNO(P) -> PATTERN:
     global pos
     pos0 = pos
     yield ""
@@ -198,9 +302,9 @@ def ARBNO(P):
         except StopIteration:
             pos = pos0
             return        
-
+#------------------------------------------------------------------------------
 @pattern
-def AND(P, Q):
+def AND(P, Q) -> PATTERN:
     global pos
     pos0 = pos
     for _1 in P:
@@ -213,14 +317,14 @@ def AND(P, Q):
                 pos = pos0
         except StopIteration:
             pos = pos0
-
+#------------------------------------------------------------------------------
 @pattern
-def ALT(*AP):
+def ALT(*AP) -> PATTERN:
     for P in AP:
         yield from P
-
+#------------------------------------------------------------------------------
 @pattern
-def SEQ(*AP):
+def SEQ(*AP) -> PATTERN:
     pos0 = pos
     cursor = 0
     highmark = 0
@@ -237,16 +341,16 @@ def SEQ(*AP):
         except StopIteration:
             cursor -= 1
             highmark -= 1
-
-def MATCH(S, P):
-    global pos, subject, results
+#------------------------------------------------------------------------------
+def MATCH(S, P) -> bool:
+    global pos, subject
     pos = 0
     subject = S
-    results = dict()
     try:
         m = next(P)
-        print(f'"{S}" ? "{m}" {results}')
+        print(f'"{S}" ? "{m}"')
         return True
     except StopIteration:
         print(f'"{S}" FAIL')
         return False
+#------------------------------------------------------------------------------
