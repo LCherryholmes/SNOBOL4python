@@ -292,7 +292,7 @@ def BAL() -> PATTERN: # BAL
 #------------------------------------------------------------------------------
 @pattern
 def ARBNO(P) -> PATTERN:
-    global pos
+    global pos, subject
     pos0 = pos
     yield ""
     while True:
