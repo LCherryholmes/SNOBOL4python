@@ -104,7 +104,6 @@ if False:
 # ALLBAL = BAL S OUTPUT FAIL
 #------------------------------------------------------------------------------
 def Bal(): yield from POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
-
 assert False is MATCH("", Bal())
 assert False is MATCH(")A+B(", Bal())
 assert False is MATCH("A+B)", Bal())
@@ -114,14 +113,13 @@ assert True  is MATCH("A+B()", Bal())
 assert True  is MATCH("A()+B", Bal())
 assert False is MATCH("A+B())", Bal())
 assert False is MATCH("((A+B)", Bal())
-
-assert True is MATCH("X", Bal())
-assert True is MATCH("XYZ", Bal())
-assert True is MATCH("(A+B)", Bal())
-assert True is MATCH("A(B*C) (E/F)G+H", Bal())
-assert True is MATCH("( (A+ ( B*C) ) +D)", Bal())
-assert True is MATCH("(0+(1*9))", Bal())
-assert True is MATCH("((A+(B*C))+D)", Bal())
+assert True  is MATCH("X", Bal())
+assert True  is MATCH("XYZ", Bal())
+assert True  is MATCH("(A+B)", Bal())
+assert True  is MATCH("A(B*C) (E/F)G+H", Bal())
+assert True  is MATCH("( (A+ ( B*C) ) +D)", Bal())
+assert True  is MATCH("(0+(1*9))", Bal())
+assert True  is MATCH("((A+(B*C))+D)", Bal())
 #------------------------------------------------------------------------------
 def Arb(): yield from POS(0) + ARB() @ 'OUTPUT' + RPOS(0)
 assert True is MATCH("", Arb())
