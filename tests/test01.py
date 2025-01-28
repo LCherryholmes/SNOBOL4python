@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH, SEQ, ALT
-from SNOBOL4python import ε, _, ANY, ARBNO, FENCE, POS, RPOS, SPAN
+from SNOBOL4python import ε, _, ANY, ARBNO, BAL, FENCE, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
@@ -86,33 +86,40 @@ assert True is MATCH("a,a,a", Alist())
 assert True is MATCH("a,a,a,a", Alist())
 #------------------------------------------------------------------------------
 if False:
-    units = None
+    global units
     romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
     def Roman(n):
-        # Get rightmost digit to units and remove it from n
-        # Return null result if argument is null
-        if True is REPLACE(n, RPOS(1) + LEN(1) @ 'units', ''):
-            units = results['units']
-        else: return ""
-        # Search for digit, replace with its Roman form.
-        # Return failing if not a digit.
-        if True is MATCH(units, BREAK(',') @ 'units'):
-            units = results['units']
-        else: return None
-        # Convert rest of n and multiply by 10.
-        # Propagate a failure return from recursive call back to caller
+        if not REPLACE(n, RPOS(1) + LEN(1) @ 'units', ''):
+            return ""
+        if not MATCH(units, BREAK(',') @ 'units'):
+            return None
         Roman = REPLACE(Roman(n),'IVXLCDM','XLCDM**') + units
-        print(Roman(1))
-        print(Roman(4))
-        print(Roman(5))
-        print(Roman(9))
-        print(Roman(10))
+    print(Roman(1))
+    print(Roman(4))
+    print(Roman(5))
+    print(Roman(9))
+    print(Roman(10))
 #------------------------------------------------------------------------------
-# BAL
-# "X"
-# "XYZ"
-# "(A+B)"
-# "A(B*C) (E/F)G+H"
 # BALEXP = NOTANY(' ( ) , ) I ' (' ARBNO( *BALEXP) ')'
 # BAL BALEXP ARBNO(BALEXP)
 # ALLBAL = BAL S OUTPUT FAIL
+def Bal(): yield from POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
+
+assert False is MATCH("", Bal())
+assert False is MATCH(")A+B(", Bal())
+assert False is MATCH("A+B)", Bal())
+assert False is MATCH("(A+B", Bal())
+assert True  is MATCH("(A+B)", Bal())
+assert True  is MATCH("A+B()", Bal())
+assert True  is MATCH("A()+B", Bal())
+assert False is MATCH("A+B())", Bal())
+assert False is MATCH("((A+B)", Bal())
+
+assert True is MATCH("X", Bal())
+assert True is MATCH("XYZ", Bal())
+assert True is MATCH("(A+B)", Bal())
+assert True is MATCH("A(B*C) (E/F)G+H", Bal())
+assert True is MATCH("( (A+ ( B*C) ) +D)", Bal())
+assert True is MATCH("(0+(1*9))", Bal())
+assert True is MATCH("((A+(B*C))+D)", Bal())
+#------------------------------------------------------------------------------

@@ -151,6 +151,7 @@ def ge(x, y) -> PATTERN: # *(x >= y)
 @pattern
 def assign(P, V) -> PATTERN:
     for _1 in P:
+        if V == "OUTPUT": print(_1)
         globals()[V] = _1
         yield _1
         del globals()[V]
