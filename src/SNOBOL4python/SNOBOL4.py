@@ -4,6 +4,8 @@
 #>python -m build
 #>python -m pip install .\dist\snobol4python-0.1.0.tar.gz
 #>python3 tests/test01.py
+#------------------------------------------------------------------------------
+# String pattern matching
 import copy
 class PATTERN(object):
     def __init__(self, func, args, kwargs):
@@ -16,28 +18,25 @@ class PATTERN(object):
         return self.local_copy
     def __next__(self): return next(self.local_copy)
     def __repr__(self): return f"{self.func}(*{len(self.args)})"
-    def __add__(self, other):       return SEQ(self, other) # binary '+'
-    def __radd__(self, other):      return SEQ(other, self) # binary '+'
-    def __or__(self, other):        return ALT(self, other) # binary '|'
-    def __ror__(self, other):       return ALT(other, self) # binary '|'
-    def __and__(self, other):       return AND(self, other) # binary '&'
-    def __rand__(self, other):      return AND(other, self) # binary '&'
-    def __matmul__(self, other):    return assign(self, other) # binary '@'
-    def __xor__(self, other):       return self # binary '^'
+    def __add__(self, other):       return Σ(self, other) # SIGMA, binary '+', subsequent
+    def __radd__(self, other):      return Σ(other, self) # SIGMA, binary '+', subsequent
+    def __or__(self, other):        return Π(self, other) # PI, binary '|', alternate
+    def __ror__(self, other):       return Π(other, self) # PI, binary '|', alternate
+    def __and__(self, other):       return Ξ(self, other) # PSI, binary '&', conjunction
+    def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
+    def __xor__(self, other):       return Δ(self, other) # DELTA, binary '^', conditional assignment
+    def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment
     def __invert__(self):           return self # unary '~'
 #------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
     return lambda *args, **kwargs: PATTERN(func, args, kwargs)
 #------------------------------------------------------------------------------
-# Built-in pattern matching
 pos = 0
 subject = ""
-
-_ALPHABET = [c for c in range(256)]
+_ALPHABET = "".join([chr(c) for c in range(256)])
 _UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LCASE = "abcdefghijklmnopqrstuvwxyz"
 _digits = "0123456789"
-#------------------------------------------------------------------------------
 def CHAR(n: int) -> str: return chr(n)
 def ASCII(c: str) -> int: return ord(c)
 def SIZE(o: object) -> int: return len(o)
@@ -54,11 +53,11 @@ def ABORT() -> None: raise StopIteration
 def SUCCESS():
     while True: yield ""
 #------------------------------------------------------------------------------
-def _(s) -> PATTERN: return LIT(s)
 @pattern
 def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
+#------------------------------------------------------------------------------
 @pattern
-def FENCE(p) -> PATTERN:
+def FENCE(p) -> PATTERN: # FENCE and FENCE(P)
     yield next(p)
 @pattern
 def IDENT(x, y) -> PATTERN: # *IDENT()
@@ -149,12 +148,16 @@ def ge(x, y) -> PATTERN: # *(x >= y)
     else: return
 #------------------------------------------------------------------------------
 @pattern
-def assign(P, V) -> PATTERN:
+def δ(P, V) -> PATTERN: # immediate assignment
     for _1 in P:
         if V == "OUTPUT": print(_1)
-        globals()[V] = _1
+#       globals()[V] = _1
         yield _1
-        del globals()[V]
+#       del globals()[V]
+#------------------------------------------------------------------------------
+@pattern
+def Δ(P, V) -> PATTERN: # conditional assignment
+    yield from P
 #------------------------------------------------------------------------------
 @pattern
 def POS(n) -> PATTERN:
@@ -181,14 +184,14 @@ def LEN(n) -> PATTERN:
         pos -= n
 #------------------------------------------------------------------------------
 @pattern
-def LIT(s) -> PATTERN:
+def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
     global pos, subject
     if pos + len(s) <= len(subject):
         if s == subject[pos:pos + len(s)]:
             pos += len(s)
-#           print(f">>> LIT({lit}) = {pos - len(lit)}, {len(lit)}")
+#           print(f">>> σ({lit}) = {pos - len(lit)}, {len(lit)}")
             yield s
-#           print(f"<<< LIT({lit})")
+#           print(f"<<< σ({lit})")
             pos -= len(s)
 #------------------------------------------------------------------------------
 @pattern
@@ -229,7 +232,7 @@ def ANY(characters) -> PATTERN:
             yield subject[pos - 1]
             pos -= 1
 #------------------------------------------------------------------------------
-@pattern 
+@pattern
 def NOTANY(characters) -> PATTERN:
     global pos, subject
     if pos < len(subject):
@@ -238,7 +241,7 @@ def NOTANY(characters) -> PATTERN:
             yield subject[pos - 1]
             pos -= 1
 #------------------------------------------------------------------------------
-@pattern 
+@pattern
 def SPAN(characters) -> PATTERN:
     global pos, subject
     pos0 = pos
@@ -246,12 +249,12 @@ def SPAN(characters) -> PATTERN:
         if pos >= len(subject): break
         if subject[pos] in characters:
             pos += 1
-        else: break    
+        else: break
     if pos > pos0:
         yield subject[pos0:pos]
         pos = pos0
 #------------------------------------------------------------------------------
-@pattern 
+@pattern
 def BREAK(characters) -> PATTERN:
     global pos, subject
     pos0 = pos
@@ -259,7 +262,7 @@ def BREAK(characters) -> PATTERN:
         if pos >= len(subject): break
         if not subject[pos] in characters:
             pos += 1
-        else: break    
+        else: break
     if pos < len(subject):
         yield subject[pos0:pos]
         pos = pos0
@@ -302,10 +305,10 @@ def ARBNO(P) -> PATTERN:
             yield subject[pos0:pos]
         except StopIteration:
             pos = pos0
-            return        
+            return
 #------------------------------------------------------------------------------
 @pattern
-def AND(P, Q) -> PATTERN:
+def Ξ(P, Q) -> PATTERN: # AND, conjunction
     global pos
     pos0 = pos
     for _1 in P:
@@ -320,12 +323,12 @@ def AND(P, Q) -> PATTERN:
             pos = pos0
 #------------------------------------------------------------------------------
 @pattern
-def ALT(*AP) -> PATTERN:
+def Π(*AP) -> PATTERN: # ALT, alternates
     for P in AP:
         yield from P
 #------------------------------------------------------------------------------
 @pattern
-def SEQ(*AP) -> PATTERN:
+def Σ(*AP) -> PATTERN: # SEQ, subsequents
     pos0 = pos
     cursor = 0
     highmark = 0
@@ -354,4 +357,4 @@ def MATCH(S, P) -> bool:
     except StopIteration:
         print(f'"{S}" FAIL')
         return False
-#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#------------------------------------------------------------------------------

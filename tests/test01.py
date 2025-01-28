@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
-from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH, SEQ, ALT
-from SNOBOL4python import ε, _, ANY, ARBNO, BAL, FENCE, POS, RPOS, SPAN
+from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
+from SNOBOL4python import ε, σ, Σ, Π, ANY, ARBNO, BAL, FENCE, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
@@ -17,32 +17,31 @@ def real_number():
     yield from \
         (   POS(0)
         +   (   (   SPAN(_digits) @ 'whole'
-                +   (_('.') + FENCE(SPAN(_digits) | ε()) @ 'fract' | ε())
-                +   (_('E') | _('e'))
-                +   (_('+') | _('-') | ε())
+                +   (σ('.') + FENCE(SPAN(_digits) | ε()) @ 'fract' | ε())
+                +   (σ('E') | σ('e'))
+                +   (σ('+') | σ('-') | ε())
                 +   SPAN(_digits) @ 'exp'
                 )
             |   (   SPAN(_digits) @ 'whole'
-                +   _('.')
+                +   σ('.')
                 +   FENCE(SPAN(_digits) | ε()) @ 'fract'
                 )
             )
         +   RPOS(0)
         )
 assert True is MATCH("12.99E+3", real_number());
-variable = None
-for variable in globals().items():
-    print(variable)
+#variable = None
+#for variable in globals().items():
+#    print(variable)
 #print(f"whole={whole} fract={fract} exp={exp}")
 #------------------------------------------------------------------------------
 def test_one():
-    yield from \
-     SEQ(   POS(0)
-        ,ALT(_('B') , _('F') , _('L') , _('R')) @ '1'
-        ,ALT(_('E') , _('EA')) @ '2'
-        ,ALT(_('D') , _('DS')) @ '3'
-        ,   RPOS(0)
-        )
+    yield from Σ( POS(0) @ 'OUTPUT'
+               ,  Π(σ('B') , σ('F') , σ('L') , σ('R')) @ 'OUTPUT'
+               ,  Π(σ('E') , σ('EA')) @ 'OUTPUT'
+               ,  Π(σ('D') , σ('DS')) @ 'OUTPUT'
+               ,  RPOS(0) @ 'OUTPUT'
+               )
 assert True is MATCH("BED", test_one())
 assert True is MATCH("FED", test_one())
 assert True is MATCH("LED", test_one())
@@ -63,7 +62,7 @@ assert True is MATCH("READS", test_one())
 def As():
     yield from \
         (   POS(0)
-        +   ARBNO(_('a')) @ 'sequence'
+        +   ARBNO(σ('a')) @ 'sequence'
         +   RPOS(0)
         )
 assert True is MATCH("", As())
@@ -75,8 +74,8 @@ assert True is MATCH("aaaa", As())
 def Alist():
     yield from \
         (   POS(0)
-        +   (_('a') | _('b'))
-        +   ARBNO(_(',') + (_('a') | _('b')))
+        +   (σ('a') | σ('b'))
+        +   ARBNO(σ(',') + (σ('a') | σ('b')))
         +   RPOS(0)
         )
 assert False is MATCH("", Alist())
