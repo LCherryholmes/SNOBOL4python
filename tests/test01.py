@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
-from SNOBOL4python import ε, σ, Σ, Π, ANY, ARBNO, BAL, FENCE, POS, RPOS, SPAN
+from SNOBOL4python import ε, σ, Σ, Π, ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
@@ -102,6 +102,7 @@ if False:
 # BALEXP = NOTANY(' ( ) , ) I ' (' ARBNO( *BALEXP) ')'
 # BAL BALEXP ARBNO(BALEXP)
 # ALLBAL = BAL S OUTPUT FAIL
+#------------------------------------------------------------------------------
 def Bal(): yield from POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
 
 assert False is MATCH("", Bal())
@@ -121,4 +122,10 @@ assert True is MATCH("A(B*C) (E/F)G+H", Bal())
 assert True is MATCH("( (A+ ( B*C) ) +D)", Bal())
 assert True is MATCH("(0+(1*9))", Bal())
 assert True is MATCH("((A+(B*C))+D)", Bal())
+#------------------------------------------------------------------------------
+def Arb(): yield from POS(0) + ARB() @ 'OUTPUT' + RPOS(0)
+assert True is MATCH("", Arb())
+assert True is MATCH("$", Arb())
+assert True is MATCH("$$", Arb())
+assert True is MATCH("$$$", Arb())
 #------------------------------------------------------------------------------
