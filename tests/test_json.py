@@ -54,15 +54,15 @@ def jMonthName():   yield (   σ('Jan') | σ('Feb') | σ('Mar') | σ('Apr')
                           |   σ('Sep') | σ('Oct') | σ('Nov') | σ('Dec')
                           ) ^ "jxMonthName" + Λ("jxMonth = jMos[jxMonthName]")
 def jDayName():     yield σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
-def jNum2():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 2")
+def jNum2():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
 def jNum3():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 3")
 def jNum4():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 4")
-def jYYYY():        yield jNum4 ^ "jxYYYY"
-def jMM():          yield jNum2 ^ "jxMM"
-def jDD():          yield jNum2 ^ "jxDD"
-def jhh():          yield jNum2 ^ "jxhh"
-def jmm():          yield jNum2 ^ "jxmm"
-def jss():          yield jNum2 ^ "jxss"
+def jYYYY():        yield jNum4() ^ "jxYYYY"
+def jMM():          yield jNum2() ^ "jxMM"
+def jDD():          yield jNum2() ^ "jxDD"
+def jhh():          yield jNum2() ^ "jxhh"
+def jmm():          yield jNum2() ^ "jxmm"
+def jss():          yield jNum2() ^ "jxss"
 def jDatetime():    yield \
     ( σ('"') + Λ("jxHour = '00'")
              + Λ("jxMinute = '00'")
