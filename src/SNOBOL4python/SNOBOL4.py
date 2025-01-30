@@ -310,11 +310,6 @@ def BAL() -> PATTERN: # BAL
     pos = pos0
 #------------------------------------------------------------------------------
 @pattern
-def π(P) -> PATTERN:
-    yield from P
-    yield ""
-#------------------------------------------------------------------------------
-@pattern
 def ARBNO(P) -> PATTERN:
     global pos, subject
     pos0 = pos
@@ -342,6 +337,11 @@ def Ξ(P, Q) -> PATTERN: # AND, conjunction
                 pos = pos0
         except StopIteration:
             pos = pos0
+#------------------------------------------------------------------------------
+@pattern
+def π(P) -> PATTERN:
+    yield from P
+    yield ""
 #------------------------------------------------------------------------------
 @pattern
 def Π(*AP) -> PATTERN: # ALT, alternates
