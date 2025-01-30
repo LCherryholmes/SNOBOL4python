@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 import SNOBOL4python as S4p
 from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
 from SNOBOL4python import ε, σ, Σ, Π, ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
@@ -6,28 +6,29 @@ from SNOBOL4python import ε, σ, Σ, Π, ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS
 # Parse Regular Expression language
 #------------------------------------------------------------------------------
 @pattern
-def RegEx():                yield from POS(0) + Expr() + RPOS(0)
+def RegEx():        yield from POS(0) + Expr() + RPOS(0)
 @pattern
-def Expr():                 yield from Term() + ARBNO(σ('|') + Term())
+def Expr():         yield from Term() + ARBNO(σ('|') + Term())
 @pattern
-def Term():                 yield from Factor() + ARBNO(Factor())
+def Term():         yield from Factor() + ARBNO(Factor())
 @pattern
-def Factor():               yield from Match() + Quantifier()
+def Factor():       yield from Match() + Quantifier()
 @pattern
-def Quantifier():           yield from σ('*')  | σ('+')  | σ('?') | ε()
+def Quantifier():   yield from σ('*')  | σ('+')  | σ('?') | ε()
 @pattern
-def Match():                yield from \
-                                     ( σ('.')
-                                     | σ('\\.')
-                                     | σ('\\(')
-                                     | σ('\\|')
-                                     | σ('\\*')
-                                     | σ('\\?')
-                                     | σ('\\)')
-                                     | σ('\\\\')
-                                     | ANY(_UCASE + _LCASE + _digits)
-                                     | σ('(') + Expr() + σ(')')
-                                     )
+def Match():        yield from \
+                             ( σ('.')
+                             | σ('\\.')
+                             | σ('\\(')
+                             | σ('\\|')
+                             | σ('\\*')
+                             | σ('\\+')
+                             | σ('\\?')
+                             | σ('\\)')
+                             | σ('\\\\')
+                             | ANY(_UCASE + _LCASE + _digits)
+                             | σ('(') + Expr() + σ(')')
+                             )
 #------------------------------------------------------------------------------
 assert False is MATCH("", RegEx())
 assert True  is MATCH("a", RegEx())
