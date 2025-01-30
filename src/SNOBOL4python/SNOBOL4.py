@@ -24,8 +24,8 @@ class PATTERN(object):
     def __ror__(self, other):       return Π(other, self) # PI, binary '|', alternate
     def __and__(self, other):       return Ξ(self, other) # PSI, binary '&', conjunction
     def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
-    def __xor__(self, other):       return Δ(self, other) # DELTA, binary '^', conditional assignment
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment
+    def __xor__(self, other):       return Δ(self, other) # DELTA, binary '^', conditional assignment
     def __invert__(self):           return self # unary '~'
 #------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
@@ -55,6 +55,22 @@ def SUCCESS():
 #------------------------------------------------------------------------------
 @pattern
 def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
+@pattern
+def λ(s) -> PATTERN: yield "" # P *eval(), *EQ(), *IDENT(), P $ tx $ *func()
+@pattern
+def Λ(s) -> PATTERN: yield "" # P . *exec(), P . tx . *func()
+#------------------------------------------------------------------------------
+@pattern
+def nPush() -> PATTERN: yield ""
+@pattern
+def nInc() -> PATTERN: yield ""
+@pattern
+def nPop() -> PATTERN: yield ""
+def nTop() -> int: return 0
+@pattern
+def Shift() -> PATTERN: yield ""
+@pattern
+def Reduce() -> PATTERN: yield ""
 #------------------------------------------------------------------------------
 @pattern
 def FENCE(p) -> PATTERN: # FENCE and FENCE(P)
@@ -294,6 +310,11 @@ def BAL() -> PATTERN: # BAL
     pos = pos0
 #------------------------------------------------------------------------------
 @pattern
+def π(P) -> PATTERN:
+    yield from P
+    yield ""
+#------------------------------------------------------------------------------
+@pattern
 def ARBNO(P) -> PATTERN:
     global pos, subject
     pos0 = pos
@@ -346,6 +367,7 @@ def Σ(*AP) -> PATTERN: # SEQ, subsequents
             cursor -= 1
             highmark -= 1
 #------------------------------------------------------------------------------
+def SEARCH(S, P) -> bool: None
 def MATCH(S, P) -> bool:
     global pos, subject
     pos = 0
@@ -357,4 +379,5 @@ def MATCH(S, P) -> bool:
     except StopIteration:
         print(f'"{S}" FAIL')
         return False
-#------------------------------------------------------------------------------#------------------------------------------------------------------------------
+def FULLMATCH(S, P) -> bool: None
+#------------------------------------------------------------------------------
