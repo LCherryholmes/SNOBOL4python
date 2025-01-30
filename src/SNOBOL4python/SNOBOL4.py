@@ -31,8 +31,14 @@ class PATTERN(object):
 def pattern(func: callable) -> callable:
     return lambda *args, **kwargs: PATTERN(func, args, kwargs)
 #------------------------------------------------------------------------------
-pos = 0
-subject = ""
+pos = 0 # internal position
+subject = "" # internal subject
+cstack = [] # internal command stack (conditional actions)
+#------------------------------------------------------------------------------
+itop = -1 # user counter stack (nPush, nInc, nPop, nTop)
+istack = []
+vstack = [] # user value stack (shift/reduce values)
+#------------------------------------------------------------------------------
 _ALPHABET = "".join([chr(c) for c in range(256)])
 _UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LCASE = "abcdefghijklmnopqrstuvwxyz"
@@ -48,38 +54,74 @@ def REVERSE(s: str) -> str: return s.reverse() # s[::-1]
 def DATATYPE(o: object) -> str: None
 def REPLACE(s: str, old: str, new: str) -> str: return s.translate(str.maketrans(old, new))
 #------------------------------------------------------------------------------
-def FAIL() -> None: raise StopIteration
-def ABORT() -> None: raise StopIteration
+def FAIL() -> None: raise StopIteration # return?
+def ABORT() -> None: raise StopIteration # return?
 def SUCCESS():
     while True: yield ""
 #------------------------------------------------------------------------------
 @pattern
 def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
+#------------------------------------------------------------------------------
+# Immediate actions during pattern matching
 @pattern
-def λ(s) -> PATTERN: yield "" # P *eval(), *EQ(), *IDENT(), P $ tx $ *func()
+def δ(P, V) -> PATTERN: # immediate assignment
+    for _1 in P:
+        if V == "OUTPUT": print(_1)
+        globals()[V] = _1
+        yield _1
+        del globals()[V]
+
+@pattern # immediate evaluation as test
+def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
+    test = eval(expression)
+    if test: yield ""
+#------------------------------------------------------------------------------
+# Conditional actions after successful pattern match
 @pattern
-def Λ(s) -> PATTERN: yield "" # P . *exec(), P . tx . *func()
+def Δ(P, V) -> PATTERN: # conditional assignment
+    for _1 in P:
+        cstack.append(f"{V} = subject[{pos - len(_1)} : {pos}]\n")
+        yield _1
+        cstack.pop()
+
+@pattern # conditional execution
+def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
+    if compile(command): cstack.append(command); yield ""; cstack.pop()
 #------------------------------------------------------------------------------
 @pattern
-def nPush() -> PATTERN: yield ""
+def nPush() -> PATTERN:
+    cstack.append(f"itop += 1\n");
+    yield "";
+    cstack.pop()
 @pattern
-def nInc() -> PATTERN: yield ""
+def nInc() -> PATTERN:
+    cstack.append(f"istack[itop] += 1\n");
+    yield "";
+    cstack.pop()
 @pattern
-def nPop() -> PATTERN: yield ""
-def nTop() -> int: return 0
+def nPop() -> PATTERN:
+    cstack.append(f"itop -= 1\n");
+    yield "";
+    cstack.pop()
+def nTop() -> int: return istack[itop]
 @pattern
-def Shift() -> PATTERN: yield ""
+def Shift(t, v) -> PATTERN:
+    cstack.append(f"Shift({t}, \"{v}\")\n")
+    yield ""
+    cstack.pop()
 @pattern
-def Reduce() -> PATTERN: yield ""
+def Reduce(t, n) -> PATTERN:
+    if n is None: n = nTop()
+    cstack.append(f"Reduce('{t}', \"{n}\")\n")
+    yield ""
+    cstack.pop()
 #------------------------------------------------------------------------------
 @pattern
 def FENCE(p) -> PATTERN: # FENCE and FENCE(P)
     yield next(p)
-@pattern
-def IDENT(x, y) -> PATTERN: # *IDENT()
-    if x is y: yield ""
-@pattern
-def DIFFER(x, y) -> PATTERN: # *DIFFER()
+def IDENT(x, y) -> str:
+    if x is y: return ""
+def DIFFER(x, y) -> str:
     if not x is y: yield ""
 def INTEGER(x) -> PATTERN: # *INTEGER()
     try:
@@ -87,93 +129,6 @@ def INTEGER(x) -> PATTERN: # *INTEGER()
         yield ""
     except ValueError:
         return
-#------------------------------------------------------------------------------
-@pattern
-def EQ(x, y) -> PATTERN: # *EQ()
-    if int(x) == int(y): yield ""
-    else: return
-@pattern
-def LT(x, y) -> PATTERN: # *LT()
-    if int(x) < int(y): yield ""
-    else: return
-@pattern
-def GT(x, y) -> PATTERN: # *GT()
-    if int(x) > int(y): yield ""
-    else: return
-@pattern
-def NE(x, y) -> PATTERN: # *NE()
-    if int(x) != int(y): yield ""
-    else: return
-@pattern
-def LE(x, y) -> PATTERN: # *LE()
-    if int(x) <= int(y): yield ""
-    else: return
-@pattern
-def GE(x, y) -> PATTERN: # *GE()
-    if int(x) >= int(y): yield ""
-    else: return
-#------------------------------------------------------------------------------
-@pattern
-def LEQ(x, y) -> PATTERN: # *EQ()
-    if str(x) == str(y): yield ""
-    else: return
-@pattern
-def LLT(x, y) -> PATTERN: # *LT()
-    if str(x) < str(y): yield ""
-    else: return
-@pattern
-def LGT(x, y) -> PATTERN: # *GT()
-    if str(x) > str(y): yield ""
-    else: return
-@pattern
-def LNE(x, y) -> PATTERN: # *NE()
-    if str(x) != str(y): yield ""
-    else: return
-@pattern
-def LLE(x, y) -> PATTERN: # *LE()
-    if str(x) <= str(y): yield ""
-    else: return
-@pattern
-def LGE(x, y) -> PATTERN: # *GE()
-    if str(x) >= str(y): yield ""
-    else: return
-#------------------------------------------------------------------------------
-@pattern
-def eq(x, y) -> PATTERN: # *(x == y)
-    if x == y: yield ""
-    else: return
-@pattern
-def lt(x, y) -> PATTERN: # *(x < y)
-    if x < y: yield ""
-    else: return
-@pattern
-def gt(x, y) -> PATTERN: # *(x > y)
-    if x > y: yield ""
-    else: return
-@pattern
-def ne(x, y) -> PATTERN: # *(x != y)
-    if x != y: yield ""
-    else: return
-@pattern
-def le(x, y) -> PATTERN: # *(x <= y)
-    if x <= y: yield ""
-    else: return
-@pattern
-def ge(x, y) -> PATTERN: # *(x >= y)
-    if x >= y: yield ""
-    else: return
-#------------------------------------------------------------------------------
-@pattern
-def δ(P, V) -> PATTERN: # immediate assignment
-    for _1 in P:
-        if V == "OUTPUT": print(_1)
-#       globals()[V] = _1
-        yield _1
-#       del globals()[V]
-#------------------------------------------------------------------------------
-@pattern
-def Δ(P, V) -> PATTERN: # conditional assignment
-    yield from P
 #------------------------------------------------------------------------------
 @pattern
 def POS(n) -> PATTERN:
@@ -324,7 +279,7 @@ def ARBNO(P) -> PATTERN:
             return
 #------------------------------------------------------------------------------
 @pattern
-def Ξ(P, Q) -> PATTERN: # AND, conjunction
+def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
     global pos
     pos0 = pos
     for _1 in P:
@@ -339,17 +294,17 @@ def Ξ(P, Q) -> PATTERN: # AND, conjunction
             pos = pos0
 #------------------------------------------------------------------------------
 @pattern
-def π(P) -> PATTERN:
+def π(P) -> PATTERN: # (P | epsilon), pi, optional
     yield from P
     yield ""
 #------------------------------------------------------------------------------
 @pattern
-def Π(*AP) -> PATTERN: # ALT, alternates
+def Π(*AP) -> PATTERN: # ALT, PI, alternates
     for P in AP:
         yield from P
 #------------------------------------------------------------------------------
 @pattern
-def Σ(*AP) -> PATTERN: # SEQ, subsequents
+def Σ(*AP) -> PATTERN: # SEQ, SIGMA, subsequents
     pos0 = pos
     cursor = 0
     highmark = 0
@@ -372,6 +327,9 @@ def MATCH(S, P) -> bool:
     global pos, subject
     pos = 0
     subject = S
+    cstack = []
+    istack = []
+    vstack = []
     try:
         m = next(P)
         print(f'"{S}" ? "{m}"')
