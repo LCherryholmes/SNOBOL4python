@@ -18,7 +18,7 @@ def jArray():       yield (   ς('[') + nPush()
                           +   ς(']') + Reduce('[]') + nPop()
                           +   FENCE()
                           )
-def jField():       yield jVar() + Shift('Name', "jxVal") + ς(':') + jElement() + Reduce(':', 2)
+def jField():       yield jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce(':', 2)
 def jElement():     yield ς('') \
                         + ( jRealVal() + Shift('Real', "jxVal")
                           | jIntVal()  + Shift('Integer', "jxVal")
@@ -29,6 +29,7 @@ def jElement():     yield ς('') \
                           | jArray()
                           | jObject()
                           )
+def jVar():         yield σ('"') + (jIdent() + FENCE(' ' + jIdent() | ε()) | jInt()) ^ "jxVar" + σ('"')
 #------------------------------------------------------------------------------
 def ς(s):           yield (SPAN(" \t\r\n") | ε()) + σ(s)
 def π(p):           yield from p; yield ""
@@ -42,7 +43,6 @@ def jEscChar():     yield '\\' \
 def jNullVal():     yield σ('null') + ε() ^ "jxVal"
 def jTrueFalse():   yield (σ('true') | σ('false')) ^ "jxVal"
 def jIdent():       yield ANY(_UCASE + '_' + _LCASE) + FENCE(SPAN(_UCASE + '_' + _LCASE + '0123456789') | ε())
-def jVar():         yield σ('"') + (jIdent() + FENCE(' ' + jIdent() | ε()) | jInt()) ^ "jxVar" + σ('"')
 def jString():      yield σ('"') + (ARBNO(BREAK('"'+'\\'+'\n') | jEscChar())) ^ "jxVal" + σ('"')
 def jStrVal():      yield jString() + Λ("jxVal = JSONDecode(jxVal)")
 def jBoolVal():     yield jTrueFalse() | σ('"') + jTrueFalse() + σ('"')
@@ -65,8 +65,8 @@ def jmm():          yield jNum2 ^ "jxmm"
 def jss():          yield jNum2 ^ "jxss"
 def jDatetime():    yield \
     ( σ('"') + Λ("jxHour = '00'")
-           + Λ("jxMinute = '00'")
-           + Λ("jxSecond = '00'")
+             + Λ("jxMinute = '00'")
+             + Λ("jxSecond = '00'")
   + (   jDayName() + σ(', ') + jDD() + σ(' ') + jMonthName() + σ(' ') + jYYYY() + σ(' ') + jhh() + σ(':') + jmm() + σ(':') + jss() + σ(' +') + jNum4()
     |   jDayName() + σ(' ') + jMonthName() + σ(' ') + jDD() + σ(' ') + jhh() + σ(':') + jmm() + σ(':') + jss() + σ(' +') + jNum4() + σ(' ') + jYYYY()
     |   jYYYY()    + σ('-') + jMM() + σ('-') + jDD()
