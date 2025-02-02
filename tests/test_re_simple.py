@@ -12,9 +12,9 @@ def Expression():   yield from Term() + ARBNO(σ('|') + Term())
 @pattern
 def Term():         yield from ARBNO(Factor())
 @pattern
-def Factor():       yield from Match() + Quantifier()
+def Factor():       yield from Item() + Quantifier()
 @pattern
-def Match():        yield from \
+def Item():         yield from \
                              ( σ('.')
                              | σ('\\') + ANY('.\\(|*+?)')
                              | ANY(_UCASE + _LCASE + _digits)

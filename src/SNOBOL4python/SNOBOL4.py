@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 #>python3 src/SNOBOL4python/SNOBOL4.py
-#>python -m build
-#>python -m pip install .\dist\snobol4python-0.1.0.tar.gz
-#>python3 tests/test01.py
+#>python3 -m build
+#>python3 -m pip install .\dist\snobol4python-0.1.0.tar.gz
+#>python3 tests/test_01.py
 #------------------------------------------------------------------------------
 # String pattern matching
 import copy
@@ -33,11 +33,6 @@ def pattern(func: callable) -> callable:
 #------------------------------------------------------------------------------
 pos = 0 # internal position
 subject = "" # internal subject
-cstack = [] # internal command stack (conditional actions)
-#------------------------------------------------------------------------------
-itop = -1 # user counter stack (nPush, nInc, nPop, nTop)
-istack = []
-vstack = [] # user value stack (shift/reduce values)
 #------------------------------------------------------------------------------
 _ALPHABET = "".join([chr(c) for c in range(256)])
 _UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -62,6 +57,11 @@ def SUCCESS():
 @pattern
 def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
 #------------------------------------------------------------------------------
+itop = -1 # counter stack (nPush, nInc, nPop, nTop)
+istack = []
+vstack = [] # value stack (Shift/Reduce values)
+cstack = [] # command stack (conditional actions)
+#------------------------------------------------------------------------------
 # Immediate actions during pattern matching
 @pattern
 def δ(P, V) -> PATTERN: # immediate assignment
@@ -73,8 +73,7 @@ def δ(P, V) -> PATTERN: # immediate assignment
 
 @pattern # immediate evaluation as test
 def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
-    test = eval(expression)
-    if test: yield ""
+    if eval(expression): yield ""
 #------------------------------------------------------------------------------
 # Conditional actions after successful pattern match
 @pattern
@@ -86,11 +85,15 @@ def Δ(P, V) -> PATTERN: # conditional assignment
 
 @pattern # conditional execution
 def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
-    if compile(command): cstack.append(command); yield ""; cstack.pop()
+    if compile(command):
+        cstack.append(command + '\n')
+        yield ""
+        cstack.pop()
 #------------------------------------------------------------------------------
 @pattern
 def nPush() -> PATTERN:
     cstack.append(f"itop += 1\n");
+    cstack.append(f"istack.append(0)\n");
     yield "";
     cstack.pop()
 @pattern
@@ -100,25 +103,22 @@ def nInc() -> PATTERN:
     cstack.pop()
 @pattern
 def nPop() -> PATTERN:
+    cstack.append(f"istack.pop()\n");
     cstack.append(f"itop -= 1\n");
     yield "";
     cstack.pop()
-def nTop() -> int: return istack[itop]
 @pattern
 def Shift(t, v) -> PATTERN:
-    cstack.append(f"Shift({t}, \"{v}\")\n")
+    cstack.append(f"Shift('{t}', \"{v}\")\n")
     yield ""
     cstack.pop()
 @pattern
 def Reduce(t, n) -> PATTERN:
-    if n is None: n = nTop()
-    cstack.append(f"Reduce('{t}', \"{n}\")\n")
+    if n is None: n = istack[itop]
+    cstack.append(f"Reduce('{t}', {n})\n")
     yield ""
     cstack.pop()
 #------------------------------------------------------------------------------
-@pattern
-def FENCE(p) -> PATTERN: # FENCE and FENCE(P)
-    yield next(p)
 def IDENT(x, y) -> str:
     if x is y: return ""
 def DIFFER(x, y) -> str:
@@ -129,6 +129,11 @@ def INTEGER(x) -> PATTERN: # *INTEGER()
         yield ""
     except ValueError:
         return
+#------------------------------------------------------------------------------
+@pattern
+def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
+    if P: yield from P
+    else: yield ""
 #------------------------------------------------------------------------------
 @pattern
 def POS(n) -> PATTERN:
@@ -160,9 +165,9 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
     if pos + len(s) <= len(subject):
         if s == subject[pos:pos + len(s)]:
             pos += len(s)
-#           print(f">>> σ({lit}) = {pos - len(lit)}, {len(lit)}")
+            print(f">>> σ({s}) = {pos - len(s)}, {len(s)}")
             yield s
-#           print(f"<<< σ({lit})")
+            print(f"<<< σ({s})")
             pos -= len(s)
 #------------------------------------------------------------------------------
 @pattern
@@ -326,13 +331,15 @@ def SEARCH(S, P) -> bool: None
 def MATCH(S, P) -> bool:
     global pos, subject
     pos = 0
-    subject = S
-    cstack = []
+    itop = -1
     istack = []
+    cstack = []
     vstack = []
+    subject = S
     try:
         m = next(P)
         print(f'"{S}" ? "{m}"')
+        print(cstack)
         return True
     except StopIteration:
         print(f'"{S}" FAIL')
