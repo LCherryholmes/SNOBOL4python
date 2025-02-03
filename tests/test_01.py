@@ -13,6 +13,7 @@ def identifier():
         )
 assert True is MATCH("Id_99", identifier())
 #------------------------------------------------------------------------------
+@pattern
 def real_number():
     yield from \
         (   POS(0)
@@ -35,6 +36,7 @@ assert True is MATCH("12.99E+3", real_number());
 #    print(variable)
 #print(f"whole={whole} fract={fract} exp={exp}")
 #------------------------------------------------------------------------------
+@pattern
 def test_one():
     yield from Σ( POS(0) @ 'OUTPUT'
                ,  Π(σ('B') , σ('F') , σ('L') , σ('R')) @ 'OUTPUT'
@@ -59,6 +61,7 @@ assert True is MATCH("FEADS", test_one())
 assert True is MATCH("LEADS", test_one())
 assert True is MATCH("READS", test_one())
 #------------------------------------------------------------------------------
+@pattern
 def As():
     yield from \
         (   POS(0)
@@ -71,6 +74,7 @@ assert True is MATCH("aa", As())
 assert True is MATCH("aaa", As())
 assert True is MATCH("aaaa", As())
 #------------------------------------------------------------------------------
+@pattern
 def Alist():
     yield from \
         (   POS(0)
@@ -103,6 +107,7 @@ if False:
 # BAL BALEXP ARBNO(BALEXP)
 # ALLBAL = BAL S OUTPUT FAIL
 #------------------------------------------------------------------------------
+@pattern
 def Bal(): yield from POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
 assert False is MATCH("", Bal())
 assert False is MATCH(")A+B(", Bal())
@@ -121,6 +126,7 @@ assert True  is MATCH("( (A+ ( B*C) ) +D)", Bal())
 assert True  is MATCH("(0+(1*9))", Bal())
 assert True  is MATCH("((A+(B*C))+D)", Bal())
 #------------------------------------------------------------------------------
+@pattern
 def Arb(): yield from POS(0) + ARB() @ 'OUTPUT' + RPOS(0)
 assert True is MATCH("", Arb())
 assert True is MATCH("$", Arb())
