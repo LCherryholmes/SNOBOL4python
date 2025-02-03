@@ -3,32 +3,37 @@
 # Parse JSON string
 #-----------------------------------------------------------------------------------------------------------------------
 import SNOBOL4python
-from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
-from SNOBOL4python import ε, σ, π, λ, Λ, ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
+from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
+from SNOBOL4python import ε, σ, π, λ, Λ
+from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
 #-----------------------------------------------------------------------------------------------------------------------
-def ς(s):           yield (SPAN(" \t\r\n") | ε()) + σ(s)
+@pattern
+def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def jRecognizer():  yield POS(0) + FENCE() + jParser() + ς('') + RPOS(0)
+def jRecognizer():  yield from POS(0) + FENCE() + jParser() + ς('') + RPOS(0)
 @pattern
-def jParser():      yield jObject() + Reduce('JSON', 1)
+def jParser():      yield from jObject() + Reduce('JSON', 1)
 @pattern
-def jObject():      yield (   ς('{') + nPush()
-                          +   π(jField() + nInc() + ARBNO(ς(',') + jField() + nInc()))
-                          +   ς('}') + Reduce('{}') + nPop()
-                          +   FENCE()
-                          )
+def jObject():      yield from \
+                    (   ς('{') + nPush()
+                    +   π(jField() + nInc() + ARBNO(ς(',') + jField() + nInc()))
+                    +   ς('}') + Reduce('{}') + nPop()
+                    +   FENCE()
+                    )
 @pattern
-def jArray():       yield (   ς('[') + nPush()
-                          +   π(jElement() + nInc() + ARBNO(ς(',') + jElement() + nInc()))
-                          +   ς(']') + Reduce('[]') + nPop()
-                          +   FENCE()
-                          )
+def jArray():       yield from \
+                    (   ς('[') + nPush()
+                    +   π(jElement() + nInc() + ARBNO(ς(',') + jElement() + nInc()))
+                    +   ς(']') + Reduce('[]') + nPop()
+                    +   FENCE()
+                    )
 @pattern
-def jField():       yield jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce(':', 2)
+def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce(':', 2)
 @pattern
-def jElement():     yield ς('') \
+def jElement():     yield from \
+                    ς('') \
                         + ( jRealVal() + Shift('Real', "jxVal")
                           | jIntVal()  + Shift('Integer', "jxVal")
                           | jBoolVal() + Shift('Bool', "jxVal")
@@ -39,67 +44,91 @@ def jElement():     yield ς('') \
                           | jObject()
                           )
 @pattern
-def jVar():         yield σ('"') + (jIdent() + FENCE(' ' + jIdent() | ε()) | jInt()) ^ "jxVar" + σ('"')
+def jVar():         yield from σ('"') + (jIdent() + FENCE(' ' + jIdent() | ε()) | jInt()) ^ "jxVar" + σ('"')
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def jInt():         yield (FENCE(σ('+') | σ('-') | ε()) + SPAN('0123456789')) ^ "jxN"
+def jInt():         yield from \
+                    (FENCE(σ('+') | σ('-') | ε()) + SPAN('0123456789')) ^ "jxN"
 @pattern
-def jEscChar():     yield '\\' \
-                        + (  ANY('ntbrf' + '"' + '\\' + '/' + "'")
-                          |  ANY('01234567') + FENCE(ANY('01234567') | ε())
-                          |  ANY('0123') + ANY('01234567') + ANY('01234567')
-                          |  σ('u') + (LEN(4) & SPAN('0123456789ABCDEFabcdef'))
-                          )
+def jEscChar():     yield from \
+                    '\\' \
+                  + (  ANY('ntbrf' + '"' + '\\' + '/' + "'")
+                    |  ANY('01234567') + FENCE(ANY('01234567') | ε())
+                    |  ANY('0123') + ANY('01234567') + ANY('01234567')
+                    |  σ('u') + (LEN(4) & SPAN('0123456789ABCDEFabcdef'))
+                    )
 @pattern
-def jNullVal():     yield σ('null') + ε() ^ "jxVal"
+def jNullVal():     yield from \
+                    σ('null') + ε() ^ "jxVal"
 @pattern
-def jTrueFalse():   yield (σ('true') | σ('false')) ^ "jxVal"
+def jTrueFalse():   yield from \
+                    (σ('true') | σ('false')) ^ "jxVal"
 @pattern
-def jIdent():       yield ANY(_UCASE + '_' + _LCASE) + FENCE(SPAN(_UCASE + '_' + _LCASE + '0123456789') | ε())
+def jIdent():       yield from \
+                    ANY(_UCASE + '_' + _LCASE) + FENCE(SPAN(_UCASE + '_' + _LCASE + '0123456789') | ε())
 @pattern
-def jString():      yield σ('"') + (ARBNO(BREAK('"'+'\\'+'\n') | jEscChar())) ^ "jxVal" + σ('"')
+def jString():      yield from \
+                    σ('"') + (ARBNO(BREAK('"'+'\\'+'\n') | jEscChar())) ^ "jxVal" + σ('"')
 @pattern
-def jStrVal():      yield jString() + Λ("jxVal = JSONDecode(jxVal)")
+def jStrVal():      yield from \
+                    jString() + Λ("jxVal = JSONDecode(jxVal)")
 @pattern
-def jBoolVal():     yield jTrueFalse() | σ('"') + jTrueFalse() + σ('"')
+def jBoolVal():     yield from \
+                    jTrueFalse() | σ('"') + jTrueFalse() + σ('"')
 @pattern
-def jRealVal():     yield ((σ('+') | σ('-') | ε()) + SPAN('0123456789') + σ('.') + SPAN('0123456789')) ^ "jxVal"
+def jRealVal():     yield from \
+                    ((σ('+') | σ('-') | ε()) + SPAN('0123456789') + σ('.') + SPAN('0123456789')) ^ "jxVal"
 @pattern
-def jIntVal():      yield (jInt() ^ "jxVal" | '"' + jInt() ^ "jxVal" + '"')
+def jIntVal():      yield from \
+                    (jInt() ^ "jxVal" | '"' + jInt() ^ "jxVal" + '"')
 @pattern
-def jDateVal():     yield jDatetime() + Λ("jxVal = jxDatetime")
+def jDateVal():     yield from \
+                    jDatetime() + Λ("jxVal = jxDatetime")
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def jMonthName():   yield (   σ('Jan') | σ('Feb') | σ('Mar') | σ('Apr')
-                          |   σ('May') | σ('Jun') | σ('Jul') | σ('Aug')
-                          |   σ('Sep') | σ('Oct') | σ('Nov') | σ('Dec')
-                          ) ^ "jxMonthName" + Λ("jxMonth = jMos[jxMonthName]")
+def jMonthName():   yield from \
+                    (   σ('Jan') | σ('Feb') | σ('Mar') | σ('Apr')
+                    |   σ('May') | σ('Jun') | σ('Jul') | σ('Aug')
+                    |   σ('Sep') | σ('Oct') | σ('Nov') | σ('Dec')
+                    ) ^ "jxMonthName" + Λ("jxMonth = jMos[jxMonthName]")
 @pattern
-def jDayName():     yield σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
+def jDayName():     yield from \
+                    σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
 @pattern
-def jNum2():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
+def jNum2():        yield from \
+                    SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
 @pattern
-def jNum3():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 3")
+def jNum3():        yield from \
+                    SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 3")
 @pattern
-def jNum4():        yield SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 4")
+def jNum4():        yield from \
+                    SPAN('0123456789') @ "jxN" ^ "jxN" + λ("len(jxN) == 4")
 @pattern
-def jYYYY():        yield jNum4() ^ "jxYYYY"
+def jYYYY():        yield from \
+                    jNum4() ^ "jxYYYY"
 @pattern
-def jMM():          yield jNum2() ^ "jxMM"
+def jMM():          yield from \
+                    jNum2() ^ "jxMM"
 @pattern
-def jDD():          yield jNum2() ^ "jxDD"
+def jDD():          yield from \
+                    jNum2() ^ "jxDD"
 @pattern
-def jhh():          yield jNum2() ^ "jxhh"
+def jhh():          yield from \
+                    jNum2() ^ "jxhh"
 @pattern
-def jmm():          yield jNum2() ^ "jxmm"
+def jmm():          yield from \
+                    jNum2() ^ "jxmm"
 @pattern
-def jss():          yield jNum2() ^ "jxss"
+def jss():          yield from \
+                    jNum2() ^ "jxss"
 @pattern
-def jDate():        yield jYYYY() + σ('-') + jMM() + σ('-') + jDD()
+def jDate():        yield from \
+                    jYYYY() + σ('-') + jMM() + σ('-') + jDD()
 @pattern
-def Time():         yield jhh() + σ(':') + jmm() + σ(':') + jss()
+def Time():         yield from \
+                    jhh() + σ(':') + jmm() + σ(':') + jss()
 @pattern
-def jDatetime():    yield \
+def jDatetime():    yield from \
     ( σ('"')
     + Λ("jxHour = '00'")
     + Λ("jxMinute = '00'")

@@ -10,10 +10,6 @@
 person(clark).
 person(daw).
 person(fuller).
-differ(X, X, _) :- !, fail.
-differ(X, _, X) :- !, fail.
-differ(_, X, X) :- !, fail.
-differ(_, _, _).
 hasHeardOf(fuller, daw) :- !, fail.
 hasHeardOf(_, _).
 earnsMore(daw, clark).
@@ -41,3 +37,7 @@ main :-
 %  Carpenter=clark
 %  Painter=daw
 %  Plumber=fuller
+differ(X, X, _) :- !, fail.
+differ(X, _, X) :- !, fail.
+differ(_, X, X) :- !, fail.
+differ(_, _, _).
