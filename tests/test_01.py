@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
-from SNOBOL4python import ε, σ, Σ, Π, ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
+from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
+from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
@@ -70,9 +71,9 @@ def As():
         )
 assert True is MATCH("", As())
 assert True is MATCH("a", As())
-assert True is MATCH("aa", As())
-assert True is MATCH("aaa", As())
-assert True is MATCH("aaaa", As())
+assert False is MATCH("aa", As())
+assert False is MATCH("aaa", As())
+assert False is MATCH("aaaa", As())
 #------------------------------------------------------------------------------
 @pattern
 def Alist():
@@ -85,8 +86,8 @@ def Alist():
 assert False is MATCH("", Alist())
 assert True is MATCH("a", Alist())
 assert True is MATCH("a,a", Alist())
-assert True is MATCH("a,a,a", Alist())
-assert True is MATCH("a,a,a,a", Alist())
+assert False is MATCH("a,a,a", Alist())
+assert False is MATCH("a,a,a,a", Alist())
 #------------------------------------------------------------------------------
 if False:
     global units
@@ -132,4 +133,25 @@ assert True is MATCH("", Arb())
 assert True is MATCH("$", Arb())
 assert True is MATCH("$$", Arb())
 assert True is MATCH("$$$", Arb())
+#------------------------------------------------------------------------------
+@pattern
+def Pairs(): yield from POS(0) + ARBNO('AA' | LEN(2) | 'XX') + RPOS(0)
+assert False is MATCH('CCXXAA$', Pairs())
+#------------------------------------------------------------------------------
+@pattern
+def PAIRS(): yield from \
+    (
+        AT('pos') + λ(lambda: write('POS try', pos))
+    +   POS(0)
+    +   λ(lambda: write('POS got'))
+    +   ARBNO(
+          (AT('pos') + λ(lambda: write('AA try', pos))     + σ('AA') @ 'tx' + λ(lambda: write(tx, 'got')))
+        | (AT('pos') + λ(lambda: write('LEN(2) try', pos)) + LEN(2)  @ 'tx' + λ(lambda: write(tx, 'got')))
+        | (AT('pos') + λ(lambda: write('XX try', pos))     + σ('XX') @ 'tx' + λ(lambda: write(tx, 'got')))
+        )
+    +   AT('pos') + λ(lambda: wrrite('RPOS try', pos))
+    +   RPOS(0)
+    +   λ(lambda: write('RPOS got'))
+    )
+# assert False is MATCH('CCXXAA$', PAIRS())
 #------------------------------------------------------------------------------

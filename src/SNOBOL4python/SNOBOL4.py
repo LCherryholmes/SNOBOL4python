@@ -20,8 +20,8 @@ class PATTERN(object):
     def __iter__(self):
         self.local_copy = self.func(*self.args, **self.kwargs)
         return self.local_copy
-    def __next__(self): return next(self.local_copy)
-    def __repr__(self): return f"{self.func}(*{len(self.args)})"
+    def __next__(self):             return next(self.local_copy)
+    def __repr__(self):             return f"{self.func}(*{len(self.args)})"
     def __add__(self, other):       return Σ(self, other) # SIGMA, binary '+', subsequent
     def __radd__(self, other):      return Σ(other, self) # SIGMA, binary '+', subsequent
     def __or__(self, other):        return Π(self, other) # PI, binary '|', alternate
@@ -30,6 +30,8 @@ class PATTERN(object):
     def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment
     def __xor__(self, other):       return Δ(self, other) # DELTA, binary '^', conditional assignment
+    def __floordiv__(self, other):  return Δ(self, other) # DELTA, binary '//', conditional assignment
+    def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
     def __invert__(self):           return self # unary '~'
 #------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
@@ -70,6 +72,15 @@ def DATATYPE(o: object) -> str: None
 def REPLACE(s: str, old: str, new: str) -> str:
     return s.translate(str.maketrans(old, new))
 #------------------------------------------------------------------------------
+import re
+re_repr_function = re.compile(r"\<function\ ([^\s]+)\ at\ 0x([0-9A-F]{16})\>\(\*([0-9]+)\)")
+def PROTOTYPE(P):
+    global re_repr_function
+    p = repr(P)
+    r = re.fullmatch(re_repr_function, p)
+    if r: return f"{r.group(1)}_{r.group(2)}(*{r.group(3)})"
+    else: return p
+#------------------------------------------------------------------------------
 def FAIL() -> None: raise StopIteration # return?
 def ABORT() -> None: raise StopIteration # return?
 def SUCCESS():
@@ -83,18 +94,20 @@ istack = []
 vstack = [] # value stack (Shift/Reduce values)
 cstack = [] # command stack (conditional actions)
 #------------------------------------------------------------------------------
-# Immediate actions during pattern matching
+# Immediate assignment during pattern matching
 @pattern
-def δ(P, V) -> PATTERN: # immediate assignment
+def δ(P, V) -> PATTERN:
+    logging.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
         if V == "OUTPUT": print(_1)
-        logging.debug("%s = delta('%s')", V, _1)
+        logging.debug("%s = delta(%s)", V, repr(_1))
         globals()[V] = _1
         yield _1
-        logging.debug("del %s", V)
+        logging.debug("%s deleted", V)
         del globals()[V]
-
-@pattern # immediate evaluation as test
+#------------------------------------------------------------------------------
+# Immediate evaluation as test during pattern matching
+@pattern
 def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     logging.debug("lambda(%s) evaluating...", repr(expression))
     if eval(expression):
@@ -103,20 +116,22 @@ def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
         logging.debug("lambda(%s) backtracking...", repr(expression))
     else: logging.debug("lambda(%s) Error evaluating. FAIL", repr(expression))
 #------------------------------------------------------------------------------
-# Conditional actions after successful pattern match
+# Conditional assignment after totally completed pattern match
 @pattern
-def Δ(P, V) -> PATTERN: # conditional assignment
+def Δ(P, V) -> PATTERN:
+    logging.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        logging.debug("%s = DELTA(%d, %d) SUCCESS", V, pos - len(_1), pos)
-        cstack.append(f"{V} = subject[{pos - len(_1)} : {pos}]\n")
+        logging.debug("%s = delta(%d, %d) SUCCESS", V, pos - len(_1), pos)
+        cstack.append(f"{V} = subject[{pos - len(_1)} : {pos}]")
         yield _1
-        logging.debug("%s = DELTA(%d, %d) backtracking...", V, pos - len(_1), pos)
+        logging.debug("%s = delta(%d, %d) backtracking...", V, pos - len(_1), pos)
         cstack.pop()
-
-@pattern # conditional execution
+#------------------------------------------------------------------------------
+# Conditional execution after totally completed pattern match
+@pattern
 def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
     logging.debug("LAMBDA(%s) compiling...", repr(command))
-    if compile(command):
+    if compile(command, '<string>', 'exec'): # 'single', 'eval'
         logging.debug("LAMBDA(%s) SUCCESS", repr(command))
         cstack.append(command)
         yield ""
@@ -149,8 +164,9 @@ def nPop() -> PATTERN:
     logging.debug("nPop() backtracking...")
     cstack.pop()
     cstack.pop()
+#------------------------------------------------------------------------------
 @pattern
-def Shift(t, v) -> PATTERN:
+def Shift(t, v='') -> PATTERN:
     logging.debug("Shift(%s, %s) SUCCESS", repr(t), repr(v))
     cstack.append(f"shift('{t}', \"{v}\")")
     yield ""
@@ -186,9 +202,9 @@ def INTEGER(x) -> PATTERN: # *INTEGER()
 @pattern
 def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
     if P:
-        logging.debug("FENCE(%s) SUCCESS", P)
+        logging.debug("FENCE(%s) SUCCESS", PROTOTYPE(P))
         yield from P
-        logging.debug("FENCE(%s) backtracking...", P)
+        logging.debug("FENCE(%s) backtracking...", PROTOTYPE(P))
     else:
         logging.debug("FENCE() SUCCESS")
         yield ""
@@ -217,20 +233,20 @@ def LEN(n) -> PATTERN:
         logging.debug("LEN(%d) SUCCESS(%d,%d)=%s", n, pos, n, subject[pos:pos + n])
         pos += n
         yield subject[pos - n:pos]
-        logging.debug("LEN(%d) backtracking...", n)
         pos -= n
+        logging.debug("LEN(%d) backtracking(%d)...", n, pos)
 #------------------------------------------------------------------------------
 @pattern
 def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
     global pos, subject
-    logging.debug("σ(%s) trying(%d)", repr(s), pos)
+    logging.debug("sigma(%s) trying(%d)", repr(s), pos)
     if pos + len(s) <= len(subject):
         if s == subject[pos:pos + len(s)]:
             pos += len(s)
-            logging.debug("σ(%s) SUCCESS(%d,%d)=", repr(s), pos - len(s), len(s))
+            logging.debug("sigma(%s) SUCCESS(%d,%d)=", repr(s), pos - len(s), len(s))
             yield s
-            logging.debug("σ(%s) backtracking...", repr(s))
             pos -= len(s)
+            logging.debug("sigma(%s) backtracking(%d)...", repr(s), pos)
 #------------------------------------------------------------------------------
 @pattern
 def TAB(n) -> PATTERN:
@@ -270,8 +286,8 @@ def ANY(characters) -> PATTERN:
             logging.debug("ANY(%s) SUCCESS(%d,%d)=%s", repr(characters), pos, 1, subject[pos])
             pos += 1
             yield subject[pos - 1]
-            logging.debug("ANY(%s) backtracking...", repr(characters))
             pos -= 1
+            logging.debug("ANY(%s) backtracking(%d)...", repr(characters), pos)
 #------------------------------------------------------------------------------
 @pattern
 def NOTANY(characters) -> PATTERN:
@@ -282,8 +298,8 @@ def NOTANY(characters) -> PATTERN:
             logging.debug("NOTANY(%s) SUCCESS(%d,%d)=%s", repr(characters), pos, 1, subject[pos])
             pos += 1
             yield subject[pos - 1]
-            logging.debug("NOTANY(%s) backtracking...", repr(characters))
             pos -= 1
+            logging.debug("NOTANY(%s) backtracking(%d)...", repr(characters), pos)
 #------------------------------------------------------------------------------
 @pattern
 def SPAN(characters) -> PATTERN:
@@ -298,8 +314,8 @@ def SPAN(characters) -> PATTERN:
     if pos > pos0:
         logging.debug("SPAN(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, pos - pos0, subject[pos0:pos])
         yield subject[pos0:pos]
-        logging.debug("SPAN(%s) backtracking...", repr(characters))
         pos = pos0
+        logging.debug("SPAN(%s) backtracking(%d)...", repr(characters), pos)
 #------------------------------------------------------------------------------
 @pattern
 def BREAK(characters) -> PATTERN:
@@ -314,8 +330,8 @@ def BREAK(characters) -> PATTERN:
     if pos < len(subject):
         logging.debug("BREAK(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, pos - pos0, subject[pos0:pos])
         yield subject[pos0:pos]
-        logging.debug("BREAK(%s) backtracking...", repr(characters))
         pos = pos0
+        logging.debug("BREAK(%s) backtracking(%d)...", repr(characters), pos)
 #------------------------------------------------------------------------------
 @pattern
 def ARB() -> PATTERN: # ARB
@@ -344,20 +360,6 @@ def BAL() -> PATTERN: # BAL
     pos = pos0
 #------------------------------------------------------------------------------
 @pattern
-def ARBNO(P) -> PATTERN:
-    global pos, subject
-    pos0 = pos
-    yield ""
-    while True:
-        try:
-            iter(P)
-            next(P)
-            yield subject[pos0:pos]
-        except StopIteration:
-            pos = pos0
-            return
-#------------------------------------------------------------------------------
-@pattern
 def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
     global pos
     pos0 = pos
@@ -381,6 +383,33 @@ def π(P) -> PATTERN: # (P | epsilon), pi, optional
 def Π(*AP) -> PATTERN: # ALT, PI, alternates
     for P in AP:
         yield from P
+#------------------------------------------------------------------------------
+@pattern
+def ARBNO(P) -> PATTERN:
+    global pos, subject
+    pos0 = pos
+    logging.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, pos - pos0, subject[pos0:pos])
+    yield ""
+    logging.debug("ARBNO(%s) bactracking(%d)...", PROTOTYPE(P), pos0)
+    AP = []
+    cursor = 0
+    highmark = 0
+    while cursor >= 0:
+        if cursor >= highmark:
+            if cursor >= len(AP):
+                AP.append(copy.copy(P))
+            iter(AP[cursor])
+            highmark += 1
+        try:
+            next(AP[cursor])
+            logging.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(AP[cursor]), pos0, pos - pos0, subject[pos0:pos])
+            cursor += 1
+            yield subject[pos0:pos]
+            cursor -= 1
+            logging.debug("ARBNO(%s) bactracking(%d)...", PROTOTYPE(AP[cursor]), pos0)
+        except StopIteration:
+            cursor -= 1
+            highmark -= 1
 #------------------------------------------------------------------------------
 @pattern
 def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
