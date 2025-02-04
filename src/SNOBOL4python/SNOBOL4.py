@@ -78,7 +78,7 @@ def PROTOTYPE(P):
     global re_repr_function
     p = repr(P)
     r = re.fullmatch(re_repr_function, p)
-    if r: return f"{r.group(1)}_{r.group(2)}(*{r.group(3)})"
+    if r: return f"{r.group(1)}(*{r.group(3)})"
     else: return p
 #------------------------------------------------------------------------------
 def FAIL() -> None: raise StopIteration # return?
@@ -381,8 +381,35 @@ def π(P) -> PATTERN: # (P | epsilon), pi, optional
 #------------------------------------------------------------------------------
 @pattern
 def Π(*AP) -> PATTERN: # ALT, PI, alternates
+    global pos
+    logging.debug("PI([%s]) trying(%d)...",
+        "|".join([PROTOTYPE(P) for P in AP]), pos)
     for P in AP:
         yield from P
+#------------------------------------------------------------------------------
+@pattern
+def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
+    global pos
+    pos0 = pos
+    logging.debug("SIGMA([%s]) trying(%d)...",
+        " ".join([PROTOTYPE(P) for P in AP]), pos0)
+    cursor = 0
+    highmark = 0
+    while cursor >= 0:
+        if cursor >= highmark:
+            iter(AP[cursor])
+            highmark += 1
+        try:
+            next(AP[cursor])
+            cursor += 1
+            if cursor >= len(AP):
+                logging.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, pos - pos0, subject[pos0:pos])
+                yield subject[pos0:pos]
+                logging.debug("SIGMA(*) bactracking(%d)...", pos0)
+                cursor -= 1
+        except StopIteration:
+            cursor -= 1
+            highmark -= 1
 #------------------------------------------------------------------------------
 @pattern
 def ARBNO(P) -> PATTERN:
@@ -390,45 +417,25 @@ def ARBNO(P) -> PATTERN:
     pos0 = pos
     logging.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, pos - pos0, subject[pos0:pos])
     yield ""
-    logging.debug("ARBNO(%s) bactracking(%d)...", PROTOTYPE(P), pos0)
+    logging.debug("ARBNO(*) bactracking(%d)...", pos0)
     AP = []
     cursor = 0
     highmark = 0
     while cursor >= 0:
         if cursor >= highmark:
-            if cursor >= len(AP):
-                AP.append(copy.copy(P))
-            iter(AP[cursor])
+            AP.append((pos, copy.copy(P)))
+            iter(AP[cursor][1])
             highmark += 1
         try:
-            next(AP[cursor])
-            logging.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(AP[cursor]), pos0, pos - pos0, subject[pos0:pos])
+            next(AP[cursor][1])
             cursor += 1
+            logging.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, pos - pos0, subject[pos0:pos])
             yield subject[pos0:pos]
-            cursor -= 1
-            logging.debug("ARBNO(%s) bactracking(%d)...", PROTOTYPE(AP[cursor]), pos0)
+            logging.debug("ARBNO(*) bactracking(%d)...", pos0)
         except StopIteration:
             cursor -= 1
             highmark -= 1
-#------------------------------------------------------------------------------
-@pattern
-def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
-    pos0 = pos
-    cursor = 0
-    highmark = 0
-    while cursor >= 0:
-        if cursor >= highmark:
-            iter(AP[cursor])
-            highmark += 1
-        try:
-            next(AP[cursor])
-            cursor += 1
-            if cursor >= len(AP):
-                yield subject[pos0:pos]
-                cursor -= 1
-        except StopIteration:
-            cursor -= 1
-            highmark -= 1
+            AP.pop()
 #------------------------------------------------------------------------------
 def SEARCH(S, P) -> bool: None
 def MATCH(S, P) -> bool:
