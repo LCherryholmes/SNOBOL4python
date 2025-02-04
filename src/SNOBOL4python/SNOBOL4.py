@@ -405,7 +405,7 @@ def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
             if cursor >= len(AP):
                 logging.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, pos - pos0, subject[pos0:pos])
                 yield subject[pos0:pos]
-                logging.debug("SIGMA(*) bactracking(%d)...", pos0)
+                logging.debug("SIGMA(*) backtracking(%d)...", pos0)
                 cursor -= 1
         except StopIteration:
             cursor -= 1
@@ -417,7 +417,7 @@ def ARBNO(P) -> PATTERN:
     pos0 = pos
     logging.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, pos - pos0, subject[pos0:pos])
     yield ""
-    logging.debug("ARBNO(*) bactracking(%d)...", pos0)
+    logging.debug("ARBNO(*) backtracking(%d)...", pos0)
     AP = []
     cursor = 0
     highmark = 0
@@ -431,7 +431,7 @@ def ARBNO(P) -> PATTERN:
             cursor += 1
             logging.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, pos - pos0, subject[pos0:pos])
             yield subject[pos0:pos]
-            logging.debug("ARBNO(*) bactracking(%d)...", pos0)
+            logging.debug("ARBNO(*) backtracking(%d)...", pos0)
         except StopIteration:
             cursor -= 1
             highmark -= 1
