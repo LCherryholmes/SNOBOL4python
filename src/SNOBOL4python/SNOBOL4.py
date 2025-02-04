@@ -436,6 +436,9 @@ def ARBNO(P) -> PATTERN:
             cursor -= 1
             highmark -= 1
             AP.pop()
+#-----------------------------------------------------------------------------------------------------------------------
+def JSONDecode(s) -> str:
+    return '"' + s + '"'
 #------------------------------------------------------------------------------
 def SEARCH(S, P) -> bool: None
 def MATCH(S, P) -> bool:
@@ -450,7 +453,10 @@ def MATCH(S, P) -> bool:
     try:
         m = next(P)
         print(f'"{S}" ? "{m}"')
-        print(cstack)
+        for command in cstack:
+            print(command)
+        for command in cstack:
+            exec(command)
         return True
     except StopIteration:
         print(f'"{S}" FAIL')

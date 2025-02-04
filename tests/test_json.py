@@ -30,6 +30,8 @@ def jArray():       yield from (   ς('[') + nPush()
 @pattern
 def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce(':', 2)
 @pattern
+def jVar():         yield from ς('"') + ((jIdent() | jInt()) % "jxVar") + σ('"')
+@pattern
 def jElement():     yield from ς('') \
                              + ( jRealVal() + Shift('Real', "jxVal")
                                | jIntVal()  + Shift('Integer', "jxVal")
@@ -40,8 +42,6 @@ def jElement():     yield from ς('') \
                                | jArray()
                                | jObject()
                                )
-@pattern
-def jVar():         yield from ς('"') + ((jIdent() | jInt()) % "jxVar") + σ('"')
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def jInt():         yield from (FENCE(σ('+') | σ('-') | ε()) + SPAN('0123456789')) % "jxN"
