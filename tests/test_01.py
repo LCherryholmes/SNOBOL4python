@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import SNOBOL4python
 from SNOBOL4python import MATCH, pattern, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
-from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
+from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK, FENCE, LEN
+from SNOBOL4python import POS, RPOS, SPAN
+from SNOBOL4python import REPLACE
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
@@ -62,20 +63,20 @@ assert True is MATCH("FEADS", test_one())
 assert True is MATCH("LEADS", test_one())
 assert True is MATCH("READS", test_one())
 #------------------------------------------------------------------------------
-if False:
-    global units
-    romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
-    def Roman(n):
-        if not REPLACE(n, RPOS(1) + LEN(1) @ 'units', ''):
-            return ""
-        if not MATCH(units, BREAK(',') @ 'units'):
-            return None
-        Roman = REPLACE(Roman(n),'IVXLCDM','XLCDM**') + units
-    print(Roman(1))
-    print(Roman(4))
-    print(Roman(5))
-    print(Roman(9))
-    print(Roman(10))
+# units = None
+# romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
+# def Roman(n):
+#     global units
+#     if not MATCH_REPLACE(n, RPOS(1) + LEN(1) @ 'units', ''):
+#         return ""
+#     if not MATCH(units, BREAK(',') @ 'units', globals()):
+#         return None
+#     return REPLACE(Roman(n),'IVXLCDM','XLCDM**') + units
+# print(Roman(1))
+# print(Roman(4))
+# print(Roman(5))
+# print(Roman(9))
+# print(Roman(10))
 #------------------------------------------------------------------------------
 # BALEXP = NOTANY(' ( ) , ) I ' (' ARBNO( *BALEXP) ')'
 # BAL BALEXP ARBNO(BALEXP)

@@ -118,7 +118,7 @@ def DIFFER(d1, d2):
     else:                   raise Exception()
 #----------------------------------------------------------------------------------------------------------------------
 def LPAD(s1, i, s2=None):   return (' ' * (i - len(s1))) + s1
-def RPAD(s1, i, s2=None):   return s + (' ' * (i - len(s1)))
+def RPAD(s1, i, s2=None):   return s1 + (' ' * (i - len(s1)))
 #----------------------------------------------------------------------------------------------------------------------
 def ARRAY(proto, d):      # An array is an indexed aggregate of variables, called elements.
                             limits = tuple(int(limit) for limit in proto.split(','))
@@ -172,7 +172,7 @@ def ITEM(d, *args):       # Reference an array or table element
                                 case 3: return d[args[0]][args[1]][args[2]]
                                 case _: raise Exception()
 def REMDR(i1, i2):          return i1 % i2
-def REPLACE(s1, s2, s3):    return s1.translate(str.maketrans(s2, s3))
+def REPLACE(s1, s2, s3):    return str(s1).translate(str.maketrans(str(s2), str(s3)))
 def REVERSE(s):             return s.reverse() # s[::-1]
 def SIZE(s):                return len(s)
 def TABLE(i1, i2):          return dict()
@@ -215,11 +215,10 @@ def ENDFILE(u): # writes an end of file on (closes) the data set
 def BACKSPACE(u):           None # backspace one record
 def REWIND():               None # repositions the data set associated with the number to the first file
 #----------------------------------------------------------------------------------------------------------------------
-re_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
-re_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
-def DEFINE(s, n=None):
+rex_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
+def DEFINE(proto, n=None):
     global re_DEFINE_proto
-    matching = re.fullmatch(re_DEFINE_proto, s)
+    matching = re.fullmatch(re_DEFINE_proto, proto)
     if matching:
         func_name = matching.group(1)
         func_params = matching.group(2); print(func_params)
@@ -382,13 +381,12 @@ def Reduce(t, n=None) -> PATTERN:
     logging.debug("Reduce(%s, %d) backtracking...", repr(t), n)
     cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
-def _shift(t, v):
-    _variables['vstack'].append([t, v])
+def _shift(t, v): _variables['vstack'].append([t, v])
 def _reduce(t, n):
-    x = []
+    x = [t]
     for i in range(n):
-        x.insert(0, _variables['vstack'].pop())
-    _variables['vstack'].append([t, x])
+        x.insert(1, _variables['vstack'].pop())
+    _variables['vstack'].append(x)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
@@ -658,8 +656,8 @@ def MATCH(S, P, Vs=None) -> bool:
         _variables['_reduce'] = _reduce
         for command in cstack:
             exec(command, _variables)
-        if len(_variables['vstack']) > 0:
-            pprint(_variables['vstack'][0])
+#       if len(_variables['vstack']) > 0:
+#           pprint(_variables['vstack'][0])
         return True
     except StopIteration:
         print(f'"{S}" FAIL')
