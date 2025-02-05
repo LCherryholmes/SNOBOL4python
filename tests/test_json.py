@@ -19,24 +19,24 @@ def jParser():      yield from jObject() + Reduce('JSON', 1)
 @pattern
 def jObject():      yield from (   ς('{') + nPush()
                                +   π(jField() + nInc() + ARBNO(ς(',') + jField() + nInc()))
-                               +   ς('}') + Reduce('{}') + nPop()
+                               +   ς('}') + Reduce('Object') + nPop()
                                +   FENCE()
                                )
 @pattern
 def jArray():       yield from (   ς('[') + nPush()
                                +   π(jElement() + nInc() + ARBNO(ς(',') + jElement() + nInc()))
-                               +   ς(']') + Reduce('[]') + nPop()
+                               +   ς(']') + Reduce('Array') + nPop()
                                +   FENCE()
                                )
 @pattern
-def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce(':', 2)
+def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce('Member', 2)
 @pattern
 def jVar():         yield from ς('"') + ((jIdent() | jInt()) % "jxVar") + σ('"')
 @pattern
 def jElement():     yield from ς('') \
-                             + ( jRealVal() + Shift('Real', "jxVal")
-                               | jIntVal()  + Shift('Integer', "jxVal")
-                               | jBoolVal() + Shift('Bool', "jxVal")
+                             + ( jRealVal() + Shift('Real', "float(jxVal)")
+                               | jIntVal()  + Shift('Integer', "int(jxVal)")
+                               | jBoolVal() + Shift('Bool', "jxVal.capitalize()")
 #                              | jDateVal() + Shift('Datetime', "jxVal")
                                | jStrVal()  + Shift('String', "jxVal")
                                | jNullVal() + Shift('Null')
@@ -129,6 +129,8 @@ JSON_sample = \
         "last_name": "Penddreth",
         "email": "jpenddreth0@census.gov",
         "gender": "Female",
+        "average": +0.75,
+        "single": true,
         "ip_address": "26.58.193.2"
         }
       , {
@@ -137,6 +139,8 @@ JSON_sample = \
         "last_name": "Frediani",
         "email": "gfrediani1@senate.gov",
         "gender": "Male",
+        "average": -1.25,
+        "single": false,
         "ip_address": "229.179.4.212"
         }
       ]

@@ -10,6 +10,8 @@
 import re
 import copy
 import logging
+from pprint import pprint
+from functools import wraps
 logging.basicConfig(level=logging.INFO)
 #------------------------------------------------------------------------------
 _pos = None # internal position
@@ -59,7 +61,6 @@ class PATTERN(object):
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
     def __invert__(self):           return self # unary '~'
 #------------------------------------------------------------------------------
-from functools import wraps
 def pattern(func: callable) -> callable:
     @wraps(func)
     def _PATTERN(*args, **kwargs):
@@ -523,8 +524,7 @@ def ARBNO(P) -> PATTERN:
             highmark -= 1
             AP.pop()
 #-----------------------------------------------------------------------------------------------------------------------
-def JSONDecode(s) -> str:
-    return '"' + s + '"'
+def JSONDecode(s) -> str: return s
 #------------------------------------------------------------------------------
 def SEARCH(S, P) -> bool: None
 def MATCH(S, P, Vs=None) -> bool:
@@ -543,7 +543,8 @@ def MATCH(S, P, Vs=None) -> bool:
         print(f'"{S}" ? "{m}"')
         for command in cstack:
             print(command)
-        print(_variables)
+        for var, val in _variables.items():
+            print(var, val)
         print()
         _variables['itop'] = -1
         _variables['istack'] = []
@@ -554,7 +555,7 @@ def MATCH(S, P, Vs=None) -> bool:
         for command in cstack:
             exec(command, _variables)
         if len(_variables['vstack']) > 0:
-            print(_variables['vstack'][0])
+            pprint(_variables['vstack'][0])
         return True
     except StopIteration:
         print(f'"{S}" FAIL')
