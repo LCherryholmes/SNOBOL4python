@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
-from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
+from SNOBOL4python import MATCH, pattern, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
 #------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
+from SNOBOL4python import JSONDecode, _shift, _reduce
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)
@@ -140,4 +141,4 @@ JSON_sample = \
         }
       ]
 }"""
-MATCH(JSON_sample, jRecognizer())
+MATCH(JSON_sample, jRecognizer(), globals())
