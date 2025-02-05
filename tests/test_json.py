@@ -3,6 +3,7 @@
 # Parse JSON string
 #-----------------------------------------------------------------------------------------------------------------------
 import SNOBOL4python
+import inspect
 from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
@@ -170,20 +171,27 @@ JSON_sample = \
      ['Member', ['Name', 'single'], ['Bool', 'False']],
      ['Member', ['Name', 'ip_address'], ['String', '229.179.4.212']]]]]]]
 #-----------------------------------------------------------------------------------------------------------------------
+import types
 def OBJECT(tree):
     print()
-    pprint(tree)
-#   for i in range(0, len(tree[1])):
-#   name = matching.group(1)
-#   fields = matching.group(2)
-#   fields = tuple(field for field in fields.split(','))
-#   namespace = dict()
-#   namespace['__slots__'] = fields
-#   def __init__(self, *args):
-#       for i, value in enumerate(args):
-#           setattr(self, self.__slots__[i], value)
-#   namespace['__init__'] = __init__
-#   print(type(name, (object,), namespace))
+#   pprint(tree)
+    name = "Dynamic"
+    fields = {}
+    for i in range(1, len(tree)):
+        fields[tree[i][1][1]] = tree[i][2][1]
+#   print(name, fields)
+    namespace = dict()
+    namespace['__dict__'] = fields
+    def __init__(self, **kwargs):
+        for field, value in kwargs.items():
+            setattr(self, field, value)
+    namespace['__init__'] = __init__
+    Dynamic = types.new_class(name, (object,), {}, lambda ns: ns.update(fields))
+    dynamic = Dynamic()
+#   print(dir('Dynamic'), Dynamic)
+#   print(dir('dynamic'), dynamic)
+    print(inspect.getsource(dynamic))
+#   print(dynamic)
 #-----------------------------------------------------------------------------------------------------------------------
 from pprint import pprint
 level = -1
