@@ -81,11 +81,11 @@ def jMonthName():   yield from \
 @pattern
 def jDayName():     yield from σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
 @pattern
-def jNum2():        yield from (SPAN('0123456789') @ "jxN" % "jxN") + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
+def jNum2():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
 @pattern
-def jNum3():        yield from (SPAN('0123456789') @ "jxN" % "jxN") + λ("len(jxN) == 3")
+def jNum3():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 3")
 @pattern
-def jNum4():        yield from (SPAN('0123456789') @ "jxN" % "jxN") + λ("len(jxN) == 4")
+def jNum4():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 4")
 @pattern
 def jYYYY():        yield from jNum4() % "jxYYYY"
 @pattern
