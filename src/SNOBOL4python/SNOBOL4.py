@@ -1,23 +1,29 @@
 # -*- coding: utf-8 -*-
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # SNOBOL4 string pattern matching
 #> python src/SNOBOL4python/SNOBOL4.py
 #> python -m build
 #> python -m pip install .\dist\snobol4python-0.1.0.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
+import gc
 import re
+import sys
 import copy
+import time
 import logging
 from pprint import pprint
+from datetime import date
 from functools import wraps
 logging.basicConfig(level=logging.INFO)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 _pos = None # internal position
 _subject = None # internal subject
 _variables = None # global variables
-#------------------------------------------------------------------------------
+_started = time.time_ns() // 1000
+_units = dict() # file name associations and unit numbers
+#----------------------------------------------------------------------------------------------------------------------
 _digits = "0123456789"
 _UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LCASE = "abcdefghijklmnopqrstuvwxyz"
@@ -37,17 +43,17 @@ _ALPHABET = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F" \
             "\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF" \
             "\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF" \
             "\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF"
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
     def __init__(self, func, args, kwargs):
         self.func = func
         self.args = copy.copy(args)
         self.kwargs = copy.copy(kwargs)
-        self.local_copy = self.func(*self.args, **self.kwargs)
-    def __iter__(self):
-        self.local_copy = self.func(*self.args, **self.kwargs)
-        return self.local_copy
-    def __next__(self):             return next(self.local_copy)
+        self.generator = self.func(*self.args, **self.kwargs)
+    def __iter__(self):           # Constrructor
+                                    self.generator = self.func(*self.args, **self.kwargs)
+                                    return self.generator
+    def __next__(self):             return next(self.generator)
     def __repr__(self):             return f"{self.func}(*{len(self.args)})"
     def __add__(self, other):       return Σ(self, other) # SIGMA, binary '+', subsequent
     def __radd__(self, other):      return Σ(other, self) # SIGMA, binary '+', subsequent
@@ -55,109 +61,203 @@ class PATTERN(object):
     def __ror__(self, other):       return Π(other, self) # PI, binary '|', alternate
     def __and__(self, other):       return Ξ(self, other) # PSI, binary '&', conjunction
     def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
-    def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment
-    def __xor__(self, other):       return Δ(self, other) # DELTA, binary '^', conditional assignment
-    def __floordiv__(self, other):  return Δ(self, other) # DELTA, binary '//', conditional assignment
+    def __div__(self, other):       return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
+    def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (backtracking)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
     def __invert__(self):           return self # unary '~'
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
     @wraps(func)
     def _PATTERN(*args, **kwargs):
         return PATTERN(func, args, kwargs)
     return _PATTERN
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def GT(i1, i2):
-    if int(i1) >  int(i2): return ""
-    else:                  raise Exception()
+    if int(i1) >  int(i2):  return ""
+    else:                   raise Exception()
 def LT(i1, i2):
-    if int(i1) <  int(i2): return ""
-    else:                  raise Exception()
+    if int(i1) <  int(i2):  return ""
+    else:                   raise Exception()
 def EQ(i1, i2):
-    if int(i1) == int(i2): return ""
-    else:                  raise Exception()
+    if int(i1) == int(i2):  return ""
+    else:                   raise Exception()
 def GE(i1, i2):
-    if int(i1) >= int(i2): return ""
-    else:                  raise Exception()
+    if int(i1) >= int(i2):  return ""
+    else:                   raise Exception()
 def LE(i1, i2):
-    if int(i1) <= int(i2): return ""
-    else:                  raise Exception()
+    if int(i1) <= int(i2):  return ""
+    else:                   raise Exception()
 def NE(i1, i2):
-    if int(i1) != int(i2): return ""
-    else:                  raise Exception()
-#------------------------------------------------------------------------------
+    if int(i1) != int(i2):  return ""
+    else:                   raise Exception()
+#----------------------------------------------------------------------------------------------------------------------
 def LGT(s1, s2):
-    if str(s1) >  str(s2): return ""
-    else:                  raise Exception()
+    if str(s1) >  str(s2):  return ""
+    else:                   raise Exception()
 def LLT(s1, s2):
-    if str(s1) <  str(s2): return ""
-    else:                  raise Exception()
+    if str(s1) <  str(s2):  return ""
+    else:                   raise Exception()
 def LEQ(s1, s2):
-    if str(s1) == str(s2): return ""
-    else:                  raise Exception()
+    if str(s1) == str(s2):  return ""
+    else:                   raise Exception()
 def LGE(s1, s2):
-    if str(s1) >= str(s2): return ""
-    else:                  raise Exception()
+    if str(s1) >= str(s2):  return ""
+    else:                   raise Exception()
 def LLE(s1, s2):
-    if str(s1) <= str(s2): return ""
-    else:                  raise Exception()
+    if str(s1) <= str(s2):  return ""
+    else:                   raise Exception()
 def LNE(s1, s2):
-    if str(s1) != str(s2): return ""
-    else:                  raise Exception()
-#------------------------------------------------------------------------------
+    if str(s1) != str(s2):  return ""
+    else:                   raise Exception()
+#----------------------------------------------------------------------------------------------------------------------
 def IDENT(d1, d2):
     if d1 is d2:            return ""
     else:                   raise Exception()
 def DIFFER(d1, d2):
     if not d1 is d2:        return ""
     else:                   raise Exception()
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def LPAD(s1, i, s2=None):   return (' ' * (i - len(s1))) + s1
 def RPAD(s1, i, s2=None):   return s + (' ' * (i - len(s1)))
-#------------------------------------------------------------------------------
-def APPLY(n, *args):        return n(*args)
-def ARG(n, i):              None
-def ARRAY(s, d):            None
+#----------------------------------------------------------------------------------------------------------------------
+def ARRAY(proto, d):      # An array is an indexed aggregate of variables, called elements.
+                            limits = tuple(int(limit) for limit in proto.split(','))
+                            dims = len(limits)
+                            match dims:
+                                case 1: return   [d] * limits[0]
+                                case 2: return  [[d] * limits[1]] * limits[0]
+                                case 3: return [[[d] * limits[2]] * limits[1]] * limits[0]
+                                case _: raise Exception()
 def ASCII(c):               return ord(c)
 def CHAR(i):                return chr(i)
 def CODE(s):                return compile(s, '<SNOBOL4>', 'exec')
-def COLLECT(i):             None
-def CONVERT(d, s):          None
+def COLLECT(i):             return gc.collect()
+def CONVERT(d, s):        # Conversion to a specified type
+                            match s.upper():
+                                case 'STRING':
+                                    match type(d).__name__:
+                                        case 'int':   return str(d)
+                                        case 'float': return str(d)
+                                        case 'str':   return d
+                                        case 'list':  return 'ARRAY(' + PROTOTYPE(d) + ')'
+                                        case 'dict':  return 'TABLE(' + len(d) + ')'
+                                        case _:       return type(d).__name__
+                                case 'INTEGER':       return int(d)
+                                case 'REAL':          return float(d)
+                                case 'PATTERN':       return σ(str(d))
+                                case 'ARRAY':         return d # TODO
+                                case 'TABLE':         return d # TODO
+                                case 'NAME':          return d # NAME() objectt?
+                                case 'EXPRESSION':    return compile(str(d), '<CONVERT>', 'single')
+                                case 'CODE':          return compile(str(d), '<CONVERT>', 'exec')
+                                case _:               return d
 def COPY(d):                return copy.copy(d)
-def DATA(s):                None
-def DATATYPE(d):            return type(d)
-def DATE():                 None
-def DEFINE(s, n):           None
-def DETACH(n):              None
-def DUMP(i):                print(_variables)
+def DATATYPE(d):            return type(d).__name__
+def DATE():                 return '{:%Y-%m-%d}'.format(date.today())
+def DUMP(i):              # A listing of natural variables and their values
+                            if int(i) != 0: print(_variables)
 def DUPL(s, i):             return s * i
-def ENDFILE(u):             None
 def EVAL(s):                return eval(s, _variables)
-def FIELD(s, i):            None
-def INPUT(n, u, i, s):      None
-def ITEM(a, *iN):           None # ITEM(t, d)
-def LOCAL(n, i):            None
-def OPSYN(s1, s2, i):       None
-def OUTPUT(n, u, i, s):     None
+def EXEC(s):                return exec(s, _variables)
+def INTEGER(d):           # Test for an integer, or a string convertabble to an integer
+                            try:
+                                int(d)
+                                return ""
+                            except ValueError:
+                                return None
+def ITEM(d, *args):       # Reference an array or table element
+                            match len(args):
+                                case 1: return d[args[0]]
+                                case 2: return d[args[0]][args[1]]
+                                case 3: return d[args[0]][args[1]][args[2]]
+                                case _: raise Exception()
 def REMDR(i1, i2):          return i1 % i2
-def REPLACE(s1, s2, s3):    return s.translate(str.maketrans(old, new))
+def REPLACE(s1, s2, s3):    return s1.translate(str.maketrans(s2, s3))
 def REVERSE(s):             return s.reverse() # s[::-1]
 def SIZE(s):                return len(s)
-def STOPTR(n, t):           None
-def TABLE(i1, i2):          None
-def TIME():                 None
-def TRACE(n1, t, s, n2):    None
+def TABLE(i1, i2):          return dict()
+def TIME():                 return (time.time_ns() // 1000) - _started
 def TRIM(s):                return s.strip()
-def UNLOAD(n):              None
-def VALUE(n):               None
-#------------------------------------------------------------------------------
-def INTEGER(d):
-    try:
-        int(d)
+def VALUE(n):               return _variables[n]
+#----------------------------------------------------------------------------------------------------------------------
+def OPSYN(s1, s2, i):       None
+def STOPTR(n, t):           None
+def TRACE(n1, t, s, n2):    None
+#----------------------------------------------------------------------------------------------------------------------
+def INPUT(n, u, len=None, fname=None):
+    global _units
+    if not u: u = 0
+    match u:
+        case 0: _variables[n] = None; _units[u] = (n, sys.stdin) # .readline()
+        case 1: raise Exception()
+        case 2: raise Exception()
+        case _: _variables[n] = None; _units[u] = (n, open(fname, "rt"))
+    return ""
+def OUTPUT(n, u, len=None, fname=None):
+    global _units
+    if not u: u = 1
+    match u:
+        case 0: raise Exception()
+        case 1: _variables[n] = None; _units[u] = (n, sys.stdout) # .writeline()?
+        case 2: _variables[n] = None; _units[u] = (n, sys.stderr)
+        case _: _variables[n] = None; _units[u] = (n, open(fname, "wt"))
+    return ""
+def DETACH(n): del _variables[n] # removes input/output association with name
+def ENDFILE(u): # writes an end of file on (closes) the data set
+    global _units
+    if not u: u = 0
+    match u:
+        case 0: del _variables[_units[u][0]]; del _units[u]
+        case 1: del _variables[_units[u][0]]; del _units[u]
+        case 2: del _variables[_units[u][0]]; del _units[u]
+        case _: del _variables[_units[u][0]]; close(_units[u][1]); del _units[u]
+    return ""
+def BACKSPACE(u):           None # backspace one record
+def REWIND():               None # repositions the data set associated with the number to the first file
+#----------------------------------------------------------------------------------------------------------------------
+re_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
+re_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
+def DEFINE(s, n=None):
+    global re_DEFINE_proto
+    matching = re.fullmatch(re_DEFINE_proto, s)
+    if matching:
+        func_name = matching.group(1)
+        func_params = matching.group(2); print(func_params)
+        func_params = tuple(f_param for f_param in func_params.split(','))
+        func_locals = matching.group(3); print(func_locals)
+        func_locals = tuple(f_local for f_local in func_locals.split(','))
+        params = ', '.join(func_params)
+        body = 'def ' + func_name + '(' + params + '):\n' \
+               '    print(' + params + ')'
+        code = compile(body, '<DEFINE>', 'exec')
+        func = types.FunctionType(code.co_consts[0], globals(), func_name)
+        func.__defaults__ = (None,) * len(func_params)
+        _variables[func_name] = func
         return ""
-    except ValueError:
-        return None
-#------------------------------------------------------------------------------
+def APPLY(n, *args):    return _variables[n](*args)
+def ARG(n, i):          None
+def LOCAL(n, i):        None
+def LOAD(proto, lib):   None
+def UNLOAD(s):          None # function unloaded and consequently undefined
+#----------------------------------------------------------------------------------------------------------------------
+re_DATA_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)$")
+def FIELD(s, i): return s.__slots__[int(i)]
+def DATA(s): # DATA('Node(value,link)')
+    global re_DATA_proto
+    matching = re.fullmatch(re_DATA_proto, s)
+    if m:
+        name = matching.group(1)
+        fields = matching.group(2)
+        fields = tuple(field for field in fields.split(','))
+        namespace = dict()
+        namespace['__slots__'] = fields
+        def __init__(self, *args):
+            for i, value in enumerate(args):
+                setattr(self, self.__slots__[i], value)
+        namespace['__init__'] = __init__
+        _variables[name] = type(name, (object,), namespace)
+        return ""
+#----------------------------------------------------------------------------------------------------------------------
 re_repr_function = re.compile(r"\<function\ ([^\s]+)\ at\ 0x([0-9A-F]{16})\>\(\*([0-9]+)\)")
 def PROTOTYPE(P):
     global re_repr_function
@@ -166,20 +266,20 @@ def PROTOTYPE(P):
     r = re.fullmatch(re_repr_function, p)
     if r: return f"{r.group(1)}(*{r.group(3)})"
     else: return p
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def FAIL(): raise StopIteration # return?
-def ABORT(): raise StopIteration # return?
+def ABORT(): raise Exception() # return?
 def SUCCESS():
     while True: yield ""
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 itop = -1 # counter stack (nPush, nInc, nPop, nTop)
 istack = []
 vstack = [] # value stack (Shift/Reduce values)
 cstack = [] # command stack (conditional actions)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
 @pattern
 def θ(V) -> PATTERN:
@@ -189,8 +289,12 @@ def θ(V) -> PATTERN:
     yield ""
     logging.debug("theta(%s) backtracking...", V)
     del _variables[V]
-#------------------------------------------------------------------------------
-# Immediate match assignment during pattern matching
+#----------------------------------------------------------------------------------------------------------------------
+# Immediate match assignment during pattern matching (permanent)
+@pattern
+def Ω(P, V) -> PATTERN: None
+#----------------------------------------------------------------------------------------------------------------------
+# Immediate match assignment during pattern matching (backtracking)
 @pattern
 def δ(P, V) -> PATTERN:
     global _variables
@@ -202,7 +306,7 @@ def δ(P, V) -> PATTERN:
         yield _1
         logging.debug("%s deleted", V)
         del _variables[V]
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
 @pattern
 def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
@@ -212,7 +316,7 @@ def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
         yield ""
         logging.debug("lambda(%s) backtracking...", repr(expression))
     else: logging.debug("lambda(%s) Error evaluating. FAIL", repr(expression))
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern
 def Δ(P, V) -> PATTERN:
@@ -223,7 +327,7 @@ def Δ(P, V) -> PATTERN:
         yield _1
         logging.debug("%s = delta(%d, %d) backtracking...", V, _pos - len(_1), _pos)
         cstack.pop()
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
 @pattern
 def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
@@ -235,7 +339,7 @@ def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
         logging.debug("LAMBDA(%s) backtracking...", repr(command))
         cstack.pop()
     else: logging.debug("LAMBDA(%s) Error compiling. FAIL", repr(expression))
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def nPush() -> PATTERN:
     logging.debug("nPush() SUCCESS")
@@ -261,7 +365,7 @@ def nPop() -> PATTERN:
     logging.debug("nPop() backtracking...")
     cstack.pop()
     cstack.pop()
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Shift(t, v='') -> PATTERN:
     logging.debug("Shift(%s, %s) SUCCESS", repr(t), repr(v))
@@ -277,7 +381,7 @@ def Reduce(t, n=None) -> PATTERN:
     yield ""
     logging.debug("Reduce(%s, %d) backtracking...", repr(t), n)
     cstack.pop()
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def _shift(t, v):
     _variables['vstack'].append([t, v])
 def _reduce(t, n):
@@ -285,7 +389,7 @@ def _reduce(t, n):
     for i in range(n):
         x.insert(0, _variables['vstack'].pop())
     _variables['vstack'].append([t, x])
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
     if P:
@@ -296,7 +400,7 @@ def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
         logging.debug("FENCE() SUCCESS")
         yield ""
         logging.debug("FENCE() backtracking...")
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def POS(n) -> PATTERN:
     global _pos
@@ -304,7 +408,7 @@ def POS(n) -> PATTERN:
         logging.debug("POS(%d) SUCCESS(%d,%d)=", n, _pos, 0)
         yield ""
         logging.debug("POS(%d) backtracking...", n)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def RPOS(n) -> PATTERN:
     global _pos, _subject
@@ -312,7 +416,7 @@ def RPOS(n) -> PATTERN:
         logging.debug("RPOS(%d) SUCCESS(%d,%d)=", n, _pos, 0)
         yield ""
         logging.debug("RPOS(%d) backtracking...", n)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def LEN(n) -> PATTERN:
     global _pos, _subject
@@ -322,7 +426,7 @@ def LEN(n) -> PATTERN:
         yield _subject[_pos - n:_pos]
         _pos -= n
         logging.debug("LEN(%d) backtracking(%d)...", n, _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
     global _pos, _subject
@@ -334,7 +438,7 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
             yield s
             _pos -= len(s)
             logging.debug("sigma(%s) backtracking(%d)...", repr(s), _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def TAB(n) -> PATTERN:
     global _pos, _subject
@@ -344,7 +448,7 @@ def TAB(n) -> PATTERN:
             _pos = n
             yield _subject[pos0:n]
             _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def RTAB(n) -> PATTERN:
     global _pos, _subject
@@ -355,7 +459,7 @@ def RTAB(n) -> PATTERN:
             _pos = n
             yield _subject[pos0:n]
             _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def REM() -> PATTERN:
     global _pos, _subject
@@ -363,7 +467,7 @@ def REM() -> PATTERN:
     _pos = len(_subject)
     yield _subject[pos0:]
     _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ANY(characters) -> PATTERN:
     global _pos, _subject
@@ -375,7 +479,7 @@ def ANY(characters) -> PATTERN:
             yield _subject[_pos - 1]
             _pos -= 1
             logging.debug("ANY(%s) backtracking(%d)...", repr(characters), _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def NOTANY(characters) -> PATTERN:
     global _pos, _subject
@@ -387,7 +491,7 @@ def NOTANY(characters) -> PATTERN:
             yield _subject[_pos - 1]
             _pos -= 1
             logging.debug("NOTANY(%s) backtracking(%d)...", repr(characters), _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def SPAN(characters) -> PATTERN:
     global _pos, _subject
@@ -403,7 +507,7 @@ def SPAN(characters) -> PATTERN:
         yield _subject[pos0:_pos]
         _pos = pos0
         logging.debug("SPAN(%s) backtracking(%d)...", repr(characters), _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BREAK(characters) -> PATTERN:
     global _pos, _subject
@@ -419,7 +523,7 @@ def BREAK(characters) -> PATTERN:
         yield _subject[pos0:_pos]
         _pos = pos0
         logging.debug("BREAK(%s) backtracking(%d)...", repr(characters), _pos)
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARB() -> PATTERN: # ARB
     global _pos, _subject
@@ -428,7 +532,7 @@ def ARB() -> PATTERN: # ARB
         yield _subject[pos0 : _pos]
         _pos += 1
     _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BAL() -> PATTERN: # BAL
     global _pos, _subject
@@ -445,7 +549,7 @@ def BAL() -> PATTERN: # BAL
         elif nest == 0: yield _subject[pos0 : _pos]
         _pos += 1
     _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
     global _pos
@@ -460,12 +564,12 @@ def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
                 _pos = pos0
         except StopIteration:
             _pos = pos0
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def π(P) -> PATTERN: # (P | epsilon), pi, optional
     yield from P
     yield ""
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Π(*AP) -> PATTERN: # ALT, PI, alternates
     global _pos
@@ -473,7 +577,7 @@ def Π(*AP) -> PATTERN: # ALT, PI, alternates
         "|".join([PROTOTYPE(P) for P in AP]), _pos)
     for P in AP:
         yield from P
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
     global _pos
@@ -497,7 +601,7 @@ def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
         except StopIteration:
             cursor -= 1
             highmark -= 1
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARBNO(P) -> PATTERN:
     global _pos, _subject
@@ -523,9 +627,9 @@ def ARBNO(P) -> PATTERN:
             cursor -= 1
             highmark -= 1
             AP.pop()
-#-----------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
 def JSONDecode(s) -> str: return s
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def SEARCH(S, P) -> bool: None
 def MATCH(S, P, Vs=None) -> bool:
     global _pos, _subject, _variables
@@ -561,4 +665,4 @@ def MATCH(S, P, Vs=None) -> bool:
         print(f'"{S}" FAIL')
         return False
 def FULLMATCH(S, P) -> bool: None
-#------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
