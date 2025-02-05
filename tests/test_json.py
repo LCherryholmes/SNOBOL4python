@@ -13,9 +13,9 @@ from SNOBOL4python import JSONDecode, _shift, _reduce
 def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def jRecognizer():  yield from POS(0) + FENCE() + jParser() + ς('') + RPOS(0)
+def jRecognizer():  yield from POS(0) + FENCE() + jJSON() + ς('') + RPOS(0)
 @pattern
-def jParser():      yield from jObject() + Reduce('JSON', 1)
+def jJSON():        yield from jObject() + Reduce('JSON', 1)
 @pattern
 def jObject():      yield from (   ς('{') + nPush()
                                +   π(jField() + nInc() + ARBNO(ς(',') + jField() + nInc()))
@@ -145,4 +145,77 @@ JSON_sample = \
         }
       ]
 }"""
+#-----------------------------------------------------------------------------------------------------------------------
+['JSON',
+ ['Object',
+  ['Member',
+   ['Name', 'list'],
+   ['Array',
+    ['Object',
+     ['Member', ['Name', 'id'], ['Integer', 1]],
+     ['Member', ['Name', 'first_name'], ['String', 'Jeanette']],
+     ['Member', ['Name', 'last_name'], ['String', 'Penddreth']],
+     ['Member', ['Name', 'email'], ['String', 'jpenddreth0@census.gov']],
+     ['Member', ['Name', 'gender'], ['String', 'Female']],
+     ['Member', ['Name', 'average'], ['Real', 0.75]],
+     ['Member', ['Name', 'single'], ['Bool', 'True']],
+     ['Member', ['Name', 'ip_address'], ['String', '26.58.193.2']]],
+    ['Object',
+     ['Member', ['Name', 'id'], ['Integer', 2]],
+     ['Member', ['Name', 'first_name'], ['String', 'Giavani']],
+     ['Member', ['Name', 'last_name'], ['String', 'Frediani']],
+     ['Member', ['Name', 'email'], ['String', 'gfrediani1@senate.gov']],
+     ['Member', ['Name', 'gender'], ['String', 'Male']],
+     ['Member', ['Name', 'average'], ['Real', -1.25]],
+     ['Member', ['Name', 'single'], ['Bool', 'False']],
+     ['Member', ['Name', 'ip_address'], ['String', '229.179.4.212']]]]]]]
+#-----------------------------------------------------------------------------------------------------------------------
+def OBJECT(tree):
+    print()
+    pprint(tree)
+#   for i in range(0, len(tree[1])):
+#   name = matching.group(1)
+#   fields = matching.group(2)
+#   fields = tuple(field for field in fields.split(','))
+#   namespace = dict()
+#   namespace['__slots__'] = fields
+#   def __init__(self, *args):
+#       for i, value in enumerate(args):
+#           setattr(self, self.__slots__[i], value)
+#   namespace['__init__'] = __init__
+#   print(type(name, (object,), namespace))
+#-----------------------------------------------------------------------------------------------------------------------
+from pprint import pprint
+level = -1
+def Traverse(tree):
+    global level
+    level += 1
+    match tree[0]:
+        case 'JSON':      Traverse(tree[1])
+        case 'Object':    # Object
+                          if level >= 4: OBJECT(tree)
+                          else:
+                              for i in range(1, len(tree)):
+                                  Traverse(tree[i])
+        case 'Array':     # Array
+                          for i in range(1, len(tree)):
+                              Traverse(tree[i])
+        case 'Member':    # Member
+                          Traverse(tree[1])
+                          Traverse(tree[2])
+        case 'Name':      None
+        case 'Real':      None
+        case 'Integer':   None
+        case 'String':    None
+        case 'Bool':      None
+        case 'Datetime':  None
+        case 'Null':      None
+        case _: raise Exception(f"Error type: {tree[0]}")
+    level -= 1
+    return ""
+#-----------------------------------------------------------------------------------------------------------------------
 MATCH(JSON_sample, jRecognizer(), globals())
+JSON_tree = vstack.pop()
+print()
+Traverse(JSON_tree)
+#-----------------------------------------------------------------------------------------------------------------------

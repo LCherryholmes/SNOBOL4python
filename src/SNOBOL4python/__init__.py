@@ -7,6 +7,7 @@ from .SNOBOL4 import FENCE, IDENT, INTEGER, LEN, NOTANY, POS, REM, RPOS
 from .SNOBOL4 import RTAB, SPAN, SUCCESS, TAB
 from .SNOBOL4 import nPush, nInc, nPop, Shift, Reduce
 from .SNOBOL4 import JSONDecode, _shift, _reduce
+from .SNOBOL4 import REPLACE
 #-------------------------------------------------------------------------------
 __all__ = [
     "SEARCH", "MATCH", "FULLMATCH",
