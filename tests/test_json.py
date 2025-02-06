@@ -4,6 +4,7 @@
 #-----------------------------------------------------------------------------------------------------------------------
 import SNOBOL4python
 import inspect
+from datetime import datetime
 from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
@@ -30,17 +31,17 @@ def jArray():       yield from (   ς('[') + nPush()
                                +   FENCE()
                                )
 @pattern
-def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce('Member', 2)
+def jField():       yield from jVar() + Shift('Name', "jxVar") + ς(':') + jElement() + Reduce('Attribute', 2)
 @pattern
 def jVar():         yield from ς('"') + ((jIdent() | jInt()) % "jxVar") + σ('"')
 @pattern
 def jElement():     yield from ς('') \
                              + ( jRealVal() + Shift('Real', "float(jxVal)")
                                | jIntVal()  + Shift('Integer', "int(jxVal)")
-                               | jBoolVal() + Shift('Bool', "jxVal.capitalize()")
-#                              | jDateVal() + Shift('Datetime', "jxVal")
+                               | jBoolVal() + Shift('Bool', "dict(true=True, false=False)[jxVal]")
+                               | jDateVal() + Shift('Datetime', "datetime(*jxVal)")
                                | jStrVal()  + Shift('String', "jxVal")
-                               | jNullVal() + Shift('Null')
+                               | jNullVal() + Shift('None')
                                | jArray()
                                | jObject()
                                )
@@ -55,7 +56,7 @@ def jEscChar():     yield from σ('\\') \
                                |  σ('u') + (LEN(4) & SPAN('0123456789ABCDEFabcdef'))
                                )
 @pattern
-def jNullVal():     yield from σ('null') + (ε() % "jxVal")
+def jNullVal():     yield from σ('null') + ε() % "jxVal"
 @pattern
 def jTrueFalse():   yield from (σ('true') | σ('false')) % "jxVal"
 @pattern
@@ -82,11 +83,11 @@ def jMonthName():   yield from \
 @pattern
 def jDayName():     yield from σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
 @pattern
-def jNum2():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 2") # + EQ("len(jxN)", "2")
+def jNum2():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 2")
 @pattern
-def jNum3():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 3")
+def jNum3():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 3")
 @pattern
-def jNum4():        yield from (SPAN('0123456789') / "jxN" % "jxN") + λ("len(jxN) == 4")
+def jNum4():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 4")
 @pattern
 def jYYYY():        yield from jNum4() % "jxYYYY"
 @pattern
@@ -106,9 +107,9 @@ def Time():         yield from jhh() + σ(':') + jmm() + σ(':') + jss()
 @pattern
 def jDatetime():    yield from \
     ( σ('"')
-    + Λ("jxHour = '00'")
-    + Λ("jxMinute = '00'")
-    + Λ("jxSecond = '00'")
+    + Λ("jxhh = '00'")
+    + Λ("jxmm = '00'")
+    + Λ("jxss = '00'")
     + ( jDayName() + σ(', ') + jDD() + σ(' ') + jMonthName() + σ(' ') + jYYYY() + σ(' ') + Time() + σ(' +') + jNum4()
       | jDayName() + σ(' ') + jMonthName() + σ(' ') + jDD() + σ(' ') + Time() + σ(' +') + jNum4() + σ(' ') + jYYYY()
       | jDate()
@@ -119,7 +120,7 @@ def jDatetime():    yield from \
       | jDate() + σ(' ') + Time() + σ(' +') + jNum4()
       )
     + σ('"')
-    + Λ("jxDatetime = jxYYYY + '-' + jxMM + '-' + jxDD + ' ' + jxhh + ':' + jxmm + ':' + jxss")
+    + Λ("jxDatetime = (int(jxYYYY), int(jxMM), int(jxDD), int(jxhh), int(jxmm), int(jxss))")
     )
 #-----------------------------------------------------------------------------------------------------------------------
 JSON_sample = \
@@ -132,7 +133,8 @@ JSON_sample = \
         "gender": "Female",
         "average": +0.75,
         "single": true,
-        "ip_address": "26.58.193.2"
+        "ip_address": "26.58.193.2",
+        "start_date": "2025-02-06"
         }
       , {
         "id": 2,
@@ -142,88 +144,58 @@ JSON_sample = \
         "gender": "Male",
         "average": -1.25,
         "single": false,
-        "ip_address": "229.179.4.212"
+        "ip_address": "229.179.4.212",
+        "start_date": "2024-12-31"
         }
       ]
 }"""
 #-----------------------------------------------------------------------------------------------------------------------
-['JSON',
- ['Object',
-  ['Member',
-   ['Name', 'list'],
-   ['Array',
-    ['Object',
-     ['Member', ['Name', 'id'], ['Integer', 1]],
-     ['Member', ['Name', 'first_name'], ['String', 'Jeanette']],
-     ['Member', ['Name', 'last_name'], ['String', 'Penddreth']],
-     ['Member', ['Name', 'email'], ['String', 'jpenddreth0@census.gov']],
-     ['Member', ['Name', 'gender'], ['String', 'Female']],
-     ['Member', ['Name', 'average'], ['Real', 0.75]],
-     ['Member', ['Name', 'single'], ['Bool', 'True']],
-     ['Member', ['Name', 'ip_address'], ['String', '26.58.193.2']]],
-    ['Object',
-     ['Member', ['Name', 'id'], ['Integer', 2]],
-     ['Member', ['Name', 'first_name'], ['String', 'Giavani']],
-     ['Member', ['Name', 'last_name'], ['String', 'Frediani']],
-     ['Member', ['Name', 'email'], ['String', 'gfrediani1@senate.gov']],
-     ['Member', ['Name', 'gender'], ['String', 'Male']],
-     ['Member', ['Name', 'average'], ['Real', -1.25]],
-     ['Member', ['Name', 'single'], ['Bool', 'False']],
-     ['Member', ['Name', 'ip_address'], ['String', '229.179.4.212']]]]]]]
-#-----------------------------------------------------------------------------------------------------------------------
 import types
 def OBJECT(tree):
-    print()
-#   pprint(tree)
-    name = "Dynamic"
-    fields = {}
+    attributes = {}
     for i in range(1, len(tree)):
-        fields[tree[i][1][1]] = tree[i][2][1]
-#   print(name, fields)
+        attribute = Traverse(tree[i])
+        attributes[attribute[0]] = attribute[1]
     namespace = dict()
-    namespace['__dict__'] = fields
+    namespace['__dict__'] = attributes
     def __init__(self, **kwargs):
-        for field, value in kwargs.items():
+        for field, value in self.__dict__.items():
             setattr(self, field, value)
     namespace['__init__'] = __init__
-    Dynamic = types.new_class(name, (object,), {}, lambda ns: ns.update(fields))
-    dynamic = Dynamic()
-#   print(dir('Dynamic'), Dynamic)
-#   print(dir('dynamic'), dynamic)
-    print(inspect.getsource(dynamic))
-#   print(dynamic)
+#   Dynamic = types.new_class("Dynamic", (object,), {}, lambda ns: ns.update(attributes))
+    Dynamic = type("Dynamic", (object,), namespace)
+    return Dynamic()
 #-----------------------------------------------------------------------------------------------------------------------
 from pprint import pprint
-level = -1
 def Traverse(tree):
-    global level
-    level += 1
     match tree[0]:
-        case 'JSON':      Traverse(tree[1])
-        case 'Object':    # Object
-                          if level >= 4: OBJECT(tree)
-                          else:
-                              for i in range(1, len(tree)):
-                                  Traverse(tree[i])
+        case 'JSON':      result = Traverse(tree[1])
+        case 'Object':    result = OBJECT(tree)
         case 'Array':     # Array
+                          result = []
                           for i in range(1, len(tree)):
-                              Traverse(tree[i])
-        case 'Member':    # Member
-                          Traverse(tree[1])
-                          Traverse(tree[2])
-        case 'Name':      None
-        case 'Real':      None
-        case 'Integer':   None
-        case 'String':    None
-        case 'Bool':      None
-        case 'Datetime':  None
-        case 'Null':      None
-        case _: raise Exception(f"Error type: {tree[0]}")
-    level -= 1
-    return ""
+                              result.append(Traverse(tree[i]))
+        case 'Attribute': result = Traverse(tree[1]), Traverse(tree[2])
+        case 'Name':      result = tree[1]
+        case 'Real':      result = tree[1]
+        case 'Integer':   result = tree[1]
+        case 'String':    result = tree[1]
+        case 'Bool':      result = tree[1]
+        case 'Datetime':  result = tree[1]
+        case 'Null':      result = tree[1]
+        case _:           raise Exception(f"Traverse ERROR: type {tree[0]} unknown.")
+    return result
 #-----------------------------------------------------------------------------------------------------------------------
+print(JSON_sample)
+print()
 MATCH(JSON_sample, jRecognizer(), globals())
 JSON_tree = vstack.pop()
+pprint(JSON_tree)
 print()
-Traverse(JSON_tree)
+JSON = Traverse(JSON_tree)
+pprint(vars(JSON))
+pprint(vars(JSON.list[0]))
+pprint(vars(JSON.list[1]))
+print(JSON.list[0].first_name, JSON.list[0].last_name)
+print(JSON.list[1].first_name, JSON.list[1].last_name)
 #-----------------------------------------------------------------------------------------------------------------------
