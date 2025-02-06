@@ -62,6 +62,7 @@ class PATTERN(object):
     def __and__(self, other):       return Ξ(self, other) # PSI, binary '&', conjunction
     def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
     def __div__(self, other):       return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
+    def __rdiv__(self, other):      return Ω(other, self) # OMEGA, binary '/', immediate assignment (permanent)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (backtracking)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
     def __invert__(self):           return self # unary '~'
@@ -221,9 +222,11 @@ def DEFINE(proto, n=None):
     matching = re.fullmatch(re_DEFINE_proto, proto)
     if matching:
         func_name = matching.group(1)
-        func_params = matching.group(2); print(func_params)
+        func_params = matching.group(2)
+        logging.debug("DEFINE: func_params=%s", func_params)
         func_params = tuple(f_param for f_param in func_params.split(','))
-        func_locals = matching.group(3); print(func_locals)
+        func_locals = matching.group(3)
+        logging.debug("DEFINE: func_locals=%s", func_locals)
         func_locals = tuple(f_local for f_local in func_locals.split(','))
         params = ', '.join(func_params)
         body = 'def ' + func_name + '(' + params + '):\n' \
@@ -642,12 +645,11 @@ def MATCH(S, P, Vs=None) -> bool:
     else: _variables = dict()
     try:
         m = next(P)
-        print(f'"{S}" ? "{m}"')
+        logging.debug(f'MATCH(): "{S}" ? "{m}"')
         for command in cstack:
-            print(command)
+            logging.debug(f'MATCH(): command={command}')
         for var, val in _variables.items():
-            print(var, val)
-        print()
+            logging.debug(f'MATCH(): var={var} val={val}')
         _variables['itop'] = -1
         _variables['istack'] = []
         _variables['vstack'] = []
@@ -656,11 +658,9 @@ def MATCH(S, P, Vs=None) -> bool:
         _variables['_reduce'] = _reduce
         for command in cstack:
             exec(command, _variables)
-#       if len(_variables['vstack']) > 0:
-#           pprint(_variables['vstack'][0])
         return True
     except StopIteration:
-        print(f'"{S}" FAIL')
+        logging.info(f'"{S}" FAIL')
         return False
 def FULLMATCH(S, P) -> bool: None
 #----------------------------------------------------------------------------------------------------------------------
