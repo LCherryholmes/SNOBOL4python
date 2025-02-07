@@ -6,6 +6,8 @@
 #> python -m pip install .\dist\snobol4python-0.1.0.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
+#> python tests/test_arbno.py
+#> python tests/test_re_simple.py
 #----------------------------------------------------------------------------------------------------------------------
 import gc
 import re
@@ -45,32 +47,37 @@ _ALPHABET = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F" \
             "\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF"
 #----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
-    def __init__(self, func, args, kwargs):
+    def __init__(self, func, patterns, features):
         self.func = func
-        self.args = copy.copy(args)
-        self.kwargs = copy.copy(kwargs)
-        self.generator = self.func(*self.args, **self.kwargs)
-    def __iter__(self):           # Constrructor
-                                    self.generator = self.func(*self.args, **self.kwargs)
+        self.patterns = patterns
+        self.features = features
+        self.generator = self.func(*self.patterns, **self.features)
+    def __iter__(self):           # Constructor
+                                    self.generator = self.func(*self.patterns, **self.features)
                                     return self.generator
     def __next__(self):             return next(self.generator)
-    def __repr__(self):             return f"{self.func}(*{len(self.args)})"
-    def __add__(self, other):       return Σ(self, other) # SIGMA, binary '+', subsequent
-    def __radd__(self, other):      return Σ(other, self) # SIGMA, binary '+', subsequent
-    def __or__(self, other):        return Π(self, other) # PI, binary '|', alternate
-    def __ror__(self, other):       return Π(other, self) # PI, binary '|', alternate
-    def __and__(self, other):       return Ξ(self, other) # PSI, binary '&', conjunction
-    def __rand__(self, other):      return Ξ(other, self) # PSI, binary '&', conjunction
+    def __repr__(self):             return f"{self.func}(*{len(self.patterns)})"
+    def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
+    def __add__(self, other):       # SIGMA, binary '+', subsequent, '+' is left associative
+                                    if self.func.__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
+                                        return Σ(*self.patterns, other)
+                                    else: return Σ(self, other)
+    def __or__(self, other):        # PI, binary '|', alternate
+                                    if self.func.__name__ == "Π": # ((P | Q) | R) | S, so flatten from the left
+                                        return Π(*self.patterns, other)
+                                    else: return Π(self, other)
+    def __and__(self, other):       # PSI, binary '&', conjunction
+                                    if self.func.__name__ == "Ξ": # ((P & Q) & R) & S, so flatten from the left
+                                        return Ξ(*self.patterns, other)
+                                    else: return Ξ(self, other)
     def __div__(self, other):       return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
-    def __rdiv__(self, other):      return Ω(other, self) # OMEGA, binary '/', immediate assignment (permanent)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (backtracking)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
-    def __invert__(self):           return self # unary '~'
 #----------------------------------------------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
     @wraps(func)
-    def _PATTERN(*args, **kwargs):
-        return PATTERN(func, args, kwargs)
+    def _PATTERN(*patterns, **features):
+        return PATTERN(func, patterns, features)
     return _PATTERN
 #----------------------------------------------------------------------------------------------------------------------
 def GT(i1, i2):
@@ -239,7 +246,7 @@ def DEFINE(proto, n=None):
 def APPLY(n, *args):    return _variables[n](*args)
 def ARG(n, i):          None
 def LOCAL(n, i):        None
-def LOAD(proto, lib):   None
+def LOAD(proto, lib):   None # Load external foreign library function
 def UNLOAD(s):          None # function unloaded and consequently undefined
 #----------------------------------------------------------------------------------------------------------------------
 re_DATA_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)$")
@@ -294,11 +301,18 @@ def θ(V) -> PATTERN:
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (permanent)
 @pattern
-def Ω(P, V) -> PATTERN: None
+def Ω(P, V) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ V
+    global _variables
+    logging.debug("OMEGA(%s, %s)", PROTOTYPE(P), V)
+    for _1 in P:
+        if V == "OUTPUT": print(_1)
+        logging.debug("%s = OMEGA(%s)", V, repr(_1))
+        _variables[V] = _1
+        yield _1
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (backtracking)
 @pattern
-def δ(P, V) -> PATTERN:
+def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
     global _variables
     logging.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
@@ -311,7 +325,7 @@ def δ(P, V) -> PATTERN:
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
 @pattern
-def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
+def λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     logging.debug("lambda(%s) evaluating...", repr(expression))
     if eval(expression, _variables):
         logging.debug("lambda(%s) SUCCESS", repr(expression))
@@ -321,7 +335,7 @@ def λ(expression) -> PATTERN: # P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern
-def Δ(P, V) -> PATTERN:
+def Δ(P, V) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . V
     logging.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
         logging.debug("%s = delta(%d, %d) SUCCESS", V, _pos - len(_1), _pos)
@@ -332,7 +346,7 @@ def Δ(P, V) -> PATTERN:
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
 @pattern
-def Λ(command) -> PATTERN: # P . *exec(), P . tx . *func(tx)
+def Λ(command) -> PATTERN: # LAMBDA, P . *exec(), P . tx . *func(tx)
     logging.debug("LAMBDA(%s) compiling...", repr(command))
     if compile(command, '<string>', 'exec'): # 'single', 'eval'
         logging.debug("LAMBDA(%s) SUCCESS", repr(command))
@@ -567,12 +581,12 @@ def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
             _pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def π(P) -> PATTERN: # (P | epsilon), pi, optional
+def π(P) -> PATTERN: # pi, optional, SNOBOL4: P | epsilon
     yield from P
     yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Π(*AP) -> PATTERN: # ALT, PI, alternates
+def Π(*AP) -> PATTERN: # PI, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
     global _pos
     logging.debug("PI([%s]) trying(%d)...",
         "|".join([PROTOTYPE(P) for P in AP]), _pos)
@@ -580,7 +594,7 @@ def Π(*AP) -> PATTERN: # ALT, PI, alternates
         yield from P
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Σ(*AP) -> PATTERN: # SEQ, SIGMA, sequence, subsequents
+def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
     global _pos
     pos0 = _pos
     logging.debug("SIGMA([%s]) trying(%d)...",
@@ -654,8 +668,8 @@ def MATCH(S, P, Vs=None) -> bool:
         _variables['istack'] = []
         _variables['vstack'] = []
         _variables['_subject'] = _subject
-        _variables['_shift'] = _shift
-        _variables['_reduce'] = _reduce
+        if '_shift' not in _variables:  _variables['_shift'] = _shift
+        if '_reduce' not in _variables: _variables['_reduce'] = _reduce
         for command in cstack:
             exec(command, _variables)
         return True
