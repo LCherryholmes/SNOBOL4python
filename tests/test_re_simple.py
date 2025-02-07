@@ -68,6 +68,6 @@ for rex in rexs:
     assert True is MATCH(rex, re_RegEx(), results)
 #   pprint(results)
     RE_tree = results['vstack'].pop()
-    pprint(RE_tree)
+    pprint(RE_tree, indent=3, width=36)
     print()
 #------------------------------------------------------------------------------
