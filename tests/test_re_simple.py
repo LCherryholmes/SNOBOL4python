@@ -1,48 +1,73 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import SNOBOL4python as S4p
 from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
-from SNOBOL4python import ε, σ, Σ, Π
+from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
+from SNOBOL4python import _shift, _reduce
 #------------------------------------------------------------------------------
 # Parse Regular Expression language
 #------------------------------------------------------------------------------
 @pattern
 def re_RegEx():      yield from POS(0) + re_Expression() + RPOS(0)
 @pattern
-def re_Expression(): yield from re_Term() + ARBNO(σ('|') + re_Term())
+def re_Expression(): yield from ( nPush()
+                                + re_Term() + nInc()
+                                + ARBNO(σ('|') + re_Term() + nInc())
+                                + Reduce('Π')
+                                + nPop()
+                                )
 @pattern
-def re_Term():       yield from ARBNO(re_Factor())
+def re_Term():       yield from nPush() + ARBNO(re_Factor() + nInc()) + Reduce('Σ') + nPop()
 @pattern
-def re_Factor():     yield from re_Item() + re_Quantifier()
+def re_Factor():     yield from re_Item() + (re_Quantifier() + Reduce('ς', 2) | ε())
 @pattern
-def re_Item():       yield from ( σ('.')
-                                | σ('\\') + ANY('.\\(|*+?)')
-                                | ANY(_UCASE + _LCASE + _digits)
+def re_Item():       yield from ( σ('.') + Shift('.')
+                                | σ('\\') + ANY('.\\(|*+?)') % 'tx' + Shift('σ', "tx")
+                                | ANY(_UCASE + _LCASE + _digits) % 'tx' + Shift('σ', "tx")
                                 | σ('(') + re_Expression() + σ(')')
                                 )
 @pattern
-def re_Quantifier(): yield from σ('*') | σ('+') | σ('?') | ε()
+def re_Quantifier(): yield from ( σ('*') + Shift('*')
+                                | σ('+') + Shift('+')
+                                | σ('?') + Shift('?')
+                                )
 #------------------------------------------------------------------------------
-assert True  is MATCH("", re_RegEx())
-assert True  is MATCH("a", re_RegEx())
-assert True  is MATCH("aa", re_RegEx())
-assert True  is MATCH("a*", re_RegEx())
-assert True  is MATCH("a+", re_RegEx())
-assert True  is MATCH("a?", re_RegEx())
-assert True  is MATCH("aaa", re_RegEx())
-assert True  is MATCH("a|b", re_RegEx())
-assert True  is MATCH("a|bc", re_RegEx())
-assert True  is MATCH("ab|c", re_RegEx())
-assert True  is MATCH("(a|b)*", re_RegEx())
-assert True  is MATCH("(a|b)+", re_RegEx())
-assert True  is MATCH("(a|b)?", re_RegEx())
-assert True  is MATCH("(a|b)c", re_RegEx())
-assert True  is MATCH("a|(bc)", re_RegEx())
-assert True  is MATCH("(ab|cd)", re_RegEx())
-assert True  is MATCH("(ab*|cd*)", re_RegEx())
-assert True  is MATCH("((ab)*|(cd)*)", re_RegEx())
-assert True  is MATCH("(a|(bc))", re_RegEx())
-assert True  is MATCH("((ab)|c)", re_RegEx())
-assert True  is MATCH("a(a|b)*b", re_RegEx())
-assert True  is MATCH("(ab|(cd))", re_RegEx())
+rexs = {
+    "",
+    "A",
+    "AA",
+    "A*",
+    "A+",
+    "A?",
+    "AAA",
+    "A|B",
+    "A|BC",
+    "AB|C",
+    "(A|)",
+    "(A|)*",
+    "(A|B)*",
+    "(A|B)+",
+    "(A|B)?",
+    "(A|B)C",
+    "A|(BC)",
+    "(AB|CD)",
+    "(AB*|CD*)",
+    "((AB)*|(CD)*)",
+    "(A|(BC))",
+    "((AB)|C)",
+    "A(A|B)*B",
+    "(Ab|(CD))"
+}
+#------------------------------------------------------------------------------
+results = dict()
+from pprint import pprint
+for rex in rexs:
+    print(rex)
+    results.clear()
+    assert True is MATCH(rex, re_RegEx(), results)
+#   pprint(results)
+    RE_tree = results['vstack'].pop()
+    pprint(RE_tree)
+    print()
 #------------------------------------------------------------------------------

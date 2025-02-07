@@ -3,7 +3,6 @@
 # Parse JSON string
 #-----------------------------------------------------------------------------------------------------------------------
 import SNOBOL4python
-import inspect
 from datetime import datetime
 from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
 from SNOBOL4python import ε, σ, π, λ, Λ
