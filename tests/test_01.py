@@ -33,10 +33,6 @@ def real_number():
         +   RPOS(0)
         )
 assert True is MATCH("12.99E+3", real_number());
-#variable = None
-#for variable in globals().items():
-#    print(variable)
-#print(f"whole={whole} fract={fract} exp={exp}")
 #------------------------------------------------------------------------------
 @pattern
 def test_one():

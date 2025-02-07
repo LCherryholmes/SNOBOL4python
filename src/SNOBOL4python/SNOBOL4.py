@@ -15,6 +15,7 @@ import sys
 import copy
 import time
 import logging
+import operator
 from pprint import pprint
 from datetime import date
 from functools import wraps
@@ -68,12 +69,13 @@ class PATTERN(object):
                                         return Π(*self.patterns, other)
                                     else: return Π(self, other)
     def __and__(self, other):       # PSI, binary '&', conjunction
-                                    if self.func.__name__ == "Ξ": # ((P & Q) & R) & S, so flatten from the left
-                                        return Ξ(*self.patterns, other)
-                                    else: return Ξ(self, other)
+                                    if self.func.__name__ == "ξ": # ((P & Q) & R) & S, so flatten from the left
+                                        return ξ(*self.patterns, other)
+                                    else: return ξ(self, other)
     def __div__(self, other):       return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (backtracking)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
+    def __contains__(self, other):  return MATCH(other, self)
 #----------------------------------------------------------------------------------------------------------------------
 def pattern(func: callable) -> callable:
     @wraps(func)
@@ -408,7 +410,7 @@ def _shift(t, v=None):
 def _reduce(t, n):
     if n == 0 and t == 'Σ':
         _variables['vstack'].append(['ε'])
-    elif n != 1 or t not in ('Σ', 'Π', 'Ξ'):
+    elif n != 1 or t not in ('Σ', 'Π', 'ξ'):
         x = [t]
         for i in range(n):
             x.insert(1, _variables['vstack'].pop())
@@ -575,7 +577,7 @@ def BAL() -> PATTERN: # BAL
     _pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
+def ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
     global _pos
     pos0 = _pos
     for _1 in P:
@@ -651,8 +653,46 @@ def ARBNO(P) -> PATTERN:
             cursor -= 1
             highmark -= 1
             AP.pop()
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 def JSONDecode(s) -> str: return s
+#----------------------------------------------------------------------------------------------------------------------
+def _END(): None
+def _RETURN(): None
+def _FRETURN(): None
+def _NRETURN(): None
+#======================================================================================================================
+def S(success):
+    def S_decorator(stmt):
+        @wraps(stmt)
+        def S_wrapper():
+            try:
+                stmt()
+                return success
+            except: return None
+        return S_wrapper
+    return S_decorator
+#----------------------------------------------------------------------------------------------------------------------
+def F(failure):
+    def F_decorator(stmt):
+        @wraps(stmt)
+        def F_wrapper():
+            try:
+                stmt()
+                return None
+            except: return failure
+        return F_wrapper
+    return F_decorator
+#----------------------------------------------------------------------------------------------------------------------
+def Ξ(success=None, failure=None):
+    def Ξ_decorator(stmt):
+        @wraps(stmt)
+        def Ξ_wrapper():
+            try:
+                stmt()
+                return success
+            except: return failure
+        return Ξ_wrapper
+    return Ξ_decorator
 #----------------------------------------------------------------------------------------------------------------------
 def SEARCH(S, P) -> bool: None
 def MATCH(S, P, Vs=None) -> bool:
