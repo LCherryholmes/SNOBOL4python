@@ -126,8 +126,8 @@ def DIFFER(d1, d2):
     if not d1 is d2:        return ""
     else:                   raise Exception()
 #----------------------------------------------------------------------------------------------------------------------
-def LPAD(s1, i, s2=None):   return (' ' * (i - len(s1))) + s1
-def RPAD(s1, i, s2=None):   return s1 + (' ' * (i - len(s1)))
+def LPAD(s1, i, s2=' '):    return (' ' * (i - len(s1))) + s1
+def RPAD(s1, i, s2=' '):    return s1 + (' ' * (i - len(s1)))
 #----------------------------------------------------------------------------------------------------------------------
 def ARRAY(proto, d):      # An array is an indexed aggregate of variables, called elements.
                             limits = tuple(int(limit) for limit in proto.split(','))
