@@ -1,19 +1,18 @@
-X = -1
-B = [[X,X,1,1,1,X,X]
-    ,[X,X,1,1,1,X,X]
-    ,[1,1,1,1,1,1,1]
-    ,[1,1,1,0,1,1,1]
-    ,[1,1,1,1,1,1,1]
-    ,[X,X,1,1,1,X,X]
-    ,[X,X,1,1,1,X,X]]
+B = [bytearray.fromhex('FFFF010101FFFF'),
+     bytearray.fromhex('FFFF010101FFFF'),
+     bytearray.fromhex('01010101010101'),
+     bytearray.fromhex('01010100010101'),
+     bytearray.fromhex('01010101010101'),
+     bytearray.fromhex('FFFF010101FFFF'),
+     bytearray.fromhex('FFFF010101FFFF')]
 
-W = [[X,X,0,0,0,X,X]
-    ,[X,X,0,0,0,X,X]
-    ,[0,0,0,0,0,0,0]
-    ,[0,0,0,1,0,0,0]
-    ,[0,0,0,0,0,0,0]
-    ,[X,X,0,0,0,X,X]
-    ,[X,X,0,0,0,X,X]]
+W = [bytearray.fromhex('FFFF000000FFFF'),
+     bytearray.fromhex('FFFF000000FFFF'),
+     bytearray.fromhex('00000000000000'),
+     bytearray.fromhex('00000001000000'),
+     bytearray.fromhex('00000000000000'),
+     bytearray.fromhex('FFFF000000FFFF'),
+     bytearray.fromhex('FFFF000000FFFF')]
 
 trials =  (       (0,2),
                   (1,2),
@@ -42,7 +41,10 @@ def print_board(board, n, attempts=None):
     print(f"{n} ({attempts:,}):\n")
     for r in range(0, 7):
         for c in range(0, 7):
-            print(("  ", " .", " o")[board[r][c] + 1], end = '')
+            match board[r][c]:
+                case 0: print(" .", end='')
+                case 1: print(" o", end='')
+                case 255: print("  ", end='')
         print()
     print()
 
@@ -56,7 +58,7 @@ def print_boards():
 import copy
 def moves(n):
     global S, B, attempts; attempts += 1
-    if (attempts % 10000) == 0:
+    if (attempts % 100000) == 0:
         print_board(B, n, attempts)
     N = copy.deepcopy(B)
     if n < 31:
@@ -87,7 +89,7 @@ def moves(n):
 def main():
     for _ in moves(0):
         print("WINNER!!!")
-        print_board((B, attempts), 31)
+        print_board(B, 31, attempts)
         print_boards()
 
 main()
