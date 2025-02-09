@@ -1,22 +1,19 @@
-import numpy as np
 X = -1
-B = np.array(
-    [[X,X,1,1,1,X,X]
+B = [[X,X,1,1,1,X,X]
     ,[X,X,1,1,1,X,X]
     ,[1,1,1,1,1,1,1]
     ,[1,1,1,0,1,1,1]
     ,[1,1,1,1,1,1,1]
     ,[X,X,1,1,1,X,X]
-    ,[X,X,1,1,1,X,X]], dtype=np.int8)
+    ,[X,X,1,1,1,X,X]]
 
-W = np.array(
-    [[X,X,0,0,0,X,X]
+W = [[X,X,0,0,0,X,X]
     ,[X,X,0,0,0,X,X]
     ,[0,0,0,0,0,0,0]
     ,[0,0,0,1,0,0,0]
     ,[0,0,0,0,0,0,0]
     ,[X,X,0,0,0,X,X]
-    ,[X,X,0,0,0,X,X]], dtype=np.int8)
+    ,[X,X,0,0,0,X,X]]
 
 trials =  (       (0,2),
                   (1,2),
@@ -27,17 +24,25 @@ trials =  (       (0,2),
                   (6,2),)
 
 def make_jump(j): return (j[0] ^ 1, j[1] ^ 1, j[2] ^ 1)
-def set_horizontal (r, c, j): B[r, c:c+3] = j
-def set_vertical   (r, c, j): B[r:r+3, c] = j
-def is_horizontal  (r, c, j): return all(B[r, c:c+3] == j)
-def is_vertical    (r, c, j): return all(B[r:r+3, c] == j)
+def set_horizontal (r, c, j): B[r][c+0] = j[0]; \
+                              B[r][c+1] = j[1]; \
+                              B[r][c+2] = j[2]
+def set_vertical   (r, c, j): B[r+0][c] = j[0]; \
+                              B[r+1][c] = j[1]; \
+                              B[r+2][c] = j[2]
+def is_horizontal  (r, c, j): return B[r][c+0] == j[0] \
+                                 and B[r][c+1] == j[1] \
+                                 and B[r][c+2] == j[2]
+def is_vertical    (r, c, j): return B[r+0][c] == j[0] \
+                                 and B[r+1][c] == j[1] \
+                                 and B[r+2][c] == j[2]
 
 attempts = 0
 def print_board(board, n, attempts=None):
     print(f"{n} ({attempts:,}):\n")
     for r in range(0, 7):
         for c in range(0, 7):
-            print(("  ", " .", " o")[board[r, c] + 1], end = '')
+            print(("  ", " .", " o")[board[r][c] + 1], end = '')
         print()
     print()
 
@@ -48,11 +53,12 @@ def print_boards():
     for i, s in enumerate(S):
         print_board(s, i, Attempts[i]) 
 
+import copy
 def moves(n):
     global S, B, attempts; attempts += 1
-    if (attempts % 1000) == 0:
+    if (attempts % 10000) == 0:
         print_board(B, n, attempts)
-    N = np.asarray(B)
+    N = copy.deepcopy(B)
     if n < 31:
         S.append(N)
         Attempts.append(attempts)
