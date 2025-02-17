@@ -1,0 +1,157 @@
+*------------------------------------------------------------------------------
+* Type-3 (Regular Grammar)
+* Rules: A → aB or A → a, where A and B are non-terminals and a is a terminal.
+* Example: S → aA
+*          A → bS
+*          A → b
+* This grammar generates the language: { (ab)^n b | n >= 0 }.
+  S = 'a' *A
+  A = 'b' *S | 'b'
+
+  S = ARBNO('a' 'b')
+* Left-regular, Left-Linear grammar (LLG),   A ⇢ Bx, A ⇢ x, where A,B ∈ V and x ∈ T*
+* Right-regular, Right-linear grammar (RLG), A ⇢ xB, A ⇢ x, where A,B ∈ V and x ∈ T*
+  S → Sb;* (Left-regular production)
+  S → bS;* (Right-regular production)
+  S → ε;* (Termination)
+
+  S → aS | ab;* Type-3
+  S → aS, S → bS, S → ε;* Type-3
+  S → 0 | 1A | 2A | 3A | 4A | 5A | 6A | 7A | 8A | 9A;* Type-3
+  A → ɛ | 0A | 1A | 2A | 3A | 4A | 5A | 6A | 7A | 8A | 9A
+*------------------------------------------------------------------------------
+* Type-2 (Context-Free Grammar)
+* Rules: A → Γ,
+*        where A is a single non-terminal
+*          and Γ is a string of terminals and/or non-terminals.
+* Example: S → aSb
+*          S → ab
+* This grammar generates the language: { a^n b^n | n >= 1 }.
+  S = 'a' (epsilon | *S) 'b'
+  S = 'a' | '(' *S ')'
+
+  S → aSb, S → ab;* Type-2
+  S → aSb ∣ ε;* Type-2
+  S → (S) | a;* Type-2
+  S → SS,  S → (S),  S → ε;* Type-2
+
+* Leftmost and Rightmost Derivations
+*------------------------------------------------------------------------------
+* Type-1 (Context-Sensitive Grammar)
+* Rules: α A β → α Γ β,
+*          where Γ != ε (empty string),
+*          and the length of Γ is at least the length of A.
+* Example:
+*   S → aSBC
+*   S → aBC
+*   CB → BC
+*   aB → ab
+*   bB → bb
+*   bC → bc
+*   cC → cc
+* This grammar generates the language: { a^n b^n c^n | n >= 1 }.
+  S = *A $ ax
++     *B $ bx *EQ(SIZE(ax), SIZE(bx))
++     *C $ cx *EQ(SIZE(bx), SIZE(cx))
+  A = 'a' (epsilon | *A)
+  B = 'b' (epsilon | *B)
+  C = 'c' (epsilon | *C)
+
+  S = 'a' 'b' | 'a' *S 'b'
+* Mildly context-sensitive languages
+* Subregular languages
+* Example 1: Palindromes with Equal Numbers of 'a's and 'b's
+  S → aSa | bSb
+  S → aSb | bSa
+  aS → Sa
+  bS → Sb
+  S → ε
+
+  S → aSa | bSb | aSb | bSa | ε
+
+  S → AXA | BXB | AXB | BXA | ε
+  AXA → aSa
+  BXB → bSb
+  AXB → aSb
+  BXA → bSa
+* Example 2: Strings with Equal Number of 'a's, 'b's, and 'c's
+  S → aXSc | cXSa | bYSc | cYSb
+  Xa → aX
+  Xb → bX
+  Ya → aY
+  Yc → cY
+  Sb → bS
+  εX → ε
+  εY → ε
+  S → ε
+
+  S → aXSc | cXSa | bYSc | cYSb | ε
+  Xa → aX | Xε
+  Xb → bX | Xε
+  Ya → aY | Yε
+  Yc → cY | Yε
+  Sb → bS | Sε
+* Example 3: Strings with the Pattern a^n b^n c^n
+  S → aSBc | ε
+  aS → aaS
+  bS → bbS
+  cS → ccS
+  εS → ε
+
+* Example 1: The Language
+  𝐿1 = {𝑎𝑛𝑏𝑛𝑐𝑛 ∣ 𝑛 ≥ 1}
+  𝑆 → 𝑎𝑆𝐵 ∣ 𝑎𝐵
+  𝐵𝑏 → 𝑏𝐵
+  𝐵𝑐 → 𝑏𝑐
+
+  𝑆 → 𝑎𝑆𝑐 ∣ 𝐴
+  𝐴 → 𝑎𝐵𝑐
+  𝐵 → 𝑎𝐵𝑏 ∣ 𝑎𝑏
+
+* Example 2: The Language 𝐿2 = {𝑎^𝑛 𝑏^𝑛 𝑐^𝑛 𝑑^𝑛 ∣ 𝑛 ≥ 1}
+  𝑆 → 𝑎𝑆𝐵𝐷 ∣ 𝑎𝐵𝐷
+  𝐵𝑏 → 𝑏𝐵
+  𝐷𝑐 → 𝑐𝐷
+  𝐷𝑑 → 𝑐𝑑
+
+  𝑆 → 𝑎𝑆𝑑 ∣ 𝐴
+  𝐴 → 𝑎𝐵𝑑
+  𝐵 → 𝑎𝐵𝐶 ∣ 𝑎𝐶
+  𝐶 → 𝑏𝐶𝑐 ∣ 𝑏𝑐
+* Example 4: Copying a Substring: This grammar generates strings where a substring is copied
+  S -> ABy
+  A -> xA | ε
+  B -> xBy | ε
+* Example 6: The Language 𝐿3 = {𝑤𝑤 ∣ 𝑤 ∈ {𝑎,𝑏}+}
+  𝑆 → 𝑋𝑋
+  𝑋𝑎 → 𝑎𝑋
+  𝑋𝑏 → 𝑏𝑋
+  𝑋 → 𝑎 ∣ 𝑏
+
+  𝑆 → 𝑋𝑋
+  𝑋 → 𝑎𝑋𝑎 ∣ 𝑏𝑋𝑏 ∣ 𝑎𝑎 ∣ 𝑏𝑏
+* Example 5: The Language 𝐿5 = {𝑤𝑐𝑤^𝑅 ∣ 𝑤 ∈ {𝑎,𝑏}+}
+* This language consists of any non-empty string 𝑤, followed by a central 𝑐,
+* and then the reverse of 𝑤.
+
+  𝑆 → 𝑎𝑆𝑎 ∣ 𝑏𝑆𝑏 ∣ 𝑐
+* 1. Balancing Chemical Equations
+* 2. Variable Scope and Type in Programming Languages
+* 3. Natural Language Syntax: Agreement in Gender and Number
+*
+*------------------------------------------------------------------------------
+* Type-0 (Unrestricted Grammar)
+* Rules: No restrictions on production rules.
+* Example:
+*   S → AB
+*   A → aA
+*   A → a
+*   B → bB
+*   B → b
+* This grammar generates the language: { a^n b^n | n >= 1 }.
+  S = *A *B
+  A = a | a *A
+  B = b | b *B
+
+  S → aSb, S → bSa, S → a, S → b;* Type-0
+*------------------------------------------------------------------------------

@@ -27,7 +27,7 @@ _variables = None # global variables
 _started = time.time_ns() // 1000
 _units = dict() # file name associations and unit numbers
 #----------------------------------------------------------------------------------------------------------------------
-globals()['_digits'] = "0123456789"
+globals()['_DIGITS'] = "0123456789"
 globals()['_UCASE'] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 globals()['_LCASE'] = "abcdefghijklmnopqrstuvwxyz"
 globals()['_ALPHABET'] = \
@@ -185,7 +185,9 @@ def ITEM(d, *args):       # Reference an array or table element
 def REMDR(i1, i2):          return i1 % i2
 def REPLACE(s1, s2, s3):    return str(s1).translate(str.maketrans(str(s2), str(s3)))
 def REVERSE(s):             return s.reverse() # s[::-1]
+def RSORT(d):               return d
 def SIZE(s):                return len(s)
+def SORT(d):                return d
 def TABLE(i1, i2):          return dict()
 def TIME():                 return (time.time_ns() // 1000) - _started
 def TRIM(s):                return s.strip()
@@ -549,6 +551,9 @@ def BREAK(characters) -> PATTERN:
         yield _subject[pos0:_pos]
         _pos = pos0
         logging.debug("BREAK(%s) backtracking(%d)...", repr(characters), _pos)
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
+def BREAKX(characters) -> PATTERN: pass
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARB() -> PATTERN: # ARB
