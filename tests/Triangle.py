@@ -1,32 +1,30 @@
 jumps = \
-    [ 'xx x           ' # vertical moves
-    , 'x x  x         '
-    , ' x x  x        '
-    , ' x  x   x      '
-    , '  x x  x       '
-    , '  x  x   x     '
-    , '   x  x   x    '
-    , '   x   x    x  '
-    , '    x  x   x   '
-    , '    x   x    x '
-    , '     x  x   x  '
-    , '     x   x    x'
-    , '   xxx         ' # horizontal moves
-    , '      xxx      '
-    , '       xxx     '
-    , '          xxx  '
-    , '           xxx '
-    , '            xxx'
+    [ b'xx x           ' # vertical moves
+    , b'x x  x         '
+    , b' x x  x        '
+    , b' x  x   x      '
+    , b'  x x  x       '
+    , b'  x  x   x     '
+    , b'   x  x   x    '
+    , b'   x   x    x  '
+    , b'    x  x   x   '
+    , b'    x   x    x '
+    , b'     x  x   x  '
+    , b'     x   x    x'
+    , b'   xxx         ' # horizontal moves
+    , b'      xxx      '
+    , b'       xxx     '
+    , b'          xxx  '
+    , b'           xxx '
+    , b'            xxx'
     ]
 
 def render_board(B, n=0):
-    return \
-        ( f"    {B[0]}    \n"
-        + f"   {B[1]} {B[2]}   \n"
-        + f"  {B[3]} {B[4]} {B[5]}  \n"
-        + f" {B[6]} {B[7]} {B[8]} {B[9]} \n"
-        + f"{B[10]} {B[11]} {B[12]} {B[13]} {B[14]}"
-        )
+    return f"    {B[0]:c}    \n" \
+         + f"   {B[1]:c} {B[2]:c}   \n" \
+         + f"  {B[3]:c} {B[4]:c} {B[5]:c}  \n" \
+         + f" {B[6]:c} {B[7]:c} {B[8]:c} {B[9]:c} \n" \
+         + f"{B[10]:c} {B[11]:c} {B[12]:c} {B[13]:c} {B[14]:c}"
 
 def print_boards():
     lines =  [''] * 5
@@ -36,7 +34,7 @@ def print_boards():
         if X is not None:
             i = 0
             for subline in render_board(X).split('\n'):
-                lines[i] += space + subline
+                lines[i] += space + str(subline)
                 i += 1
             space = "  "
     for line in lines:
@@ -47,19 +45,19 @@ import re
 reg_exs = []
 def generate_regexs():
     global reg_exs
-    re_jump = r"^([ ]*)(x)([ ]*)(x)([ ]*)(x)([ ]*)$"
+    re_jump = rb"^([ ]*)(x)([ ]*)(x)([ ]*)(x)([ ]*)$"
     re_jump = re.compile(re_jump)
     for jump in jumps:
         rc = re_jump.search(jump)
-        g = ['(' + s.replace(' ', '.') + ')' for s in rc.groups()];
-        j1 = '^' + g[0] + '(o)' + g[2] + '(o)' + g[4] + '(\\.)' + g[6] + '$'
-        j2 = '^' + g[0] + '(\\.)' + g[2] + '(o)' + g[4] + '(o)' + g[6] + '$'
+        g = [b'(' + s.replace(b' ', b'.') + b')' for s in rc.groups()];
+        j1 = b'^' + g[0] + b'(o)' + g[2] + b'(o)' + g[4] + b'(\\.)' + g[6] + b'$'
+        j2 = b'^' + g[0] + b'(\\.)' + g[2] + b'(o)' + g[4] + b'(o)' + g[6] + b'$'
         reg_exs.append(re.compile(j1))
         reg_exs.append(re.compile(j2))
     return
 
 N = 0
-swap = {'o' : '.', '.' : 'o'}
+swap = {b'o' : b'.', b'.' : b'o'}
 def make_jump(X):
     global N, swap
     for rex in reg_exs:
@@ -67,7 +65,7 @@ def make_jump(X):
         if rr is not None:
             N += 1
             g = rr.groups()
-            yield (g[0]
+            yield bytes(g[0]
                  + swap[g[1]] + g[2]
                  + swap[g[3]] + g[4]
                  + swap[g[5]] + g[6])
@@ -75,7 +73,7 @@ def make_jump(X):
 generate_regexs()
 W = 0
 B = [None] * 14
-B[0] = 'oooo.oooooooooo'
+B[0] = b'oooo.oooooooooo'
 for B[1] in make_jump(B[0]):
     for B[2] in make_jump(B[1]):
         for B[3] in make_jump(B[2]):
