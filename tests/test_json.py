@@ -5,11 +5,12 @@
 import SNOBOL4python
 import operator
 from datetime import datetime
-from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
+from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
-from SNOBOL4python import JSONDecode, _shift, _reduce
+from SNOBOL4python import JSONDecode
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)
@@ -188,7 +189,8 @@ def Traverse(tree):
 #-----------------------------------------------------------------------------------------------------------------------
 print(JSON_sample)
 print()
-MATCH(JSON_sample, jRecognizer(), globals())
+GLOBALS(globals())
+MATCH(JSON_sample, jRecognizer())
 JSON_tree = vstack.pop()
 pprint(JSON_tree)
 print()

@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-from SNOBOL4python import MATCH, pattern, _UCASE, _LCASE, _digits
+from SNOBOL4python import pattern, MATCH, GLOBALS, REPLACE
+from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
-from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK, FENCE, LEN
-from SNOBOL4python import POS, RPOS, SPAN
-from SNOBOL4python import REPLACE
+from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK
+from SNOBOL4python import FENCE, LEN, POS, RPOS, SPAN
+#------------------------------------------------------------------------------
+GLOBALS(globals())
 #------------------------------------------------------------------------------
 @pattern
 def identifier():
     yield from \
         (   POS(0)
         +   ANY(_UCASE + _LCASE)
-        +   FENCE(SPAN("." + _digits + _UCASE + "_" + _LCASE) | ε())
+        +   FENCE(SPAN("." + _DIGITS + _UCASE + "_" + _LCASE) | ε())
         +   RPOS(0)
         )
 assert True is MATCH("Id_99", identifier())
@@ -19,15 +21,15 @@ assert True is MATCH("Id_99", identifier())
 def real_number():
     yield from \
         (   POS(0)
-        +   (   (   SPAN(_digits) @ 'whole'
-                +   (σ('.') + FENCE(SPAN(_digits) | ε()) @ 'fract' | ε())
+        +   (   (   SPAN(_DIGITS) @ 'whole'
+                +   (σ('.') + FENCE(SPAN(_DIGITS) | ε()) @ 'fract' | ε())
                 +   (σ('E') | σ('e'))
                 +   (σ('+') | σ('-') | ε())
-                +   SPAN(_digits) @ 'exp'
+                +   SPAN(_DIGITS) @ 'exp'
                 )
-            |   (   SPAN(_digits) @ 'whole'
+            |   (   SPAN(_DIGITS) @ 'whole'
                 +   σ('.')
-                +   FENCE(SPAN(_digits) | ε()) @ 'fract'
+                +   FENCE(SPAN(_DIGITS) | ε()) @ 'fract'
                 )
             )
         +   RPOS(0)
