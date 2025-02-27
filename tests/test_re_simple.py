@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python as S4p
-from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
+from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
-from SNOBOL4python import _shift, _reduce
 #------------------------------------------------------------------------------
 # Parse Regular Expression language
 #------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ def re_Factor():     yield from re_Item() + (re_Quantifier() + Reduce('ς', 2) |
 @pattern
 def re_Item():       yield from ( σ('.') + Shift('.')
                                 | σ('\\') + ANY('.\\(|*+?)') % 'tx' + Shift('σ', "tx")
-                                | ANY(_UCASE + _LCASE + _digits) % 'tx' + Shift('σ', "tx")
+                                | ANY(_UCASE + _LCASE + _DIGITS) % 'tx' + Shift('σ', "tx")
                                 | σ('(') + re_Expression() + σ(')')
                                 )
 @pattern
@@ -65,7 +65,8 @@ from pprint import pprint
 for rex in rexs:
     print(rex)
     results.clear()
-    assert True is MATCH(rex, re_RegEx(), results)
+    GLOBALS(results)
+    assert True is MATCH(rex, re_RegEx())
 #   pprint(results)
     RE_tree = results['vstack'].pop()
     pprint(RE_tree, indent=3, width=36)

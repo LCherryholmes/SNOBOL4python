@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
-from SNOBOL4python import pattern, _UCASE, _LCASE, _digits, MATCH
+from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ, θ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
+#------------------------------------------------------------------------------
+GLOBALS(globals())
 #------------------------------------------------------------------------------
 @pattern
 def As():
