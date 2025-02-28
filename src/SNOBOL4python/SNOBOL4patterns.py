@@ -69,7 +69,7 @@ _cstack = None # command stack (conditional actions)
 @pattern
 def θ(V) -> PATTERN:
     global _pos, _globals
-    if V == "OUTPUT": print(_pos)
+    if V == "OUTPUT": print("", _pos, end="")
     logger.debug("theta(%s) SUCCESS", V)
     _globals[V] = _pos
     yield ""
@@ -82,7 +82,7 @@ def Ω(P, V) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ V
     global _globals
     logger.debug("OMEGA(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        if V == "OUTPUT": print(_1)
+        if V == "OUTPUT": print('', _1, end="")
         logger.debug("%s = OMEGA(%s)", V, repr(_1))
         _globals[V] = _1
         yield _1
@@ -93,7 +93,7 @@ def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
     global _globals
     logger.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        if V == "OUTPUT": print(_1)
+        if V == "OUTPUT": print('', _1, end="")
         logger.debug("%s = delta(%s)", V, repr(_1))
         _globals[V] = _1
         yield _1

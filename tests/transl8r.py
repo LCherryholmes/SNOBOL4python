@@ -194,34 +194,37 @@ def yRecognizer():      yield from  ( nPush()
                                     )
 #-------------------------------------------------------------------------------
 @pattern
-def cTokens():          yield from  POS(0) + ARBNO(cToken()) + RPOS(0)
+def cTokens():          yield from  ( POS(0) + Λ("""P = "yield from (\\n\"""")
+                                    + ARBNO(cToken())
+                                    + RPOS(0) + Λ("""P += ")\\n\"""")
+                                    )
 @pattern
-def cToken():           yield from  ( θ("OUTPUT")
-                                    + ( σ('\\\n')
-                                      | SPAN(" \t\r\f\n")                          
-                                      | SPAN(" \t\r\f")
-                                      | cStyleComment()
-                                      | cppStyleComment()
-                                      | floatingLiteral()
-                                      | integerLiteral()
-                                      | characterLiteral()
-                                      | stringLiteral()
-                                      | keyword()
-                                      | identifier()
-                                      | σ('%{')
-                                      | σ('%}')
-                                      | σ('%%')
-                                      | σ('$$')
-                                      | ζ('$#')
-                                      | ζ('@#')
-                                      | ζ('$<>$')
-                                      | ζ('$<>#')
-                                      | operator()
-                                      | σ('{')
-                                      | σ('}')
-                                      | σ('(')
-                                      | σ(')')
-                                      ) @ "OUTPUT"
+def cToken():           yield from  (   θ("OUTPUT") +
+                                      ( σ('\\\n')             + Λ("""P += "σ('\\\n') + \"""")
+                                      | σ('\n')               + Λ("""P += "η() +\\n\"""") 
+                                      | SPAN(" \t\r\f")     # + Λ("""P += "μ() + \"""")
+                                      | cStyleComment()       + Λ("""P += "cStyleComment() + \"""")
+                                      | cppStyleComment()     + Λ("""P += "cppStyleComment() + \"""")
+                                      | floatingLiteral()     + Λ("""P += "floatingLiteral() + \"""")
+                                      | integerLiteral()      + Λ("""P += "integerLiteral() + \"""")
+                                      | characterLiteral()    + Λ("""P += "characterLiteral() + \"""")
+                                      | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
+                                      | keyword() % "tx"      + Λ("""P += "σ('" + tx + "') + \"""")
+                                      | identifier()          + Λ("""P += "identifier() + \"""")
+                                      | σ('%{')               + Λ("""P += "σ('%{') + \"""")
+                                      | σ('%}')               + Λ("""P += "σ('%}') + \"""")
+                                      | σ('%%')               + Λ("""P += "σ('%%') + \"""")
+                                      | σ('$$')               + Λ("""P += "σ('$$') + \"""")
+                                      | ζ('$#')               + Λ("""P += "ζ('$#') + \"""")
+                                      | ζ('@#')               + Λ("""P += "ζ('@#') + \"""")
+                                      | ζ('$<>$')             + Λ("""P += "ζ('$<>$') + \"""")
+                                      | ζ('$<>#')             + Λ("""P += "ζ('$<>#') + \"""")
+                                      | operator() % "tx"     + Λ("""P += "σ('" + tx + "') + \"""")
+                                      | σ('{')                + Λ("""P += "σ('{') + \"""")
+                                      | σ('}')                + Λ("""P += "σ('}') + \"""")
+                                      | σ('(')                + Λ("""P += "σ('(') + \"""")
+                                      | σ(')')                + Λ("""P += "σ(')') + \"""")
+                                      ) # @ "OUTPUT"
                                     )
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -259,7 +262,12 @@ if __name__ == '__main__':
         Token('('),
         Token(')')
     ]
-#----------------------------------------------------------------------------------------------------------------------
-GLOBALS(globals())
-MATCH('{ Id_99 = "Hello"; }', cTokens())
+    yInput_nm = r"""C:\anaconda3\envs\rstudio\Library\mingw-w64\share\gettext\intl\plural.y"""
+    yOutput_nm = r""".\plural.py"""
+    GLOBALS(globals())
+    with open(yInput_nm, "r") as yInput:
+        y = yInput.read()
+        if MATCH(y, cTokens()):
+            with open(yOutput_nm, "w", encoding="utf-8") as yOutput:
+                yOutput.write(P[:-3])
 #----------------------------------------------------------------------------------------------------------------------
