@@ -128,13 +128,15 @@ def Δ(P, V) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . V
 def Λ(command) -> PATTERN: # LAMBDA, P . *exec(), P . tx . *func(tx)
     global _cstack
     logger.debug("LAMBDA(%s) compiling...", repr(command))
-    if compile(command, '<string>', 'exec'): # 'single', 'eval'
-        logger.debug("LAMBDA(%s) SUCCESS", repr(command))
-        _cstack.append(command)
-        yield ""
-        logger.debug("LAMBDA(%s) backtracking...", repr(command))
-        _cstack.pop()
-    else: logger.debug("LAMBDA(%s) Error compiling. FAIL", repr(command))
+    if command:
+        if compile(command, '<string>', 'exec'): # 'single', 'eval'
+            logger.debug("LAMBDA(%s) SUCCESS", repr(command))
+            _cstack.append(command)
+            yield ""
+            logger.debug("LAMBDA(%s) backtracking...", repr(command))
+            _cstack.pop()
+        else: logger.debug("LAMBDA(%s) Error compiling. FAIL", repr(command))
+    else: yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def nPush() -> PATTERN:

@@ -1,62 +1,58 @@
 yield from (
 pct_block() + η() +
-σ('%parse-param') + cBlock() + η() +
-σ('%lex-param') + cBlock() + η() +
-σ('%define') + cToken() + cToken() + cToken() + cToken() + η() +
-σ('%expect') + cToken() + η() +
+pct_parse_param() + η() +
+pct_lex_param() + η() +
+pct_define() + η() +
+pct_expect() + η() +
 η() +
 pct_union() + η() +
 η() +
 pct_block() + η() +
 η() +
-cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + η() +
-σ('%right') + cToken() + pct_token() + η() +
+pct_right() + pct_left() + pct_left() + pct_left() + pct_left() + pct_left() + pct_left() + ς('/') + ς('*') + ς('*') + ς('/') + ς('%') + ς('*') + ς('/') + η() +
+pct_right() + pct_token() + η() +
 pct_token() + η() +
-pct_type() + cToken() + η() +
+pct_type() + η() +
 η() +
 σ('%%') + η() +
 η() +
-cToken() + cToken() + cToken() + η() +
+yProduction() + ς(':') + identifier() + characterLiteral() + identifier() + characterLiteral() + identifier() + η() +
 cBlock() + η() +
-cToken() + η() +
-η() +
-cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + characterLiteral() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + characterLiteral() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + identifier() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + identifier() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + identifier() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + identifier() + identifier() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
+ς('|') + characterLiteral() + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + η() +
+ς('|') + characterLiteral() + η() +
 cBlock() + η() +
-cToken() + cToken() + η() +
+ς('|') + identifier() + η() +
 cBlock() + η() +
-cToken() + cToken() + η() +
+ς('|') + characterLiteral() + identifier() + characterLiteral() + η() +
 cBlock() + η() +
-cToken() + cToken() + cToken() + cToken() + η() +
-cBlock() + η() +
-cToken() + η() +
+ς(';') + η() +
 η() +
 σ('%%') + η() +
 η() +
-cToken() + η() +
-cToken() + η() +
-cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + η() +
+identifier() + η() +
+identifier() + η() +
+identifier() + ς('(') + ς('struct') + identifier() + ς('*') + identifier() + ς(')') + η() +
 cBlock() + η() +
 η() +
 η() +
-cToken() + cToken() + η() +
-cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + η() +
+identifier() + identifier() + η() +
+identifier() + ς('(') + identifier() + ς('*') + identifier() + ς(',') + ς('struct') + identifier() + ς('*') + identifier() + ς(')') + η() +
 cBlock() + η() +
 η() +
 η() +
-cToken() + cToken() + η() +
-cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + cToken() + η() +
+identifier() + identifier() + η() +
+identifier() + ς('(') + ς('struct') + identifier() + ς('*') + identifier() + ς(',') + identifier() + identifier() + ς('*') + identifier() + ς(')') + η() +
 cBlock() + η() +
