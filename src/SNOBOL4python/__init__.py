@@ -2,8 +2,8 @@
 from .SNOBOL4patterns import PATTERN, pattern
 from .SNOBOL4patterns import GLOBALS, SEARCH, MATCH, FULLMATCH
 from .SNOBOL4patterns import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, Λ, λ, θ
-from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, FAIL
-from .SNOBOL4patterns import FENCE, LEN, NOTANY, POS, REM, RPOS
+from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from .SNOBOL4patterns import FENCE, LEN, MARBNO, NOTANY, POS, REM, RPOS
 from .SNOBOL4patterns import RTAB, SPAN, SUCCESS, TAB
 from .SNOBOL4patterns import nPush, nInc, nPop, Shift, Reduce
 #-------------------------------------------------------------------------------
@@ -16,8 +16,8 @@ __all__ = [
             "PATTERN", "pattern",
             "GLOBALS", "SEARCH", "MATCH", "FULLMATCH",
             "ε", "σ", "Σ", "Π", "π", "ξ", "Ω", "Δ", "δ" "Λ", "λ", "θ",
-            "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "FAIL",
-            "FENCE", "LEN", "NOTANY", "POS", "REM", "RPOS",
+            "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
+            "FENCE", "LEN", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
             "RTAB", "SPAN", "SUCCESS", "TAB",
             "nPush", "nInc", "nPop", "Shift", "Reduce",
 

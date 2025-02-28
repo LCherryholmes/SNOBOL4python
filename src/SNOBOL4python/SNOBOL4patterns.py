@@ -69,6 +69,7 @@ _cstack = None # command stack (conditional actions)
 @pattern
 def θ(V) -> PATTERN:
     global _pos, _globals
+    if V == "OUTPUT": print(_pos)
     logger.debug("theta(%s) SUCCESS", V)
     _globals[V] = _pos
     yield ""
@@ -319,7 +320,7 @@ def BREAK(characters) -> PATTERN:
         logger.debug("BREAK(%s) backtracking(%d)...", repr(characters), _pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def BREAKX(characters) -> PATTERN: pass
+def BREAKX(characters) -> PATTERN: yield from BREAK(characters)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARB() -> PATTERN: # ARB
@@ -398,6 +399,9 @@ def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
         except StopIteration:
             cursor -= 1
             highmark -= 1
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
+def MARBNO(P) -> PATTERN: yield from ARBNO(P)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARBNO(P) -> PATTERN:
