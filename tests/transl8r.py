@@ -4,7 +4,7 @@ from SNOBOL4python import pattern, MATCH, GLOBALS
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ, θ
 from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
-from SNOBOL4python import LEN, NOTANY, POS, RPOS, SPAN
+from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
 #-------------------------------------------------------------------------------
 class Token(object):
@@ -20,9 +20,9 @@ class Token(object):
                 self.expr = (lambda: self.patr.func.__name__ + "()")
 #-------------------------------------------------------------------------------
 @pattern
-def blanks():           yield from  (σ('\\\n') | SPAN(" \t\r\f"))
+def blanks():           yield from  σ('\\\n') | SPAN(" \t\r\f")
 @pattern
-def white():            yield from  (σ('\\\n') | SPAN(" \t\r\f\n"))
+def white():            yield from  σ('\\\n') | SPAN(" \t\r\f\n")
 @pattern
 def cStyleComment():    yield from  σ('/*') + BREAKX('*') + σ('*/')
 @pattern
@@ -42,6 +42,8 @@ def whitespace():       yield from  (   white()
 def μ():                yield from  FENCE(space() | ε())
 @pattern
 def η():                yield from  FENCE(whitespace() | ε())
+@pattern
+def ς(s):               yield from η() + σ(s)
 #-------------------------------------------------------------------------------
 @pattern
 def exponent():         yield from  ( (σ('E') | σ('e'))
@@ -49,15 +51,15 @@ def exponent():         yield from  ( (σ('E') | σ('e'))
                                     + SPAN('0123456789')
                                     )
 @pattern
-def floatingLiteral():  yield from  (   SPAN('0123456789') 
+def floatingLiteral():  yield from  ( SPAN('0123456789') 
                                       + σ('.') + (SPAN('0123456789') | ε())
                                       + (exponent() | ε())
                                       + (ANY('Ll') | ε())
-                                    |   σ('.') + SPAN('0123456789')
+                                    | σ('.') + SPAN('0123456789')
                                       + (exponent() | ε())
                                       + (ANY('Ll') | ε())
-                                    |   SPAN('0123456789') + exponent() + (ANY('Ll') | ε())
-                                    |   SPAN('0123456789') + (exponent() | ε()) + ANY('Ll')
+                                    | SPAN('0123456789') + exponent() + (ANY('Ll') | ε())
+                                    | SPAN('0123456789') + (exponent() | ε()) + ANY('Ll')
                                     )
 @pattern
 def decimalLiteral():   yield from  ANY('123456789') + FENCE(SPAN('0123456789') | ε())
@@ -91,19 +93,24 @@ def ident():            yield from  ( ANY(_UCASE + '_' + _LCASE)
 def keyword():          yield from  ident() @ "tx" + λ("tx in keywords")
 @pattern
 def identifier():       yield from  ident() @ "tx" + λ("tx not in keywords")
+@pattern
+def resword():          yield from  ( σ('%')
+                                    + SPAN(_LCASE)
+                                    + FENCE(σ('-') + SPAN(_LCASE) | ε())
+                                    )
 #-------------------------------------------------------------------------------
 @pattern
-def operator():         yield from  ( σ('-') | σ(',') | σ(';') | σ(':') | σ('!')
-                                    | σ('?') | σ('.') | σ('(') | σ(')') | σ('[')
-                                    | σ(']') | σ('*') | σ('/') | σ('&') | σ('#')
-                                    | σ('%') | σ('^') | σ('+') | σ('<') | σ('=')
-                                    | σ('>') | σ('|') | σ('~')
+def operator():         yield from  ( σ('->*') | σ('...') | σ('<<=') | σ('>>=')
                                     | σ('--') | σ('-=') | σ('->') | σ('::') | σ('!=')
                                     | σ('.*') | σ('*=') | σ('/=') | σ('&&') | σ('&=')
                                     | σ('%=') | σ('^=') | σ('++') | σ('+=') | σ('<<') 
                                     | σ('<=') | σ('==') | σ('>=') | σ('>>') | σ('|=')
                                     | σ('||')
-                                    | σ('->*') | σ('...') | σ('<<=') | σ('>>=')
+                                    | σ('-') | σ(',') | σ(';') | σ(':') | σ('!')
+                                    | σ('?') | σ('.') | σ('(') | σ(')') | σ('[')
+                                    | σ(']') | σ('*') | σ('/') | σ('&') | σ('#')
+                                    | σ('%') | σ('^') | σ('+') | σ('<') | σ('=')
+                                    | σ('>') | σ('|') | σ('~')
                                     )
 #-------------------------------------------------------------------------------
 @pattern
@@ -115,50 +122,51 @@ def ζ(name):
         case '$<>#':    yield from σ('$<') + ident() + σ('>') + SPAN('0123456789')
         case _:         raise Exception()
 #-------------------------------------------------------------------------------
+def cToken():           pass
 @pattern
-def cBlock():           yield from  σ('{') + ARBNO(cBlockBody()) + σ('}')
+def cBlock():           yield from  ς('{') + ARBNO(cBlockBody()) + ς('}')
 @pattern
-def cExpr():            yield from  σ('(') + ARBNO(cExprBody()) + σ(')')
+def cExpr():            yield from  ς('(') + ARBNO(cExprBody()) + ς(')')
 @pattern
 def cBlockBody():       yield from  cToken() | cBlock() | cExpr()
 @pattern
 def cExprBody():        yield from  cToken() | cExpr()
 #-------------------------------------------------------------------------------
 @pattern
-def pct_block():        yield from  σ('%{') + ARBNO(cBlockBody()) + σ('%}')
+def pct_block():        yield from  ς('%{') + ARBNO(cBlockBody()) + ς('%}')
 @pattern
-def pct_union():        yield from  σ('%') + union() + σ('{') + ARBNO(cBlockBody()) + σ('}')
+def pct_union():        yield from  ς('%union') + ς('{') + ARBNO(cBlockBody()) + ς('}')
 @pattern
-def pct_type():         yield from  σ('%') + type() + σ('<') + η() + identifier() + σ('>') + MARBNO(η() + identifier())
+def pct_type():         yield from  ς('%type') + ς('<') + η() + identifier() + ς('>') + MARBNO(η() + identifier())
 @pattern
-def pct_token():        yield from  ( σ('%') + token()
-                                    + (σ('<') + η() + identifier() + σ('>') | ε())
-                                    + ε() + Shift('')
+def pct_token():        yield from  ( ς('%token')
+                                    + (ς('<') + η() + identifier() + ς('>') | ε())
+                                    + Shift('')
                                     + nPush() + pct_token_names() + Reduce('re_spec') + nPop()
                                     + Reduce('re_production', 2)
                                     )
 @pattern
 def pct_token_names():  yield from  η() + pct_token_name() + nInc() + FENCE(pct_token_names() | ε())
 @pattern
-def pct_token_name():   yield from  (  (identifier()       % 'tx' + Shift('identifier', "tx")) + ε() + Shift('string')
+def pct_token_name():   yield from  (  (identifier()       % 'tx' + Shift('identifier', "tx")) + Shift('string')
                                     |  (characterLiteral() % 'tx' + Shift('identifier', "tx")) + Shift('string', "tx")
                                     ) + Reduce('re', 2)
 @pattern
-def pct_left():         yield from  σ('%') + left() + MARBNO(η() + (identifier() | characterLiteral()))
+def pct_left():         yield from  ς('%left') + MARBNO(η() + (identifier() | characterLiteral()))
 @pattern
-def pct_right():        yield from  σ('%') + right() + MARBNO(η() + (identifier() | characterLiteral()))
+def pct_right():        yield from  ς('%right') + MARBNO(η() + (identifier() | characterLiteral()))
 @pattern
-def pct_start():        yield from  σ('%') + start() + η() + identifier()
+def pct_start():        yield from  ς('%start') + η() + identifier()
 #-------------------------------------------------------------------------------
 @pattern
-def yProduction():      yield from  ( η() + identifier() % 'tx' + Shift('identifier', "tx") +  σ(':')
+def yProduction():      yield from  ( η() + identifier() % 'tx' + Shift('identifier', "tx") + ς(':')
                                     + yAlternates()
                                     + Reduce('bnf_production', 2)
                                     )
 @pattern
 def yAlternates():      yield from  nPush() + yyAlternates() + Reduce('|') + nPop()
 @pattern
-def yyAlternates():     yield from  ySubsequents() + nInc() + (σ('|') + yyAlternates() | ε())
+def yyAlternates():     yield from  ySubsequents() + nInc() + (ς('|') + yyAlternates() | ε())
 @pattern
 def ySubsequents():     yield from  ( nPush() + (yySubsequents() | ε())
                                     + Reduce('epsilon')
@@ -171,9 +179,9 @@ def yySubsequents():    yield from  yElement() + (yySubsequents() | ε())
 def yElement():         yield from  ( η() + identifier() + Shift('identifier', "tx") + nInc()
                                     | η() + characterLiteral() + Shift('string', "tx") + nInc()
                                     | cBlock()
-                                    | σ('[') + ARBNO(cBlockBody()) + σ(']')
-                                    | σ('%') + prec()
-                                    | σ(';')
+                                    | ς('[') + ARBNO(cBlockBody()) + ς(']')
+                                    | ς('%') + prec()
+                                    | ς(';')
                                     )
 @pattern
 def yRecognizer():      yield from  ( nPush()
@@ -186,7 +194,7 @@ def yRecognizer():      yield from  ( nPush()
                                       | pct_right()
                                       | pct_start()
                                       )
-                                    + σ('%%')
+                                    + ς('%%')
                                     + ARBNO(yProduction() + nInc())
                                     + Reduce('productions')
                                     + nPop()
@@ -194,80 +202,58 @@ def yRecognizer():      yield from  ( nPush()
                                     )
 #-------------------------------------------------------------------------------
 @pattern
-def cTokens():          yield from  ( POS(0) + Λ("""P = "yield from (\\n\"""")
-                                    + ARBNO(cToken())
-                                    + RPOS(0) + Λ("""P += ")\\n\"""")
-                                    )
+def cToken():
+    yield from  (  η() +
+                  ( cStyleComment()       + Λ("""P += "cStyleComment() + \"""")
+                  | cppStyleComment()     + Λ("""P += "cppStyleComment() + \"""")
+                  | floatingLiteral()     + Λ("""P += "floatingLiteral() + \"""")
+                  | integerLiteral()      + Λ("""P += "integerLiteral() + \"""")
+                  | characterLiteral()    + Λ("""P += "characterLiteral() + \"""")
+                  | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
+                  | keyword() % "tx"      + Λ("""P += "σ('" + tx + "') + \"""")
+                  | identifier()          + Λ("""P += "identifier() + \"""")
+                  | σ('$$')               + Λ("""P += "σ('$$') + \"""")
+                  | ζ('$#')               + Λ("""P += "ζ('$#') + \"""")
+                  | ζ('@#')               + Λ("""P += "ζ('@#') + \"""")
+                  | ζ('$<>$')             + Λ("""P += "ζ('$<>$') + \"""")
+                  | ζ('$<>#')             + Λ("""P += "ζ('$<>#') + \"""")
+                  | operator() % "tx"     + Λ("""P += "σ('" + tx + "') + \"""")
+                  )
+                )
+#-------------------------------------------------------------------------------
 @pattern
-def cToken():           yield from  (   θ("OUTPUT") +
-                                      ( σ('\\\n')             + Λ("""P += "σ('\\\n') + \"""")
-                                      | σ('\n')               + Λ("""P += "η() +\\n\"""") 
-                                      | SPAN(" \t\r\f")     # + Λ("""P += "μ() + \"""")
-                                      | cStyleComment()       + Λ("""P += "cStyleComment() + \"""")
-                                      | cppStyleComment()     + Λ("""P += "cppStyleComment() + \"""")
-                                      | floatingLiteral()     + Λ("""P += "floatingLiteral() + \"""")
-                                      | integerLiteral()      + Λ("""P += "integerLiteral() + \"""")
-                                      | characterLiteral()    + Λ("""P += "characterLiteral() + \"""")
-                                      | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
-                                      | keyword() % "tx"      + Λ("""P += "σ('" + tx + "') + \"""")
-                                      | identifier()          + Λ("""P += "identifier() + \"""")
-                                      | σ('%{')               + Λ("""P += "σ('%{') + \"""")
-                                      | σ('%}')               + Λ("""P += "σ('%}') + \"""")
-                                      | σ('%%')               + Λ("""P += "σ('%%') + \"""")
-                                      | σ('$$')               + Λ("""P += "σ('$$') + \"""")
-                                      | ζ('$#')               + Λ("""P += "ζ('$#') + \"""")
-                                      | ζ('@#')               + Λ("""P += "ζ('@#') + \"""")
-                                      | ζ('$<>$')             + Λ("""P += "ζ('$<>$') + \"""")
-                                      | ζ('$<>#')             + Λ("""P += "ζ('$<>#') + \"""")
-                                      | operator() % "tx"     + Λ("""P += "σ('" + tx + "') + \"""")
-                                      | σ('{')                + Λ("""P += "σ('{') + \"""")
-                                      | σ('}')                + Λ("""P += "σ('}') + \"""")
-                                      | σ('(')                + Λ("""P += "σ('(') + \"""")
-                                      | σ(')')                + Λ("""P += "σ(')') + \"""")
-                                      ) # @ "OUTPUT"
-                                    )
+def yTokens():
+    yield from  ( POS(0)                + Λ("""P = "yield from (\\n\"""")
+                + ARBNO(
+                    σ('\\\n')           + Λ("""P += "σ('\\\n') + \"""")
+                  | σ('\n')             + Λ("""P += "η() +\\n\"""") 
+                  | SPAN(" \t\r\f\n") # + Λ("""P += "η() +\\n\"""")
+                  | SPAN(" \t\r\f")   # + Λ("""P += "μ() + \"""")
+                  | pct_union()         + Λ("""P += "pct_union() + \"""")
+                  | pct_token()         + Λ("""P += "pct_token() + \"""")
+                  | pct_type()          + Λ("""P += "pct_type() + \"""")
+                  | pct_start()         + Λ("""P += "pct_start() + \"""")
+                  | pct_block()         + Λ("""P += "pct_block() + \"""")
+                  | resword() % "tx"    + Λ("""P += "σ('" + tx + "') + \"""")
+                  | σ('%{')             + Λ("""P += "σ('%{') + \"""")
+                  | σ('%}')             + Λ("""P += "σ('%}') + \"""")
+                  | σ('%%')             + Λ("""P += "σ('%%') + \"""")
+                  | cToken()
+                  | σ('{')              + Λ("""P += "σ('{') + \"""")
+                  | σ('}')              + Λ("""P += "σ('}') + \"""")
+                  | σ('(')              + Λ("""P += "σ('(') + \"""")
+                  | σ(')')              + Λ("""P += "σ(')') + \"""")
+                  )
+                + RPOS(0)               + Λ("""P += ")\\n\"""")
+                )
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
-    spcpfx = "η() + "
-    tokens = [
-#       Token(yRecognizer),
-##      Token(yProduction),
-#       Token(pct_union),
-#       Token(pct_token),
-#       Token(pct_type),
-#       Token(pct_start),
-        Token('\\\n',                 (lambda: "σ('\\\n')")),
-        Token(SPAN(" \t\r\f\n"),      (lambda: "η()")),
-        Token(SPAN(" \t\r\f"),        (lambda: "μ()")),
-        Token(cStyleComment(),        (lambda: "cStyleComment()")),
-        Token(cppStyleComment(),      (lambda: "cppStyleComment()")),
-        Token(floatingLiteral(),      (lambda: 'floatingLiteral()')),
-        Token(integerLiteral(),       (lambda: 'integerLiteral()')),
-        Token(characterLiteral(),     (lambda: 'characterLiteral()')),
-        Token(stringLiteral(),        (lambda: 'stringLiteral()')),
-        Token(keyword() % "tx",       (lambda: "σ('" + tx + "')")),
-        Token(identifier(),           (lambda: 'identifier()')),
-        Token(identifier() % "tx",    (lambda: "σ('" + tx + "')")),
-        Token('%{'),
-        Token('%}'),
-        Token('%%'),
-        Token('$$'),
-        Token(ζ('$#') % "tx",         (lambda: "ζ('$#')")),
-        Token(ζ('@#') % "tx",         (lambda: "ζ('@#')")),
-        Token(ζ('$<>$') % "tx",       (lambda: "ζ('$<>$')")),
-        Token(ζ('$<>#') % "tx",       (lambda: "ζ('$<>#')")),
-        Token(operator() % "tx",      (lambda: "σ('" + tx + "')")),
-        Token('{'),
-        Token('}'),
-        Token('('),
-        Token(')')
-    ]
     yInput_nm = r"""C:\anaconda3\envs\rstudio\Library\mingw-w64\share\gettext\intl\plural.y"""
-    yOutput_nm = r""".\plural.py"""
+    yOutput_nm = r""".\plural-y.py"""
     GLOBALS(globals())
     with open(yInput_nm, "r") as yInput:
         y = yInput.read()
-        if MATCH(y, cTokens()):
+        if MATCH(y, yTokens()):
             with open(yOutput_nm, "w", encoding="utf-8") as yOutput:
                 yOutput.write(P[:-3])
 #----------------------------------------------------------------------------------------------------------------------
