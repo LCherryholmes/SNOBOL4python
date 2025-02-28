@@ -122,7 +122,6 @@ def ζ(name):
         case '$<>#':    yield from σ('$<') + ident() + σ('>') + SPAN('0123456789')
         case _:         raise Exception()
 #-------------------------------------------------------------------------------
-def cToken():           pass
 @pattern
 def cBlock():           yield from  ς('{') + ARBNO(cBlockBody()) + ς('}')
 @pattern
@@ -157,6 +156,12 @@ def pct_left():         yield from  ς('%left') + MARBNO(η() + (identifier() | 
 def pct_right():        yield from  ς('%right') + MARBNO(η() + (identifier() | characterLiteral()))
 @pattern
 def pct_start():        yield from  ς('%start') + η() + identifier()
+@pattern
+def pct_parse_param():  yield from  ς('%parse-param') + cBlock()
+@pattern
+def pct_lex_param():    yield from  ς('%lex-param') + cBlock()
+@pattern
+def pct_expect():       yield from  ς('%expect') + integerLiteral()
 #-------------------------------------------------------------------------------
 @pattern
 def yProduction():      yield from  ( η() + identifier() % 'tx' + Shift('identifier', "tx") + ς(':')
@@ -202,22 +207,26 @@ def yRecognizer():      yield from  ( nPush()
                                     )
 #-------------------------------------------------------------------------------
 @pattern
+def cTokens():
+    yield from  ARBNO(cToken())
+#-------------------------------------------------------------------------------
+@pattern
 def cToken():
     yield from  (  η() +
-                  ( cStyleComment()       + Λ("""P += "cStyleComment() + \"""")
-                  | cppStyleComment()     + Λ("""P += "cppStyleComment() + \"""")
-                  | floatingLiteral()     + Λ("""P += "floatingLiteral() + \"""")
-                  | integerLiteral()      + Λ("""P += "integerLiteral() + \"""")
-                  | characterLiteral()    + Λ("""P += "characterLiteral() + \"""")
-                  | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
-                  | keyword() % "tx"      + Λ("""P += "σ('" + tx + "') + \"""")
-                  | identifier()          + Λ("""P += "identifier() + \"""")
-                  | σ('$$')               + Λ("""P += "σ('$$') + \"""")
-                  | ζ('$#')               + Λ("""P += "ζ('$#') + \"""")
-                  | ζ('@#')               + Λ("""P += "ζ('@#') + \"""")
-                  | ζ('$<>$')             + Λ("""P += "ζ('$<>$') + \"""")
-                  | ζ('$<>#')             + Λ("""P += "ζ('$<>#') + \"""")
-                  | operator() % "tx"     + Λ("""P += "σ('" + tx + "') + \"""")
+                  ( cStyleComment()       # + Λ("""P += "cStyleComment() + \"""")
+                  | cppStyleComment()     # + Λ("""P += "cppStyleComment() + \"""")
+                  | floatingLiteral()     # + Λ("""P += "floatingLiteral() + \"""")
+                  | integerLiteral()      # + Λ("""P += "integerLiteral() + \"""")
+                  | characterLiteral()    # + Λ("""P += "characterLiteral() + \"""")
+                  | stringLiteral()       # + Λ("""P += "stringLiteral() + \"""")
+                  | keyword() % "tx"      # + Λ("""P += "ς('" + tx + "') + \"""")
+                  | identifier()          # + Λ("""P += "identifier() + \"""")
+                  | σ('$$')               # + Λ("""P += "ς('$$') + \"""")
+                  | ζ('$#')               # + Λ("""P += "ζ('$#') + \"""")
+                  | ζ('@#')               # + Λ("""P += "ζ('@#') + \"""")
+                  | ζ('$<>$')             # + Λ("""P += "ζ('$<>$') + \"""")
+                  | ζ('$<>#')             # + Λ("""P += "ζ('$<>#') + \"""")
+                  | operator() % "tx"     # + Λ("""P += "ς('" + tx + "') + \"""")
                   )
                 )
 #-------------------------------------------------------------------------------
@@ -228,7 +237,7 @@ def yTokens():
                     σ('\\\n')           + Λ("""P += "σ('\\\n') + \"""")
                   | σ('\n')             + Λ("""P += "η() +\\n\"""") 
                   | SPAN(" \t\r\f\n") # + Λ("""P += "η() +\\n\"""")
-                  | SPAN(" \t\r\f")   # + Λ("""P += "μ() + \"""")
+                  | SPAN(" \t\r\f")     + Λ("""P += "μ() + \"""")
                   | pct_union()         + Λ("""P += "pct_union() + \"""")
                   | pct_token()         + Λ("""P += "pct_token() + \"""")
                   | pct_type()          + Λ("""P += "pct_type() + \"""")
@@ -238,7 +247,8 @@ def yTokens():
                   | σ('%{')             + Λ("""P += "σ('%{') + \"""")
                   | σ('%}')             + Λ("""P += "σ('%}') + \"""")
                   | σ('%%')             + Λ("""P += "σ('%%') + \"""")
-                  | cToken()
+                  | cToken()            + Λ("""P += "cToken() + \"""")
+                  | cBlock()            + Λ("""P += "cBlock() + \"""")
                   | σ('{')              + Λ("""P += "σ('{') + \"""")
                   | σ('}')              + Λ("""P += "σ('}') + \"""")
                   | σ('(')              + Λ("""P += "σ('(') + \"""")
