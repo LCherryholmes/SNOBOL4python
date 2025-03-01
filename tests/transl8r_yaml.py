@@ -62,12 +62,21 @@ def keyword():          yield from  ident() @ "tx" + λ("tx in keywords")
 def identifier():       yield from  ident() @ "tx" + λ("tx not in keywords")
 #-------------------------------------------------------------------------------
 @pattern
+def yamlPatch():        yield from  ( ς('-') + ς('patches')
+                                    + σ('/') + SPAN(_DIGITS)
+                                    + σ('-') + BREAK('\n')
+                                    + η()
+                                    )
+@pattern
+def yamlPatches():      yield from  yamlPatch() + FENCE(yamlPatches() | ε())
+#-------------------------------------------------------------------------------
+@pattern
 def yamlStatement():    yield from  \
     ( ς('package')                          + σ(':') + BREAK('\n')
-#   | ς('name')                             + σ(':')
-#   | ς('version')                          + σ(':')
+    | ς('name')                             + σ(':') + μ() + identifier()
+    | ς('version')                          + σ(':') + μ() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS)
     | ς('source')                           + σ(':') + BREAK('\n')
-    | ς('patches')                          + σ(':') + BREAK('\n')
+    | ς('patches')                          + σ(':') + BREAK('\n') + η() + (yamlPatches() | ε())
 #   | ς('url')                              + σ(':')
     | ς('build')                            + σ(':') + BREAK('\n')
 #   | ς('activate_in_script')               + σ(':')
