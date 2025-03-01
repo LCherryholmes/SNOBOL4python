@@ -178,7 +178,7 @@ def Inbox():
     yield from  \
     ( POS(0) + Λ("""P = "yield from (\\n\"""")
     + ARBNO(
-        θ("OUTPUT") +
+#       θ("OUTPUT") +
         ( σ('\\\n')                     + Λ("""P += "σ('\\\n') + \"""")
         | σ('\n')                       + Λ("""P += "η() +\\n\"""") 
         | SPAN(" ") % "tx"              + Λ("""P += "ς('" + tx + "') + \"""")
@@ -233,16 +233,20 @@ if __name__ == '__main__':
                "/Mail/pop.mail.yahoo.com/Inbox"
     pyOutput_nm = "./inbox-pop3.py"
     GLOBALS(globals())
-    inbox = ""
-    lineno = 0
+    block_size = 100
     with open(inbox_nm, "r") as Input:
-        while line := Input.readline():
-            if lineno < 100:
-                inbox += line
+        lineno = 0
+        while (lineno % block_size) == 0:
+            inbox = ""
+            while line := Input.readline():
                 lineno += 1
-            else: break
-    if MATCH(inbox, Inbox()):
-        with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
-            pyOutput.write(P)
-    else: print("Yikes!!!")
+                inbox += line
+                if (lineno % block_size) == 0:
+                    print(lineno)
+                    if MATCH(inbox, Inbox()):
+                        pass
+                        print(P)
+#                       with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
+#                           pyOutput.write(P)
+                    else: print("Yikes!!!")
 #-------------------------------------------------------------------------------
