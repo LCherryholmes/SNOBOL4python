@@ -15,7 +15,7 @@ from .SNOBOL4functions import PROTOTYPE
 #----------------------------------------------------------------------------------------------------------------------
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 #----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
     def __init__(self, func, patterns, features):
@@ -42,6 +42,7 @@ class PATTERN(object):
                                         return ξ(*self.patterns, other)
                                     else: return ξ(self, other)
     def __div__(self, other):       return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
+    def __rdiv__(self, other):      return Ω(self, other) # OMEGA, binary '/', immediate assignment (permanent)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (backtracking)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
     def __contains__(self, other):  return MATCH(other, self)
@@ -98,7 +99,7 @@ def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
         _globals[V] = _1
         yield _1
         logger.debug("%s deleted", V)
-        del _globals[V]
+        if V in _globals: del _globals[V]
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
 @pattern

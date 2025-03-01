@@ -3,7 +3,7 @@ import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ, θ
-from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
+from SNOBOL4python import ANY, ARB, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------
 import os
@@ -38,14 +38,17 @@ def Time():             yield from \
 @pattern
 def Year():             yield from \
                         ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS)
+
 @pattern
-def From():             yield from \
-                        ( ς('From - ') + DOW() 
+def Date_Time():        yield from \
+                        ( DOW() 
                         + ς(' ') + Month()
                         + ς(' ') + DOM()
                         + ς(' ') + Time()
                         + ς(' ') + Year()
                         )
+@pattern
+def From():             yield from ς('From - ') + BREAK('\n') # Date_Time()
 #-------------------------------------------------------------------------------
 @pattern
 def thing():                yield from μ() + SPAN(_DIGITS+_UCASE+_LCASE) % "tx"
@@ -144,6 +147,33 @@ def Content_Transfer_Encoding():    yield from ς('Content-Transfer-Encoding:') 
 def Content_Transfer_Encoding():    yield from ς('Content-Transfer-Encoding:') + BREAK('\n')
 #-------------------------------------------------------------------------------
 @pattern
+def part_id():                      yield from \
+                                    (          SPAN("0123456789") @ "tx" + λ(lambda: len(tx) == 3)
+                                    + σ('_') + SPAN("0123456789ABCDEF") @ "tx" + λ(lambda: len(tx) == 8)
+                                    + σ('.') + SPAN("0123456789ABCDEF") @ "tx" + λ(lambda: len(tx) == 8)
+                                    )
+@pattern
+def NextPart_BEGIN():               yield from \
+                                    ( ς('------_=_NextPart_')
+                                    + λ(lambda: "next_part" not in globals())
+                                    + part_id() @ "next_part" + σ('\n')
+#                                   + Content_Type() + σ('\n')
+#                                   + μ() + ς('charset="us-ascii"') + σ('\n')
+#                                   + Content_Transfer_Encoding() + σ('\n')
+                                    )
+@pattern
+def NextPart_END():                 yield from \
+                                    ( ς('------_=_NextPart_') + part_id() @ "tx"
+                                    + λ(lambda: "next_part" in globals())
+                                    + λ(lambda: tx == next_part) + σ('\n')
+#                                   + Content_Type() + σ('\n')
+#                                   + μ() + ς('charset="us-ascii"') + σ('\n')
+#                                   + Content_Transfer_Encoding() + σ('\n')
+                                    )
+@pattern
+def NextPart():                     yield from NextPart_BEGIN() + ARB() + NextPart_END()
+#-------------------------------------------------------------------------------
+@pattern
 def Inbox():
     yield from  \
     ( POS(0) + Λ("""P = "yield from (\\n\"""")
@@ -178,8 +208,10 @@ def Inbox():
         | To()                          + Λ("""P += "To() + \"""")                       
         | X_OriginalArrivalTime()       + Λ("""P += "X_OriginalArrivalTime() + \"""")    
         | Content_Length()              + Λ("""P += "Content_Length() + \"""")           
+        | NextPart()                    + Λ("""P += "NextPart() + \"""")
+        | NextPart_BEGIN()              + Λ("""P += "NextPart_BEGIN() + \"""")
+        | NextPart_END()                + Λ("""P += "NextPart_END() + \"""")
         | Content_Type()                + Λ("""P += "Content_Type() + \"""")             
-        | Content_Transfer_Encoding()   + Λ("""P += "Content_Transfer_Encoding() + \"""")
         | Content_Transfer_Encoding()   + Λ("""P += "Content_Transfer_Encoding() + \"""")
         | ( NOTANY(" \t\r\f\n")
           + BREAK(" \t\r\f\n")
