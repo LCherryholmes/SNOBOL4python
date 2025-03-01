@@ -224,6 +224,20 @@ def RPOS(n) -> PATTERN:
         logger.debug("RPOS(%d) backtracking...", n)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
+def α():
+    global _pos, _subject
+    if (_pos == 0) or \
+       (_pos > 0 and _subject[_pos - 1 : _pos] == '\n'):
+        yield ""
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
+def ω():
+    global _pos, _subject
+    if (_pos == len(_subject)) or \
+       (_pos < len(_subject) and _subject[_pos : _pos + 1] == '\n'):
+       yield ""
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
 def LEN(n) -> PATTERN:
     global _pos, _subject
     if _pos + n <= len(_subject):
@@ -244,6 +258,36 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
             yield s
             _pos -= len(s)
             logger.debug("sigma(%s) backtracking(%d)...", repr(s), _pos)
+#----------------------------------------------------------------------------------------------------------------------
+# Regular Expression pattern matching
+import re
+_rexs = dict()
+@pattern
+def Φ(rex) -> PATTERN:
+    global _pos, _subject, _rexs
+    if rex not in _rexs:
+        _rexs[rex] = re.compile(rex)
+    if matches := _rexs[rex].match(_subject, pos = _pos, endpos = len(_subject)):
+        if _pos == matches.start():
+            pos0 = _pos
+            if _pos < matches.end(): #must consume something
+                _pos = matches.end()
+                yield _subject[pos0 : _pos]
+                _pos = pos0
+            else: raise Exeption("Regular expression can not match epsilon.")
+        else: raise Exeption("Yikes! Internal error.")
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
+def φ():
+    print("Yikes! φ()")
+    yield ""
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
+def ψ(): print("Yikes! Φ()"); yield ""
+@pattern
+def Ψ(): print("Yikes! Ψ()"); yield ""
+@pattern
+def Ϙ(): print("Yikes! Ϙ()"); yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def TAB(n) -> PATTERN:
@@ -486,6 +530,5 @@ def MATCH(S, P) -> bool:
             exec(command, _globals)
         return True
     except StopIteration:
-        logger.info(f'"{S}" FAIL')
         return False
 #----------------------------------------------------------------------------------------------------------------------
