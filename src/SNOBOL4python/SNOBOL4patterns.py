@@ -105,11 +105,19 @@ def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
 def λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     global _globals
     logger.debug("lambda(%s) evaluating...", repr(expression))
-    if eval(expression, _globals):
-        logger.debug("lambda(%s) SUCCESS", repr(expression))
-        yield ""
-        logger.debug("lambda(%s) backtracking...", repr(expression))
-    else: logger.debug("lambda(%s) Error evaluating. FAIL", repr(expression))
+    match type(expression).__name__:
+        case 'str':
+            if eval(expression, _globals):
+                logger.debug("lambda(%s) SUCCESS", repr(expression))
+                yield ""
+                logger.debug("lambda(%s) backtracking...", repr(expression))
+            else: logger.debug("lambda(%s) Error evaluating. FAIL", repr(expression))
+        case 'function':
+            if expression():
+                logger.debug("lambda(%s) SUCCESS", repr(expression))
+                yield ""
+                logger.debug("lambda(%s) backtracking...", repr(expression))
+            else: logger.debug("lambda(%s) Error evaluating. FAIL", repr(expression))
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern

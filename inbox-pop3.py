@@ -1,15 +1,13 @@
 yield from (
-inboxFrom() + η() +
-ς('X-Account-Key:') + ς(' ') + ς('account1') + η() +
-ς('X-UIDL:') + ς(' ') + ς('ABVlxEIAAC5GRXQn/Ajb40l5eAU') + η() +
-ς('X-Mozilla-Status:') + ς(' ') + ς('0000') + η() +
-ς('X-Mozilla-Status2:') + ς(' ') + ς('00000000') + η() +
-ς('X-Mozilla-Keys:') + ς('                                                                                 ') + η() +
-ς('X-Apparently-To:') + ς(' ') + ς('lcherryh@yahoo.com') + ς(' ') + ς('via') + ς(' ') + ς('66.196.101.21;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('05:51:56') + ς(' ') + ς('-0800') + η() +
-ς('X-Originating-IP:') + ς(' ') + ς('[12.106.87.68]') + η() +
-ς('Return-Path:') + ς(' ') + ς('<ken.moses@quest.com>') + η() +
-ς('Authentication-Results:') + ς(' ') + ς('mta526.mail.mud.yahoo.com') + ς('  ') + ς('from=quest.com;') + ς(' ') + ς('domainkeys=neutral') + ς(' ') + ς('(no') + ς(' ') + ς('sig)') + η() +
-ς('Received:') + ς(' ') + ς('from') + ς(' ') + ς('12.106.87.68') + ς('  ') + ς('(EHLO') + ς(' ') + ς('irvbhxw02.quest.com)') + ς(' ') + ς('(12.106.87.68)') + η() +
+From() + η() +
+X_account_key() + η() +
+X_UIDL() + X_Mozilla_Status() + η() +
+X_Mozilla_Status2() + η() +
+X_Mozilla_Keys() + ς('X-Apparently-To:') + ς(' ') + ς('lcherryh@yahoo.com') + ς(' ') + ς('via') + ς(' ') + ς('66.196.101.21;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('05:51:56') + ς(' ') + ς('-0800') + η() +
+X_Originating_IP() + η() +
+Return_Path() + η() +
+Authentication_Results() + ς(' ') + ς('sig)') + η() +
+Received() + η() +
 ς('  ') + ς('by') + ς(' ') + ς('mta526.mail.mud.yahoo.com') + ς(' ') + ς('with') + ς(' ') + ς('SMTP;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('05:51:56') + ς(' ') + ς('-0800') + η() +
 ς('Received:') + ς(' ') + ς('from') + ς(' ') + ς('alvmbxw02.prod.quest.corp') + ς(' ') + ς('([10.1.0.209])') + ς(' ') + ς('by') + ς(' ') + ς('irvbhxw02.quest.com') + ς(' ') + ς('with') + ς(' ') + ς('Microsoft') + ς(' ') + ς('SMTPSVC(6.0.3790.1830);') + η() +
 μ() + ς(' ') + ς('Mon,') + ς(' ') + ς('4') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('05:51:56') + ς(' ') + ς('-0800') + η() +
@@ -27,7 +25,7 @@ inboxFrom() + η() +
 ς('Thread-Index:') + ς(' ') + ς('AccXq1xKC7R4pDK/Q6KSUBrhS+yX+QAAAAFe') + η() +
 ς('From:') + ς(' ') + ς('"Ken') + ς(' ') + ς('Moses"') + ς(' ') + ς('<Ken.Moses@quest.com>') + η() +
 ς('To:') + ς(' ') + ς('"Lon') + ς(' ') + ς('Cherryholmes"') + ς(' ') + ς('<lcherryh@yahoo.com>') + η() +
-ς('Return-Path:') + ς(' ') + ς('Ken.Moses@quest.com') + η() +
+Return_Path() + η() +
 ς('X-OriginalArrivalTime:') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('13:51:56.0083') + ς(' ') + ς('(UTC)') + ς(' ') + ς('FILETIME=[5C6CD030:01C717AB]') + η() +
 ς('Content-Length:') + ς(' ') + ς('1150') + η() +
 η() +
@@ -68,17 +66,15 @@ inboxFrom() + η() +
 ς('</HTML>') + η() +
 ς('------_=_NextPart_001_01C717AB.5C51AFDE--') + η() +
 η() +
-inboxFrom() + η() +
-ς('X-Account-Key:') + ς(' ') + ς('account1') + η() +
-ς('X-UIDL:') + ς(' ') + ς('ABBlxEIAABVkRXRs6Q6ThBqYacU') + η() +
-ς('X-Mozilla-Status:') + ς(' ') + ς('0000') + η() +
-ς('X-Mozilla-Status2:') + ς(' ') + ς('00000000') + η() +
-ς('X-Mozilla-Keys:') + ς('                                                                                 ') + η() +
-ς('X-Apparently-To:') + ς(' ') + ς('lcherryh@yahoo.com') + ς(' ') + ς('via') + ς(' ') + ς('66.196.101.16;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('10:46:01') + ς(' ') + ς('-0800') + η() +
-ς('X-Originating-IP:') + ς(' ') + ς('[12.106.87.70]') + η() +
-ς('Return-Path:') + ς(' ') + ς('<pat.luis@quest.com>') + η() +
-ς('Authentication-Results:') + ς(' ') + ς('mta188.mail.re3.yahoo.com') + ς('  ') + ς('from=quest.com;') + ς(' ') + ς('domainkeys=neutral') + ς(' ') + ς('(no') + ς(' ') + ς('sig)') + η() +
-ς('Received:') + ς(' ') + ς('from') + ς(' ') + ς('12.106.87.70') + ς('  ') + ς('(EHLO') + ς(' ') + ς('irvbhxw03.quest.com)') + ς(' ') + ς('(12.106.87.70)') + η() +
+From() + η() +
+X_account_key() + η() +
+X_UIDL() + X_Mozilla_Status() + η() +
+X_Mozilla_Status2() + η() +
+X_Mozilla_Keys() + ς('X-Apparently-To:') + ς(' ') + ς('lcherryh@yahoo.com') + ς(' ') + ς('via') + ς(' ') + ς('66.196.101.16;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('10:46:01') + ς(' ') + ς('-0800') + η() +
+X_Originating_IP() + η() +
+Return_Path() + η() +
+Authentication_Results() + ς(' ') + ς('sig)') + η() +
+Received() + η() +
 ς('  ') + ς('by') + ς(' ') + ς('mta188.mail.re3.yahoo.com') + ς(' ') + ς('with') + ς(' ') + ς('SMTP;') + ς(' ') + ς('Mon,') + ς(' ') + ς('04') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('10:46:01') + ς(' ') + ς('-0800') + η() +
 ς('Received:') + ς(' ') + ς('from') + ς(' ') + ς('alvmbxw01.prod.quest.corp') + ς(' ') + ς('([10.1.50.13])') + ς(' ') + ς('by') + ς(' ') + ς('irvbhxw03.quest.com') + ς(' ') + ς('with') + ς(' ') + ς('Microsoft') + ς(' ') + ς('SMTPSVC(6.0.3790.1830);') + η() +
 μ() + ς(' ') + ς('Mon,') + ς(' ') + ς('4') + ς(' ') + ς('Dec') + ς(' ') + ς('2006') + ς(' ') + ς('10:46:00') + ς(' ') + ς('-0800') + η() +
@@ -98,5 +94,5 @@ inboxFrom() + η() +
 ς('To:') + ς(' ') + ς('<lcherryh@yahoo.com>') + η() +
 ς('Cc:') + ς(' ') + ς('"Ken') + ς(' ') + ς('Moses"') + ς(' ') + ς('<Ken.Moses@quest.com>,') + η() +
 μ() + ς('"Keren') + ς(' ') + ς('Kamilian"') + ς(' ') + ς('<Keren.Kamilian@quest.com>') + η() +
-ς('Return-Path:') + ς(' ') + ς('pat.luis@quest.com') + η() +
+Return_Path() + η() +
 '')
