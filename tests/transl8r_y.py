@@ -69,9 +69,11 @@ def characterLiteral(): yield from  σ("'") + (escapedCharacter() | NOTANY("'\\\
 @pattern
 def stringLiteral():    yield from  σ('"') + ARBNO(escapedCharacter() | BREAK('"\\\r\n')) + σ('"')
 #-------------------------------------------------------------------------------
-keywords = set(['break', 'case', 'continue', 'default', 'delete', 'do', 
-                'else', 'for', 'goto', 'if', 'left', 'new', 'prec', 'right',
-                'struct', 'switch', 'token', 'type', 'union', 'while'])
+keywords = {
+    'break', 'case', 'continue', 'default', 'delete', 'do', 
+    'else', 'for', 'goto', 'if', 'left', 'new', 'prec', 'right',
+    'struct', 'switch', 'token', 'type', 'union', 'while'
+    }
 @pattern
 def ident():            yield from  ( ANY(_UCASE + '_' + _LCASE) 
                                     + FENCE(SPAN(_DIGITS + _UCASE + '_' + _LCASE) | ε())

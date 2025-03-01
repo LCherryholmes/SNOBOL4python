@@ -29,45 +29,57 @@ def η():                yield from  FENCE(whitespace() | ε())
 def ς(s):               yield from  η() + σ(s)
 #-------------------------------------------------------------------------------
 @pattern
-def operator():         yield from  ( σ(':') | σ('-')
-                                    )
+def operator():         yield from  (σ(':') | σ('-'))
 #-------------------------------------------------------------------------------
 @pattern
-def identifier():       yield from  ( ANY(_UCASE + '_' + _LCASE) 
-                                    + FENCE(SPAN(_DIGITS + _UCASE + '_' + _LCASE) | ε())
-                                    ) % "tx"
+def escapedCharacter(): yield from  \
+                        ( σ('\\')
+                        + (  ANY('"\\abfnrtv\n' + "'")
+                          |  ANY('01234567') + FENCE(ANY('01234567') | ε())
+                          |  ANY('0123') + ANY('01234567') + ANY('01234567')
+                          |  ANY('Xx') + SPAN('0123456789ABCDEFabcdef')
+                          )
+                        )
+@pattern
+def stringLiteral():    yield from  σ("'") + BREAK("'") + σ("'")
 #-------------------------------------------------------------------------------
+keywords = {
+    'requirements', 'patches', 'commands', 'host',
+    'detect_binary_files_with_prefix', 'source', 'https', 'requires',
+    'description', 'test', 'run_exports', 'build', 'script_env', 'downstreams',
+    'run_constrained', 'about', 'no_link', 'activate_in_script', 'number',
+    'url', 'name', 'string', 'noarch', 'missing_dso_whitelist',
+    'skip_compile_pyc', 'run', 'package', 'md5', 'version', 'weak', 'files'
+    }
 @pattern
-def escapedCharacter(): yield from  ( σ('\\')
-                                    + (  ANY('"\\abfnrtv\n' + "'")
-                                      |  ANY('01234567') + FENCE(ANY('01234567') | ε())
-                                      |  ANY('0123') + ANY('01234567') + ANY('01234567')
-                                      |  ANY('Xx') + SPAN('0123456789ABCDEFabcdef')
-                                      )
-                                    )
+def ident():            yield from  \
+                        ( ANY(_LCASE) 
+                        + FENCE(SPAN(_DIGITS + '_' + _LCASE) | ε())
+                        ) % "tx"
 @pattern
-def stringLiteral():    yield from  σ("'") + BREAK("'") + σ('"')
+def keyword():          yield from  ident() @ "tx" + λ("tx in keywords")
+@pattern
+def identifier():       yield from  ident() @ "tx" + λ("tx not in keywords")
 #-------------------------------------------------------------------------------
 @pattern
 def yamlTokens():
     yield from  ( POS(0)                    + Λ("""P = "yield from (\\n\"""")
-                                            + Λ("""Q = set()""")
                 + ARBNO(
                     θ("OUTPUT") +
                     ( σ('\\\n')             + Λ("""P += "σ('\\\n') + \"""")
                     | σ('\n')               + Λ("""P += "η() +\\n\"""") 
-                    | SPAN(" \t\r\f\n")     + Λ("""P += "η() +\\n\"""")
-                    | SPAN(" \t\r\f")       + Λ("""P += "μ() + \"""") # currently unreachable
-                    | hashStyleComment()    + Λ("""P += "hashStyleComment() + \"""")
+                    | SPAN(" \t\r\f")     # + Λ("""P += "μ() + \"""")
+#                   | SPAN(" \t\r\f\n")   # + Λ("""P += "η() +\\n\"""") # currently unreachable
+                    | hashStyleComment()    + Λ("""P += "hashStyleComment() +\\n\"""")
                     | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
+                    | keyword()             + Λ("""P += "ς('" + tx + "') + \"""")
                     | identifier() + σ(':') + Λ("""P += "ς('" + tx + "') + σ(':') + \"""")
-                                            + Λ("""Q.add(tx)""")
                     | identifier()          + Λ("""P += "identifier() + \"""")
                     | operator() % "tx"     + Λ("""P += "ς('" + tx + "') + \"""")
                     | SPAN(_DIGITS)         + Λ("""P += "SPAN(_DIGITS) + \"""")
                     | SPAN(_UCASE)          + Λ("""P += "SPAN(_UCASE) + \"""")
                     | SPAN(_LCASE)          + Λ("""P += "SPAN(_LCASE) + \"""")
-                    | ANY(_ALPHABET) % "tx" + Λ("""P += "ς('" + tx + "') + \"""")
+                    | NOTANY(_DIGITS + _UCASE + _LCASE) % "tx" + Λ("""P += "ς('" + tx + "') + \"""")
                     ) @ "OUTPUT"
                   )
                 + RPOS(0)                   + Λ("""P += ")\\n\"""")
