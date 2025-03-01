@@ -1,600 +1,167 @@
 yield from (
-hashStyleComment() + hashStyleComment() + η() +
-ς('package') + σ(':') + η() +
-η() +
-ς('name') + σ(':') + η() +
-identifier() + η() +
-η() +
-ς('version') + σ(':') + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-ς('source') + σ(':') + η() +
-η() +
-ς('-') + η() +
-ς('md5') + σ(':') + η() +
-SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('patches') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + ς('-') + identifier() + ς('-') + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('url') + σ(':') + η() +
-ς('https') + σ(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('/') + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + identifier() + ς('.') + identifier() + η() +
-ς('build') + σ(':') + η() +
-η() +
-ς('activate_in_script') + σ(':') + η() +
-identifier() + η() +
-η() +
-ς('detect_binary_files_with_prefix') + σ(':') + η() +
-identifier() + η() +
-η() +
-ς('missing_dso_whitelist') + σ(':') + η() +
-η() +
-ς('-') + η() +
-ς(''') + ς('*') + ς('*') + ς('/') + identifier() + ς('.') + identifier() + ς(''') + η() +
-η() +
-ς('-') + η() +
-ς(''') + ς('*') + ς('*') + ς('/') + identifier() + ς('.') + identifier() + ς(''') + η() +
-η() +
-ς('-') + η() +
-ς(''') + ς('*') + ς('*') + ς('/') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + ς(''') + η() +
-η() +
-ς('no_link') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + identifier() + ς('.') + identifier() + η() +
-η() +
-ς('number') + σ(':') + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('run_exports') + σ(':') + η() +
-η() +
-ς('noarch') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('weak') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + ς('*') + η() +
-ς('*') + identifier() + η() +
-η() +
-ς('script_env') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('=') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('=') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('=') + identifier() + η() +
-η() +
-ς('skip_compile_pyc') + σ(':') + η() +
-identifier() + η() +
-η() +
-ς('string') + σ(':') + η() +
-identifier() + η() +
-ς('requirements') + σ(':') + η() +
-η() +
-ς('build') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('-') + SPAN(_DIGITS) + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('-') + SPAN(_DIGITS) + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('host') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('-') + identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-identifier() + η() +
-η() +
-ς('run') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
-η() +
-ς('run_constrained') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + ς('*') + η() +
-ς('*') + identifier() + η() +
-ς('test') + σ(':') + η() +
-η() +
-ς('commands') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
+hashStyleComment() +
+hashStyleComment() +
+η() +
+ς('package') + ς(':') + η() +
+ς('name') + ς(':') + identifier() + η() +
+ς('version') + ς(':') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+ς('source') + ς(':') + η() +
+ς('-') + ς('md5') + ς(':') + SPAN(_DIGITS) + identifier() + η() +
+ς('patches') + ς(':') + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + ς('-') + identifier() + ς('-') + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('.') + identifier() + η() +
+ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('url') + ς(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('/') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + identifier() + ς('.') + identifier() + η() +
+ς('build') + ς(':') + η() +
+ς('activate_in_script') + ς(':') + identifier() + η() +
+ς('detect_binary_files_with_prefix') + ς(':') + identifier() + η() +
+ς('missing_dso_whitelist') + ς(':') + η() +
+ς('-') + stringLiteral() + η() +
+ς('-') + stringLiteral() + η() +
+ς('-') + stringLiteral() + η() +
+ς('no_link') + ς(':') + η() +
+ς('-') + SPAN(_UCASE) + identifier() + ς('/') + ς('_') + identifier() + ς('.') + identifier() + η() +
+ς('number') + ς(':') + SPAN(_DIGITS) + η() +
+ς('run_exports') + ς(':') + η() +
+ς('noarch') + ς(':') + η() +
 ς('-') + identifier() + η() +
-η() +
-ς('-') + η() +
-SPAN(_DIGITS) + identifier() + η() +
+ς('weak') + ς(':') + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + ς('*') + ς('*') + ς('_') + identifier() + η() +
+ς('script_env') + ς(':') + η() +
+ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + identifier() + η() +
+ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + identifier() + η() +
+ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + identifier() + η() +
+ς('skip_compile_pyc') + ς(':') + identifier() + η() +
+ς('string') + ς(':') + identifier() + η() +
+ς('requirements') + ς(':') + η() +
+ς('build') + ς(':') + η() +
+ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('host') + ς(':') + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('run') + ς(':') + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
 ς('-') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + ς('>') + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς(',') + ς('<') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + identifier() + η() +
+ς('run_constrained') + ς(':') + η() +
+ς('-') + identifier() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + ς('*') + ς('*') + ς('_') + identifier() + η() +
+ς('test') + ς(':') + η() +
+ς('commands') + ς(':') + η() +
+ς('-') + identifier() + identifier() + η() +
 ς('-') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + ς('%') + identifier() + ς('%') + ς('/') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + identifier() + ς('=') + ς('%') + identifier() + ς('%') + ς('/') + identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-ς('"') + ς('%') + identifier() + ς('%') + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
+ς('-') + identifier() + ς('-') + SPAN(_UCASE) + η() +
+ς('-') + SPAN(_DIGITS) + identifier() + ς('-') + identifier() + η() +
+ς('-') + identifier() + ς('-') + identifier() + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + SPAN(_UCASE) + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + SPAN(_UCASE) + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + SPAN(_UCASE) + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + SPAN(_UCASE) + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + ς('%') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('%') + ς('/') + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + SPAN(_UCASE) + ς('=') + ς('%') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('%') + ς('/') + identifier() + ς('"') + η() +
+ς('-') + identifier() + ς('"') + ς('%') + SPAN(_UCASE) + ς('%') + ς('"') + η() +
+ς('-') + identifier() + ς('-') + SPAN(_UCASE) + identifier() + identifier() + ς('-') + ς('-') + identifier() + ς('-') + ς('-') + identifier() + ς('-') + identifier() + η() +
+ς('-') + identifier() + ς('-') + identifier() + ς('"') + identifier() + identifier() + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + ς(';') + identifier() + identifier() + identifier() + identifier() + ς(';') + identifier() + η() +
+ς('=') + identifier() + ς('(') + SPAN(_DIGITS) + ς(',') + SPAN(_DIGITS) + ς(',') + SPAN(_DIGITS) + ς(',') + SPAN(_DIGITS) + ς(',') + identifier() + ς('=') + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + ς('(') + stringLiteral() + ς(')') + ς(')') + ς(';') + identifier() + ς('(') + identifier() + ς('.') + identifier() + ς('(') + ς(')') + ς(')') + ς('"') + η() +
+ς('-') + identifier() + ς('-') + identifier() + identifier() + ς('test') + ς('-') + identifier() + η() +
+ς('-') + ς('test') + ς('-') + identifier() + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + ς('-') + identifier() + ς('"') + identifier() + identifier() + ς('"') + η() +
+ς('-') + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + ς('-') + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + ς('-') + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + ς('-') + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + identifier() + ς('%') + SPAN(_UCASE) + ς('%') + ς('\') + ς('\') + SPAN(_UCASE) + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + identifier() + SPAN(_DIGITS) + η() +
+ς('-') + identifier() + identifier() + η() +
+ς('-') + identifier() + identifier() + η() +
+ς('-') + identifier() + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
 ς('-') + identifier() + η() +
-identifier() + η() +
-ς('-') + ς('-') + identifier() + η() +
-ς('-') + ς('-') + identifier() + ς('-') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
 ς('-') + identifier() + η() +
-ς('"') + identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς(';') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς(';') + η() +
-identifier() + η() +
-η() +
-ς('=') + η() +
-identifier() + ς('(') + SPAN(_DIGITS) + ς(',') + η() +
-SPAN(_DIGITS) + ς(',') + η() +
-SPAN(_DIGITS) + ς(',') + η() +
-SPAN(_DIGITS) + ς(',') + η() +
-identifier() + ς('=') + identifier() + ς('(') + ς(''') + identifier() + ς('/') + identifier() + ς(''') + ς(')') + ς(')') + ς(';') + η() +
-identifier() + ς('(') + identifier() + ς('.') + identifier() + ς('(') + ς(')') + ς(')') + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
+ς('-') + identifier() + identifier() + ς('.') + identifier() + η() +
+ς('-') + identifier() + ς('-') + identifier() + ς('"') + identifier() + identifier() + identifier() + SPAN(_UCASE) + ς(';') + SPAN(_UCASE) + ς('(') + SPAN(_UCASE) + identifier() + ς(')') + ς('(') + identifier() + ς(')') + ς('"') + η() +
+ς('downstreams') + ς(':') + η() +
 ς('-') + identifier() + η() +
-identifier() + η() +
-identifier() + ς('-') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('-') + identifier() + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + η() +
 ς('-') + identifier() + η() +
-ς('"') + identifier() + η() +
-identifier() + ς('"') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + SPAN(_DIGITS) + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-ς('%') + identifier() + ς('%') + ς('\') + ς('\') + identifier() + ς('\') + ς('\') + identifier() + ς('.') + identifier() + η() +
-identifier() + η() +
-SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
+ς('files') + ς(':') + η() +
+ς('-') + identifier() + ς('.') + identifier() + η() +
+ς('-') + identifier() + ς('/') + identifier() + ς('/') + ς('*') + η() +
+ς('-') + identifier() + ς('/') + identifier() + ς('/') + ς('*') + η() +
+ς('-') + identifier() + ς('/') + identifier() + ς('-') + identifier() + ς('/') + ς('*') + η() +
+ς('requires') + ς(':') + η() +
 ς('-') + identifier() + η() +
-ς('-') + identifier() + ς('=') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
 ς('-') + identifier() + η() +
-ς('"') + identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς(';') + η() +
-identifier() + ς('(') + identifier() + ς(')') + ς('(') + identifier() + ς(')') + ς('"') + η() +
-η() +
-ς('downstreams') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('files') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('.') + identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + identifier() + ς('/') + ς('*') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + identifier() + ς('/') + ς('*') + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('/') + identifier() + ς('-') + identifier() + ς('/') + ς('*') + η() +
-η() +
-ς('requires') + σ(':') + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + η() +
-η() +
-ς('-') + η() +
-identifier() + ς('-') + SPAN(_DIGITS) + η() +
-ς('about') + σ(':') + η() +
-η() +
-ς('description') + σ(':') + η() +
-ς(''') + identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς('-') + identifier() + ς(',') + η() +
-identifier() + ς('-') + identifier() + ς(',') + η() +
-identifier() + ς(',') + η() +
-η() +
-identifier() + η() +
-η() +
-η() +
-identifier() + η() +
-identifier() + ς('.') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-η() +
-identifier() + ς(',') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς('+') + ς('+') + η() +
-identifier() + η() +
-η() +
-η() +
-identifier() + ς('.') + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-η() +
-η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + η() +
-identifier() + ς('.') + η() +
-η() +
-η() +
-ς('
-') +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + η() +
+ς('about') + ς(':') + η() +
+ς('description') + ς(':') + stringLiteral() + η() +
+ς('dev_url') + σ(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + η() +
+ς('doc_source_url') + σ(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + ς('source') + ς('/') + identifier() + ς('.') + identifier() + η() +
+ς('doc_url') + σ(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + η() +
+ς('home') + σ(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + η() +
+ς('license') + σ(':') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+ς('license_file') + σ(':') + SPAN(_UCASE) + η() +
+ς('summary') + σ(':') + SPAN(_UCASE) + identifier() + identifier() + identifier() + identifier() + η() +
+ς('extra') + σ(':') + η() +
+ς('copy_test_source_files') + σ(':') + identifier() + η() +
+identifier() + ς('-') + ς('name') + ς(':') + identifier() + η() +
+ς('final') + σ(':') + identifier() + η() +
+ς('flow_run_id') + σ(':') + identifier() + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+identifier() + ς('-') + ς('maintainers') + σ(':') + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('-') + identifier() + η() +
+ς('remote_url') + σ(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('-') + identifier() + ς('/') + identifier() + ς('-') + identifier() + η() +
+ς('sha') + σ(':') + SPAN(_DIGITS) + identifier() + η() +

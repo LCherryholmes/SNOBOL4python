@@ -19,7 +19,6 @@ if __name__ == '__main__':
     with open(yamlInput_nm, "r") as yamlInput:
         yaml = yamlInput.read()
         if MATCH(yaml, yamlTokens()):
-            print(Q)
             with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
                 pyOutput.write(P[:-3])
 #-------------------------------------------------------------------------------
