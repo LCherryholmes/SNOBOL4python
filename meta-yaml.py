@@ -3,34 +3,11 @@ hashStyleComment() +
 hashStyleComment() +
 η() +
 yamlStatement() + η() +
-ς('name') + ς(':') + identifier() + η() +
-ς('version') + ς(':') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
+yamlStatement() + η() +
+yamlStatement() + η() +
 yamlStatement() + η() +
 ς('-') + ς('md5') + ς(':') + SPAN(_DIGITS) + identifier() + η() +
-yamlStatement() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + ς('-') + identifier() + ς('-') + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('_') + SPAN(_UCASE) + ς('-') + SPAN(_DIGITS) + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + identifier() + SPAN(_UCASE) + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + SPAN(_UCASE) + ς('.') + identifier() + η() +
-ς('-') + ς('patches') + ς('/') + SPAN(_DIGITS) + ς('-') + SPAN(_UCASE) + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + ς('-') + identifier() + SPAN(_UCASE) + ς('-') + identifier() + ς('-') + identifier() + ς('.') + identifier() + η() +
-ς('url') + ς(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('/') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + identifier() + ς('.') + identifier() + η() +
+yamlStatement() + ς('url') + ς(':') + ς('https') + ς(':') + ς('/') + ς('/') + identifier() + ς('.') + identifier() + ς('.') + identifier() + ς('/') + identifier() + ς('/') + identifier() + ς('/') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('/') + SPAN(_UCASE) + identifier() + ς('-') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + identifier() + ς('.') + identifier() + η() +
 yamlStatement() + η() +
 ς('activate_in_script') + ς(':') + identifier() + η() +
 ς('detect_binary_files_with_prefix') + ς(':') + identifier() + η() +
@@ -148,7 +125,7 @@ yamlStatement() + η() +
 ς('summary') + σ(':') + SPAN(_UCASE) + identifier() + identifier() + identifier() + identifier() + η() +
 yamlStatement() + η() +
 ς('copy_test_source_files') + σ(':') + identifier() + η() +
-identifier() + ς('-') + ς('name') + ς(':') + identifier() + η() +
+identifier() + ς('-') + yamlStatement() + η() +
 ς('final') + σ(':') + identifier() + η() +
 ς('flow_run_id') + σ(':') + identifier() + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + η() +
 yamlStatement() + η() +
