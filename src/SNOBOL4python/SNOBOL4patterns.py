@@ -15,7 +15,7 @@ from .SNOBOL4functions import PROTOTYPE
 #----------------------------------------------------------------------------------------------------------------------
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 #----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
     def __init__(self, func, patterns, features):
