@@ -2,7 +2,7 @@
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, θ
+from SNOBOL4python import ε, σ, π, λ, Λ, θ, φ, Φ
 from SNOBOL4python import ANY, ARB, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------
@@ -23,9 +23,11 @@ def DOW():              yield from \
                         )
 @pattern
 def Month():            yield from \
-                        ( ς('Jan') | ς('Feb') | ς('Mar') | ς('Apr')
-                        | ς('May') | ς('Jun') | ς('Jul') | ς('Aug')
-                        | ς('Sep') | ς('Oct') | ς('Nov') | ς('Dec')
+                        ( Φ(r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)")
+                        | ( ς('Jan') | ς('Feb') | ς('Mar') | ς('Apr')
+                          | ς('May') | ς('Jun') | ς('Jul') | ς('Aug')
+                          | ς('Sep') | ς('Oct') | ς('Nov') | ς('Dec')
+                          )
                         )
 @pattern
 def DOM():              yield from SPAN(_DIGITS)
@@ -48,7 +50,7 @@ def Date_Time():        yield from \
                         + ς(' ') + Year()
                         )
 @pattern
-def From():             yield from ς('From - ') + BREAK('\n') # Date_Time()
+def From():             yield from ς('From - ')
 #-------------------------------------------------------------------------------
 @pattern
 def thing():                yield from μ() + SPAN(_DIGITS+_UCASE+_LCASE) % "tx"
@@ -154,76 +156,86 @@ def part_id():                      yield from \
                                     )
 @pattern
 def NextPart_BEGIN():               yield from \
-                                    ( ς('------_=_NextPart_')
-                                    + λ(lambda: "next_part" not in globals())
-                                    + part_id() @ "next_part" + σ('\n')
-#                                   + Content_Type() + σ('\n')
-#                                   + μ() + ς('charset="us-ascii"') + σ('\n')
-#                                   + Content_Transfer_Encoding() + σ('\n')
+                                    ( Φ(r"------_=_NextPart_") 
+                                    | ( ς('------_=_NextPart_')
+                                      + λ(lambda: "next_part" not in globals())
+                                      + part_id() @ "next_part" + σ('\n')
+                                      )
                                     )
 @pattern
 def NextPart_END():                 yield from \
-                                    ( ς('------_=_NextPart_') + part_id() @ "tx"
-                                    + λ(lambda: "next_part" in globals())
-                                    + λ(lambda: tx == next_part) + σ('\n')
-#                                   + Content_Type() + σ('\n')
-#                                   + μ() + ς('charset="us-ascii"') + σ('\n')
-#                                   + Content_Transfer_Encoding() + σ('\n')
+                                    ( Φ(r"------_=_NextPart_") 
+                                    | ( ς('------_=_NextPart_') + part_id() @ "tx"
+                                      + λ(lambda: "next_part" in globals())
+                                      + λ(lambda: tx == next_part) + σ('\n')
+                                      )
                                     )
 @pattern
-def NextPart():                     yield from NextPart_BEGIN() + ARB() + NextPart_END()
+def NextPart():                     yield from \
+                                    Φ( r"------_=_NextPart_"
+                                       r"[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}\n"
+                                       r"(.*\n)*"
+                                       r"------_=_NextPart_"
+                                       r"[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}\n"
+                                    ) + Λ("""emails += 1""")
+#-------------------------------------------------------------------------------
+@pattern
+def base64():                       yield from SPAN(_DIGITS+'/+'+_UCASE+_LCASE) @ "tx" \
+                                             + σ('\n') + λ(lambda: len(tx) == 76)
 #-------------------------------------------------------------------------------
 @pattern
 def Inbox():
     yield from  \
-    ( POS(0) + Λ("""P = "yield from (\\n\"""")
+    ( POS(0) + Λ("""P = [];""")
     + ARBNO(
 #       θ("OUTPUT") +
-        ( σ('\\\n')                     + Λ("""P += "σ('\\\n') + \"""")
-        | σ('\n')                       + Λ("""P += "η() +\\n\"""") 
-        | SPAN(" ") % "tx"              + Λ("""P += "ς('" + tx + "') + \"""")
-        | SPAN("\t\r\f")                + Λ("""P += "μ() + \"""")
-        | From()                        + Λ("""P += "From() + \"""")
-        | X_account_key()               + Λ("""P += "X_account_key() + \"""")
-        | X_UIDL()                      + Λ("""P += "X_UIDL() + \"""")
-        | X_Mozilla_Status()            + Λ("""P += "X_Mozilla_Status() + \"""")
-        | X_Mozilla_Status2()           + Λ("""P += "X_Mozilla_Status2() + \"""")
-        | X_Mozilla_Keys()              + Λ("""P += "X_Mozilla_Keys() + \"""")
-        | X_Originating_IP()            + Λ("""P += "X_Originating_IP() + \"""")
-        | Return_Path()                 + Λ("""P += "Return_Path() + \"""")
-        | Authentication_Results()      + Λ("""P += "Authentication_Results() + \"""")
-        | Received()                    + Λ("""P += "Received() + \"""")                 
-        | X_MimeOLE()                   + Λ("""P += "X_MimeOLE() + \"""")                
-        | Content_class()               + Λ("""P += "Content_class() + \"""")            
-        | MIME_Version()                + Λ("""P += "MIME_Version() + \"""")             
-        | Content_Type()                + Λ("""P += "Content_Type() + \"""")             
-        | Subject()                     + Λ("""P += "Subject() + \"""")                  
-        | Date()                        + Λ("""P += "Date() + \"""")                     
-        | Message_ID()                  + Λ("""P += "Message_ID() + \"""")               
-        | X_MS_Has_Attach()             + Λ("""P += "X_MS_Has_Attach() + \"""")          
-        | X_MS_TNEF_Correlator()        + Λ("""P += "X_MS_TNEF_Correlator() + \"""")     
-        | Thread_Topic()                + Λ("""P += "Thread_Topic() + \"""")             
-        | Thread_Index()                + Λ("""P += "Thread_Index() + \"""")             
-        | From()                        + Λ("""P += "From() + \"""")                     
-        | To()                          + Λ("""P += "To() + \"""")                       
-        | X_OriginalArrivalTime()       + Λ("""P += "X_OriginalArrivalTime() + \"""")    
-        | Content_Length()              + Λ("""P += "Content_Length() + \"""")           
-        | NextPart()                    + Λ("""P += "NextPart() + \"""")
-        | NextPart_BEGIN()              + Λ("""P += "NextPart_BEGIN() + \"""")
-        | NextPart_END()                + Λ("""P += "NextPart_END() + \"""")
-        | Content_Type()                + Λ("""P += "Content_Type() + \"""")             
-        | Content_Transfer_Encoding()   + Λ("""P += "Content_Transfer_Encoding() + \"""")
+        ( σ('\\\n')                     + Λ("""P.append("σ('\\\n')")""")
+        | σ('\n')                       + Λ("""P.append("η() +\\n")""")
+        | SPAN(" ") % "tx"              + Λ("""P.append("ς('" + tx + "')")""")
+        | SPAN("\t\r\f")                + Λ("""P.append("μ()")""")
+        | base64()                      + Λ("""P.append("base64()")""")
+        | Date_Time()                   + Λ("""P.append("Date_Time()")""")
+        | From()                        + Λ("""P.append("From()")""")
+        | X_account_key()               + Λ("""P.append("X_account_key()")""")
+        | X_UIDL()                      + Λ("""P.append("X_UIDL()")""")
+        | X_Mozilla_Status()            + Λ("""P.append("X_Mozilla_Status()")""")
+        | X_Mozilla_Status2()           + Λ("""P.append("X_Mozilla_Status2()")""")
+        | X_Mozilla_Keys()              + Λ("""P.append("X_Mozilla_Keys()")""")
+        | X_Originating_IP()            + Λ("""P.append("X_Originating_IP()")""")
+        | Return_Path()                 + Λ("""P.append("Return_Path()")""")
+        | Authentication_Results()      + Λ("""P.append("Authentication_Results()")""")
+        | Received()                    + Λ("""P.append("Received()")""")
+        | X_MimeOLE()                   + Λ("""P.append("X_MimeOLE()")""")
+        | Content_class()               + Λ("""P.append("Content_class()")""")
+        | MIME_Version()                + Λ("""P.append("MIME_Version()")""")
+        | Content_Type()                + Λ("""P.append("Content_Type()")""")
+        | Subject()                     + Λ("""P.append("Subject()")""")
+        | Date()                        + Λ("""P.append("Date()")""")
+        | Message_ID()                  + Λ("""P.append("Message_ID()")""")
+        | X_MS_Has_Attach()             + Λ("""P.append("X_MS_Has_Attach()")""")
+        | X_MS_TNEF_Correlator()        + Λ("""P.append("X_MS_TNEF_Correlator()")""")
+        | Thread_Topic()                + Λ("""P.append("Thread_Topic()")""")
+        | Thread_Index()                + Λ("""P.append("Thread_Index()")""")
+        | From()                        + Λ("""P.append("From()")""")
+        | To()                          + Λ("""P.append("To()")""")
+        | X_OriginalArrivalTime()       + Λ("""P.append("X_OriginalArrivalTime()")""")
+        | Content_Length()              + Λ("""P.append("Content_Length()")""")
+        | NextPart()                    + Λ("""P.append("NextPart()")""")
+#       | NextPart_BEGIN()              + Λ("""P.append("NextPart_BEGIN()")""")
+#       | NextPart_END()                + Λ("""P.append("NextPart_END()")""")
+        | Content_Type()                + Λ("""P.append("Content_Type()")""")
+        | Content_Transfer_Encoding()   + Λ("""P.append("Content_Transfer_Encoding()")""")
         | ( NOTANY(" \t\r\f\n")
           + BREAK(" \t\r\f\n")
-          ) % "tx"                      + Λ("""P += "ς('" + tx + "') + \"""")
-        | SPAN(_DIGITS)                 + Λ("""P += "SPAN(_DIGITS) + \"""")
-        | SPAN(_UCASE)                  + Λ("""P += "SPAN(_UCASE) + \"""")
-        | SPAN(_LCASE)                  + Λ("""P += "SPAN(_LCASE) + \"""")
+          ) % "tx"                      + Λ("""P.append("ς('" + tx + "')")""")
+        | SPAN(_DIGITS)                 + Λ("""P.append("SPAN(_DIGITS)")""")
+        | SPAN(_UCASE)                  + Λ("""P.append("SPAN(_UCASE)")""")
+        | SPAN(_LCASE)                  + Λ("""P.append("SPAN(_LCASE)")""")
         | NOTANY(_DIGITS+_UCASE+_LCASE) % "tx"
-                                        + Λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
+                                        + Λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
         ) # @ "OUTPUT"
       )
-    + RPOS(0) + Λ("""P += "'')\\n\"""")
+    + RPOS(0)
     )
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
@@ -233,20 +245,25 @@ if __name__ == '__main__':
                "/Mail/pop.mail.yahoo.com/Inbox"
     pyOutput_nm = "./inbox-pop3.py"
     GLOBALS(globals())
-    block_size = 100
+    block_size = 1000000
     with open(inbox_nm, "r") as Input:
         lineno = 0
+        emails = 0
+        position = 0
         while (lineno % block_size) == 0:
-            inbox = ""
+            lines = []
             while line := Input.readline():
                 lineno += 1
-                inbox += line
-                if (lineno % block_size) == 0:
-                    print(lineno)
-                    if MATCH(inbox, Inbox()):
-                        pass
-                        print(P)
-#                       with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
-#                           pyOutput.write(P)
-                    else: print("Yikes!!!")
+                position += len(line)
+                if lineno % 10 == 0: 
+                    print(lineno, emails, position // 1_048_576)
+                if not MATCH(line, POS(0) + base64() + RPOS(0)):
+                    lines.append(line)
+                    if (lineno % block_size) == 0:
+                        inbox = ''.join(lines)
+                        if MATCH(inbox, Inbox()): pass
+#                           print(' + '.join(P))
+#                           with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
+#                               pyOutput.write(P)
+                        else: print("Yikes!!!")
 #-------------------------------------------------------------------------------
