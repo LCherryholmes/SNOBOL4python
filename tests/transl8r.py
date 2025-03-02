@@ -18,28 +18,34 @@ def μ():                yield from FENCE(SPAN(" \t\r\f") | ε())
 def ς(s):               yield from μ() + σ(s)
 @pattern
 def DOW():              yield from \
-                        ( ς('Mon') | ς('Tue') | ς('Wed') | ς('Thu')
-                        | ς('Fri') | ς('Sat') | ς('Sun')
+                        ( φ(r"(Mon|Tue|Wed|Thu|Fri|Sat|Sun)")
+#                       | ( ς('Mon') | ς('Tue') | ς('Wed') | ς('Thu')
+#                         | ς('Fri') | ς('Sat') | ς('Sun')
+#                         )
                         )
 @pattern
 def Month():            yield from \
-                        ( Φ(r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)")
-                        | ( ς('Jan') | ς('Feb') | ς('Mar') | ς('Apr')
-                          | ς('May') | ς('Jun') | ς('Jul') | ς('Aug')
-                          | ς('Sep') | ς('Oct') | ς('Nov') | ς('Dec')
-                          )
+                        ( φ(r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)")
+#                       | ( ς('Jan') | ς('Feb') | ς('Mar') | ς('Apr')
+#                         | ς('May') | ς('Jun') | ς('Jul') | ς('Aug')
+#                         | ς('Sep') | ς('Oct') | ς('Nov') | ς('Dec')
+#                         )
                         )
 @pattern
-def DOM():              yield from SPAN(_DIGITS)
+def DOM():              yield from φ(r"[0-9]+") # | SPAN(_DIGITS)
 @pattern
 def Time():             yield from \
-                        ( ANY(_DIGITS) + ANY(_DIGITS) + σ(':') 
-                        + ANY(_DIGITS) + ANY(_DIGITS) + σ(':')
-                        + ANY(_DIGITS) + ANY(_DIGITS) 
+                        ( φ(r"([0-9]{2}:[0-9]{2}:[0-9]{2})")
+#                       | ( ANY(_DIGITS) + ANY(_DIGITS) + σ(':') 
+#                         + ANY(_DIGITS) + ANY(_DIGITS) + σ(':')
+#                         + ANY(_DIGITS) + ANY(_DIGITS) 
+#                         )
                         )
 @pattern
 def Year():             yield from \
-                        ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS)
+                        ( φ(r"([0-9]{4})")
+                        | ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS) + ANY(_DIGITS)
+                        )
 
 @pattern
 def Date_Time():        yield from \
@@ -156,7 +162,7 @@ def part_id():                      yield from \
                                     )
 @pattern
 def NextPart_BEGIN():               yield from \
-                                    ( Φ(r"------_=_NextPart_") 
+                                    ( φ(r"------_=_NextPart_") 
                                     | ( ς('------_=_NextPart_')
                                       + λ(lambda: "next_part" not in globals())
                                       + part_id() @ "next_part" + σ('\n')
@@ -164,7 +170,7 @@ def NextPart_BEGIN():               yield from \
                                     )
 @pattern
 def NextPart_END():                 yield from \
-                                    ( Φ(r"------_=_NextPart_") 
+                                    ( φ(r"------_=_NextPart_") 
                                     | ( ς('------_=_NextPart_') + part_id() @ "tx"
                                       + λ(lambda: "next_part" in globals())
                                       + λ(lambda: tx == next_part) + σ('\n')
@@ -172,7 +178,7 @@ def NextPart_END():                 yield from \
                                     )
 @pattern
 def NextPart():                     yield from \
-                                    Φ( r"------_=_NextPart_"
+                                    φ( r"------_=_NextPart_"
                                        r"[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}\n"
                                        r"(.*\n)*"
                                        r"------_=_NextPart_"
@@ -245,9 +251,10 @@ if __name__ == '__main__':
                "/Mail/pop.mail.yahoo.com/Inbox"
     pyOutput_nm = "./inbox-pop3.py"
     GLOBALS(globals())
-    block_size = 1000000
+    block_size = 10000
     with open(inbox_nm, "r") as Input:
         lineno = 0
+        linecnt = 0
         emails = 0
         position = 0
         while (lineno % block_size) == 0:
@@ -255,15 +262,17 @@ if __name__ == '__main__':
             while line := Input.readline():
                 lineno += 1
                 position += len(line)
-                if lineno % 10 == 0: 
-                    print(lineno, emails, position // 1_048_576)
+                if lineno % 100 == 0: 
+                    print(lineno, linecnt, emails, position, position // 1_048_576)
                 if not MATCH(line, POS(0) + base64() + RPOS(0)):
                     lines.append(line)
-                    if (lineno % block_size) == 0:
-                        inbox = ''.join(lines)
-                        if MATCH(inbox, Inbox()): pass
-#                           print(' + '.join(P))
+                    linecnt += 1
+                    if (linecnt % block_size) == 0:
+                        inbox = "".join(lines)
+                        if MATCH(inbox, Inbox()):
+                            print(" + ".join(P))
 #                           with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
 #                               pyOutput.write(P)
                         else: print("Yikes!!!")
+#               else: print(line, end="")
 #-------------------------------------------------------------------------------

@@ -263,7 +263,7 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
 import re
 _rexs = dict()
 @pattern
-def Φ(rex) -> PATTERN:
+def φ(rex) -> PATTERN:
     global _pos, _subject, _rexs
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex)
@@ -278,7 +278,7 @@ def Φ(rex) -> PATTERN:
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def φ():
+def Φ():
     print("Yikes! φ()")
     yield ""
 #----------------------------------------------------------------------------------------------------------------------
