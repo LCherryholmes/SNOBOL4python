@@ -251,7 +251,7 @@ if __name__ == '__main__':
                "/Mail/pop.mail.yahoo.com/Inbox"
     pyOutput_nm = "./inbox-pop3.py"
     GLOBALS(globals())
-    block_size = 10000
+    block_size = 10_000
     with open(inbox_nm, "r") as Input:
         lineno = 0
         linecnt = 0
