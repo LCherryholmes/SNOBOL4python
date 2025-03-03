@@ -30,7 +30,7 @@ def μ():                yield from  FENCE(space() | ε())
 @pattern
 def η():                yield from  FENCE(whitespace() | ε())
 @pattern
-def ς(s):               yield from η() + σ(s)
+def ς(s):               yield from  η() + σ(s)
 #-------------------------------------------------------------------------------
 @pattern
 def exponent():         yield from  ( (σ('E') | σ('e'))
@@ -187,7 +187,7 @@ def yRecognizer():      yield from  ( ARBNO(
 #-------------------------------------------------------------------------------
 @pattern
 def cTokens():
-    yield from  ARBNO(cToken())
+    yield from ARBNO(cToken())
 #-------------------------------------------------------------------------------
 @pattern
 def cToken(blind):
