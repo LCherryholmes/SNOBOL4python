@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------------------------------------------------
 # SNOBOL4 string pattern matching
-#> python src/SNOBOL4python/SNOBOL4.py
+#> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install .\dist\snobol4python-0.1.0.tar.gz
+#> python -m pip install ./dist/snobol4python-0.1.0.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
+#> python tests/transl8r.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
 from functools import wraps
@@ -500,18 +501,15 @@ def _reduce(t, n):
             x.insert(1, _globals['vstack'].pop())
         _globals['vstack'].append(x)
 #----------------------------------------------------------------------------------------------------------------------
-def GLOBALS(V):
-    global _globals
-    _globals = V
-#----------------------------------------------------------------------------------------------------------------------
-def SEARCH(S, P) -> bool: None
-def FULLMATCH(S, P) -> bool: None
-def MATCH(S, P) -> bool:
+def GLOBALS(V): global _globals; _globals = V
+def MATCH     (string -> str, P -> PATTERN) -> bool: return SEARCH(string, POS(0) + P)
+def FULLMATCH (string -> str, P -> PATTERN) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
+def SEARCH    (string -> str, P -> PATTERN) -> bool:
     global _pos, _subject, _cstack, _globals
     if _globals is None:
         _globals = globals()
     _pos = 0 # internal position
-    _subject = S # internal subject
+    _subject = string # internal subject
     _cstack = [] # insternal command stack (conditional actions)
     _globals['itop'] = -1
     _globals['istack'] = [] # counter stack (nPush, nInc, nPop, nTop)
@@ -520,11 +518,11 @@ def MATCH(S, P) -> bool:
     _globals['_reduce'] = _reduce
     try:
         m = next(P)
-        logger.debug(f'MATCH(): "{S}" ? "{m}"')
+        logger.debug(f'SEARCH(): "{string}" ? "{m}"')
         for command in _cstack:
-            logger.debug(f'MATCH(): {command}')
+            logger.debug(f'SEARCH(): {command}')
         for var, val in _globals.items():
-            logger.debug(f'MATCH(): var={var} val={val}')
+            logger.debug(f'SEARCH(): var={var} val={val}')
         _globals['_subject'] = S
         for command in _cstack:
             exec(command, _globals)

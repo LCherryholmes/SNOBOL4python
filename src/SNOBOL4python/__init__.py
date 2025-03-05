@@ -1,6 +1,5 @@
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import PATTERN, pattern
-from .SNOBOL4patterns import GLOBALS, SEARCH, MATCH, FULLMATCH
+from .SNOBOL4patterns import PATTERN, GLOBALS, pattern
 from .SNOBOL4patterns import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, Λ, λ, θ
 from .SNOBOL4patterns import φ, Φ, ψ, Ψ, Ϙ, α, ω
 from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL

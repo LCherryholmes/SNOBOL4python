@@ -1,0 +1,82 @@
+START                                   :(main1)
+*-------------- ----------------------- ------------------------------
+* ICON Programming Language: every write(5 > ((1 to 2) * (3 to 4)));
+* 1st pass, attribute grammar generated
+*-------------- ----------------------- ------------------------------
+x5.start        x5.V = 5                :(x5.succeed)
+x5.resume                               :(x5.fail)
+*-------------- ----------------------- -----------------------------
+x1.start        x1.V = 1                :(x1.succeed)
+x1.resume                               :(x1.fail)
+*-------------- ----------------------- ------------------------------
+x2.start        x2.V = 2                :(x2.succeed)
+x2.resume                               :(x2.fail)
+*-------------- ----------------------- ------------------------------
+to1.start                               :(x1.start)
+x1.fail                                 :(to1.fail)
+x2.fail                                 :(x1.resume)
+to1.code        LE(to1.I, x2.V)         :F(x2.resume)
+                to1.V = to1.I           :(to1.succeed)
+to1.resume      to1.I = to1.I + 1       :(to1.code)
+x1.succeed                              :(x2.start)
+x2.succeed      to1.I = x1.V            :(to1.code)
+*-------------- ----------------------- ------------------------------
+x3.start        x3.V = 3                :(x3.succeed)
+x3.resume                               :(x3.fail)
+*-------------- ----------------------- ------------------------------
+x4.start        x4.V = 4                :(x4.succeed)
+x4.resume                               :(x4.fail)
+*-------------- ----------------------- ------------------------------
+to2.start                               :(x3.start)
+x3.fail                                 :(to2.fail)
+x4.fail                                 :(x3.resume)
+to2.code        LE(to2.I, x4.V)         :F(x4.resume)
+                to2.V = to2.I           :(to2.succeed)
+to2.resume      to2.I = to2.I + 1       :(to2.code)
+x3.succeed                              :(x4.start)
+x4.succeed      to2.I = x3.V            :(to2.code)
+*-------------- ----------------------- ------------------------------
+mult.start                              :(to1.start)
+to1.fail                                :(mult.fail)
+to2.fail                                :(to1.resume)
+mult.resume                             :(to2.resume)
+to1.succeed                             :(to2.start)
+to2.succeed     mult.V = to1.V * to2.V  :S(mult.succeed)F(exception)
+*-------------- ----------------------- ------------------------------
+greater.start                           :(x5.start)
+x5.fail                                 :(greater.fail)
+mult.fail                               :(x5.resume)
+greater.resume                          :(mult.resume)
+x5.succeed                              :(mult.start)
+mult.succeed    GT(x5.V, mult.V)        :F(mult.resume)
+                greater.V = mult.V      :(greater.succeed)
+*-------------- ----------------------- ------------------------------
+write1.start                            :(greater.start)
+write1.resume                           :(greater.resume)
+greater.fail                            :(write1.fail)
+greater.succeed write.V = greater.V
+                OUTPUT = write.V        :(write1.succeed)
+*-------------- ----------------------- ------------------------------
+* ICON Programming Language: every write(5 > ((1 to 2) * (3 to 4)));
+* 2nd pass, optimization
+*-------------- ----------------------- ------------------------------
+write2.start    to3.I = 1               :(to3.code)
+to3.resume      to3.I = to3.I + 1
+to3.code        LE(to3.I, 2)            :F(write2.fail)
+                to4.I = 3               :(to4.code)
+write2.resume   to4.I = to4.I + 1
+to4.code        LE(to4.I, 4)            :F(to3.resume)
+                mult.V = to3.I * to4.I  :F(exception)
+                GT(5, mult.V)           :F(write2.resume)
+                greater.V = mult.V
+                OUTPUT = greater.V      :(write2.succeed)
+*-------------- ----------------------- ------------------------------
+main1           OUTPUT =                :(write1.start)
+write1.fail     OUTPUT = "Failure."     :(main2)
+write1.succeed  OUTPUT = "Success!"     :(write1.resume)
+main2           OUTPUT =                :(write2.start)
+write2.fail     OUTPUT = "Failure."     :(END)
+write2.succeed  OUTPUT = "Success!"     :(write2.resume)
+*-------------- ----------------------- ------------------------------
+exception       TERMINAL = "Exception!" :(END)
+END
