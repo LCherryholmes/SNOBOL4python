@@ -12,3 +12,4 @@ tests/*.lst
 CSCI-513/*.pdf
 ENG-685/*.pdf
 *.prof
+*.exe
