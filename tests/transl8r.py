@@ -8,6 +8,8 @@ from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------
 import os
 import sys
+import cProfile
+import pstats
 sys.path.append(os.getcwd())
 #from transl8r_y import *
 #from transl8r_yaml import *
@@ -245,35 +247,41 @@ def Inbox():
     + RPOS(0)
     )
 #-------------------------------------------------------------------------------
-if __name__ == '__main__':
+lineno = 0
+emails = 0
+position = 0
+def main():
+    global lineno, position, emails
     yamlInput_nm = r"""C:/Users/lcher/.conda/pkgs/python-3.12.3-h2628c8c_0_cpython/info/recipe/meta.yaml"""
     inbox_nm = "C:/Users/lcher/AppData/Local/Packages/MozillaThunderbird.MZLA_h5892qc0xkpca" \
                "/LocalCache/Roaming/Thunderbird/Profiles/nsn6odxd.default-esr" \
                "/Mail/pop.mail.yahoo.com/Inbox"
     pyOutput_nm = "./inbox-pop3.py"
-    GLOBALS(globals())
-    block_size = 10_000
-    with open(inbox_nm, "r") as Input:
-        lineno = 0
-        linecnt = 0
-        emails = 0
-        position = 0
-        while (lineno % block_size) == 0:
+    with open(inbox_nm, "r", encoding="latin-1") as Input:
+        for iterations in range(2):
+            linecnt = 0
             lines = []
-            while line := Input.readline():
+            while True:
+                line = Input.readline()
+                if not line: break
                 lineno += 1
                 position += len(line)
-                if lineno % 100 == 0: 
+                if (lineno % 1000) == 0:
                     print(lineno, linecnt, emails, position, position // 1_048_576)
+                if linecnt >= 1000: break
                 if not MATCH(line, POS(0) + base64() + RPOS(0)):
-                    lines.append(line)
                     linecnt += 1
-                    if (linecnt % block_size) == 0:
-                        inbox = "".join(lines)
-                        if MATCH(inbox, Inbox()):
-                            print(" + ".join(P))
-#                           with open(pyOutput_nm, "w", encoding="utf-8") as pyOutput:
-#                               pyOutput.write(P)
-                        else: print("Yikes!!!")
-#               else: print(line, end="")
+                    lines.append(line)
+            inbox = "".join(lines)
+            if MATCH(inbox, Inbox()):
+                pass
+#               print(" + ".join(P))
+            else: print("Yikes!!!")
+#-------------------------------------------------------------------------------
+if __name__ == '__main__':
+    GLOBALS(globals())
+#   main()
+    cProfile.run('main()', 'transl8r.prof')
+    p = pstats.Stats('transl8r.prof')
+    p.sort_stats('cumulative').print_stats() # 10
 #-------------------------------------------------------------------------------
