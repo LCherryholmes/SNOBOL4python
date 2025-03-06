@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python as S4p
-from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
@@ -66,7 +66,7 @@ for rex in rexs:
     print(rex)
     results.clear()
     GLOBALS(results)
-    assert True is MATCH(rex, re_RegEx())
+    assert True is (rex in re_RegEx())
 #   pprint(results)
     RE_tree = results['vstack'].pop()
     pprint(RE_tree, indent=3, width=36)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from SNOBOL4python import pattern, MATCH, GLOBALS, REPLACE
+from SNOBOL4python import GLOBALS, REPLACE, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK
@@ -15,7 +15,7 @@ def identifier():
         +   FENCE(SPAN("." + _DIGITS + _UCASE + "_" + _LCASE) | ε())
         +   RPOS(0)
         )
-assert True is MATCH("Id_99", identifier())
+assert True is ("Id_99" in identifier())
 #------------------------------------------------------------------------------
 @pattern
 def real_number():
@@ -34,7 +34,7 @@ def real_number():
             )
         +   RPOS(0)
         )
-assert True is MATCH("12.99E+3", real_number());
+assert True is ("12.99E+3" in real_number())
 #------------------------------------------------------------------------------
 @pattern
 def test_one():
@@ -44,22 +44,22 @@ def test_one():
                ,  Π(σ('D') , σ('DS')) @ 'OUTPUT'
                ,  RPOS(0) @ 'OUTPUT'
                )
-assert True is MATCH("BED", test_one())
-assert True is MATCH("FED", test_one())
-assert True is MATCH("LED", test_one())
-assert True is MATCH("RED", test_one())
-assert True is MATCH("BEAD", test_one())
-assert True is MATCH("FEAD", test_one())
-assert True is MATCH("LEAD", test_one())
-assert True is MATCH("READ", test_one())
-assert True is MATCH("BEDS", test_one())
-assert True is MATCH("FEDS", test_one())
-assert True is MATCH("LEDS", test_one())
-assert True is MATCH("REDS", test_one())
-assert True is MATCH("BEADS", test_one())
-assert True is MATCH("FEADS", test_one())
-assert True is MATCH("LEADS", test_one())
-assert True is MATCH("READS", test_one())
+assert True is ("BED" in test_one())
+assert True is ("FED" in test_one())
+assert True is ("LED" in test_one())
+assert True is ("RED" in test_one())
+assert True is ("BEAD" in test_one())
+assert True is ("FEAD" in test_one())
+assert True is ("LEAD" in test_one())
+assert True is ("READ" in test_one())
+assert True is ("BEDS" in test_one())
+assert True is ("FEDS" in test_one())
+assert True is ("LEDS" in test_one())
+assert True is ("REDS" in test_one())
+assert True is ("BEADS" in test_one())
+assert True is ("FEADS" in test_one())
+assert True is ("LEADS" in test_one())
+assert True is ("READS" in test_one())
 #------------------------------------------------------------------------------
 # units = None
 # romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
@@ -67,7 +67,7 @@ assert True is MATCH("READS", test_one())
 #     global units
 #     if not MATCH_REPLACE(n, RPOS(1) + LEN(1) @ 'units', ''):
 #         return ""
-#     if not MATCH(units, BREAK(',') @ 'units', globals()):
+#     if not units, BREAK(',') @ 'units', globals()):
 #         return None
 #     return REPLACE(Roman(n),'IVXLCDM','XLCDM**') + units
 # print(Roman(1))
@@ -82,27 +82,27 @@ assert True is MATCH("READS", test_one())
 #------------------------------------------------------------------------------
 @pattern
 def Bal(): yield from POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
-assert False is MATCH("", Bal())
-assert False is MATCH(")A+B(", Bal())
-assert False is MATCH("A+B)", Bal())
-assert False is MATCH("(A+B", Bal())
-assert True  is MATCH("(A+B)", Bal())
-assert True  is MATCH("A+B()", Bal())
-assert True  is MATCH("A()+B", Bal())
-assert False is MATCH("A+B())", Bal())
-assert False is MATCH("((A+B)", Bal())
-assert True  is MATCH("X", Bal())
-assert True  is MATCH("XYZ", Bal())
-assert True  is MATCH("(A+B)", Bal())
-assert True  is MATCH("A(B*C) (E/F)G+H", Bal())
-assert True  is MATCH("( (A+ ( B*C) ) +D)", Bal())
-assert True  is MATCH("(0+(1*9))", Bal())
-assert True  is MATCH("((A+(B*C))+D)", Bal())
+assert False is ("" in Bal())
+assert False is (")A+B(" in Bal())
+assert False is ("A+B)" in Bal())
+assert False is ("(A+B" in Bal())
+assert True  is ("(A+B)" in Bal())
+assert True  is ("A+B()" in Bal())
+assert True  is ("A()+B" in Bal())
+assert False is ("A+B())" in Bal())
+assert False is ("((A+B)" in Bal())
+assert True  is ("X" in Bal())
+assert True  is ("XYZ" in Bal())
+assert True  is ("(A+B)" in Bal())
+assert True  is ("A(B*C) (E/F)G+H" in Bal())
+assert True  is ("( (A+ ( B*C) ) +D)" in Bal())
+assert True  is ("(0+(1*9))" in Bal())
+assert True  is ("((A+(B*C))+D)" in Bal())
 #------------------------------------------------------------------------------
 @pattern
 def Arb(): yield from POS(0) + ARB() @ 'OUTPUT' + RPOS(0)
-assert True is MATCH("", Arb())
-assert True is MATCH("$", Arb())
-assert True is MATCH("$$", Arb())
-assert True is MATCH("$$$", Arb())
+assert True is ("" in Arb())
+assert True is ("$" in Arb())
+assert True is ("$$" in Arb())
+assert True is ("$$$" in Arb())
 #------------------------------------------------------------------------------
