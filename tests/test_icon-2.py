@@ -1,3 +1,6 @@
+import timeit
+#------------------------------------------------------------------------------
+def report(s=""): pass # print(s)
 #-----------------------------------------------------------------------------------
 # ICON Programming Language: (1st pass, attribute grammar generated)
 #
@@ -65,7 +68,7 @@ def greater_fail():                                                 write1_fail(
 def greater_succeed():
                         global write_V, greater_V
                         write_V = greater_V
-                        print(write_V);                             write1_succeed()
+                        report(write_V);                            write1_succeed()
 #-----------------------------------------------------------------------------------
 # ICON Programming Language: (2nd pass, optimization)
 #
@@ -86,18 +89,26 @@ def to4_code():
                             if 5 <= mult_V:                         write2_resume()
                             else:
                                 greater_V = mult_V
-                                print(greater_V);                   write2_succeed()
+                                report(greater_V);                  write2_succeed()
 #-----------------------------------------------------------------------------------
-def main1():            print();                                    write1_start()
-def write1_fail():      print("Failure.")                           # Yeah! UNWIND already.
-def write1_succeed():   print("Success!");                          write1_resume()
-def main2():            print();                                    write2_start()
-def write2_fail():      print("Failure.")                           # Yeah! UNWIND already.
-def write2_succeed():   print("Success!");                          write2_resume()
+def icon1():                                                        write1_start()
+def write1_fail():      report("Failure.")                          # Yeah! UNWIND already.
+def write1_succeed():   report("Success!");                         write1_resume()
+def icon2():                                                        write2_start()
+def write2_fail():      report("Failure.")                          # Yeah! UNWIND already.
+def write2_succeed():   report("Success!");                         write2_resume()
 #-----------------------------------------------------------------------------------
 def main():
-    main1()
-    main2()
+    if True:
+        time1 = timeit.timeit(lambda: icon1(), number = 1_000_000, globals = globals());
+        print(time1)
+        time2 = timeit.timeit(lambda: icon2(), number = 1_000_000, globals = globals());
+        print(time2)
+    else:
+        report()
+        icon1()
+        report()
+        icon2()
 #-----------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()
