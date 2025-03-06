@@ -502,9 +502,9 @@ def _reduce(t, n):
         _globals['vstack'].append(x)
 #----------------------------------------------------------------------------------------------------------------------
 def GLOBALS(V): global _globals; _globals = V
-def MATCH     (string -> str, P -> PATTERN) -> bool: return SEARCH(string, POS(0) + P)
-def FULLMATCH (string -> str, P -> PATTERN) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
-def SEARCH    (string -> str, P -> PATTERN) -> bool:
+def MATCH     (string, P) -> bool: return SEARCH(string, POS(0) + P)
+def FULLMATCH (string, P) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
+def SEARCH    (string, P) -> bool:
     global _pos, _subject, _cstack, _globals
     if _globals is None:
         _globals = globals()
@@ -523,7 +523,7 @@ def SEARCH    (string -> str, P -> PATTERN) -> bool:
             logger.debug(f'SEARCH(): {command}')
         for var, val in _globals.items():
             logger.debug(f'SEARCH(): var={var} val={val}')
-        _globals['_subject'] = S
+        _globals['_subject'] = string
         for command in _cstack:
             exec(command, _globals)
         return True

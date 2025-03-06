@@ -27,7 +27,7 @@ void write_flush()       {}
         out->buffer[out->pos] = 0;
     }
 
-    void write_str(output_t * out, const char * s) {
+    void write_str(output_t * out, const unsigned char * s) {
         for (int i = 0; s[i]; i++)
             out->buffer[out->pos++] = s[i];
         out->buffer[out->pos++] = '\n';

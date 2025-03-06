@@ -5,7 +5,7 @@
 import SNOBOL4python
 import operator
 from datetime import datetime
-from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
@@ -190,7 +190,7 @@ def Traverse(tree):
 print(JSON_sample)
 print()
 GLOBALS(globals())
-MATCH(JSON_sample, jRecognizer())
+JSON_sample in jRecognizer()
 JSON_tree = vstack.pop()
 pprint(JSON_tree)
 print()

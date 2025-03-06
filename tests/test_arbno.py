@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
-from SNOBOL4python import pattern, MATCH, GLOBALS
+from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, Σ, Π, λ, Λ, θ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
@@ -14,11 +14,11 @@ def As():
         +   ARBNO(σ('a')) @ 'sequence'
         +   RPOS(0)
         )
-assert True  is MATCH("", As())
-assert True  is MATCH("a", As())
-assert True  is MATCH("aa", As())
-assert True  is MATCH("aaa", As())
-assert True  is MATCH("aaaa", As())
+assert True  is ("" in As())
+assert True  is ("a" in As())
+assert True  is ("aa" in As())
+assert True  is ("aaa" in As())
+assert True  is ("aaaa" in As())
 #------------------------------------------------------------------------------
 @pattern
 def Alist():
@@ -28,15 +28,15 @@ def Alist():
         +   ARBNO(σ(',') + (σ('a') | σ('b')))
         +   RPOS(0)
         )
-assert False is MATCH("", Alist())
-assert True  is MATCH("a", Alist())
-assert True  is MATCH("a,a", Alist())
-assert True  is MATCH("a,a,a", Alist())
-assert True  is MATCH("a,a,a,a", Alist())
+assert False is ("" in Alist())
+assert True  is ("a" in Alist())
+assert True  is ("a,a" in Alist())
+assert True  is ("a,a,a" in Alist())
+assert True  is ("a,a,a,a" in Alist())
 #------------------------------------------------------------------------------
 @pattern
 def Pairs(): yield from POS(0) + ARBNO(σ('AA') | LEN(2) | σ('XX')) + RPOS(0)
-assert False is MATCH('CCXXAA$', Pairs())
+assert False is ('CCXXAA$' in Pairs())
 #------------------------------------------------------------------------------
 @pattern
 def PAIRS(): yield from \
@@ -53,5 +53,5 @@ def PAIRS(): yield from \
     +   RPOS(0)
     +   λ(lambda: print('RPOS got'))
     )
-# assert False is MATCH('CCXXAA$', PAIRS())
+# assert False is ('CCXXAA$' in PAIRS())
 #------------------------------------------------------------------------------
