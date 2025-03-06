@@ -1,5 +1,54 @@
+#ifdef __GNUC__
+#define __kernel
+#define __global
 extern int printf(char *, ...);
-void main() {
+#endif
+
+typedef struct {
+             unsigned int    pos;
+    __global unsigned char * buffer;
+} output_t;
+
+#if 0
+extern int printf(char *, ...);
+void write_nl()          { printf("%s", "\n");}
+void write_int(int v)    { printf("%d\n", v); }
+void write_str(char * s) { printf("%s", s); }
+void write_flush()       {}
+#else
+    void write_nl(output_t * out) {
+        out->buffer[out->pos++] = '\n';
+        out->buffer[out->pos] = 0;
+    }
+
+    void write_int(output_t * out, int v) {
+        out->buffer[out->pos++] = '0' + v;
+        out->buffer[out->pos++] = '\n';
+        out->buffer[out->pos] = 0;
+    }
+
+    void write_str(output_t * out, const char * s) {
+        for (int i = 0; s[i]; i++)
+            out->buffer[out->pos++] = s[i];
+        out->buffer[out->pos++] = '\n';
+        out->buffer[out->pos] = 0; }
+
+    void write_flush(output_t * out) {
+#   ifdef __GNUC__
+        printf("%s", out->buffer);
+#   endif
+    }
+#endif
+
+__kernel void icon(
+    __global const unsigned char * in,
+    __global       unsigned char * buffer,
+             const unsigned int num_chars)
+{
+    const unsigned char cszFailure[9] = "Failure.";
+    const unsigned char cszSuccess[9] = "Success!";
+    output_t output = { 0, buffer };
+    output_t * out = &output;
     goto main1;    
     //============================================================================
     // ICON Programming Language: (1st pass, attribute grammar generated)
@@ -70,30 +119,38 @@ int write1_V;
     write1_resume:                                  goto greater_resume;
     greater_fail:                                   goto write1_fail;
     greater_succeed:    write1_V = greater_V;
-                        printf("%d\n", write1_V);   goto write1_succeed;
+                        write_int(out, write1_V);   goto write1_succeed;
     //============================================================================
     // ICON Programming Language: 2nd pass, optimization
     //
     //                  every write(5 > ((1 to 2) * (3 to 4)));
     //----------------- --------------------------- ------------------------------
 int to3_I;
+int to4_I;
     write2_start:       to3_I = 1;                  goto to3_code;
     to3_resume:         to3_I = to3_I + 1;
     to3_code:           if (to3_I > 2)              goto write2_fail;
-int to4_I;
                         to4_I = 3;                  goto to4_code;
     write2_resume:      to4_I = to4_I + 1;
     to4_code:           if (to4_I > 4)              goto to3_resume;
                         mult_V = to3_I * to4_I;
                         if (5 <= mult_V)            goto write2_resume;
                         greater_V = mult_V;
-                        printf("%d\n", greater_V);  goto write2_succeed;
+                        write_int(out, greater_V);  goto write2_succeed;
     //============================================================================
-    main1:              printf("\n");               goto write1_start;
-    write1_fail:        printf("Failure.\n");       goto main2;
-    write1_succeed:     printf("Success!\n");       goto write1_resume;
-    main2:              printf("\n");               goto write2_start;
-    write2_fail:        printf("Failure.\n");       return;
-    write2_succeed:     printf("Success!\n");       goto write2_resume;
+    main1:              write_nl(out);              goto write1_start;
+    write1_fail:        write_str(out, cszFailure); goto main2;
+    write1_succeed:     write_str(out, cszSuccess); goto write1_resume;
+    main2:              write_nl(out);              goto write2_start;
+    write2_fail:        write_str(out, cszFailure); goto main9;
+    write2_succeed:     write_str(out, cszSuccess); goto write2_resume;
+    main9:              write_flush(out);           return;
     //----------------- --------------------------- ------------------------------
 }
+
+#ifdef __GNUC__
+static unsigned char buffer[1024] = {0};
+void main() {
+    icon(0, buffer, sizeof(buffer));
+}
+#endif
