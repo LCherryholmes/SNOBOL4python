@@ -1,3 +1,6 @@
+import timeit
+#------------------------------------------------------------------------------
+def report(s=""): pass # print(s)
 #==============================================================================
 # ICON Programming Language: (1st pass, attribute grammar generated)
 #
@@ -83,14 +86,14 @@ def greater(port):
         case "start":   x5("start")
         case "resume":  mult("resume")
         case "fail":    write1("fail")
-        case "succeed": write1_V = greater_V; print(write1_V); write1("succeed")
+        case "succeed": write1_V = greater_V; report(write1_V); write1("succeed")
 #------------------------------------------------------------------------------
 def write1(port):
     match port:
         case "start":   greater("start")
         case "resume":  greater("resume")
-        case "fail":    print("Failure.") # Yeah! UNWIND already.
-        case "succeed": print("Success!"); write1("resume")
+        case "fail":    report("Failure.") # Yeah! UNWIND already.
+        case "succeed": report("Success!"); write1("resume")
 #==============================================================================
 # ICON Programming Language: (2nd pass, optimization)
 #
@@ -101,9 +104,9 @@ def write2(port):
         match port:
             case "start":   to3_I = 1; to3("code"); break
             case "resume":  to4_I = to4_I + 1; to4("code"); break
-            case "fail":    print("Failure."); break # Yeah! UNWIND already.
+            case "fail":    report("Failure."); break # Yeah! UNWIND already.
             case "succeed": #
-                            print("Success!")
+                            report("Success!")
                             port = "resume" # loop
             case _:         raise Exception()
 #------------------------------------------------------------------------------
@@ -127,16 +130,22 @@ def to4(port):
                             else: mult_V = to3_I * to4_I
                             if 5 <= mult_V: write2("resume"); break
                             else: greater_V = mult_V
-                            print(greater_V)
+                            report(greater_V)
                             write2("succeed")
                             break
             case _:         raise Exception()
 #==============================================================================
 def main():
-    print()
-    write1("start")
-    print()
-    write2("start")
+    if True:
+        time1 = timeit.timeit(lambda: write1("start"), number = 1_000_000, globals = globals());
+        print(time1)
+        time2 = timeit.timeit(lambda: write2("start"), number = 1_000_000, globals = globals());
+        print(time2)
+    else:
+        report()
+        write1("start")
+        report()
+        write2("start")
 #------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()

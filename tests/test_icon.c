@@ -9,12 +9,18 @@ typedef struct {
     __global unsigned char * buffer;
 } output_t;
 
+#if 1
+void write_nl(output_t * out)         {}
+void write_int(output_t * out, int v) {}
+void write_str(output_t * out, const unsigned char * s) {}
+void write_flush(output_t * out)      {}
+#else
 #if 0
 extern int printf(char *, ...);
-void write_nl()          { printf("%s", "\n");}
-void write_int(int v)    { printf("%d\n", v); }
-void write_str(char * s) { printf("%s", s); }
-void write_flush()       {}
+void write_nl(output_t * out)         { printf("%s", "\n"); }
+void write_int(output_t * out, int v) { printf("%d\n", v); }
+void write_str(output_t * out, const unsigned char * s) { printf("%s\n", s); }
+void write_flush(output_t * out)      {}
 #else
     void write_nl(output_t * out) {
         out->buffer[out->pos++] = '\n';
@@ -31,13 +37,15 @@ void write_flush()       {}
         for (int i = 0; s[i]; i++)
             out->buffer[out->pos++] = s[i];
         out->buffer[out->pos++] = '\n';
-        out->buffer[out->pos] = 0; }
+        out->buffer[out->pos] = 0;
+    }
 
     void write_flush(output_t * out) {
 #   ifdef __GNUC__
         printf("%s", out->buffer);
 #   endif
     }
+#endif
 #endif
 
 __kernel void icon(
@@ -49,6 +57,7 @@ __kernel void icon(
     const unsigned char cszSuccess[9] = "Success!";
     output_t output = { 0, buffer };
     output_t * out = &output;
+    buffer[0] = 0;
     goto main1;    
     //============================================================================
     // ICON Programming Language: (1st pass, attribute grammar generated)
