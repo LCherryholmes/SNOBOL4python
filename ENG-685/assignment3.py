@@ -10,10 +10,10 @@ from SNOBOL4python import FENCE, LEN, POS, RPOS, SPAN
 def delim():    yield from  SPAN(" \n")
 #------------------------------------------------------------------------------
 @pattern
-def word():     yield from  BREAK('( )')
+def word():     yield from  BREAK('( )\n')
 #------------------------------------------------------------------------------
 @pattern
-def tag():      yield from  BREAK('( )') @ "OUTPUT" % "tag"
+def tag():      yield from  word() @ "OUTPUT" % "tag"
 #------------------------------------------------------------------------------
 @pattern
 def group():    yield from  ( σ('(') @ "OUTPUT"
@@ -27,13 +27,14 @@ def group():    yield from  ( σ('(') @ "OUTPUT"
                             + σ(')') @ "OUTPUT"
                             )
 #------------------------------------------------------------------------------
+@pattern
+def groups():   yield from  POS(0) + ARBNO(ARBNO(group()) + delim()) + RPOS(0)
+#------------------------------------------------------------------------------
 GLOBALS(globals())
 with open("VBGinTASA.txt", "r") as trees_file:
     trees_source = trees_file.read()
     if trees_source in (POS(0) + BAL() + RPOS(0)):
         print("Balanced!")
-    if trees_source in (POS(0) + σ('(') + BAL() % "sentence_source"  + σ(')')):
-        sentence_source = "(" + sentence_source + ")"
-        print(sentence_source)
-        if sentence_source in (POS(0) + group()):
-            print("\nYeah!")
+    if trees_source in groups():
+        print("\nYeah!")
+    else: print("\nBoo!")
