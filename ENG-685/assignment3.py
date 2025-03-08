@@ -20,15 +20,18 @@ def group():
                 + Λ("count_tag(tag)")
                 + Λ("stack.append(list())")
                 + Λ("stack[-1].append(tag)")
+                + Λ("pprint(stack)")
                 + ARBNO(
                     delim() 
                   + ( group()
                     | word() % "word" + Λ("stack[-1].append(word)")
+                    + Λ("pprint(stack)")
                     )
                   )
                 + Λ("top = stack.pop()")
                 + Λ("if len(stack) == 0: bank = top")
                 + Λ("if len(stack) > 0: stack[-1].append(top)")
+                + Λ("pprint(stack)")
                 + σ(')')
                 )
 #------------------------------------------------------------------------------
@@ -48,17 +51,15 @@ def count_tag(tag):
     else: tags[tag] += 1
 #------------------------------------------------------------------------------
 GLOBALS(globals())
-"""(S (S (NP (NN none)) (ADVP (RB ever)) (VP (VBN penned) (NP (DT a) (NN
-manifesto)) (PP (IN as) (S (VP (VBG stirring) (PP (IN as) (NP (NP (DT the)
-(NN one)) (SBAR (WHNP (WDT that)) (S (VP (VBD appeared) (PP (IN in) (NP (NP
-(DT the) (JJ first) (NN issue)) (PP (IN of) (NP (DT the) (NN
-liberator))))))))))))))) (, ,) (CC and) (S (NP (DT no) (JJ other) (NN
-abolitionist) (NN document)) (VP (VBZ is) (ADVP (RB so) (RB well)) (VP (VBN
-remembered)))) (.  .))
-""" in groups()
+trees_source = """(S (NP (NP (DT a) (JJ fourth)) (PP (IN of) (NP (DT the) (NNS farmers))))
+(VP (VP (VBD were) (VP (VBG losing))) (CC or) (VP (VBD had) (VP (VBN lost)
+(NP (PRP$ their) (NNS farms))))) (.  .))
+"""
+print(trees_source)
+trees_source in groups()
 pprint(bank, indent=2)
 print()
-pprint(tags, indent=2)
+pprint(tags, indent=2, width=80)
 exit()
 #------------------------------------------------------------------------------
 with open("VBGinTASA.txt", "r") as trees_file:
