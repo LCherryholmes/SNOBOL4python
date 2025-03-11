@@ -6,26 +6,6 @@ from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 @pattern
-def init_list(v):
-    yield from Λ(f"{v} = None") \
-             + Λ(f"tags = dict()") \
-             + Λ(f"stack = []")
-@pattern
-def push_list(v):
-    yield from Λ(f"count_tag({v})") \
-             + Λ(f"stack.append(list())") \
-             + Λ(f"stack[-1].append({v})")
-@pattern
-def push_item(v):
-    yield from Λ(f"stack[-1].append({v})")
-@pattern
-def pop_list():
-    yield from Λ(f"stack[-2].append(stack.pop())")
-@pattern
-def pop_final(v):
-    yield from Λ(f"{v} = stack.pop()")
-#------------------------------------------------------------------------------
-@pattern
 def delim(): yield from SPAN(" \n")
 @pattern
 def word(): yield from NOTANY("( )\n") + BREAK("( )\n")
@@ -56,6 +36,21 @@ def treebank():
                 + RPOS(0)
                 )
 #------------------------------------------------------------------------------
+@pattern
+def init_list(v):   yield from Λ(f"{v} = None") \
+                             + Λ(f"tags = dict()") \
+                             + Λ(f"stack = []")
+@pattern
+def push_list(v):   yield from Λ(f"count_tag({v})") \
+                             + Λ(f"stack.append(list())") \
+                             + Λ(f"stack[-1].append({v})")
+@pattern
+def push_item(v):   yield from Λ(f"stack[-1].append({v})")
+@pattern
+def pop_list():     yield from Λ(f"stack[-2].append(stack.pop())")
+@pattern
+def pop_final(v):   yield from Λ(f"{v} = stack.pop()")
+#------------------------------------------------------------------------------
 def count_tag(tag):
     if tag not in tags:
         tags[tag] = 1
@@ -63,18 +58,36 @@ def count_tag(tag):
 #------------------------------------------------------------------------------
 GLOBALS(globals())
 #------------------------------------------------------------------------------
-sentence = """She was hiking."""            # progressive participles
-sentence = """She loves hiking."""          # deverbal nouns (aka gerunds)
-sentence = """This homework is exciting.""" # deverbal adjectives
-sentence = """These are hiking boots."""    # deverbal undecidables
+VBG = list()
+def traverse(t, parent=None):
+    match t:
+        case ['VBG', word]: VBG.append(parent)
+        case _:
+            for c in t:
+                if type(c) == list: traverse(c, t) 
+#------------------------------------------------------------------------------
+def sentence(t):
+    t, *children = t
+    t = ""
+    for c in children:
+        if type(c) == str: t += ' ' + c
+        if type(c) == list: t += sentence(c) 
+    return t
+#------------------------------------------------------------------------------
+"""She was hiking."""            # progressive participles
+"""She loves hiking."""          # deverbal nouns (aka gerunds)
+"""This homework is exciting.""" # deverbal adjectives
+"""These are hiking boots."""    # deverbal undecidables
 #------------------------------------------------------------------------------
 with open("VBGinTASA.txt", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
-        print("Balanced!")
         if bank_source in treebank():
-            print("Yeah!")
-            print(); pprint(tags, indent=2, width=80)
-            print(); pprint(bank, indent=2, width=80)
+            print('#', tags['VBG'])
+            traverse(bank)
+            print('#', len(VBG))
+            for vbg in VBG:
+                print('#', sentence(vbg)[1:])
+                pprint(vbg)
     else: print("Boo!")
 #------------------------------------------------------------------------------
