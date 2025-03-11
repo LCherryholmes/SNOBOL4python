@@ -1,15 +1,32 @@
 # -*- coding: utf-8 -*-
 # ENG 685, VBG Exercise, Lon Cherryholmes Sr.
 from pprint import pprint
-from SNOBOL4python import GLOBALS, REPLACE, pattern
+from SNOBOL4python import GLOBALS, pattern, ε, σ, λ, Λ
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
-from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK
-from SNOBOL4python import FENCE, LEN, NOTANY, POS, RPOS, SPAN
+from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
+#------------------------------------------------------------------------------
+@pattern
+def init_list(v):
+    yield from Λ(f"{v} = None") \
+             + Λ(f"tags = dict()") \
+             + Λ(f"stack = []")
+@pattern
+def push_list(v):
+    yield from Λ(f"count_tag({v})") \
+             + Λ(f"stack.append(list())") \
+             + Λ(f"stack[-1].append({v})")
+@pattern
+def push_item(v):
+    yield from Λ(f"stack[-1].append({v})")
+@pattern
+def pop_list():
+    yield from Λ(f"stack[-2].append(stack.pop())")
+@pattern
+def pop_final(v):
+    yield from Λ(f"{v} = stack.pop()")
 #------------------------------------------------------------------------------
 @pattern
 def delim(): yield from SPAN(" \n")
-#------------------------------------------------------------------------------
 @pattern
 def word(): yield from NOTANY("( )\n") + BREAK("( )\n")
 #------------------------------------------------------------------------------
@@ -17,31 +34,25 @@ def word(): yield from NOTANY("( )\n") + BREAK("( )\n")
 def group():
     yield from  ( σ('(')
                 + word() % "tag"
-                + Λ("count_tag(tag)")
-                + Λ("stack.append(list())")
-                + Λ("stack[-1].append(tag)")
-                + Λ("pprint(stack)")
+                + push_list("tag")
                 + ARBNO(
-                    delim() 
-                  + ( group()
-                    | word() % "word" + Λ("stack[-1].append(word)")
-                    + Λ("pprint(stack)")
-                    )
+                    delim()
+                  + (group() | word() % "word" + push_item("word"))
                   )
-                + Λ("top = stack.pop()")
-                + Λ("if len(stack) == 0: bank = top")
-                + Λ("if len(stack) > 0: stack[-1].append(top)")
-                + Λ("pprint(stack)")
+                + pop_list()
                 + σ(')')
                 )
 #------------------------------------------------------------------------------
 @pattern
-def groups():
+def groups(): yield from push_list("'ROOT'") + ARBNO(group()) + pop_list()
+#------------------------------------------------------------------------------
+@pattern
+def treebank():
     yield from  ( POS(0)
-                + Λ("tags = dict()")
-                + Λ("bank = None")
-                + Λ("stack = []")
-                + ARBNO(ARBNO(group()) + delim())
+                + init_list("bank")
+                + push_list("'BANK'")
+                + ARBNO(groups() + delim())
+                + pop_final("bank")
                 + RPOS(0)
                 )
 #------------------------------------------------------------------------------
@@ -51,24 +62,19 @@ def count_tag(tag):
     else: tags[tag] += 1
 #------------------------------------------------------------------------------
 GLOBALS(globals())
-trees_source = """(S (NP (NP (DT a) (JJ fourth)) (PP (IN of) (NP (DT the) (NNS farmers))))
-(VP (VP (VBD were) (VP (VBG losing))) (CC or) (VP (VBD had) (VP (VBN lost)
-(NP (PRP$ their) (NNS farms))))) (.  .))
-"""
-print(trees_source)
-trees_source in groups()
-pprint(bank, indent=2)
-print()
-pprint(tags, indent=2, width=80)
-exit()
 #------------------------------------------------------------------------------
-with open("VBGinTASA.txt", "r") as trees_file:
-    trees_source = trees_file.read()
-    if trees_source in (POS(0) + BAL() + RPOS(0)):
+sentence = """She was hiking."""            # progressive participles
+sentence = """She loves hiking."""          # deverbal nouns (aka gerunds)
+sentence = """This homework is exciting.""" # deverbal adjectives
+sentence = """These are hiking boots."""    # deverbal undecidables
+#------------------------------------------------------------------------------
+with open("VBGinTASA.txt", "r") as bank_file:
+    bank_source = bank_file.read()
+    if bank_source in POS(0) + BAL() + RPOS(0):
         print("Balanced!")
-    if trees_source in groups():
-        print("Yeah!")
-        print(tags)
-        print(bank)
+        if bank_source in treebank():
+            print("Yeah!")
+            print(); pprint(tags, indent=2, width=80)
+            print(); pprint(bank, indent=2, width=80)
     else: print("Boo!")
 #------------------------------------------------------------------------------
