@@ -87,18 +87,34 @@ def sentence(t):
 "I had been writing a report before the meeting started." # past perfect progressive: had been + writing
 "By next week, I will have been writing my thesis for three months." # future perfect progressive: will have been + writing
 #------------------------------------------------------------------------------
-def classify(t, parent=None):
-    if type(t) == list:
-        match t:
-            case ['VBP', 'am']:         None
-            case ['VBZ', 'is']:         None
-            case ['VBP', 'are']:        None
-            case ['VBD', 'was'|'were']: None
-            case ['VB',  'be']:         None
-            case ['VBN', 'been']:       None
-            case _:
-                for c in t:
-                    classify(c, t) 
+def classify(t, phrase, parent=None):
+    match str(type(x)):
+        case "<class 'str'>": print([phrase, t])
+        case "<class 'list'>"|"<class 'tuple'>":
+            match t:
+                case []: return
+                case ['S', *rest] if phrase == None:        classify(rest, 'S', t)
+                case ['NP', *rest] if phrase == None:       classify(rest, 'NP', t)
+                case ['VP', *rest] if phrase == None:       classify(rest, 'VP', t)
+                case [[tag, q], ['VBN', 'been'], ['VBG', w], *rest]:
+                                                            pprint([tag, q, 'been', w])
+                                                            classify(rest, phrase, parent)
+                case [['VB',  'be'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
+                case [['VBZ', 'is'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
+                case [['VBP', 'am'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
+                case [['VBP', 'are'], ['VBG', w], *rest]:   pprint([phrase, t]); classify(rest, phrase, parent)
+                case [['VBD', 'was'], ['VBG', w], *rest]:   pprint([phrase, t]); classify(rest, phrase, parent)
+                case [['VBD', 'were'], ['VBG', w], *rest]:  pprint([phrase, t]); classify(rest, phrase, parent)
+                case ['VB',  'be']:                         pprint([phrase, t])
+                case ['VBZ', 'is']:                         pprint([phrase, t])
+                case ['VBP', 'am'|'are']:                   pprint([phrase, t])
+                case ['VBD', 'was'|'were']:                 pprint([phrase, t])
+                case ['VBN', 'been']:                       pprint([phrase, t])
+                case ['VBG', w]:                            pprint([phrase, t])
+                case _:
+                    if len(t) > 1:
+                        classify(t[1:], phrase, parent) 
+        case _: print(type(t)); exit()
 #------------------------------------------------------------------------------
 # Gerund, deverbal nouns
 # Acts as a noun. Stand-alone; no auxiliaries. Subject, object, complement.
@@ -123,15 +139,18 @@ def classify(t, parent=None):
 with open("VBGinTASA.txt", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
+        print("Parsing...")
         if bank_source in treebank():
             print('#', tags['VBG'])
+            print("Searching...")
             for root in bank:
                 traverse(root)
             print('#', len(roots))
+            print("Clasifying...")
             for root in roots:
 #               print('#' + '-' * 79)
 #               print('#', sentence(root)[1:])
 #               pprint(root)
-                classify(root)
+                classify(root, None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
