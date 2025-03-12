@@ -62,10 +62,11 @@ roots = list()
 def traverse(t, root=None):
     root = t if not root else root
     match t:
-        case ['VBG', word]: roots.append(root)
+        case ('VBG', word): roots.append(root)
         case _:
             for c in t:
-                if type(c) == list: traverse(c, root) 
+                if type(c) == tuple:
+                    traverse(c, root) 
 #------------------------------------------------------------------------------
 def sentence(t):
     t, *children = t
@@ -88,33 +89,41 @@ def sentence(t):
 "By next week, I will have been writing my thesis for three months." # future perfect progressive: will have been + writing
 #------------------------------------------------------------------------------
 def classify(t, phrase, parent=None):
-    match str(type(x)):
-        case "<class 'str'>": print([phrase, t])
-        case "<class 'list'>"|"<class 'tuple'>":
-            match t:
-                case []: return
-                case ['S', *rest] if phrase == None:        classify(rest, 'S', t)
-                case ['NP', *rest] if phrase == None:       classify(rest, 'NP', t)
-                case ['VP', *rest] if phrase == None:       classify(rest, 'VP', t)
-                case [[tag, q], ['VBN', 'been'], ['VBG', w], *rest]:
-                                                            pprint([tag, q, 'been', w])
-                                                            classify(rest, phrase, parent)
-                case [['VB',  'be'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
-                case [['VBZ', 'is'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
-                case [['VBP', 'am'], ['VBG', w], *rest]:    pprint([phrase, t]); classify(rest, phrase, parent)
-                case [['VBP', 'are'], ['VBG', w], *rest]:   pprint([phrase, t]); classify(rest, phrase, parent)
-                case [['VBD', 'was'], ['VBG', w], *rest]:   pprint([phrase, t]); classify(rest, phrase, parent)
-                case [['VBD', 'were'], ['VBG', w], *rest]:  pprint([phrase, t]); classify(rest, phrase, parent)
-                case ['VB',  'be']:                         pprint([phrase, t])
-                case ['VBZ', 'is']:                         pprint([phrase, t])
-                case ['VBP', 'am'|'are']:                   pprint([phrase, t])
-                case ['VBD', 'was'|'were']:                 pprint([phrase, t])
-                case ['VBN', 'been']:                       pprint([phrase, t])
-                case ['VBG', w]:                            pprint([phrase, t])
-                case _:
-                    if len(t) > 1:
-                        classify(t[1:], phrase, parent) 
-        case _: print(type(t)); exit()
+    if type(t) == str: print([phrase, t])
+    elif type(t) == tuple:
+        match t:
+            case ():                                    return
+            case ('S', *rest) if phrase == None:        classify(tuple(rest), 'S', t)
+            case ('NP', *rest) if phrase == None:       classify(tuple(rest), 'NP', t)
+            case ('VP', *rest) if phrase == None:       classify(tuple(rest), 'VP', t)
+            case ('VBG', w):                            pprint([phrase, t])
+            case ('VB',  'be'):                         pprint([phrase, t])
+            case ('VBZ', 'is'):                         pprint([phrase, t])
+            case ('VBP', 'am'|'are'):                   pprint([phrase, t])
+            case ('VBD', 'was'|'were'):                 pprint([phrase, t])
+            case ('VBN', 'been'):                       pprint([phrase, t])
+            case (('VBZ', 'is'), ('VP', ('VBG', w)), *rest):
+                                                        print("<<<YIPPER>>>>")
+                                                        pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (('VBP', 'am'|'are'), ('VP', ('VBG', w)), *rest):
+                                                        print("<<<YIPPER>>>>")
+                                                        pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (('VBD', 'was'|'were'), ('VP', ('VBG', w)), *rest):
+                                                        print("<<<YIPPER>>>>")
+                                                        pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (tag, w) if type(tag) == str \
+                          and type(w) == str:           None # pprint([phrase, t])
+            case ((tag, q), ('VBN', 'been'), ('VBG', w), *rest):
+                                                        pprint((phrase, tag, q, 'been', w))
+                                                        classify(tuple(rest), phrase, parent)
+            case (('VB',  'be'), ('VBG', w), *rest):    pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (('VBD', 'was'), ('VBG', w), *rest):   pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (('VBD', 'were'), ('VBG', w), *rest):  pprint([phrase, t]); classify(tuple(rest), phrase, parent)
+            case (tag, *rest) if type(tag) == str:      classify(tuple(rest), phrase, parent)
+            case (top, *rest):                          classify(top, phrase, parent); \
+                                                        classify(tuple(rest), phrase, parent)
+    elif type(t) == list: raise Exception(f"What's going on! {type(t)} {t}")
+    else: raise Exception(f"Yikes! {type(t)} {t}")
 #------------------------------------------------------------------------------
 # Gerund, deverbal nouns
 # Acts as a noun. Stand-alone; no auxiliaries. Subject, object, complement.
@@ -136,21 +145,28 @@ def classify(t, phrase, parent=None):
 "I like reading."
 "These are hiking boots."
 #------------------------------------------------------------------------------
+def list_to_tuple(t):
+    if type(t) == list:
+        return tuple(list_to_tuple(c) for c in t)
+    else: return t
+#------------------------------------------------------------------------------
 with open("VBGinTASA.txt", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
         print("Parsing...")
         if bank_source in treebank():
+            bank = list_to_tuple(bank)
             print('#', tags['VBG'])
             print("Searching...")
             for root in bank:
                 traverse(root)
+            roots = list_to_tuple(roots)
             print('#', len(roots))
             print("Clasifying...")
             for root in roots:
-#               print('#' + '-' * 79)
+                print('#' + '-' * 79)
 #               print('#', sentence(root)[1:])
 #               pprint(root)
-                classify(root, None)
+                classify(tuple(root), None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
