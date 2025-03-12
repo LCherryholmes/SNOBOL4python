@@ -58,13 +58,14 @@ def count_tag(tag):
 #------------------------------------------------------------------------------
 GLOBALS(globals())
 #------------------------------------------------------------------------------
-VBG = list()
-def traverse(t, parent=None):
+roots = list()
+def traverse(t, root=None):
+    root = t if not root else root
     match t:
-        case ['VBG', word]: VBG.append(parent)
+        case ['VBG', word]: roots.append(root)
         case _:
             for c in t:
-                if type(c) == list: traverse(c, t) 
+                if type(c) == list: traverse(c, root) 
 #------------------------------------------------------------------------------
 def sentence(t):
     t, *children = t
@@ -74,20 +75,63 @@ def sentence(t):
         if type(c) == list: t += sentence(c) 
     return t
 #------------------------------------------------------------------------------
-"""She was hiking."""            # progressive participles
-"""She loves hiking."""          # deverbal nouns (aka gerunds)
-"""This homework is exciting.""" # deverbal adjectives
-"""These are hiking boots."""    # deverbal undecidables
+# Progressive
+# Expresses ongoing action. Always with an auxiliary (e.g., am, is, are).
+# Part of the predicate. Typically adverbs.
+# Uses auxiliary (helping) verbs like "be" (am, is, are, was, were, been, being).
+"She was hiking." # progressive participles
+"I am writing a report." # present progressive: am/is/are + writing
+"I was writing a report when the phone rang." # past progressive: was/were + writing
+"I will be writing a report at 9 PM." # future progressive: will be + writing
+"I have been writing reports all day." # present perfect progressive: have/has been + writing
+"I had been writing a report before the meeting started." # past perfect progressive: had been + writing
+"By next week, I will have been writing my thesis for three months." # future perfect progressive: will have been + writing
+#------------------------------------------------------------------------------
+def classify(t, parent=None):
+    if type(t) == list:
+        match t:
+            case ['VBP', 'am']:         None
+            case ['VBZ', 'is']:         None
+            case ['VBP', 'are']:        None
+            case ['VBD', 'was'|'were']: None
+            case ['VB',  'be']:         None
+            case ['VBN', 'been']:       None
+            case _:
+                for c in t:
+                    classify(c, t) 
+#------------------------------------------------------------------------------
+# Gerund, deverbal nouns
+# Acts as a noun. Stand-alone; no auxiliaries. Subject, object, complement.
+# Modified by adjectives;
+# may take determiners in nominalized compound noun phrases
+"Writing is fun."
+"She loves hiking."
+#------------------------------------------------------------------------------
+# Adjectival Participle, deverbal adjectives
+# Qualifies/modifies a noun. Stand-alone; directly attached to a noun.
+# Attributive (before/after a noun).
+# Functions like adjectives and can sometimes be preceded by intensifiers.
+"The writing style is unique."
+"This homework is exciting."
+#------------------------------------------------------------------------------
+# Undecidable Participle, deverbal undecidables
+# Ambiguous—shares features of both. No auxiliary; ambiguity in usage.
+# Varies by context. Relies on broader syntactic context.
+"I like reading."
+"These are hiking boots."
 #------------------------------------------------------------------------------
 with open("VBGinTASA.txt", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
         if bank_source in treebank():
             print('#', tags['VBG'])
-            traverse(bank)
-            print('#', len(VBG))
-            for vbg in VBG:
-                print('#', sentence(vbg)[1:])
-                pprint(vbg)
+            for root in bank:
+                traverse(root)
+            print('#', len(roots))
+            for root in roots:
+#               print('#' + '-' * 79)
+#               print('#', sentence(root)[1:])
+#               pprint(root)
+                classify(root)
     else: print("Boo!")
 #------------------------------------------------------------------------------
