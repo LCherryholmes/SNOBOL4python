@@ -9,7 +9,6 @@ from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 def delim(): yield from SPAN(" \n")
 @pattern
 def word(): yield from NOTANY("( )\n") + BREAK("( )\n")
-#------------------------------------------------------------------------------
 @pattern
 def group():
     yield from  ( σ('(')
@@ -22,10 +21,8 @@ def group():
                 + pop_list()
                 + σ(')')
                 )
-#------------------------------------------------------------------------------
 @pattern
 def groups(): yield from push_list("'ROOT'") + ARBNO(group()) + pop_list()
-#------------------------------------------------------------------------------
 @pattern
 def treebank():
     yield from  ( POS(0)
@@ -73,8 +70,7 @@ def sentence(t):
     t, *children = t
     t = ""
     for c in children:
-        if type(c) == str:
-                t += ' ' + c
+        if type(c) == str: t += ' ' + c
         if type(c) == tuple: t += sentence(c) 
     return t
 #------------------------------------------------------------------------------
@@ -135,11 +131,25 @@ def classify(t, phrase, parent=None):
                  classify(tuple(rem2), phrase, parent)
                  classify(tuple(rem3), phrase, parent)
 #           --------------------------------------------------------------------
-            case (('VBG', vbg), ('NN'|'NNS', nns), *rem):
-                 pprint([phrase, vbg, nns, len(rem)]) if False else None
+            case (('VBG', vbg), ('NN'|'NNS', nn), *rem):
+                 pprint([phrase, vbg, nn, len(rem)]) if False else None
                  classify(tuple(rem), phrase, parent)
-            case (('VBG', vbg), ('NP', ('NP', ('NN', nn), *np1), *np2), *rem):
+#           --------------------------------------------------------------------
+            case (('VBG', vbg), ('NP', ('DT', dt), *np), *rem):
+                 pprint([phrase, vbg, dt, len(np), len(rem)]) if False else None
+                 classify(tuple(np), phrase, parent)
+                 classify(tuple(rem), phrase, parent)
+            case (('VBG', vbg), ('NP', ('PRP$', prp), *np), *rem):
+                 pprint([phrase, vbg, prp, len(np), len(rem)]) if False else None
+                 classify(tuple(np), phrase, parent)
+                 classify(tuple(rem), phrase, parent)
+            case (('VBG', vbg), ('NP', ('NP', ('NN'|'NNS', nn), *np1), *np2), *rem):
                  pprint([phrase, vbg, nn, len(np1), len(np2), len(rem)]) if False else None
+                 classify(tuple(np1), phrase, parent)
+                 classify(tuple(np2), phrase, parent)
+                 classify(tuple(rem), phrase, parent)
+            case (('VBG', vbg), ('NP', ('NP', ('DT', dt), *np1), *np2), *rem):
+                 pprint([phrase, vbg, dt, len(np1), len(np2), len(rem)]) if False else None
                  classify(tuple(np1), phrase, parent)
                  classify(tuple(np2), phrase, parent)
                  classify(tuple(rem), phrase, parent)
