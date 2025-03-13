@@ -11,9 +11,6 @@ hex2Dec = {
      '8': 8,  '9': 9,  'a': 10, 'b': 11,
      'c': 12, 'd': 13, 'e': 14, 'f': 15}
 #-------------------------------------------------------------------------------
-@pattern
-def line_prefix(): yield from \
-#-------------------------------------------------------------------------------
 GLOBALS(globals())
 lexicon = dict()
 lexs = {"noun", "verb", "adj", "adv"}
@@ -33,41 +30,34 @@ for lex in lexs:
                         + RPOS(0)
                         ):
 #           --------------------------------------------------------------------
-            if nhex in  ( POS(0)
-                        + LEN(1) % "h1"
-                        + LEN(1) % "h2"
-                        + RPOS(0)
-                        ):
-                n_entries = hex2Dec[h1] * 16 + hex2Dec[h2]
+            n_entries = hex2Dec[nhex[0]] * 16 + hex2Dec[nhex[1]]
+            for n in range(n_entries):
 #               ----------------------------------------------------------------
-                for n in range(n_entries):
-#                   ------------------------------------------------------------
-                    if line not in  ( POS(0)
-                                    + BREAK(' (') % "word"
-                                    + σ('(') + BREAK(')') + σ(') ')
-                                    + REM() % "line"
-                                    + RPOS(0)
-                                    ):
-                        if line in  ( POS(0)
-                                    + BREAK(' (') % "word"
-                                    + σ(' ')
-                                    + REM() % "line"
-                                    + RPOS(0)
-                                    ):
-                            word = REPLACE(word, '_', ' ')
-                            if word in lexicon:
-                                if dict_type not in lexicon[word]:
-                                    lexicon[word] += dict_type
-                            else: lexicon[word] = dict_type 
-                            print(f'"{word}"={lexicon[word]}', end=" ")
-#                   ------------------------------------------------------------
-                    if line not in  ( POS(0)
-                                    + SPAN('0123456789abcdef') + σ(' ')
-                                    + REM() % "line"
-                                    + RPOS(0)
-                                    ):
-                        raise Exception("Never say never!")
-            else: raise Exception("It couldn't happen here.")
+                if line not in  ( POS(0)
+                                + BREAK(' (') % "word"
+                                + σ('(') + BREAK(')') + σ(') ')
+                                + REM() % "line"
+                                + RPOS(0)
+                                ):
+                    if line in  ( POS(0)
+                                + BREAK(' (') % "word"
+                                + σ(' ')
+                                + REM() % "line"
+                                + RPOS(0)
+                                ):
+#                       word = REPLACE(word, '_', ' ')
+                        if word in lexicon:
+                            if dict_type not in lexicon[word]:
+                                lexicon[word] += dict_type
+                        else: lexicon[word] = dict_type 
+                        print(f'"{word}"={lexicon[word]}', end=" ")
+#               ----------------------------------------------------------------
+                if line not in  ( POS(0)
+                                + SPAN('0123456789abcdef') + σ(' ')
+                                + REM() % "line"
+                                + RPOS(0)
+                                ):
+                    raise Exception("Never say never!")
 #           --------------------------------------------------------------------
             line = file.readline()
 #-------------------------------------------------------------------------------
