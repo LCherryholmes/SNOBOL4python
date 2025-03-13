@@ -109,38 +109,38 @@ def classify(t, phrase, parent=None):
 #           case ('VBN', 'been'):                       pprint([phrase, t])
 #           --------------------------------------------------------------------
             case ('NP', ('DT', dt), ('VBG', vbg), *np) if len(np) == 0:
-                 pprint([phrase, dt, vbg, len(np)]) if False else None
+                 pprint([phrase, dt, vbg, len(np)])
 #           --------------------------------------------------------------------
             case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('NP', *np), *vp):
-                 pprint([phrase, vbg1, cc, vbg2, len(np), len(vp)]) if False else None
+                 pprint([phrase, vbg1, cc, vbg2, len(np), len(vp)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('PP', *pp), *vp):
-                 pprint([phrase, vbg1, cc, vbg2, len(pp), len(vp)]) if False else None
+                 pprint([phrase, vbg1, cc, vbg2, len(pp), len(vp)])
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('NP', *np), *vp):
-                 pprint([phrase, vbg, len(np), len(vp)]) if False else None
+                 pprint([phrase, vbg, len(np), len(vp)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('PP', *pp), *vp):
-                 pprint([phrase, vbg, len(pp), len(vp)]) if False else None
+                 pprint([phrase, vbg, len(pp), len(vp)])
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('PP', ('VBG', vbg), ('NP', *np), *pp):
-                 pprint([phrase, vbg, len(np), len(pp)]) if False else None
+                 pprint([phrase, vbg, len(np), len(pp)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(pp), phrase, parent)
             case (('VP', ('``', '``'), ('VBG', vbg), ("''", "''"), ('PP', *pp), *vp)):
-                 pprint([phrase, vbg, len(pp), len(vp)]) if False else None
+                 pprint([phrase, vbg, len(pp), len(vp)])
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case (('VP', ('VBG', vbg), ('VP', *vp1), *vp2)):
-                 pprint([phrase, vbg, len(vp1), len(vp2)]) if False else None
+                 pprint([phrase, vbg, len(vp1), len(vp2)])
                  classify(tuple(vp1), phrase, parent)
                  classify(tuple(vp2), phrase, parent)
             case ('ADJP', *adjp, ('VBG', vbg)):
-                 pprint([phrase, len(adjp), vbg]) if False else None
+                 pprint([phrase, len(adjp), vbg])
                  classify(tuple(adjp), phrase, parent)
 #           --------------------------------------------------------------------
             case ( ('VBZ'|'VB'|'VBP'|'VBD', 'has'|'have'|'had')
@@ -151,110 +151,110 @@ def classify(t, phrase, parent=None):
                    )
                  , *rem3
                  ):
-                 pprint([phrase, vbg, len(rem1), len(rem2), len(rem3)]) if False else None
+                 pprint([phrase, vbg, len(rem1), len(rem2), len(rem3)])
                  classify(tuple(rem1), phrase, parent)
                  classify(tuple(rem2), phrase, parent)
                  classify(tuple(rem3), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('NN'|'NNS', nn), *rem):
-                 pprint([phrase, vbg, nn, len(rem)]) if False else None
+                 pprint([phrase, vbg, nn, len(rem)])
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('CD', cd), ('NN'|'NNS', nn), *rem):
-                 pprint([phrase, vbg, cd, nn, len(rem)]) if False else None
+                 pprint([phrase, vbg, cd, nn, len(rem)])
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('PRT', *prt), *rem):
-                 pprint([phrase, vbg, len(prt), len(rem)]) if False else None
+                 pprint([phrase, vbg, len(prt), len(rem)])
                  classify(tuple(prt), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('NP', ('DT', dt), *np), *rem):
-                 pprint([phrase, vbg, dt, len(np), len(rem)]) if False else None
+                 pprint([phrase, vbg, dt, len(np), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('PRP$', prp), *np), *rem):
-                 pprint([phrase, vbg, prp, len(np), len(rem)]) if False else None
+                 pprint([phrase, vbg, prp, len(np), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('NP', ('NN'|'NNS', nn), *np1), *np2), *rem):
-                 pprint([phrase, vbg, nn, len(np1), len(np2), len(rem)]) if False else None
+                 pprint([phrase, vbg, nn, len(np1), len(np2), len(rem)])
                  classify(tuple(np1), phrase, parent)
                  classify(tuple(np2), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('NP', ('DT', dt), *np1), *np2), *rem):
-                 pprint([phrase, vbg, dt, len(np1), len(np2), len(rem)]) if False else None
+                 pprint([phrase, vbg, dt, len(np1), len(np2), len(rem)])
                  classify(tuple(np1), phrase, parent)
                  classify(tuple(np2), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', *np), *rem):
-                 pprint([phrase, vbg, len(np), len(rem)]) if False else None
+                 pprint([phrase, vbg, len(np), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ("''", "''"), ('NP', ('NN'|'NNS', nn), *np), *rem):
-                 pprint([phrase, vbg, nn, len(np), len(rem)]) if False else None
+                 pprint([phrase, vbg, nn, len(np), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('``', '``'), ('VBG', vbg), ("''", "''"), ('NP', *np), *rem):
-                 pprint([phrase, vbg, len(np), len(rem)]) if False else None
+                 pprint([phrase, vbg, len(np), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('PP', ('IN'|'TO', ppx), *pp), *rem):
-                 pprint([phrase, vbg, ppx, len(pp), len(rem)]) if False else None
+                 pprint([phrase, vbg, ppx, len(pp), len(rem)])
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('JJ', jj), ('NN'|'NNS', nn), *rem):
-                 pprint([phrase, vbg, jj, nn, len(rem)]) if False else None
+                 pprint([phrase, vbg, jj, nn, len(rem)])
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('S', ('NP', *np), *s), *rem):
-                 pprint([phrase, vbg, len(np), len(s), len(rem)]) if False else None
+                 pprint([phrase, vbg, len(np), len(s), len(rem)])
                  classify(tuple(np), phrase, parent)
                  classify(tuple(s), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('S', ('VP', ('TO', *to), *vp), *s), *rem):
-                pprint([phrase, vbg, to, len(vp), len(s), len(rem)]) if False else None
+                pprint([phrase, vbg, to, len(vp), len(s), len(rem)])
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(s), phrase, parent)
                 classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('SBAR', *sbar), *rem):
-                pprint([phrase, vbg, len(sbar), len(rem)]) if False else None
+                pprint([phrase, vbg, len(sbar), len(rem)])
                 classify(tuple(sbar), phrase, parent)
                 classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBZ', 'is'), ('VP', ('VBG', vbg), *vp), *rem):
-                pprint([phrase, vbg, len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(vp), len(rem)])
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
             case (('VBP', 'am'|'are'), ('VP', ('VBG', vbg), *vp), *rem):
-                pprint([phrase, vbg, len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(vp), len(rem)])
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
             case (('VBD', 'was'|'were'), ('VP', ('VBG', vbg), *vp), *rem):
-                pprint([phrase, vbg, len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(vp), len(rem)])
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
             case (('VP', ('VBG', vbg), *vp), *rem) if len(vp) == 0:
-                pprint([phrase, vbg, len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(vp), len(rem)])
                 classify(tuple(rem), phrase, parent)
             case (('VP', ('VBG', vbg), ('ADJP', *adjp), *vp), *rem):
-                pprint([phrase, vbg, len(adjp), len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(adjp), len(vp), len(rem)])
                 classify(tuple(adjp), phrase, parent)
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
             case (('VP', ('VBG', vbg), ('ADVP', *advp), *vp), *rem):
-                pprint([phrase, vbg, len(advp), len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(advp), len(vp), len(rem)])
                 classify(tuple(advp), phrase, parent)
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
             case ('VP', ('ADVP', *advp), ('VBG', vbg), *vp) if len(vp) == 0:
-                pprint([phrase, advp, vbg, len(vp)]) if False else None
+                pprint([phrase, advp, vbg, len(vp)])
                 classify(tuple(advp), phrase, parent)
             case ('PP', ('IN', _in), ('NP', ('VBG', vbg), *np), *pp) \
               if len(np) == 0 and len(pp) == 0:
-                pprint([phrase, _in, vbg, len(np), len(pp)]) if False else None
+                pprint([phrase, _in, vbg, len(np), len(pp)])
             case (('VP', ('VBG', vbg), ('PRT', *prt), *vp), *rem):
-                pprint([phrase, vbg, len(prt), len(vp), len(rem)]) if False else None
+                pprint([phrase, vbg, len(prt), len(vp), len(rem)])
                 classify(tuple(prt), phrase, parent)
                 classify(tuple(vp), phrase, parent)
                 classify(tuple(rem), phrase, parent)
@@ -304,12 +304,11 @@ with open("VBGinTASA.txt", "r") as bank_file:
         if bank_source in treebank():
             bank = list_to_tuple(bank)
             print("# all tags"); pprint(tags)
-            print('# tree banks', len(bank))
-            print('# VBG tags', tags['VBG'])
+            print('# tree banks=', len(bank))
+            print('# VBG tags=', tags['VBG'])
             print("Searching...")
             for root in bank:
                 traverse(root)
-#           roots = list_to_tuple(roots)
             print('# roots=', len(roots))
             print("Clasifying...")
             for root in roots:
@@ -317,7 +316,7 @@ with open("VBGinTASA.txt", "r") as bank_file:
                 pprint(sentence(root)[1:], width=80)
 #               print('#' + '-' * 79)
 #               pprint(root, width=80)
-                print('#' + '-' * 79)
+#               print('#' + '-' * 79)
                 classify(tuple(root), None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
