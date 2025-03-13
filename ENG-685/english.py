@@ -14,8 +14,8 @@ def ς(s):               yield from η() + σ(s)
 def eWordSegment():     yield from SPAN(_UCASE+_LCASE)
 def eWordSegments():    yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
 def eWord():            yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
-def eUnknownWord():     yield from eWord() @ tx + notmatch(lambda: eWords, lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
-def eKnownWord():       yield from eWord() @ tx + match(lambda: eWords,    lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
+def eUnknownWord():     yield from eWord() @ "tx" + notmatch(lambda: eWords, lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
+def eKnownWord():       yield from eWord() @ "tx" + match(lambda: eWords,    lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
 def eDQString():        yield from σ('"') + BREAK('"') + σ('"')
 def eSQString():        yield from σ("`") + BREAK("'") + σ("'") | σ("'") + BREAK("'") + σ("'")
 def eNumber():          yield from SPAN('0123456789')
@@ -69,9 +69,12 @@ def eNoun():
                 )
 
 def eDictNoun():
-    yield from  ( σ(' ') + eWord() @ "eW1" + σ(' ') + eWord() @ "eW2" + σ(' ') + eWord() @ "eW3" + EngIsNoun(lambda: eW1+' '+eW2+' '+eW3)
-                | σ(' ') + eWord() @ "eW1" + σ(' ') + eWord() @ "eW2" + EngIsNoun(lambda: eW1+' '+eW2)
-                | σ(' ') + eWord() @ "eWrd" + EngIsNoun(lambda: eWrd)
+    yield from  ( eWord() @ "eW1"  + σ(' ')
+                + eWord() @ "eW2"  + σ(' ')
+                + eWord() @ "eW3"  + EngIsNoun(lambda: eW1+' '+eW2+' '+eW3)
+                | eWord() @ "eW1"  + σ(' ')
+                + eWord() @ "eW2"  + EngIsNoun(lambda: eW1+' '+eW2)
+                | eWord() @ "eWrd" + EngIsNoun(lambda: eWrd)
                 )
 
 def ePersonNoun():
@@ -198,9 +201,9 @@ def eMonth():
 
 def eTimeNoun(): \
     yield from \
-    ( eWordSegment() @ tx + match(lambda: tx, lambda: POS(0) + eMonth() + RPOS(0)) + σ(' ') + eNumber() + σ(', ') + eNumber()
-    | eWordSegment() @ tx + match(lambda: tx, lambda: POS(0) + eMonth() + RPOS(0)) + (σ(' ') + eNumber() | ε())
-    | eWordSegment() @ tx + match(lambda: tx, lambda: POS(0) + eDayOfWeek() + RPOS(0))
+    ( eWordSegment() @ "tx" + match(lambda: tx, lambda: POS(0) + eMonth() + RPOS(0)) + σ(' ') + eNumber() + σ(', ') + eNumber()
+    | eWordSegment() @ "tx" + match(lambda: tx, lambda: POS(0) + eMonth() + RPOS(0)) + (σ(' ') + eNumber() | ε())
+    | eWordSegment() @ "tx" + match(lambda: tx, lambda: POS(0) + eDayOfWeek() + RPOS(0))
     | σ('year ') + eNumber()
     )
 def eSeparatedNoun():         yield ""
@@ -329,9 +332,12 @@ def eVerb():
 #                             | σ('made') + eDictAdjective()
                               )
 def eDictVerb():
-    yield from                ( eWord() @ eW1  + σ(' ') + eWord() @ eW2 + σ(' ') + eWord() @ eW3 + EngIsVerb(lambda: eW1+' '+eW2+' '+eW3)
-                              | eWord() @ eW1  + σ(' ') + eWord() @ eW2 + EngIsVerb(lambda: eW1+' '+eW2)
-                              | eWord() @ eWrd + EngIsVerb(lambda: eWrd)
+    yield from                ( eWord() @ "eW1"  + σ(' ')
+                              + eWord() @ "eW2"  + σ(' ')
+                              + eWord() @ "eW3"  + EngIsVerb(lambda: eW1+' '+eW2+' '+eW3)
+                              | eWord() @ "eW1"  + σ(' ')
+                              + eWord() @ "eW2"  + EngIsVerb(lambda: eW1+' '+eW2)
+                              | eWord() @ "eWrd" + EngIsVerb(lambda: eWrd)
                               | σ('reappointed')
                               | σ('redelegated')
                               )
@@ -365,7 +371,6 @@ def eLinkingVerb():
                               | σ('taste')
                               | σ('turn')
                               )
-
 #   Helping verbs are verbs that can be added to another verb to make a single verb phrase. Any of
 #   the many forms of "be" as well as some other common verbs can be used as helping verbs.
 def eHelpingVerb():
@@ -385,7 +390,6 @@ def eHelpingVerb():
                               | σ('might')  + σ('not') | σ('might')
                               | σ('must')   + σ('not') | σ('must')
                               )
-
 def eFormOfBEVerb():
     yield from                ( σ('am')     + σ('not')                         | σ('am')
                               | σ('are')    + σ('not')                         | σ('are')
@@ -418,10 +422,8 @@ def eFormOfBEVerb():
                               | σ('will')   + σ('not') + σ('have') + σ('been') | σ('will have been')
                               | σ('would')  + σ('not') + σ('have') + σ('been') | σ('would have been')
                               )
-
 def eAuxiliaryVerb():
     yield from                σ('be') | σ('do') | σ('have')
-
 def eDitransitiveVerb():
     yield from                σ('cause') | σ('give')
 def eFiniteVerb():            yield ""
@@ -518,7 +520,6 @@ def eIndefiniteAdjective():
                               | σ('what')
                               | σ('which')
                               )
-
 def eDescriptiveAdjective():
     yield from                ( σ('agency-specific')
                               | σ('below-market')
@@ -542,7 +543,6 @@ def eDescriptiveAdjective():
                               | σ('three-year')
                               | eNumber() + σ('-year')
                               )
-
 def eNumericalAdjective():
     yield from                ( σ('four')
                               | σ('five')
