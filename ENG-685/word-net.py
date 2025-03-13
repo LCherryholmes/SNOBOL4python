@@ -12,7 +12,12 @@ hex2Dec = {
      'c': 12, 'd': 13, 'e': 14, 'f': 15}
 #-------------------------------------------------------------------------------
 lineno = 0
-def inc(): global lineno; lineno += 1; return True
+def inc():
+    global lineno
+    if lineno % 10_000 == 0:
+        print(lineno)
+    lineno += 1
+    return True
 #-------------------------------------------------------------------------------
 lexs = {"noun", "verb", "adj", "adv"}
 lexicon = dict()
@@ -23,8 +28,6 @@ def enter(word, dict_type):
         if dict_type not in lexicon[word]:
             lexicon[word] += dict_type
     else: lexicon[word] = dict_type 
-    if lineno % 10_000 == 0:
-        print(lineno, word, lexicon[word])
     return True
 #-------------------------------------------------------------------------------
 GLOBALS(globals())
@@ -42,17 +45,17 @@ for lex in lexs:
             + ARBNO(
                 σ('  ') + SPAN('0123456789')
               + σ(' ') + BREAK("\n")
-              + σ('\n')
               + λ(lambda: inc())
+              + σ('\n')
               )
             + ARBNO(
                 SPAN('0123456789')
               + σ(' ') + SPAN('0123456789')
-              + σ(' ') + ANY('asrnv') @ "dict_type"
-              + σ(' ') + SPAN('0123456789abcdef') @ "nhex"
+              + σ(' ') + ANY('asrnv') # @ "dict_type"
+              + σ(' ') + SPAN('0123456789abcdef') # @ "nhex"
               + σ(' ')
               + ARBNO(
-                  BREAK(' (') @ "word" + λ(lambda: enter(word, dict_type))
+                  BREAK(' (') @ "word" # + λ(lambda: enter(word, dict_type))
                 + (σ(' ') | σ('(') + BREAK(')') + σ(') '))
                 + SPAN('0123456789abcdef') + σ(' ')
                 )
@@ -61,8 +64,8 @@ for lex in lexs:
               + ANY('0123456789')
               + σ(' ')
               + BREAK("\n")
-              + σ('\n')
               + λ(lambda: inc())
+              + σ('\n')
               )
             + RPOS(0)
             ):
