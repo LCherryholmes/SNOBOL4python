@@ -313,9 +313,9 @@ def claws_info():
                     | (NOTANY("_\n") + BREAK("_\n")) % "wrd"
                     + σ('_')
                     + (ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) % "tag"
-                    + Λ("if tag not in mem[num]:      mem[num][tag] = dict()")
-                    + Λ("if wrd not in mem[num][tag]: mem[num][tag][wrd] = 0")
-                    + Λ("mem[num][tag][wrd] += 1")
+                    + Λ("if wrd not in mem[num]:      mem[num][wrd] = dict()")
+                    + Λ("if tag not in mem[num][wrd]: mem[num][wrd][tag] = 0")
+                    + Λ("mem[num][wrd][tag] += 1")
                     )
                   + σ(' ')
                   + (σ('\n') | ε())
@@ -332,7 +332,7 @@ def claws_info():
 # VVB, base form of lexical verb (except the infinitive)(e.g. TAKE, LIVE) flooding
 # PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
 GLOBALS(globals())
-with open("CLAWSinTASA.dat", "r") as claws_file:
+with open("CLAWS5inTASA.dat", "r") as claws_file:
     claws_data = claws_file.read()
     if claws_data in claws_info():
         ppr.pprint(mem)
