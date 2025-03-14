@@ -315,7 +315,6 @@ def claws_info():
                     + Λ("mem[num][wrd][tag] += 1")
                     )
                   + σ(' ')
-                  + (σ('\n') | ε())
                   )
                 + RPOS(0)
                 )
@@ -330,9 +329,12 @@ def claws_info():
 # PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
 GLOBALS(globals())
 with open("CLAWS5inTASA.dat", "r") as claws_file:
-    claws_data = claws_file.read()
-    claws_data in claws_info()
-print("mem: ", len(mem))
+    lines = []
+    while line := claws_file.readline():
+        lines.append(line[0:-1])
+    claws_data = ''.join(lines)
+    if not claws_data in claws_info():
+        print("Yikes")
 #------------------------------------------------------------------------------
 with open("VBGinTASA.dat", "r") as bank_file:
     bank_source = bank_file.read()
