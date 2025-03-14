@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 from SNOBOL4python import GLOBALS, pattern, ε, σ, λ, Λ
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
+from SNOBOL4python import ANY, ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 from pprint import pprint
 from pprint import PrettyPrinter
@@ -302,32 +302,44 @@ def list_to_tuple(t):
         return tuple(list_to_tuple(c) for c in t)
     else: return t
 #------------------------------------------------------------------------------
+@pattern
+def claws_info():
+    yield from  ( POS(0) @ "OUTPUT"
+                + ARBNO(
+                    ( (SPAN(_DIGITS) + σ('_CRD :_PUN')) @ "OUTPUT"
+                    | ( (SPAN(_LCASE) + σ(".")) @ "OUTPUT"
+                      | (SPAN(_LCASE) + σ("-") + SPAN(_LCASE)) @ "OUTPUT"
+                      | (σ("'") + SPAN(_LCASE)) @ "OUTPUT"
+                      | (NOTANY("_\n") + BREAK("_\n")) @ "OUTPUT"
+                      | NOTANY(_DIGITS+_LCASE+_UCASE+"\n") @ "OUTPUT"
+                      )
+                    + (σ('_') + ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) @ "OUTPUT"
+                    )
+                  + σ(' ') @ "OUTPUT"
+                  + (σ('\n') @ "OUTPUT" | ε())
+                  )
+                + RPOS(0) @ "OUTPUT"
+                )
+#------------------------------------------------------------------------------
 GLOBALS(globals())
+with open("CLAWSinTASA.dat", "r") as claws_file:
+    claws = claws_file.read()
+    if claws in claws_info():
+        print("Yeah!")
+exit()            
+#------------------------------------------------------------------------------
 with open("VBGinTASA.dat", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
-#       print("Parsing...")
         if bank_source in treebank():
             bank = list_to_tuple(bank)
-#           print("# all tags"); ppr.pprint(tags)
-#           print('# tree banks=', len(bank))
-#           print('# VBG tags=', tags['VBG'])
-#           print("Searching...")
             for root in bank:
                 traverse(root)
-#           print('# roots=', len(roots))
-#           print("Clasifying...")
             n = 0
             for root in roots:
-#               print('#' + '=' * 79)
-#               print()
                 n += 1
                 display = ""
                 sentence(root)
                 print(str(n) + ":", display)
-#               print('#' + '-' * 79)
-#               ppr.pprint(root, width=80)
-#               print('#' + '-' * 79)
-#               classify(tuple(root), None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
