@@ -99,94 +99,97 @@ def sentence(t):
 "I had been writing a report before the meeting started." # past perfect progressive: had been + writing
 "By next week, I will have been writing my thesis for three months." # future perfect progressive: will have been + writing
 #------------------------------------------------------------------------------
-def register(vbg, *args):
-    ppr.pprint([vbg, *args])
+def register(ruleno, vbg, *args):
+    if rootno in mem:
+        if vbg not in mem[rootno]:
+            ppr.pprint([ruleno, vbg, None, *args])
+        else: ppr.pprint([ruleno, vbg, list(mem[rootno][vbg].keys()), *args])
 #------------------------------------------------------------------------------
 def classify(t, phrase, parent=None):
     global pp
     if type(t) == str: print([phrase, type(t), t])
     elif type(t) == tuple:
         match t:
-            case ():                                    return
+            case (): return
 #           --------------------------------------------------------------------
-            case ('S', *rem)  if phrase == None: classify(tuple(rem), 'S', t)
+            case ('S', *rem)  if phrase == None:              classify(tuple(rem), 'S', t)
             case ('NP', *rem) if phrase in (None, 'S', 'VP'): classify(tuple(rem), 'NP', t)
             case ('VP', *rem) if phrase in (None, 'S', 'NP'): classify(tuple(rem), 'VP', t)
-            case ('VBG', 'being'):  register('being', phrase, t); ppr.pprint(parent)
-            case ('VBG',  vbg):     register(vbg, phrase, t);     ppr.pprint(parent)
+            case ('VBG', 'being'):  register(1, 'being', phrase, t); ppr.pprint(parent)
+            case ('VBG',  vbg):     register(2, vbg, phrase, t);     ppr.pprint(parent)
 #           --------------------------------------------------------------------
             case ('NP', ('DT', dt), ('VBG', vbg), *np) if len(np) == 0:
-                 register(vbg, phrase, dt, vbg, len(np))
+                 register(3, vbg, phrase, dt, vbg, len(np))
 #           --------------------------------------------------------------------
             case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('NP', *np), *vp):
-                 register(vbg1, phrase, cc, len(np), len(vp))
-                 register(vbg2, phrase, cc, len(np), len(vp))
+                 register(4, vbg1, phrase, cc, len(np), len(vp))
+                 register(4, vbg2, phrase, cc, len(np), len(vp))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('PP', *pp), *vp):
-                 register(vbg1, phrase, cc, len(pp), len(vp))
-                 register(vbg2, phrase, cc, len(pp), len(vp))
+                 register(5, vbg1, phrase, cc, len(pp), len(vp))
+                 register(5, vbg2, phrase, cc, len(pp), len(vp))
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('NP', *np), *vp):
-                 register(vbg, phrase, len(np), len(vp))
+                 register(6, vbg, phrase, len(np), len(vp))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('PP', *pp), *vp):
-                 register(vbg, phrase, len(pp), len(vp))
+                 register(7, vbg, phrase, len(pp), len(vp))
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('``', '``'), ('VBG', vbg), ("''", "''"), ('PP', *pp), *vp):
-                 register(vbg, phrase, len(pp), len(vp))
+                 register(8, vbg, phrase, len(pp), len(vp))
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('VP', *vp1), *vp2):
-                 register(vbg, phrase, len(vp1), len(vp2))
+                 register(9, vbg, phrase, len(vp1), len(vp2))
                  classify(tuple(vp1), phrase, parent)
                  classify(tuple(vp2), phrase, parent)
             case ('VP', ('VBG', vbg), *vp) if len(vp) == 0:
-                 register(vbg, phrase, len(vp))
+                 register(10, vbg, phrase, len(vp))
             case ('VP', ('VBG', vbg), ('ADJP', *adjp), *vp):
-                 register(vbg, phrase, len(adjp), len(vp))
+                 register(11, vbg, phrase, len(adjp), len(vp))
                  classify(tuple(adjp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('ADVP', *advp), *vp):
-                 register(vbg, phrase, len(advp), len(vp))
+                 register(12, vbg, phrase, len(advp), len(vp))
                  classify(tuple(advp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
 #           --------------------------------------------------------------------
             case ('PP', ('VBG', vbg), ('NP', *np), *pp):
-                 register(vbg, phrase, len(np), len(pp))
+                 register(13, vbg, phrase, len(np), len(pp))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(pp), phrase, parent)
             case ('ADJP', *adjp, ('VBG', vbg)):
-                 register(vbg, phrase, len(adjp), vbg)
+                 register(14, vbg, phrase, len(adjp), vbg)
                  classify(tuple(adjp), phrase, parent)
 #           --------------------------------------------------------------------
             case ('VP', ('ADVP', *advp), ('VBG', vbg), *vp) if len(vp) == 0:
-                 register(vbg, phrase, advp, len(vp))
+                 register(15, vbg, phrase, advp, len(vp))
                  classify(tuple(advp), phrase, parent)
             case ('PP', ('IN', _in), ('NP', ('VBG', vbg), *np), *pp) \
               if len(np) == 0 and len(pp) == 0:
-                 register(vbg, phrase, _in, len(np), len(pp))
+                 register(16, vbg, phrase, _in, len(np), len(pp))
             case ('VP', ('VBG', vbg), ('PRT', *prt), *vp):
-                 register(vbg, phrase, len(prt), len(vp))
+                 register(17, vbg, phrase, len(prt), len(vp))
                  classify(tuple(prt), phrase, parent)
                  classify(tuple(vp), phrase, parent)
 #           --------------------------------------------------------------------
-            case (('VB',  'be'),   ('VBG', vbg), *rem): register(vbg, phrase, t); classify(tuple(rem), phrase, paren)
-            case (('VBD', 'was'),  ('VBG', vbg), *rem): register(vbg, phrase, t); classify(tuple(rem), phrase, paren)
-            case (('VBD', 'were'), ('VBG', vbg), *rem): register(vbg, phrase, t); classify(tuple(rem), phrase, paren)
+            case (('VB',  'be'),   ('VBG', vbg), *rem): register(18, vbg, phrase, t); classify(tuple(rem), phrase, paren)
+            case (('VBD', 'was'),  ('VBG', vbg), *rem): register(19, vbg, phrase, t); classify(tuple(rem), phrase, paren)
+            case (('VBD', 'were'), ('VBG', vbg), *rem): register(20, vbg, phrase, t); classify(tuple(rem), phrase, paren)
             case (('VBZ', 'is'), ('VP', ('VBG', vbg), *vp), *rem):
-                 register(vbg, phrase, len(vp), len(rem))
+                 register(21, vbg, phrase, len(vp), len(rem))
                  classify(tuple(vp), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBP', 'am'|'are'), ('VP', ('VBG', vbg), *vp), *rem):
-                 register(vbg, phrase, len(vp), len(rem))
+                 register(22, vbg, phrase, len(vp), len(rem))
                  classify(tuple(vp), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBD', 'was'|'were'), ('VP', ('VBG', vbg), *vp), *rem):
-                 register(vbg, phrase, len(vp), len(rem))
+                 register(23, vbg, phrase, len(vp), len(rem))
                  classify(tuple(vp), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case ( ('VBZ'|'VB'|'VBP'|'VBD', 'has'|'have'|'had')
@@ -197,77 +200,77 @@ def classify(t, phrase, parent=None):
                    )
                  , *rem3
                  ):
-                 register(vbg, phrase, len(rem1), len(rem2), len(rem3))
+                 register(24, vbg, phrase, len(rem1), len(rem2), len(rem3))
                  classify(tuple(rem1), phrase, parent)
                  classify(tuple(rem2), phrase, parent)
                  classify(tuple(rem3), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('NN'|'NNS', nn), *rem):
-                 register(vbg, phrase, nn, len(rem))
+                 register(25, vbg, phrase, nn, len(rem))
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('CD', cd), ('NN'|'NNS', nn), *rem):
-                 register(vbg, phrase, cd, nn, len(rem))
+                 register(26, vbg, phrase, cd, nn, len(rem))
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('PRT', *prt), *rem):
-                 register(vbg, phrase, len(prt), len(rem))
+                 register(27, vbg, phrase, len(prt), len(rem))
                  classify(tuple(prt), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('NP', ('DT', dt), *np), *rem):
-                 register(vbg, phrase, dt, len(np), len(rem))
+                 register(28, vbg, phrase, dt, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('PRP$', prp), *np), *rem):
-                 register(vbg, phrase, prp, len(np), len(rem))
+                 register(29, vbg, phrase, prp, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('NP', ('NN'|'NNS', nn), *np1), *np2), *rem):
-                 register(vbg, phrase, nn, len(np1), len(np2), len(rem))
+                 register(30, vbg, phrase, nn, len(np1), len(np2), len(rem))
                  classify(tuple(np1), phrase, parent)
                  classify(tuple(np2), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', ('NP', ('DT', dt), *np1), *np2), *rem):
-                 register(vbg, phrase, dt, len(np1), len(np2), len(rem))
+                 register(31, vbg, phrase, dt, len(np1), len(np2), len(rem))
                  classify(tuple(np1), phrase, parent)
                  classify(tuple(np2), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('NP', *np), *rem):
-                 register(vbg, phrase, len(np), len(rem))
+                 register(32, vbg, phrase, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ("''", "''"), ('NP', ('NN'|'NNS', nn), *np), *rem):
-                 register(vbg, phrase, nn, len(np), len(rem))
+                 register(33, vbg, phrase, nn, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('``', '``'), ('VBG', vbg), ("''", "''"), ('NP', *np), *rem):
-                 register(vbg, phrase, len(np), len(rem))
+                 register(34, vbg, phrase, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('PP', ('IN'|'TO', ppx), *pp), *rem):
-                 register(vbg, phrase, ppx, len(pp), len(rem))
+                 register(35, vbg, phrase, ppx, len(pp), len(rem))
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('JJ', jj), ('NN'|'NNS', nn), *rem):
-                 register(vbg, phrase, jj, nn, len(rem))
+                 register(36, vbg, phrase, jj, nn, len(rem))
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('S', ('NP', *np), *s), *rem):
-                 register(vbg, phrase, len(np), len(s), len(rem))
+                 register(37, vbg, phrase, len(np), len(s), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(s), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('S', ('VP', ('TO', *to), *vp), *s), *rem):
-                 register(vbg, phrase, to, len(vp), len(s), len(rem))
+                 register(38, vbg, phrase, to, len(vp), len(s), len(rem))
                  classify(tuple(vp), phrase, parent)
                  classify(tuple(s), phrase, parent)
                  classify(tuple(rem), phrase, parent)
             case (('VBG', vbg), ('SBAR', *sbar), *rem):
-                 register(vbg, phrase, len(sbar), len(rem))
+                 register(39, vbg, phrase, len(sbar), len(rem))
                  classify(tuple(sbar), phrase, parent)
                  classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (tag, w) \
-              if type(tag) == str and type(w) == str:   None # register(vbg, phrase, t)
+              if type(tag) == str and type(w) == str:   None # register(w, phrase, t)
             case (tag, *rem) if type(tag) == str:       classify(tuple(rem), phrase, parent)
             case (top, *rem):                           classify(top, phrase, parent); \
                                                         classify(tuple(rem), phrase, parent)
@@ -299,6 +302,15 @@ def list_to_tuple(t):
         return tuple(list_to_tuple(c) for c in t)
     else: return t
 #------------------------------------------------------------------------------
+# VBG, -ing form of the verb "BE", i.e. BEING
+# VDG, -ing form of the verb "DO", i.e. DOING
+# VHG, -ing form of the verb "HAVE", i.e. HAVING
+# VVG, -ing form of lexical verb (e.g. TAKING, LIVING)
+# AJ0, adjective (unmarked) (e.g. GOOD, OLD)
+# NN1, singular noun (e.g. PENCIL, GOOSE) beginning, grouping
+# VVB, base form of lexical verb (except the infinitive)(e.g. TAKE, LIVE) flooding
+# PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
+#------------------------------------------------------------------------------
 @pattern
 def claws_info():
     yield from  ( POS(0)
@@ -319,14 +331,6 @@ def claws_info():
                 + RPOS(0)
                 )
 #------------------------------------------------------------------------------
-# VBG, -ing form of the verb "BE", i.e. BEING
-# VDG, -ing form of the verb "DO", i.e. DOING
-# VHG, -ing form of the verb "HAVE", i.e. HAVING
-# VVG, -ing form of lexical verb (e.g. TAKING, LIVING)
-# AJ0, adjective (unmarked) (e.g. GOOD, OLD)
-# NN1, singular noun (e.g. PENCIL, GOOSE) beginning, grouping
-# VVB, base form of lexical verb (except the infinitive)(e.g. TAKE, LIVE) flooding
-# PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
 GLOBALS(globals())
 with open("CLAWS5inTASA.dat", "r") as claws_file:
     lines = []
@@ -343,13 +347,13 @@ with open("VBGinTASA.dat", "r") as bank_file:
 #           bank = list_to_tuple(bank)
             for root in bank:
                 traverse(root)
-            root_no = 0
+            rootno = 0
             for root in roots:
-                root_no += 1
+                rootno += 1
                 print('#', '=' * 79)
                 display = ""
                 sentence(root)
-                print(f"# {str(root_no)}:")
+                print(f"# {str(rootno)}:")
                 ppr.pprint(display)
                 print('#', '-' * 79)
                 classify(root, None)
