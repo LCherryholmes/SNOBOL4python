@@ -99,14 +99,41 @@ def sentence(t):
 "I had been writing a report before the meeting started." # past perfect progressive: had been + writing
 "By next week, I will have been writing my thesis for three months." # future perfect progressive: will have been + writing
 #------------------------------------------------------------------------------
+# Gerund, deverbal nouns
+# Acts as a noun. Stand-alone; no auxiliaries. Subject, object, complement.
+# Modified by adjectives;
+# may take determiners in nominalized compound noun phrases
+"Writing is fun."
+"She loves hiking."
+#------------------------------------------------------------------------------
+# Adjectival Participle, deverbal adjectives
+# Qualifies/modifies a noun. Stand-alone; directly attached to a noun.
+# Attributive (before/after a noun).
+# Functions like adjectives and can sometimes be preceded by intensifiers.
+"The writing style is unique."
+"This homework is exciting."
+#------------------------------------------------------------------------------
+# Undecidable Participle, deverbal undecidables
+# Ambiguous—shares features of both. No auxiliary; ambiguity in usage.
+# Varies by context. Relies on broader syntactic context.
+"I like reading."
+"These are hiking boots."
+#------------------------------------------------------------------------------
+versus = dict()
 def register(ruleno, vbg, *args):
     if rootno in mem:
-        if vbg not in mem[rootno]:
-            ppr.pprint([ruleno, vbg, None, *args])
-        else: ppr.pprint([ruleno, vbg, list(mem[rootno][vbg].keys()), *args])
+        if vbg in mem[rootno]:
+            keys = list(mem[rootno][vbg].keys())
+            assert(len(keys) == 1)
+            tag = keys[0]
+            if ruleno not in versus:                versus[ruleno] = dict()
+            if tag    not in versus[ruleno]:        versus[ruleno][tag] = dict()
+            if vbg    not in versus[ruleno][tag]:   versus[ruleno][tag][vbg] = set()
+            versus[ruleno][tag][vbg].add(rootno)
+            ppr.pprint([ruleno, vbg, tag, *args])
+        else: ppr.pprint([ruleno, vbg, None, *args])
 #------------------------------------------------------------------------------
 def classify(t, phrase, parent=None):
-    global pp
     if type(t) == str: print([phrase, type(t), t])
     elif type(t) == tuple:
         match t:
@@ -115,22 +142,24 @@ def classify(t, phrase, parent=None):
             case ('S', *rem)  if phrase == None:              classify(tuple(rem), 'S', t)
             case ('NP', *rem) if phrase in (None, 'S', 'VP'): classify(tuple(rem), 'NP', t)
             case ('VP', *rem) if phrase in (None, 'S', 'NP'): classify(tuple(rem), 'VP', t)
-            case ('VBG', 'being'):  register(1, 'being', phrase, t); ppr.pprint(parent)
-            case ('VBG',  vbg):     register(2, vbg, phrase, t);     ppr.pprint(parent)
+            case ('VBG', 'being'):  register(1, 'being', phrase, t); ppr.pprint(root)
+            case ('VBG',  vbg):     register(2, vbg, phrase, t);     ppr.pprint(root)
 #           --------------------------------------------------------------------
             case ('NP', ('DT', dt), ('VBG', vbg), *np) if len(np) == 0:
-                 register(3, vbg, phrase, dt, vbg, len(np))
+                 register(3, vbg, phrase, dt, vbg, len(np)) # NN1
 #           --------------------------------------------------------------------
-            case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('NP', *np), *vp):
-                 register(4, vbg1, phrase, cc, len(np), len(vp))
-                 register(4, vbg2, phrase, cc, len(np), len(vp))
+            case (('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('NP', *np), *vp), *rem):
+                 register(4, vbg1, phrase, cc, len(np), len(vp)) # NN1
+                 register(4, vbg2, phrase, cc, len(np), len(vp)) # NN1
                  classify(tuple(np), phrase, parent)
                  classify(tuple(vp), phrase, parent)
-            case ('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('PP', *pp), *vp):
-                 register(5, vbg1, phrase, cc, len(pp), len(vp))
-                 register(5, vbg2, phrase, cc, len(pp), len(vp))
+                 classify(tuple(rem), phrase, parent)
+            case (('VP', ('VBG', vbg1), ('CC', cc), ('VBG', vbg2), ('PP', *pp), *vp), *rem):
+                 register(5, vbg1, phrase, cc, len(pp), len(vp)) # NN1
+                 register(5, vbg2, phrase, cc, len(pp), len(vp)) # NN1
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
+                 classify(tuple(rem), phrase, parent)
             case ('VP', ('VBG', vbg), ('NP', *np), *vp):
                  register(6, vbg, phrase, len(np), len(vp))
                  classify(tuple(np), phrase, parent)
@@ -139,10 +168,10 @@ def classify(t, phrase, parent=None):
                  register(7, vbg, phrase, len(pp), len(vp))
                  classify(tuple(pp), phrase, parent)
                  classify(tuple(vp), phrase, parent)
-            case ('VP', ('``', '``'), ('VBG', vbg), ("''", "''"), ('PP', *pp), *vp):
-                 register(8, vbg, phrase, len(pp), len(vp))
-                 classify(tuple(pp), phrase, parent)
-                 classify(tuple(vp), phrase, parent)
+#           case ('VP', ('``', '``'), ('VBG', vbg), ("''", "''"), ('PP', *pp), *vp):
+#                register(8, vbg, phrase, len(pp), len(vp))
+#                classify(tuple(pp), phrase, parent)
+#                classify(tuple(vp), phrase, parent)
             case ('VP', ('VBG', vbg), ('VP', *vp1), *vp2):
                  register(9, vbg, phrase, len(vp1), len(vp2))
                  classify(tuple(vp1), phrase, parent)
@@ -177,9 +206,6 @@ def classify(t, phrase, parent=None):
                  classify(tuple(prt), phrase, parent)
                  classify(tuple(vp), phrase, parent)
 #           --------------------------------------------------------------------
-            case (('VB',  'be'),   ('VBG', vbg), *rem): register(18, vbg, phrase, t); classify(tuple(rem), phrase, paren)
-            case (('VBD', 'was'),  ('VBG', vbg), *rem): register(19, vbg, phrase, t); classify(tuple(rem), phrase, paren)
-            case (('VBD', 'were'), ('VBG', vbg), *rem): register(20, vbg, phrase, t); classify(tuple(rem), phrase, paren)
             case (('VBZ', 'is'), ('VP', ('VBG', vbg), *vp), *rem):
                  register(21, vbg, phrase, len(vp), len(rem))
                  classify(tuple(vp), phrase, parent)
@@ -238,14 +264,14 @@ def classify(t, phrase, parent=None):
                  register(32, vbg, phrase, len(np), len(rem))
                  classify(tuple(np), phrase, parent)
                  classify(tuple(rem), phrase, parent)
-            case (('VBG', vbg), ("''", "''"), ('NP', ('NN'|'NNS', nn), *np), *rem):
-                 register(33, vbg, phrase, nn, len(np), len(rem))
-                 classify(tuple(np), phrase, parent)
-                 classify(tuple(rem), phrase, parent)
-            case (('``', '``'), ('VBG', vbg), ("''", "''"), ('NP', *np), *rem):
-                 register(34, vbg, phrase, len(np), len(rem))
-                 classify(tuple(np), phrase, parent)
-                 classify(tuple(rem), phrase, parent)
+#           case (('VBG', vbg), ("''", "''"), ('NP', ('NN'|'NNS', nn), *np), *rem):
+#                register(33, vbg, phrase, nn, len(np), len(rem))
+#                classify(tuple(np), phrase, parent)
+#                classify(tuple(rem), phrase, parent)
+#           case (('``', '``'), ('VBG', vbg), ("''", "''"), ('NP', *np), *rem):
+#                register(34, vbg, phrase, len(np), len(rem))
+#                classify(tuple(np), phrase, parent)
+#                classify(tuple(rem), phrase, parent)
 #           --------------------------------------------------------------------
             case (('VBG', vbg), ('PP', ('IN'|'TO', ppx), *pp), *rem):
                  register(35, vbg, phrase, ppx, len(pp), len(rem))
@@ -276,26 +302,6 @@ def classify(t, phrase, parent=None):
                                                         classify(tuple(rem), phrase, parent)
     elif type(t) == list: raise Exception(f"What's going on! {type(t)} {t}")
     else: raise Exception(f"Yikes! {type(t)} {t}")
-#------------------------------------------------------------------------------
-# Gerund, deverbal nouns
-# Acts as a noun. Stand-alone; no auxiliaries. Subject, object, complement.
-# Modified by adjectives;
-# may take determiners in nominalized compound noun phrases
-"Writing is fun."
-"She loves hiking."
-#------------------------------------------------------------------------------
-# Adjectival Participle, deverbal adjectives
-# Qualifies/modifies a noun. Stand-alone; directly attached to a noun.
-# Attributive (before/after a noun).
-# Functions like adjectives and can sometimes be preceded by intensifiers.
-"The writing style is unique."
-"This homework is exciting."
-#------------------------------------------------------------------------------
-# Undecidable Participle, deverbal undecidables
-# Ambiguous—shares features of both. No auxiliary; ambiguity in usage.
-# Varies by context. Relies on broader syntactic context.
-"I like reading."
-"These are hiking boots."
 #------------------------------------------------------------------------------
 def list_to_tuple(t):
     if type(t) == list:
@@ -359,3 +365,4 @@ with open("VBGinTASA.dat", "r") as bank_file:
                 classify(root, None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
+pprint(versus)
