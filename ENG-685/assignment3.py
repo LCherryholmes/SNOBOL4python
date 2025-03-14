@@ -20,7 +20,7 @@ def group():
                 + push_list("tag")
                 + ARBNO(
                     delim()
-                  + (group() | word() % "word" + push_item("word"))
+                  + (group() | word() % "wrd" + push_item("wrd"))
                   )
                 + pop_list()
                 + σ(')')
@@ -48,9 +48,9 @@ def push_list(v):   yield from Λ(f"count_tag({v})") \
 @pattern
 def push_item(v):   yield from Λ(f"stack[-1].append({v})")
 @pattern
-def pop_list():     yield from Λ(f"stack[-2].append(stack.pop())")
+def pop_list():     yield from Λ(f"stack[-2].append(tuple(stack.pop()))")
 @pattern
-def pop_final(v):   yield from Λ(f"{v} = stack.pop()")
+def pop_final(v):   yield from Λ(f"{v} = tuple(stack.pop())")
 #------------------------------------------------------------------------------
 def count_tag(tag):
     if tag not in tags:
@@ -61,7 +61,7 @@ roots = dict()
 def traverse(t, root=None):
     root = t if not root else root
     match t:
-        case ('VBG', word):
+        case ('VBG', wrd):
             if root not in roots:
                 roots[root] = 1
             else: roots[root] += 1
@@ -305,11 +305,17 @@ def list_to_tuple(t):
 @pattern
 def claws_info():
     yield from  ( POS(0)
+                + Λ("mem = dict()")
                 + ARBNO(
-                    ( SPAN(_DIGITS) % "tx" + σ('_CRD :_PUN')
-                    + Λ("print(tx, end=' ')")
-                    | NOTANY("_\n") + BREAK("_\n")
-                    + σ('_') + ANY(_UCASE) + SPAN(_DIGITS+_UCASE)
+                    ( SPAN(_DIGITS) % "num" + σ('_CRD :_PUN')
+                    + Λ("num = int(num)")
+                    + Λ("mem[num] = dict()")
+                    | (NOTANY("_\n") + BREAK("_\n")) % "wrd"
+                    + σ('_')
+                    + (ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) % "tag"
+                    + Λ("if tag not in mem[num]:      mem[num][tag] = dict()")
+                    + Λ("if wrd not in mem[num][tag]: mem[num][tag][wrd] = 0")
+                    + Λ("mem[num][tag][wrd] += 1")
                     )
                   + σ(' ')
                   + (σ('\n') | ε())
@@ -317,25 +323,34 @@ def claws_info():
                 + RPOS(0)
                 )
 #------------------------------------------------------------------------------
+# VBG, -ing form of the verb "BE", i.e. BEING
+# VDG, -ing form of the verb "DO", i.e. DOING
+# VHG, -ing form of the verb "HAVE", i.e. HAVING
+# VVG, -ing form of lexical verb (e.g. TAKING, LIVING)
+# AJ0, adjective (unmarked) (e.g. GOOD, OLD)
+# NN1, singular noun (e.g. PENCIL, GOOSE) beginning, grouping
+# VVB, base form of lexical verb (except the infinitive)(e.g. TAKE, LIVE) flooding
+# PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
 GLOBALS(globals())
 with open("CLAWSinTASA.dat", "r") as claws_file:
-    claws = claws_file.read()
-    if claws in claws_info():
-        print("Yeah!")
-exit()            
+    claws_data = claws_file.read()
+    if claws_data in claws_info():
+        ppr.pprint(mem)
+exit()
 #------------------------------------------------------------------------------
 with open("VBGinTASA.dat", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
         if bank_source in treebank():
-            bank = list_to_tuple(bank)
+#           bank = list_to_tuple(bank)
             for root in bank:
                 traverse(root)
             n = 0
             for root in roots:
                 n += 1
-                display = ""
-                sentence(root)
-                print(str(n) + ":", display)
+#               display = ""
+#               sentence(root)
+#               print(str(n) + ":", display)
+                classify(root, None)
     else: print("Boo!")
 #------------------------------------------------------------------------------
