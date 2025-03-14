@@ -304,21 +304,17 @@ def list_to_tuple(t):
 #------------------------------------------------------------------------------
 @pattern
 def claws_info():
-    yield from  ( POS(0) @ "OUTPUT"
+    yield from  ( POS(0)
                 + ARBNO(
-                    ( (SPAN(_DIGITS) + σ('_CRD :_PUN')) @ "OUTPUT"
-                    | ( (SPAN(_LCASE) + σ(".")) @ "OUTPUT"
-                      | (SPAN(_LCASE) + σ("-") + SPAN(_LCASE)) @ "OUTPUT"
-                      | (σ("'") + SPAN(_LCASE)) @ "OUTPUT"
-                      | (NOTANY("_\n") + BREAK("_\n")) @ "OUTPUT"
-                      | NOTANY(_DIGITS+_LCASE+_UCASE+"\n") @ "OUTPUT"
-                      )
-                    + (σ('_') + ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) @ "OUTPUT"
+                    ( SPAN(_DIGITS) % "tx" + σ('_CRD :_PUN')
+                    + Λ("print(tx, end=' ')")
+                    | NOTANY("_\n") + BREAK("_\n")
+                    + σ('_') + ANY(_UCASE) + SPAN(_DIGITS+_UCASE)
                     )
-                  + σ(' ') @ "OUTPUT"
-                  + (σ('\n') @ "OUTPUT" | ε())
+                  + σ(' ')
+                  + (σ('\n') | ε())
                   )
-                + RPOS(0) @ "OUTPUT"
+                + RPOS(0)
                 )
 #------------------------------------------------------------------------------
 GLOBALS(globals())
