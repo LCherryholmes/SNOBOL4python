@@ -229,8 +229,8 @@ def classify(t, phrase):
                  classify(tuple(prt), phrase)
                  classify(tuple(vp), phrase)
 #           --------------------------------------------------------------------
-            # ('S', ('NP', *np), ('VP', ('VBZ', 'is'), ('VP', ('VBG', 'gaining'), ('NP', )
-            # ('S', ('NP', *np), ('VP', ('VBZ', 'is'), ('VP', ('VBG', 'suffering'), ('PP',
+            # ('S', ('NP', *np), ('VP', ('VBZ', 'is'), ('VP', ('VBG', 'gaining'), ('NP'))))
+            # ('S', ('NP', *np), ('VP', ('VBZ', 'is'), ('VP', ('VBG', 'suffering'), ('PP'))))
             # ('S', ('NP', *np), ('VP', ('VBZ', 'is'), ('VP', ('VBG', 'drowning')
             case (('VBZ', 'is'), ('VP', ('VBG', vbg), ('NP', *np), *vp), *rem):
                  register(15.3, t, vbg, phrase, len(np), len(vp), len(rem))
@@ -253,7 +253,7 @@ def classify(t, phrase):
             case (('VBZ', 'is'), ('VP', ('VBG', vbg), *vp), *rem):
                  register(15.11, t, vbg, phrase, len(vp), len(rem))
                  classify(tuple(vp), phrase)
-                 classify(tuple(vp), rem)
+                 classify(tuple(rem), phrase)
 #           --------------------------------------------------------------------
             case (('VBP', 'am'|'are'), ('VP', ('VBG', vbg), *vp), *rem):
                  register(16, t, vbg, phrase, len(vp), len(rem))
