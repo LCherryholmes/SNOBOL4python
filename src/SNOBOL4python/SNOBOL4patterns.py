@@ -10,7 +10,7 @@
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
-#> python tests/transl8r.py
+#> python ENG-685/transl8r.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
 from functools import wraps
@@ -90,9 +90,11 @@ def Ω(P, V) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ V
     global _globals
     logger.debug("OMEGA(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        if V == "OUTPUT": print('', _1, end="")
-        logger.debug("%s = OMEGA(%s)", V, repr(_1))
-        _globals[V] = _1
+        if _1 == "": v = ""
+        else: v = S[_].subject[_1[0] : _1[1]]
+        if V == "OUTPUT": print('', v, end="")
+        logger.debug("%s = OMEGA(%s)", V, repr(v))
+        _globals[V] = v
         yield _1
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (backtracking)
@@ -101,9 +103,11 @@ def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
     global _globals
     logger.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        if V == "OUTPUT": print('', _1, end="")
-        logger.debug("%s = delta(%s)", V, repr(_1))
-        _globals[V] = _1
+        if _1 == "": v = ""
+        else: v = S[_].subject[_1[0] : _1[1]]
+        if V == "OUTPUT": print('', v, end="")
+        logger.debug("%s = delta(%s)", V, repr(v))
+        _globals[V] = v
         yield _1
         logger.debug("%s deleted", V)
         if V in _globals: del _globals[V]
@@ -133,10 +137,12 @@ def Δ(P, V) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . V
     global S, _
     logger.debug("delta(%s, %s)", PROTOTYPE(P), V)
     for _1 in P:
-        logger.debug("%s = delta(%d, %d) SUCCESS", V, S[_].pos - len(_1), S[_].pos)
-        S[_].cstack.append(f"{V} = S[_].subject[{S[_].pos - len(_1)} : {S[_].pos}]")
+        logger.debug("%s = delta(%s) SUCCESS", V, repr(_1))
+        if _1 == "":
+            S[_].cstack.append(f"{V} = ''")
+        else: S[_].cstack.append(f"{V} = S[_].subject[{_1[0]} : {_1[1]}]")
         yield _1
-        logger.debug("%s = delta(%d, %d) backtracking...", V, S[_].pos - len(_1), S[_].pos)
+        logger.debug("%s = delta(%s) backtracking...", V, repr(_1))
         S[_].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
@@ -256,9 +262,9 @@ def ω():
 def LEN(n) -> PATTERN:
     global S, _
     if S[_].pos + n <= len(S[_].subject):
-        logger.debug("LEN(%d) SUCCESS(%d,%d)=%s", n, S[_].pos, n, S[_].subject[S[_].pos:S[_].pos + n])
+        logger.debug("LEN(%d) SUCCESS(%d,%d)=%s", n, S[_].pos, n, S[_].subject[S[_].pos : S[_].pos + n])
         S[_].pos += n
-        yield S[_].subject[S[_].pos - n:S[_].pos]
+        yield (S[_].pos - n, S[_].pos) # S[_].subject[S[_].pos - n : S[_].pos]
         S[_].pos -= n
         logger.debug("LEN(%d) backtracking(%d)...", n, S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -267,10 +273,10 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
     global S, _
     logger.debug("sigma(%s) trying(%d)", repr(s), S[_].pos)
     if S[_].pos + len(s) <= len(S[_].subject):
-        if s == S[_].subject[S[_].pos:S[_].pos + len(s)]:
+        if s == S[_].subject[S[_].pos : S[_].pos + len(s)]:
             S[_].pos += len(s)
             logger.debug("sigma(%s) SUCCESS(%d,%d)=", repr(s), S[_].pos - len(s), len(s))
-            yield s
+            yield (S[_].pos - len(s), S[_].pos) # s
             S[_].pos -= len(s)
             logger.debug("sigma(%s) backtracking(%d)...", repr(s), S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -287,7 +293,7 @@ def φ(rex) -> PATTERN:
             pos0 = S[_].pos
             if S[_].pos < matches.end(): #must consume something
                 S[_].pos = matches.end()
-                yield S[_].subject[pos0 : S[_].pos]
+                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
                 S[_].pos = pos0
             else: raise Exeption("Regular expression can not match epsilon.")
         else: raise Exeption("Yikes! Internal error.")
@@ -308,7 +314,7 @@ def TAB(n) -> PATTERN:
         if n >= S[_].pos:
             pos0 = S[_].pos
             S[_].pos = n
-            yield S[_].subject[pos0:n]
+            yield (pos0, n) # S[_].subject[pos0 : n]
             S[_].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -319,7 +325,7 @@ def RTAB(n) -> PATTERN:
         if n >= S[_].pos:
             pos0 = S[_].pos
             S[_].pos = n
-            yield S[_].subject[pos0:n]
+            yield (pos0, n) # S[_].subject[pos0 : n]
             S[_].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -327,7 +333,7 @@ def REM() -> PATTERN:
     global S, _
     pos0 = S[_].pos
     S[_].pos = len(S[_].subject)
-    yield S[_].subject[pos0:]
+    yield (pos0, S[_].pos) # S[_].subject[pos0:]
     S[_].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -338,7 +344,7 @@ def ANY(characters) -> PATTERN:
         if S[_].subject[S[_].pos] in characters:
             logger.debug("ANY(%s) SUCCESS(%d,%d)=%s", repr(characters), S[_].pos, 1, S[_].subject[S[_].pos])
             S[_].pos += 1
-            yield S[_].subject[S[_].pos - 1]
+            yield (S[_].pos - 1, S[_].pos) # S[_].subject[S[_].pos - 1]
             S[_].pos -= 1
             logger.debug("ANY(%s) backtracking(%d)...", repr(characters), S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -350,7 +356,7 @@ def NOTANY(characters) -> PATTERN:
         if not S[_].subject[S[_].pos] in characters:
             logger.debug("NOTANY(%s) SUCCESS(%d,%d)=%s", repr(characters), S[_].pos, 1, S[_].subject[S[_].pos])
             S[_].pos += 1
-            yield S[_].subject[S[_].pos - 1]
+            yield (S[_].pos - 1, S[_].pos) # S[_].subject[S[_].pos - 1]
             S[_].pos -= 1
             logger.debug("NOTANY(%s) backtracking(%d)...", repr(characters), S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -365,8 +371,8 @@ def SPAN(characters) -> PATTERN:
             S[_].pos += 1
         else: break
     if S[_].pos > pos0:
-        logger.debug("SPAN(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0:S[_].pos])
-        yield S[_].subject[pos0:S[_].pos]
+        logger.debug("SPAN(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
+        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
         S[_].pos = pos0
         logger.debug("SPAN(%s) backtracking(%d)...", repr(characters), S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -381,8 +387,8 @@ def BREAK(characters) -> PATTERN:
             S[_].pos += 1
         else: break
     if S[_].pos < len(S[_].subject):
-        logger.debug("BREAK(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0:S[_].pos])
-        yield S[_].subject[pos0:S[_].pos]
+        logger.debug("BREAK(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
+        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
         S[_].pos = pos0
         logger.debug("BREAK(%s) backtracking(%d)...", repr(characters), S[_].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -394,7 +400,7 @@ def ARB() -> PATTERN: # ARB
     global S, _
     pos0 = S[_].pos
     while S[_].pos <= len(S[_].subject):
-        yield S[_].subject[pos0 : S[_].pos]
+        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
         S[_].pos += 1
     S[_].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
@@ -411,7 +417,7 @@ def BAL() -> PATTERN: # BAL
             case ')': nest -= 1
         if nest < 0: break
         elif nest > 0 and S[_].pos >= len(S[_].subject): break
-        elif nest == 0: yield S[_].subject[pos0 : S[_].pos]
+        elif nest == 0: yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
         S[_].pos += 1
     S[_].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
@@ -459,8 +465,8 @@ def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
             next(AP[cursor])
             cursor += 1
             if cursor >= len(AP):
-                logger.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0:S[_].pos])
-                yield S[_].subject[pos0:S[_].pos]
+                logger.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
+                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
                 logger.debug("SIGMA(*) backtracking(%d)...", pos0)
                 cursor -= 1
         except StopIteration:
@@ -474,7 +480,7 @@ def MARBNO(P) -> PATTERN: yield from ARBNO(P)
 def ARBNO(P) -> PATTERN:
     global S, _
     pos0 = S[_].pos
-    logger.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, S[_].pos - pos0, S[_].subject[pos0:S[_].pos])
+    logger.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
     yield ""
     logger.debug("ARBNO(*) backtracking(%d)...", pos0)
     AP = []
@@ -488,8 +494,8 @@ def ARBNO(P) -> PATTERN:
         try:
             next(AP[cursor][1])
             cursor += 1
-            logger.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0:S[_].pos])
-            yield S[_].subject[pos0:S[_].pos]
+            logger.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
+            yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
             logger.debug("ARBNO(*) backtracking(%d)...", pos0)
         except StopIteration:
             cursor -= 1
