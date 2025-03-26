@@ -4,12 +4,12 @@ from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
-from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 #------------------------------------------------------------------------------
 # Parse Regular Expression language
 #------------------------------------------------------------------------------
 @pattern
-def re_RegEx():      yield from POS(0) + re_Expression() + RPOS(0)
+def re_RegEx():      yield from POS(0) + re_Expression() + Pop('RE_tree') + RPOS(0)
 @pattern
 def re_Expression(): yield from ( nPush()
                                 + re_Term() + nInc()
@@ -66,9 +66,8 @@ for rex in rexs:
     print(rex)
     results.clear()
     GLOBALS(results)
-    assert True is (rex in re_RegEx())
-#   pprint(results)
-    RE_tree = results['vstack'].pop()
-    pprint(RE_tree, indent=3, width=36)
-    print()
+    if rex in re_RegEx():
+#       pprint(results)
+        pprint(results['RE_tree'], indent=3, width=36)
+        print()
 #------------------------------------------------------------------------------

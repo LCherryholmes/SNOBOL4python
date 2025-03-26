@@ -9,14 +9,14 @@ from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
 from SNOBOL4python import ε, σ, π, λ, Λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
-from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import JSONDecode
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def jRecognizer():  yield from POS(0) + FENCE() + jJSON() + ς('') + RPOS(0)
+def jRecognizer():  yield from POS(0) + FENCE() + jJSON() + ς('') + Pop('JSON_tree') + RPOS(0)
 @pattern
 def jJSON():        yield from jObject() + Reduce('JSON', 1)
 @pattern
@@ -191,7 +191,6 @@ print(JSON_sample)
 print()
 GLOBALS(globals())
 JSON_sample in jRecognizer()
-JSON_tree = vstack.pop()
 pprint(JSON_tree)
 print()
 JSON = Traverse(JSON_tree)

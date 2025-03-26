@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
-from SNOBOL4python import pattern, GLOBALS
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, φ, Φ
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, θ, φ, Φ
 from SNOBOL4python import ANY, ARB, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 from pprint import pprint
@@ -49,12 +48,15 @@ keywords = [
 ]
 #-------------------------------------------------------------------------------
 @pattern
-def wrd():      yield from  (ANY(_UCASE+_LCASE) + FENCE(SPAN(_LCASE) | ε())) % "w"
+def wrd():      yield from  (ANY(_UCASE+_LCASE) + FENCE(SPAN(_LCASE) | ε()))
 @pattern
 def word():     yield from  wrd() @ "tx" + λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
 @pattern
 def keyword():  yield from  wrd() @ "tx" + λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #-------------------------------------------------------------------------------
+import wordnet
+from wordnet import Lexicon, lexicon
+from wordnet import is_noun, is_verb, is_adjective, is_adverb
 @pattern
 def eTokens():
     yield from  \
@@ -63,8 +65,12 @@ def eTokens():
 #       θ("OUTPUT") +
         ( σ(' ')                + Λ("""P += "σ(' ') + \"""")
         | σ('\n')               + Λ("""P += "σ('\\\\n') +\\n\"""") 
-        | keyword()             + Λ("""P += "ς('" + w + "') + \"""")
-        | word()                + Λ("""P += "word() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_noun(tx))         + Λ("""P += "noun() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_verb(tx))         + Λ("""P += "verb() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_adjective(tx))    + Λ("""P += "adj() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_adverb(tx))       + Λ("""P += "adv() + \"""")
+#       | keyword()             + Λ("""P += "ς('" + w + "') + \"""")
+#       | word()                + Λ("""P += "word() + \"""")
         | SPAN(_DIGITS)         + Λ("""P += "SPAN(_DIGITS) + \"""")
         | SPAN(_UCASE)          + Λ("""P += "SPAN(_UCASE) + \"""")
         | SPAN(_LCASE)          + Λ("""P += "SPAN(_LCASE) + \"""")
@@ -90,18 +96,22 @@ def traverse(tree):
 #-------------------------------------------------------------------------------
 import stanza
 def main():
-    nlp = stanza.Pipeline('en', processors='tokenize,mwt,pos,constituency')
+#   nlp = stanza.Pipeline('en', processors='tokenize,mwt,pos,constituency')
+    Lexicon()
     eInput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.txt"
-    eOutput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.out"
+#   eOutput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.out"
     with open(eInput_nm, "r", encoding="utf-8") as eInput:
-        with open(eOutput_nm, "w", encoding="utf-8") as eOutput:
+#       with open(eOutput_nm, "w", encoding="utf-8") as eOutput:
             while eSource := eInput.readline():
                 sentence = eSource[0:-1]
-                bank = nlp(sentence)
-                for root in bank.sentences:
-                    constituency = root.constituency
-                    traverse(constituency)
-                    print(); # print(' #', sentence)
+                print('#', sentence)
+                if sentence in eTokens():
+                    print(P)
+#               bank = nlp(sentence)
+#               for root in bank.sentences:
+#                   constituency = root.constituency
+#                   traverse(constituency)
+#                   print()
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())

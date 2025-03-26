@@ -224,15 +224,6 @@ def DATA(s): # DATA('Node(value,link)')
         _globals[name] = type(name, (object,), namespace)
         return ""
 #----------------------------------------------------------------------------------------------------------------------
-re_repr_function = re.compile(r"\<function\ ([^\s]+)\ at\ 0x([0-9A-F]{16})\>\(\*([0-9]+)\)")
-def PROTOTYPE(P):
-    global re_repr_function
-    re_repr_function = re.compile(r"\<function\ ([^\s]+)\ at\ 0x([0-9A-F]{16})\>\(\*([0-9]+)\)")
-    p = repr(P)
-    r = re.fullmatch(re_repr_function, p)
-    if r: return f"{r.group(1)}(*{r.group(3)})"
-    else: return p
-#----------------------------------------------------------------------------------------------------------------------
 def _END(): None
 def _RETURN(): None
 def _FRETURN(): None
