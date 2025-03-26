@@ -1,6 +1,7 @@
 venv/
 __pycache__/
 *.exe
+*.gf
 *.pyc
 *.prof
 .idea/

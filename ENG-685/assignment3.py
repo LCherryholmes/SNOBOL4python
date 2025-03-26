@@ -59,6 +59,7 @@ def count_tag(tag):
 #------------------------------------------------------------------------------
 roots = dict()
 def traverse(t, root=None):
+    global roots
     root = t if not root else root
     match t:
         case ('VBG', wrd):
@@ -121,6 +122,7 @@ def sentence(t):
 #------------------------------------------------------------------------------
 versus = dict()
 def register(ruleno, subtree, vbg, *args):
+    global versus
     if rootno in mem:
         if vbg in mem[rootno]:
             keys = list(mem[rootno][vbg].keys())
@@ -374,23 +376,24 @@ def list_to_tuple(t):
 #------------------------------------------------------------------------------
 @pattern
 def claws_info():
-    yield from  ( POS(0)
-                + Λ("mem = dict()")
-                + ARBNO(
-                    ( SPAN(_DIGITS) % "num" + σ('_CRD :_PUN')
-                    + Λ("num = int(num)")
-                    + Λ("mem[num] = dict()")
-                    | (NOTANY("_\n") + BREAK("_\n")) % "wrd"
-                    + σ('_')
-                    + (ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) % "tag"
-                    + Λ("if wrd not in mem[num]:      mem[num][wrd] = dict()")
-                    + Λ("if tag not in mem[num][wrd]: mem[num][wrd][tag] = 0")
-                    + Λ("mem[num][wrd][tag] += 1")
-                    )
-                  + σ(' ')
-                  )
-                + RPOS(0)
-                )
+    yield from \
+    ( POS(0)
+    + Λ("mem = dict()")
+    + ARBNO(
+        ( SPAN(_DIGITS) % "num" + σ('_CRD :_PUN')
+        + Λ("num = int(num)")
+        + Λ("mem[num] = dict()")
+        | (NOTANY("_") + BREAK("_")) % "wrd"
+        + σ('_')
+        + (ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) % "tag"
+        + Λ("if wrd not in mem[num]:      mem[num][wrd] = dict()")
+        + Λ("if tag not in mem[num][wrd]: mem[num][wrd][tag] = 0")
+        + Λ("mem[num][wrd][tag] += 1")
+        )
+      + σ(' ')
+      )
+    + RPOS(0)
+    )
 #------------------------------------------------------------------------------
 GLOBALS(globals())
 with open("CLAWS5inTASA.dat", "r") as claws_file:
