@@ -26,13 +26,16 @@ def group():
                 + σ(')')
                 )
 @pattern
-def groups(): yield from push_list("'ROOT'") + ARBNO(group()) + pop_list()
-@pattern
 def treebank():
     yield from  ( POS(0)
                 + init_list("bank")
                 + push_list("'BANK'")
-                + ARBNO(groups() + delim())
+                + ARBNO(
+                    push_list("'ROOT'")
+                  + ARBNO(group())
+                  + pop_list()
+                  + delim()
+                  )
                 + pop_final("bank")
                 + RPOS(0)
                 )

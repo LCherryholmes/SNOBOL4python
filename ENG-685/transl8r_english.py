@@ -9,39 +9,8 @@ from pprint import pprint
 from pprint import PrettyPrinter
 ppr = PrettyPrinter(indent=2, width=80)
 #------------------------------------------------------------------------------
-keywords = [
-     None, 
-    { "a", "I" },
-    { "an", "as", "at", "be", "by", "do", "go", "he", "if", "in", "is", "it"
-    , "me", "my", "no", "of", "on", "or", "so", "to", "up", "us", "we" },
-    { "act", "all", "and", "any", "are", "big", "but", "can", "day", "did"
-    , "end", "few", "for", "get", "had", "has", "her", "him", "his", "how"
-    , "its", "let", "may", "new", "not", "now", "oil", "old", "one", "our"
-    , "out", "own", "put", "run", "say", "see", "set", "she", "the", "too"
-    , "try", "two", "use", "was", "way", "who", "win", "you" },
-    { "also", "back", "been", "call", "come", "cost", "down", "each", "even"
-    , "ever", "face", "feel", "find", "form", "from", "give", "good", "grow"
-    , "hand", "have", "hear", "here", "high", "hold", "home", "hope", "into"
-    , "just", "keep", "know", "last", "like", "live", "long", "look", "made"
-    , "make", "many", "mean", "meet", "mind", "most", "move", "much", "need"
-    , "next", "only", "open", "over", "part", "plan", "play", "same", "seem"
-    , "show", "some", "stop", "take", "talk", "than", "that", "them", "then"
-    , "they", "this", "time", "turn", "want", "well", "were", "what", "when"
-    , "will", "with", "word", "work", "year", "your" },
-    { "about", "after", "again", "begin", "break", "bring", "could", "every"
-    , "first", "great", "large", "learn", "leave", "might", "other", "right"
-    , "small", "stand", "still", "their", "there", "these", "think", "watch"
-    , "water", "which", "while", "would", "write" },
-    { "always", "change", "follow", "listen", "little", "number", "people"
-    , "really", "reason", "result", "should" },
-    { "another", "because", "believe", "between", "problem" },
-    { "continue" },
-    { "something" },
-    { "experience", "understand" }
-]
-#------------------------------------------------------------------------------
 @pattern
-def ς(s):            yield from  σ(" " + s)
+def ς(s):            yield from  σ(f" {s}")
 #------------------------------------------------------------------------------
 @pattern
 def Sentence():

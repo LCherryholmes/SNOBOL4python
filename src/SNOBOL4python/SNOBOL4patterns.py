@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------------------------------------------------
 # SNOBOL4 string pattern matching
+#> python -m pip install --upgrade pip
+#> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
 #> python -m pip install ./dist/snobol4python-0.1.0.tar.gz
