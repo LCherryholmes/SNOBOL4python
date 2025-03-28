@@ -105,3 +105,101 @@ def Preposition():      yield from  ς("in") | ς("on") | ς("at") | ς("by") | 
 def SentenceEnd():      yield from  σ("." ) | σ("!" ) | σ("?")
 #------------------------------------------------------------------------------
 GLOBALS(globals())
+#------------------------------------------------------------------------------
+keywords = [
+     None, 
+    { "a", "I" },
+    { "an", "as", "at", "be", "by", "do", "go", "he", "if", "in", "is", "it"
+    , "me", "my", "no", "of", "on", "or", "so", "to", "up", "us", "we" },
+    { "act", "all", "and", "any", "are", "big", "but", "can", "day", "did"
+    , "end", "few", "for", "get", "had", "has", "her", "him", "his", "how"
+    , "its", "let", "may", "new", "not", "now", "oil", "old", "one", "our"
+    , "out", "own", "put", "run", "say", "see", "set", "she", "the", "too"
+    , "try", "two", "use", "was", "way", "who", "win", "yes", "you" },
+    { "also", "back", "been", "call", "come", "cost", "down", "each", "even"
+    , "ever", "face", "feel", "find", "form", "from", "give", "good", "grow"
+    , "hand", "have", "hear", "here", "high", "hold", "home", "hope", "into"
+    , "just", "keep", "know", "last", "like", "live", "long", "look", "made"
+    , "make", "many", "mean", "meet", "mind", "most", "move", "much", "need"
+    , "next", "only", "open", "over", "part", "plan", "play", "same", "seem"
+    , "show", "some", "stop", "take", "talk", "than", "that", "them", "then"
+    , "they", "this", "time", "turn", "want", "well", "were", "what", "when"
+    , "will", "with", "word", "work", "year", "your" },
+    { "about", "after", "again", "begin", "break", "bring", "could", "every"
+    , "first", "great", "large", "learn", "leave", "might", "other", "right"
+    , "small", "stand", "still", "their", "there", "these", "think", "watch"
+    , "water", "which", "while", "would", "write" },
+    { "always", "change", "follow", "listen", "little", "number", "people"
+    , "really", "reason", "result", "should" },
+    { "another", "because", "believe", "between", "problem" },
+    { "continue" },
+    { "something" },
+    { "experience", "understand" }
+]
+#-------------------------------------------------------------------------------
+@pattern
+def wrd():      yield from  (ANY(_UCASE+_LCASE) + FENCE(SPAN(_LCASE) | ε()))
+@pattern
+def word():     yield from  wrd() @ "tx" + λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
+@pattern
+def keyword():  yield from  wrd() @ "tx" + λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
+#-------------------------------------------------------------------------------
+import wordnet
+from wordnet import Lexicon, lexicon
+from wordnet import is_noun, is_verb, is_adjective, is_adverb
+@pattern
+def eTokens():
+    yield from  \
+    ( POS(0)                    + Λ("""P = "(\\n\"""")
+    + ARBNO(
+#       θ("OUTPUT") +
+        ( σ(' ')                + Λ("""P += "σ(' ') + \"""")
+        | σ('\n')               + Λ("""P += "σ('\\\\n') +\\n\"""") 
+        | wrd() @ "tx" + λ(lambda: is_noun(tx))         + Λ("""P += "noun() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_verb(tx))         + Λ("""P += "verb() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_adjective(tx))    + Λ("""P += "adj() + \"""")
+        | wrd() @ "tx" + λ(lambda: is_adverb(tx))       + Λ("""P += "adv() + \"""")
+#       | keyword()             + Λ("""P += "ς('" + w + "') + \"""")
+#       | word()                + Λ("""P += "word() + \"""")
+        | SPAN(_DIGITS)         + Λ("""P += "SPAN(_DIGITS) + \"""")
+        | SPAN(_UCASE)          + Λ("""P += "SPAN(_UCASE) + \"""")
+        | SPAN(_LCASE)          + Λ("""P += "SPAN(_LCASE) + \"""")
+        | NOTANY(_DIGITS+_UCASE+_LCASE) % "tx" + Λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
+        ) # @ "OUTPUT"
+      )
+    + RPOS(0)                   + Λ("""P += ")\\n\"""")
+    )
+#-------------------------------------------------------------------------------
+def traverse(tree):
+#   pprint((tree.label, tree.depth(), tree.is_preterminal(), tree.is_leaf()))
+    if tree.is_preterminal():
+        if tree.label == '.' or tree.label == ',':
+            print(tree.children[0].label, end="")
+        else:
+            word = tree.children[0].label
+            if len(word) <= 10 and word in keywords[len(word)]:
+                print(' ', word, end="")
+            else: print(' ', tree.label, end="")
+    else:
+        for child in tree.children:
+            traverse(child)
+#-------------------------------------------------------------------------------
+import stanza
+def main():
+#   nlp = stanza.Pipeline('en', processors='tokenize,mwt,pos,constituency')
+    Lexicon()
+    eInput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.txt"
+#   eOutput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.out"
+    with open(eInput_nm, "r", encoding="utf-8") as eInput:
+#       with open(eOutput_nm, "w", encoding="utf-8") as eOutput:
+            while eSource := eInput.readline():
+                sentence = eSource[0:-1]
+                print('#', sentence)
+                if sentence in eTokens():
+                    print(P)
+#               bank = nlp(sentence)
+#               for root in bank.sentences:
+#                   constituency = root.constituency
+#                   traverse(constituency)
+#                   print()
+#-------------------------------------------------------------------------------

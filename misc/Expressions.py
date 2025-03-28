@@ -1,4 +1,5 @@
 import random
+#import cython
 #------------------------------------------------------------------------------
 # Generate random expression
 def rand_item():
@@ -70,6 +71,10 @@ for i in range(0):
 print()
 #------------------------------------------------------------------------------
 # Parse expression
+
+#pos: cython.int = 0
+#subject: cython.char = ""
+
 pos = 0
 subject = ""
 
@@ -181,7 +186,7 @@ def evaluate(tree):
 #------------------------------------------------------------------------------
 def main():
     global pos, subject
-    for _ in range(0, 10):
+    for _ in range(0, 100):
         pos = 0
         subject = rand_expression();
         print(subject)
