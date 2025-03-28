@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 #----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
+    __slots__ = ['func', 'patterns', 'features', 'generator']
     def __init__(self, func, patterns, features):
         self.func = func
         self.patterns = patterns
