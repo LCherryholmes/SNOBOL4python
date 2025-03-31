@@ -28,7 +28,7 @@ def CharacterClass():       yield from σ('\\d') | σ('\\D') | σ('\\s') | σ('\
 def UnicodeClass():         yield from σ('\\p{') + Letters() + σ('}')
 #------------------------------------------------------------------------------
 def Integer():              yield from SPAN('0123456789')
-def Letters():              yield from SPAN(_UCASE + _LCASE)
+def Letters():              yield from SPAN(UCASE + LCASE)
 def EscapeCharacter():      yield from σ('\\a') | σ('\\b') | σ('\\f') | σ('\\n') | σ('\\N') \
                                      | σ('\\r') | σ('\\t') | σ('\\v') | σ('\\x') \
                                      | σ('\\\\') | σ('\\^') | σ('\\$')

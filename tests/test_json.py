@@ -6,8 +6,8 @@ import SNOBOL4python
 import operator
 from datetime import datetime
 from SNOBOL4python import GLOBALS, pattern
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, π, Λ, λ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import JSONDecode
@@ -61,11 +61,11 @@ def jNullVal():     yield from σ('null') + ε() % "jxVal"
 @pattern
 def jTrueFalse():   yield from (σ('true') | σ('false')) % "jxVal"
 @pattern
-def jIdent():       yield from ANY(_UCASE + '_' + _LCASE) + FENCE(SPAN(_UCASE + '_' + _LCASE + '0123456789') | ε())
+def jIdent():       yield from ANY(UCASE + '_' + LCASE) + FENCE(SPAN(UCASE + '_' + LCASE + '0123456789') | ε())
 @pattern
 def jString():      yield from σ('"') + ((ARBNO(BREAK('"'+'\\'+'\n') | jEscChar())) % "jxVal") + σ('"')
 @pattern
-def jStrVal():      yield from jString() + Λ("jxVal = JSONDecode(jxVal)")
+def jStrVal():      yield from jString() + λ("jxVal = JSONDecode(jxVal)")
 @pattern
 def jBoolVal():     yield from jTrueFalse() | σ('"') + jTrueFalse() + σ('"')
 @pattern
@@ -73,22 +73,22 @@ def jRealVal():     yield from ((σ('+') | σ('-') | ε()) + SPAN('0123456789') 
 @pattern
 def jIntVal():      yield from (jInt() % "jxVal") | σ('"') + (jInt() % "jxVal") + σ('"')
 @pattern
-def jDateVal():     yield from jDatetime() + Λ("jxVal = jxDatetime")
+def jDateVal():     yield from jDatetime() + λ("jxVal = jxDatetime")
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def jMonthName():   yield from \
                     (   σ('Jan') | σ('Feb') | σ('Mar') | σ('Apr')
                     |   σ('May') | σ('Jun') | σ('Jul') | σ('Aug')
                     |   σ('Sep') | σ('Oct') | σ('Nov') | σ('Dec')
-                    ) % "jxMonthName" + Λ("jxMonth = jMos[jxMonthName]")
+                    ) % "jxMonthName" + λ("jxMonth = jMos[jxMonthName]")
 @pattern
 def jDayName():     yield from σ('Sun') | σ('Mon') | σ('Tue') | σ('Wed') | σ('Thu') | σ('Fri') | σ('Sat')
 @pattern
-def jNum2():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 2")
+def jNum2():        yield from SPAN('0123456789') @ "jxN" % "jxN" + Λ("len(jxN) == 2")
 @pattern
-def jNum3():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 3")
+def jNum3():        yield from SPAN('0123456789') @ "jxN" % "jxN" + Λ("len(jxN) == 3")
 @pattern
-def jNum4():        yield from SPAN('0123456789') @ "jxN" % "jxN" + λ("len(jxN) == 4")
+def jNum4():        yield from SPAN('0123456789') @ "jxN" % "jxN" + Λ("len(jxN) == 4")
 @pattern
 def jYYYY():        yield from jNum4() % "jxYYYY"
 @pattern
@@ -108,9 +108,9 @@ def Time():         yield from jhh() + σ(':') + jmm() + σ(':') + jss()
 @pattern
 def jDatetime():    yield from \
     ( σ('"')
-    + Λ("jxhh = '00'")
-    + Λ("jxmm = '00'")
-    + Λ("jxss = '00'")
+    + λ("jxhh = '00'")
+    + λ("jxmm = '00'")
+    + λ("jxss = '00'")
     + ( jDayName() + σ(', ') + jDD() + σ(' ') + jMonthName() + σ(' ') + jYYYY() + σ(' ') + Time() + σ(' +') + jNum4()
       | jDayName() + σ(' ') + jMonthName() + σ(' ') + jDD() + σ(' ') + Time() + σ(' +') + jNum4() + σ(' ') + jYYYY()
       | jDate()
@@ -121,7 +121,7 @@ def jDatetime():    yield from \
       | jDate() + σ(' ') + Time() + σ(' +') + jNum4()
       )
     + σ('"')
-    + Λ("jxDatetime = (int(jxYYYY), int(jxMM), int(jxDD), int(jxhh), int(jxmm), int(jxss))")
+    + λ("jxDatetime = (int(jxYYYY), int(jxMM), int(jxDD), int(jxhh), int(jxmm), int(jxss))")
     )
 #-----------------------------------------------------------------------------------------------------------------------
 JSON_sample = \

@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.2.0.tar.gz
+#> python -m pip install ./dist/snobol4python-0.3.0.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -115,7 +115,7 @@ def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
 @pattern
-def λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
+def Λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     global _globals
     logger.debug("lambda(%s) evaluating...", repr(expression))
     match type(expression).__name__:
@@ -148,7 +148,7 @@ def Δ(P, V) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . V
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
 @pattern
-def Λ(command) -> PATTERN: # LAMBDA, P . *exec(), P . tx . *func(tx)
+def λ(command) -> PATTERN: # LAMBDA, P . *exec(), P . tx . *func(tx)
     global S, _
     logger.debug("LAMBDA(%s) compiling...", repr(command))
     if command:
