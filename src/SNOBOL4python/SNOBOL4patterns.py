@@ -288,7 +288,7 @@ _rexs = dict()
 def φ(rex) -> PATTERN:
     global S, _, _rexs
     if rex not in _rexs:
-        _rexs[rex] = re.compile(rex)
+        _rexs[rex] = re.compile(rex, re.MULTILINE)
     if matches := _rexs[rex].match(S[_].subject, pos = S[_].pos, endpos = len(S[_].subject)):
         if S[_].pos == matches.start():
             pos0 = S[_].pos
