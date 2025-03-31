@@ -8,6 +8,16 @@ from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 from pprint import pprint
 #-------------------------------------------------------------------------------
+reFrom =                        ( r"From -"
+                                  r" (Mon|Tue|Wed|Thu|Fri|Sat|Sun)"
+                                  r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+                                  r" [0-9]{1,2}"
+                                  r" [0-9]{2}:[0-9]{2}:[0-9]{2}"
+                                  r" [0-9]{4}"
+                                )
+@pattern
+def From():                     yield from φ(reFrom)
+#-------------------------------------------------------------------------------
 @pattern
 def μ():                        yield from φ(r"[ \t\r\f]") | ε()
 @pattern
@@ -29,8 +39,6 @@ def Date_Time():                yield from ( DOW()
                                            + ς(' ') + Time()
                                            + ς(' ') + Year()
                                            )
-@pattern
-def From():                     yield from φ(r"From - ")
 #-------------------------------------------------------------------------------
 @pattern
 def ip_address():               yield from φ(r"([0-9]{1,3})\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}")
@@ -117,12 +125,12 @@ def NextPart():                 yield from φ( r"------_=_NextPart_"
                                               r"\1--\n"
                                             )
 #-------------------------------------------------------------------------------
-def trace(s):       print(s); return True
+def trace(s): print(s); return True
 #-------------------------------------------------------------------------------
 @pattern
 def Inbox():
     global lineno
-    yield from  \
+    yield from \
     ( POS(0)
     + ARBNO(
         θ("p0") + # θ("OUTPUT") +
@@ -189,38 +197,40 @@ def scan_lines():
         lineno += 1
     print(f" {len(linenos)} lines.")
 #-------------------------------------------------------------------------------
-parts = []
-def scan_parts():
-    global parts
-    print("Scanning parts.", end="", flush=True)
-    for match in re.finditer(r"------_?=_NextPart_[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8}(?:--|)\n", inbox):
-        parts.append(match.span()[0])
-    parts.append(total_size)
-    print(f" {len(parts)} parts.")
+sections = []
+def scan_sections():
+    global sections
+    print("Scanning sections.", end="", flush=True)
+    for match in re.finditer(r"^" + reFrom + r"$", inbox, re.MULTILINE):
+        sections.append(match.span()[0])
+    sections.append(total_size)
+    print(f" {len(sections)} sections.")
+#-------------------------------------------------------------------------------
+def scan_emails():
+    start_offset = None
+    finish_offset = 0
+    for section in sections:
+        start_offset = finish_offset
+        finish_offset = section
+        email = inbox[start_offset:finish_offset]
+        if match := re.match(r"(?:.*\n){12}", email):
+            print(match.group())
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
 def main():
     global inbox, total_size
-    inbox_nm = "C:/Users/lcher/AppData/Local/Packages/MozillaThunderbird.MZLA_h5892qc0xkpca" \
-               "/LocalCache/Roaming/Thunderbird/Profiles/nsn6odxd.default-esr" \
-               "/Mail/pop.mail.yahoo.com/Inbox"
+    inbox_nm = "C:/Users/lcher/AppData/Local/Packages/" \
+        "MozillaThunderbird.MZLA_h5892qc0xkpca/LocalCache/Roaming/Thunderbird/" \
+        "Profiles/nsn6odxd.default-esr/Mail/pop.mail.yahoo.com/Inbox"
     with open(inbox_nm, "r", encoding="latin-1") as inbox_file:
         print("Reading inbox.", end="", flush=True)
         inbox = inbox_file.read()
         total_size = len(inbox)
         print(f" {total_size} bytes.")
         scan_lines()
-        scan_parts()
-        part = parts[-2]
-        print(f"offset {part} line {lineno(part)}")
-#       pprint(inbox[parts[-2] : parts[-2] + 1024])
-#       for part in parts:
-#           print(f"offset {part} line {lineno(part)}")
-#       print("Matching.")
-#       if inbox in Inbox():
-#           print(" + ".join(P))
-#       else: print("Yikes!!!")
+        scan_sections()
+        scan_emails()
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())
