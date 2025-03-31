@@ -14,13 +14,14 @@ def trace(s): print(s, flush=True); return True
 def Inbox():
     global lineno
     yield from \
-    ( POS(0)                                    + λ('''P = [];''')
+    ( POS(0)                                    + λ('''P = []; tags = set()''')
     + ARBNO(
 #       θ("OUTPUT") +
         ( φ(r"\n")                              + λ('''P.append('η()\\n')''')
         | φ(r"[ \t\r\f]+")                      + λ('''P.append('μ()')''')
-        | (φ(r"[A-Za-z]+") + σ(' - ')) % "tx"   + λ('''P.append("σ('" + tx + "')")''')
+        | σ('From - ') + φ(r".*") % "tx"        + λ('''P.append("σ('From - ') + σ('" + tx + "')")''')
         | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ('''P.append("σ('" + tx + "')")''')
+                                                + λ('''tags.add(tx)''')
         | φ(r"[ ]+") % "tx"                     + λ('''P.append("σ('" + tx + "')")''')
         | φ(r"[0-9]{2,}")                       + λ("""P.append('φ(r"[0-9]+")')""")
         | φ(r"[0-9]")                           + λ("""P.append('φ(r"[0-9]")')""")
@@ -68,7 +69,7 @@ def scan_sections():
     print(f" {len(sections)} sections.", flush=True)
 #-------------------------------------------------------------------------------
 def parse_emails():
-    print("# Parsing emails.", flush=True)
+    print("# Parsing emails.\n", flush=True)
     iteration = 0
     start_offset = None
     finish_offset = 0
@@ -82,6 +83,7 @@ def parse_emails():
             email_header = match.group()
             if email_header in Inbox():
                 print(" + ".join(P))
+    pprint(tags)
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
