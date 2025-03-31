@@ -193,7 +193,7 @@ parts = []
 def scan_parts():
     global parts
     print("Scanning parts.", end="", flush=True)
-    for match in re.finditer(r"------_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}(?:--|)\n", inbox):
+    for match in re.finditer(r"------_?=_NextPart_[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8}(?:--|)\n", inbox):
         parts.append(match.span()[0])
     parts.append(total_size)
     print(f" {len(parts)} parts.")
@@ -212,6 +212,9 @@ def main():
         print(f" {total_size} bytes.")
         scan_lines()
         scan_parts()
+        part = parts[-2]
+        print(f"offset {part} line {lineno(part)}")
+#       pprint(inbox[parts[-2] : parts[-2] + 1024])
 #       for part in parts:
 #           print(f"offset {part} line {lineno(part)}")
 #       print("Matching.")
