@@ -14,19 +14,21 @@ def trace(s): print(s, flush=True); return True
 def Inbox():
     global lineno
     yield from \
-    ( POS(0)                + λ('''P = [];''')
+    ( POS(0)                                    + λ('''P = [];''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(r"\n")          + λ('''P.append('η() +\\n')''')
-        | φ(r"[ ]+") % "tx" + λ('''P.append("ς('" + tx + "')")''')
-        | φ(r"[ \t\r\f]+")  + λ('''P.append('μ()')''')
-        | φ(r"[0-9]{2,}")   + λ("""P.append('φ(r"[0-9]+")')""")
-        | φ(r"[0-9]")    + λ("""P.append('φ(r"[0-9]")')""")
-        | φ(r"[A-Z]{2,}")   + λ("""P.append('φ(r"[A-Z]+")')""")
-        | φ(r"[A-Z]")    + λ("""P.append('φ(r"[A-Z]")')""")
-        | φ(r"[a-z]{2,}")   + λ("""P.append('φ(r"[a-z]+")')""")
-        | φ(r"[a-z]")    + λ("""P.append('φ(r"[a-z]")')""")
-        | LEN(1) % "tx"     + λ('''P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
+        ( φ(r"\n")                              + λ('''P.append('η()\\n')''')
+        | φ(r"[ \t\r\f]+")                      + λ('''P.append('μ()')''')
+#       | (φ(r"[A-Za-z]+") + σ(' - ')) % "tx"   + λ('''P.append("σ('" + tx + "')")''')
+#       | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ('''P.append("σ('" + tx + "')")''')
+        | φ(r"[ ]+") % "tx"                     + λ('''P.append("σ('" + tx + "')")''')
+        | φ(r"[0-9]{2,}")                       + λ("""P.append('φ(r"[0-9]+")')""")
+        | φ(r"[0-9]")                           + λ("""P.append('φ(r"[0-9]")')""")
+        | φ(r"[A-Z]{2,}")                       + λ("""P.append('φ(r"[A-Z]+")')""")
+        | φ(r"[A-Z]")                           + λ("""P.append('φ(r"[A-Z]")')""")
+        | φ(r"[a-z]{2,}")                       + λ("""P.append('φ(r"[a-z]+")')""")
+        | φ(r"[a-z]")                           + λ("""P.append('φ(r"[a-z]")')""")
+        | LEN(1) % "tx"                         + λ('''P.append("σ('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
         ) # @ "OUTPUT"
       )
     + RPOS(0)
@@ -67,9 +69,12 @@ def scan_sections():
 #-------------------------------------------------------------------------------
 def parse_emails():
     print("# Parsing emails.", flush=True)
+    iteration = 0
     start_offset = None
     finish_offset = 0
     for section in sections:
+        if iteration > 8: break
+        iteration += 1
         start_offset = finish_offset
         finish_offset = section
         email = inbox[start_offset:finish_offset]
