@@ -10,7 +10,7 @@
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
-#> python ENG-685/transl8r.py
+#> python ENG-685/transl8r_pop3.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
 from functools import wraps
@@ -76,42 +76,42 @@ def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
 @pattern
-def θ(V) -> PATTERN:
+def θ(N) -> PATTERN:
     global S, _, _globals
-    if V == "OUTPUT": print("", S[_].pos, end="")
-    logger.debug("theta(%s) SUCCESS", V)
-    _globals[V] = S[_].pos
+    if N == "OUTPUT": print("", S[_].pos, end="")
+    logger.debug("theta(%s) SUCCESS", N)
+    _globals[N] = S[_].pos
     yield ""
-    logger.debug("theta(%s) backtracking...", V)
-    del _globals[V]
+    logger.debug("theta(%s) backtracking...", N)
+    del _globals[N]
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (permanent)
 @pattern
-def Ω(P, V) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ V
+def Ω(P, N) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ N
     global _globals
-    logger.debug("OMEGA(%s, %s)", PROTOTYPE(P), V)
+    logger.debug("OMEGA(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
         if _1 == "": v = ""
         else: v = S[_].subject[_1[0] : _1[1]]
-        if V == "OUTPUT": print('', v, end="")
-        logger.debug("%s = OMEGA(%s)", V, repr(v))
-        _globals[V] = v
+        if N == "OUTPUT": print('', v, end="")
+        logger.debug("%s = OMEGA(%s)", N, repr(v))
+        _globals[N] = v
         yield _1
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (backtracking)
 @pattern
-def δ(P, V) -> PATTERN: # delta, binary '@', SNOBOL4: P $ V
+def δ(P, N) -> PATTERN: # delta, binary '@', SNOBOL4: P $ N
     global _globals
-    logger.debug("delta(%s, %s)", PROTOTYPE(P), V)
+    logger.debug("delta(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
         if _1 == "": v = ""
         else: v = S[_].subject[_1[0] : _1[1]]
-        if V == "OUTPUT": print('', v, end="")
-        logger.debug("%s = delta(%s)", V, repr(v))
-        _globals[V] = v
+        if N == "OUTPUT": print('', v, end="")
+        logger.debug("%s = delta(%s)", N, repr(v))
+        _globals[N] = v
         yield _1
-        logger.debug("%s deleted", V)
-        if V in _globals: del _globals[V]
+        logger.debug("%s deleted", N)
+        if N in _globals: del _globals[N]
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
 @pattern
@@ -134,16 +134,16 @@ def Λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *f
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern
-def Δ(P, V) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . V
+def Δ(P, N) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . N
     global S, _
-    logger.debug("delta(%s, %s)", PROTOTYPE(P), V)
+    logger.debug("delta(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
-        logger.debug("%s = delta(%s) SUCCESS", V, repr(_1))
+        logger.debug("%s = delta(%s) SUCCESS", N, repr(_1))
         if _1 == "":
-            S[_].cstack.append(f"{V} = ''")
-        else: S[_].cstack.append(f"{V} = S[_].subject[{_1[0]} : {_1[1]}]")
+            S[_].cstack.append(f"{N} = ''")
+        else: S[_].cstack.append(f"{N} = S[_].subject[{_1[0]} : {_1[1]}]")
         yield _1
-        logger.debug("%s = delta(%s) backtracking...", V, repr(_1))
+        logger.debug("%s = delta(%s) backtracking...", N, repr(_1))
         S[_].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
@@ -294,6 +294,8 @@ def φ(rex) -> PATTERN:
             pos0 = S[_].pos
             if S[_].pos < matches.end(): #must consume something
                 S[_].pos = matches.end()
+                for (N, V) in matches.groupdict().items():
+                    _globals[N] = V
                 yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
                 S[_].pos = pos0
             else: raise Exeption("Regular expression can not match epsilon.")
@@ -573,4 +575,6 @@ if __name__ == "__main__":
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
+        print(name)
+    if "001_01C717AB.5C51AFDE" in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
