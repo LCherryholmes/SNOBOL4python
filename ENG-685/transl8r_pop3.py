@@ -9,7 +9,7 @@ from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 from pprint import pprint
 #-------------------------------------------------------------------------------
 reFrom =                        ( r"From -"
-                                  r" (Mon|Tue|Wed|Thu|Fri|Sat|Sun)"
+                                  r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
                                   r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
                                   r" [0-9]{1,2}"
                                   r" [0-9]{2}:[0-9]{2}:[0-9]{2}"
@@ -90,9 +90,9 @@ def Thread_Topic():             yield from φ(r"Thread-Topic:.*\n")
 @pattern
 def Thread_Index():             yield from φ(r"Thread-Index:.*\n")
 @pattern
-def From():                     yield from φ(r"From:.*\n")
+def From_address():             yield from φ(r"From:.*\n")
 @pattern
-def To():                       yield from φ(r"To:.*\n")
+def To_address():               yield from φ(r"To:.*\n")
 @pattern
 def X_OriginalArrivalTime():    yield from φ(r"X-OriginalArrivalTime:.*\n")
 @pattern
@@ -131,51 +131,45 @@ def trace(s): print(s); return True
 def Inbox():
     global lineno
     yield from \
-    ( POS(0)
+    ( POS(0)                                + Λ("""P = [];""")
     + ARBNO(
         θ("p0") + # θ("OUTPUT") +
-        ( UptoPart() @ "upto" + θ("p1") + λ(lambda: trace(f"@{p0}-{p1}"))
-        + NextPart() @ "part" + θ("p2") + λ(lambda: trace(f"@{p1}-{p2} {part[18:39]}"))
-        | base64()            + θ("p1") + λ(lambda: trace(f"@{p0}-{p1} BASE64"))
-        | Line() # @ "line" + θ("p1")   # + λ(lambda: trace(f"#{lineno} @{p0}-{p1} {line[0:21]}"))
-        | σ('\n')                       + λ(lambda: trace("η() +\\n"))
-        | NextPart_BEGIN() @ "part"     + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
-        | NextPart_END() @ "part"       + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
-        | φ(r"[ ]+") @ "tx"           # + λ(lambda: trace("ς('" + tx + "')"))
-        | φ(r"[ \t\r\f]+")            # + λ(lambda: trace("μ()"))
-        | Date_Time()                 # + λ(lambda: trace("Date_Time()"))
-        | From()                      # + λ(lambda: trace("From()"))
-        | X_account_key()             # + λ(lambda: trace("X_account_key()"))
-        | X_UIDL()                    # + λ(lambda: trace("X_UIDL()"))
-        | X_Mozilla_Status()          # + λ(lambda: trace("X_Mozilla_Status()"))
-        | X_Mozilla_Status2()         # + λ(lambda: trace("X_Mozilla_Status2()"))
-        | X_Mozilla_Keys()            # + λ(lambda: trace("X_Mozilla_Keys()"))
-        | X_Originating_IP()          # + λ(lambda: trace("X_Originating_IP()"))
-        | Return_Path()               # + λ(lambda: trace("Return_Path()"))
-        | Authentication_Results()    # + λ(lambda: trace("Authentication_Results()"))
-        | Received()                  # + λ(lambda: trace("Received()"))
-        | X_MimeOLE()                 # + λ(lambda: trace("X_MimeOLE()"))
-        | Content_class()             # + λ(lambda: trace("Content_class()"))
-        | MIME_Version()              # + λ(lambda: trace("MIME_Version()"))
-        | Content_Type()              # + λ(lambda: trace("Content_Type()"))
-        | Subject()                   # + λ(lambda: trace("Subject()"))
-        | Date()                      # + λ(lambda: trace("Date()"))
-        | Message_ID()                # + λ(lambda: trace("Message_ID()"))
-        | X_MS_Has_Attach()           # + λ(lambda: trace("X_MS_Has_Attach()"))
-        | X_MS_TNEF_Correlator()      # + λ(lambda: trace("X_MS_TNEF_Correlator()"))
-        | Thread_Topic()              # + λ(lambda: trace("Thread_Topic()"))
-        | Thread_Index()              # + λ(lambda: trace("Thread_Index()"))
-        | From()                      # + λ(lambda: trace("From()"))
-        | To()                        # + λ(lambda: trace("To()"))
-        | X_OriginalArrivalTime()     # + λ(lambda: trace("X_OriginalArrivalTime()"))
-        | Content_Length()            # + λ(lambda: trace("Content_Length()"))
-        | Content_Type()              # + λ(lambda: trace("Content_Type()"))
-        | Content_Transfer_Encoding() # + λ(lambda: trace("Content_Transfer_Encoding()"))
-        | φ(r"[^ \t\r\f\n]+") @ "tx"  # + λ(lambda: trace("ς('" + tx + "')"))
-        | φ(r"[0-9]")                 # + λ(lambda: trace("SPAN(_DIGITS)"))
-        | φ(r"[A-Z]")                 # + λ(lambda: trace("SPAN(_UCASE)"))
-        | φ(r"[a-z]")                 # + λ(lambda: trace("SPAN(_LCASE)"))
-        | φ(r"[^0-9A-Za-z]+") @ "tx"  # + λ(lambda: trace("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')"))
+        ( σ('\n')                           + Λ("""P.append("η() +\\n")""")
+        | φ(r"[ ]+") @ "tx"                 + Λ("""P.append("ς('" + tx + "')")""")
+        | φ(r"[ \t\r\f]+")                  + Λ("""P.append("μ()")""")
+        | Date_Time()                       + Λ("""P.append("Date_Time()")""")
+        | From()                            + Λ("""P.append("From()")""")
+        | X_account_key()                   + Λ("""P.append("X_account_key()")""")
+        | X_UIDL()                          + Λ("""P.append("X_UIDL()")""")
+        | X_Mozilla_Status()                + Λ("""P.append("X_Mozilla_Status()")""")
+        | X_Mozilla_Status2()               + Λ("""P.append("X_Mozilla_Status2()")""")
+        | X_Mozilla_Keys()                  + Λ("""P.append("X_Mozilla_Keys()")""")
+        | X_Originating_IP()                + Λ("""P.append("X_Originating_IP()")""")
+        | Return_Path()                     + Λ("""P.append("Return_Path()")""")
+        | Authentication_Results()          + Λ("""P.append("Authentication_Results()")""")
+        | Received()                        + Λ("""P.append("Received()")""")
+        | X_MimeOLE()                       + Λ("""P.append("X_MimeOLE()")""")
+        | Content_class()                   + Λ("""P.append("Content_class()")""")
+        | MIME_Version()                    + Λ("""P.append("MIME_Version()")""")
+        | Content_Type()                    + Λ("""P.append("Content_Type()")""")
+        | Subject()                         + Λ("""P.append("Subject()")""")
+        | Date()                            + Λ("""P.append("Date()")""")
+        | Message_ID()                      + Λ("""P.append("Message_ID()")""")
+        | X_MS_Has_Attach()                 + Λ("""P.append("X_MS_Has_Attach()")""")
+        | X_MS_TNEF_Correlator()            + Λ("""P.append("X_MS_TNEF_Correlator()")""")
+        | Thread_Topic()                    + Λ("""P.append("Thread_Topic()")""")
+        | Thread_Index()                    + Λ("""P.append("Thread_Index()")""")
+        | From_address()                    + Λ("""P.append("From_address()")""")
+        | To_address()                      + Λ("""P.append("To_address()")""")
+        | X_OriginalArrivalTime()           + Λ("""P.append("X_OriginalArrivalTime()")""")
+        | Content_Length()                  + Λ("""P.append("Content_Length()")""")
+        | Content_Type()                    + Λ("""P.append("Content_Type()")""")
+        | Content_Transfer_Encoding()       + Λ("""P.append("Content_Transfer_Encoding()")""")
+        | φ(r"[0-9]+")                      + Λ("""P.append("SPAN(_DIGITS)")""")
+        | φ(r"[A-Z]+")                      + Λ("""P.append("SPAN(_UCASE)")""")
+        | φ(r"[a-z]+")                      + Λ("""P.append("SPAN(_LCASE)")""")
+        | φ(r"[^ \t\r\f\n]+") @ "tx"        + Λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
+        | φ(r"[^0-9A-Za-z]+") @ "tx"        + Λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
         ) # @ "OUTPUT"
       )
     + RPOS(0)
@@ -206,7 +200,8 @@ def scan_sections():
     sections.append(total_size)
     print(f" {len(sections)} sections.")
 #-------------------------------------------------------------------------------
-def scan_emails():
+def parse_emails():
+    print("Parsing emails.", end="")
     start_offset = None
     finish_offset = 0
     for section in sections:
@@ -214,15 +209,18 @@ def scan_emails():
         finish_offset = section
         email = inbox[start_offset:finish_offset]
         if match := re.match(r"(?:.*\n){12}", email):
-            print(match.group())
+            email_header = match.group()
+            if email_header in Inbox():
+                print(" + ".join(P))
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
 def main():
     global inbox, total_size
     inbox_nm = "C:/Users/lcher/AppData/Local/Packages/" \
-        "MozillaThunderbird.MZLA_h5892qc0xkpca/LocalCache/Roaming/Thunderbird/" \
-        "Profiles/nsn6odxd.default-esr/Mail/pop.mail.yahoo.com/Inbox"
+        "MozillaThunderbird.MZLA_h5892qc0xkpca/LocalCache/Roaming/" \
+        "Thunderbird/Profiles/nsn6odxd.default-esr/" \
+        "Mail/pop.mail.yahoo.com/Inbox"
     with open(inbox_nm, "r", encoding="latin-1") as inbox_file:
         print("Reading inbox.", end="", flush=True)
         inbox = inbox_file.read()
@@ -230,7 +228,7 @@ def main():
         print(f" {total_size} bytes.")
         scan_lines()
         scan_sections()
-        scan_emails()
+        parse_emails()
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())
