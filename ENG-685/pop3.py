@@ -237,7 +237,7 @@
  + X_Priority() + η()
  + X_MSMail_Priority() + η()
  + X_Mailer() + η()
- + X_MIMEOLE() + η()
+ + X_MimeOLE() + η()
  + X_Virus_Scanned() + η()
  + Content_Length() + η()
 
