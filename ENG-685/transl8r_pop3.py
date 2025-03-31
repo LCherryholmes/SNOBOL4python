@@ -11,17 +11,147 @@ from pprint import pprint
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------
 @pattern
+def Authentication_Results():       yield from φ(r"Authentication-Results:(?P<tx>.*)")
+@pattern
+def Cc():                           yield from φ(r"Cc:(?P<tx>.*(?:\n\t.*)*)")
+@pattern
+def Comment():                      yield from φ(r"Comment:(?P<tx>.*)")
+@pattern
+def Content_class():                yield from φ(r"Content-[Cc]lass:(?P<tx>.*)")
+@pattern
+def Content_Length():               yield from φ(r"Content-Length:(?P<tx>.*)")
+@pattern
+def Content_Transfer_Encoding():    yield from φ(r"Content-Transfer-Encoding:(?P<tx>.*)")
+@pattern
+def Content_Type():                 yield from φ(r"Content-Type:(?P<tx>.*\n.*)")
+@pattern
+def Date():                         yield from φ(r"Date:(?P<tx>.*)")
+@pattern
+def DomainKey_Signature():          yield from φ(r"DomainKey-Signature:(?P<tx>.*(?:\n[ \t].*)?)")
+@pattern
+def From():                         yield from φ(r"From:(?P<tx>.*)")
+@pattern
+def Importance():                   yield from φ(r"Importance:(?P<tx>.*)")
+@pattern
+def In_Reply_To():                  yield from φ(r"In-Reply-To:(?P<tx>.*)")
+@pattern
+def Message_ID():                   yield from φ(r"Message-ID:(?P<tx>.*)")
+@pattern
+def MIME_Version():                 yield from φ(r"MIME-Version:(?P<tx>.*)")
+@pattern
+def Priority():                     yield from φ(r"Priority:(?P<tx>.*)")
+@pattern
+def Received():                     yield from φ(r"Received:(?P<tx>.*(?:\n[ \t].*)*)")
+@pattern
+def References():                   yield from φ(r"References:(?P<tx>.*)")
+@pattern
+def Return_Path():                  yield from φ(r"Return-Path:(?P<tx>.*)")
+@pattern
+def Subject():                      yield from φ(r"Subject:(?P<tx>.*)")
+@pattern
+def Thread_Index():                 yield from φ(r"[Tt]hread-[Ii]ndex:(?P<tx>.*)")
+@pattern
+def Thread_Topic():                 yield from φ(r"Thread-Topic:(?P<tx>.*)")
+@pattern
+def To():                           yield from φ(r"To:(?P<tx>.*)")
+@pattern
+def X_Account_Key():                yield from φ(r"X-Account-Key:(?P<tx>.*)")
+@pattern
+def X_Apparently_To():              yield from φ(r"X-Apparently-To:(?P<tx>.*)")
+@pattern
+def X_MAIL_FROM():                  yield from φ(r"X-MAIL-FROM:(?P<tx>.*)")
+@pattern
+def X_Mailer():                     yield from φ(r"X-Mailer:(?P<tx>.*)")
+@pattern
+def X_MIMEOLE():                    yield from φ(r"X-MIMEOLE:(?P<tx>.*)")
+@pattern
+def X_MimeOLE():                    yield from φ(r"X-MimeOLE:(?P<tx>.*)")
+@pattern
+def X_Mozilla_Keys():               yield from φ(r"X-Mozilla-Keys:(?P<tx>.*)")
+@pattern
+def X_Mozilla_Status():             yield from φ(r"X-Mozilla-Status:(?P<tx>.*)")
+@pattern
+def X_Mozilla_Status2():            yield from φ(r"X-Mozilla-Status2:(?P<tx>.*)")
+@pattern
+def X_MS_Has_Attach():              yield from φ(r"X-MS-Has-Attach:(?P<tx>.*)")
+@pattern
+def X_MS_TNEF_Correlator():         yield from φ(r"X-MS-TNEF-Correlator:(?P<tx>.*)")
+@pattern
+def X_MSMail_Priority():            yield from φ(r"X-MSMail-Priority:(?P<tx>.*)")
+@pattern
+def X_OriginalArrivalTime():        yield from φ(r"X-OriginalArrivalTime:(?P<tx>.*)")
+@pattern
+def X_Originating_IP():             yield from φ(r"X-Originating-IP:(?P<tx>.*)")
+@pattern
+def X_Priority():                   yield from φ(r"X-Priority:(?P<tx>.*)")
+@pattern
+def X_SF_Loop():                    yield from φ(r"X-SF-Loop:(?P<tx>.*)")
+@pattern
+def X_SOURCE_IP():                  yield from φ(r"X-SOURCE-IP:(?P<tx>.*)")
+@pattern
+def X_Spam():                       yield from φ(r"X-Spam:(?P<tx>.*)")
+@pattern
+def X_UIDL():                       yield from φ(r"X-UIDL:(?P<tx>.*)")
+@pattern
+def X_Virus_Scanned():              yield from φ(r"X-Virus-Scanned:(?P<tx>.*)")
+@pattern
+def X_Yahoo_Newman_Property():      yield from φ(r"X-Yahoo-Newman-Property:(?P<tx>.*)")
+#-------------------------------------------------------------------------------
+@pattern
 def Inbox():
     global lineno
     yield from \
-    ( POS(0)                                    + λ('''P = []; tags = set()''')
+    ( POS(0)                                    + λ('''P = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(r"\n")                              + λ('''P.append('η()\\n')''')
+        ( φ(reFromSection)                      + λ('''P.append("φ(reFromSection)")''')
+        | φ(r"\n")                              + λ('''P.append('η()\\n')''')
         | φ(r"[ \t\r\f]+")                      + λ('''P.append('μ()')''')
-        | σ('From - ') + φ(r".*") % "tx"        + λ('''P.append("σ('From - ') + σ('" + tx + "')")''')
+        ( Authentication_Results()              + λ("""P.append("Authentication_Results()")""")
+        | Cc()                                  + λ("""P.append("Cc()")""")
+        | Comment()                             + λ("""P.append("Comment()")""")
+        | Content_class()                       + λ("""P.append("Content_class()")""")
+        | Content_Length()                      + λ("""P.append("Content_Length()")""")
+        | Content_Transfer_Encoding()           + λ("""P.append("Content_Transfer_Encoding()")""")
+        | Content_Type()                        + λ("""P.append("Content_Type()")""")
+        | Date()                                + λ("""P.append("Date()")""")
+        | DomainKey_Signature()                 + λ("""P.append("DomainKey_Signature()")""")
+        | From()                                + λ("""P.append("From()")""")
+        | Importance()                          + λ("""P.append("Importance()")""")
+        | In_Reply_To()                         + λ("""P.append("In_Reply_To()")""")
+        | Message_ID()                          + λ("""P.append("Message_ID()")""")
+        | MIME_Version()                        + λ("""P.append("MIME_Version()")""")
+        | Priority()                            + λ("""P.append("Priority()")""")
+        | Received()                            + λ("""P.append("Received()")""")
+        | References()                          + λ("""P.append("References()")""")
+        | Return_Path()                         + λ("""P.append("Return_Path()")""")
+        | Subject()                             + λ("""P.append("Subject()")""")
+        | Thread_Index()                        + λ("""P.append("Thread_Index()")""")
+        | Thread_Topic()                        + λ("""P.append("Thread_Topic()")""")
+        | To()                                  + λ("""P.append("To()")""")
+        | X_Account_Key()                       + λ("""P.append("X_Account_Key()")""")
+        | X_Apparently_To()                     + λ("""P.append("X_Apparently_To()")""")
+        | X_MAIL_FROM()                         + λ("""P.append("X_MAIL_FROM()")""")
+        | X_Mailer()                            + λ("""P.append("X_Mailer()")""")
+        | X_MIMEOLE()                           + λ("""P.append("X_MIMEOLE()")""")
+        | X_MimeOLE()                           + λ("""P.append("X_MimeOLE()")""")
+        | X_Mozilla_Keys()                      + λ("""P.append("X_Mozilla_Keys()")""")
+        | X_Mozilla_Status()                    + λ("""P.append("X_Mozilla_Status()")""")
+        | X_Mozilla_Status2()                   + λ("""P.append("X_Mozilla_Status2()")""")
+        | X_MS_Has_Attach()                     + λ("""P.append("X_MS_Has_Attach()")""")
+        | X_MS_TNEF_Correlator()                + λ("""P.append("X_MS_TNEF_Correlator()")""")
+        | X_MSMail_Priority()                   + λ("""P.append("X_MSMail_Priority()")""")
+        | X_OriginalArrivalTime()               + λ("""P.append("X_OriginalArrivalTime()")""")
+        | X_Originating_IP()                    + λ("""P.append("X_Originating_IP()")""")
+        | X_Priority()                          + λ("""P.append("X_Priority()")""")
+        | X_SF_Loop()                           + λ("""P.append("X_SF_Loop()")""")
+        | X_SOURCE_IP()                         + λ("""P.append("X_SOURCE_IP()")""")
+        | X_Spam()                              + λ("""P.append("X_Spam()")""")
+        | X_UIDL()                              + λ("""P.append("X_UIDL()")""")
+        | X_Virus_Scanned()                     + λ("""P.append("X_Virus_Scanned()")""")
+        | X_Yahoo_Newman_Property()             + λ("""P.append("X_Yahoo_Newman_Property()")""")
+        ) +
         | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ('''P.append("σ('" + tx + "')")''')
-                                                + λ('''tags.add(tx)''')
         | φ(r"[ ]+") % "tx"                     + λ('''P.append("σ('" + tx + "')")''')
         | φ(r"[0-9]{2,}")                       + λ("""P.append('φ(r"[0-9]+")')""")
         | φ(r"[0-9]")                           + λ("""P.append('φ(r"[0-9]")')""")
@@ -51,19 +181,20 @@ def scan_lines():
         lineno += 1
     print(f" {len(linenos)} lines.", flush=True)
 #-------------------------------------------------------------------------------
-reFrom =    ( r"From -"
-              r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
-              r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
-              r" [0-9]{1,2}"
-              r" [0-9]{2}:[0-9]{2}:[0-9]{2}"
-              r" [0-9]{4}"
-            )
+reFromSection = (
+    r"From -"
+    r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
+    r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+    r" [0-9]{1,2}"
+    r" [0-9]{2}:[0-9]{2}:[0-9]{2}"
+    r" [0-9]{4}"
+)
 #-------------------------------------------------------------------------------
 sections = []
 def scan_sections():
     global sections
     print("# Scanning sections.", end="", flush=True)
-    for match in re.finditer(r"^" + reFrom + r"$", inbox, re.MULTILINE):
+    for match in re.finditer(r"^" + reFromSection + r"$", inbox, re.MULTILINE):
         sections.append(match.span()[0])
     sections.append(total_size)
     print(f" {len(sections)} sections.", flush=True)
@@ -83,7 +214,6 @@ def parse_emails():
             email_header = match.group()
             if email_header in Inbox():
                 print(" + ".join(P))
-    pprint(tags)
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
