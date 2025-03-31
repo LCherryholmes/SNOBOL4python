@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from SNOBOL4python import GLOBALS, REPLACE, pattern
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, Σ, Π, λ, Λ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, Σ, Π, Λ, λ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, BREAK
 from SNOBOL4python import FENCE, LEN, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
@@ -11,8 +11,8 @@ GLOBALS(globals())
 def identifier():
     yield from \
         (   POS(0)
-        +   ANY(_UCASE + _LCASE)
-        +   FENCE(SPAN("." + _DIGITS + _UCASE + "_" + _LCASE) | ε())
+        +   ANY(UCASE + LCASE)
+        +   FENCE(SPAN("." + DIGITS + UCASE + "_" + LCASE) | ε())
         +   RPOS(0)
         )
 assert True is ("Id_99" in identifier())
@@ -21,15 +21,15 @@ assert True is ("Id_99" in identifier())
 def real_number():
     yield from \
         (   POS(0)
-        +   (   (   SPAN(_DIGITS) @ 'whole'
-                +   (σ('.') + FENCE(SPAN(_DIGITS) | ε()) @ 'fract' | ε())
+        +   (   (   SPAN(DIGITS) @ 'whole'
+                +   (σ('.') + FENCE(SPAN(DIGITS) | ε()) @ 'fract' | ε())
                 +   (σ('E') | σ('e'))
                 +   (σ('+') | σ('-') | ε())
-                +   SPAN(_DIGITS) @ 'exp'
+                +   SPAN(DIGITS) @ 'exp'
                 )
-            |   (   SPAN(_DIGITS) @ 'whole'
+            |   (   SPAN(DIGITS) @ 'whole'
                 +   σ('.')
-                +   FENCE(SPAN(_DIGITS) | ε()) @ 'fract'
+                +   FENCE(SPAN(DIGITS) | ε()) @ 'fract'
                 )
             )
         +   RPOS(0)

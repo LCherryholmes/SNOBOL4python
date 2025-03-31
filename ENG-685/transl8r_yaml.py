@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, θ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, π, Λ, λ, θ
 from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------
@@ -56,17 +56,17 @@ keywords = {
     }
 @pattern
 def ident():            yield from  \
-                        ( ANY(_LCASE) 
-                        + FENCE(SPAN(_DIGITS + '_' + _LCASE) | ε())
+                        ( ANY(LCASE)
+                        + FENCE(SPAN(DIGITS + '_' + LCASE) | ε())
                         ) % "tx"
 @pattern
-def keyword():          yield from  ident() @ "tx" + λ("tx in keywords")
+def keyword():          yield from  ident() @ "tx" + Λ("tx in keywords")
 @pattern
-def identifier():       yield from  ident() @ "tx" + λ("tx not in keywords")
+def identifier():       yield from  ident() @ "tx" + Λ("tx not in keywords")
 #-------------------------------------------------------------------------------
 @pattern
 def yamlPatch():        yield from  ( ς('-') + ς('patches')
-                                    + σ('/') + SPAN(_DIGITS)
+                                    + σ('/') + SPAN(DIGITS)
                                     + σ('-') + BREAK('\n')
                                     + η()
                                     )
@@ -77,7 +77,7 @@ def yamlPatches():      yield from  yamlPatch() + FENCE(yamlPatches() | ε())
 def yamlStatement():    yield from  \
     ( ς('package')                          + σ(':') + BREAK('\n')
     | ς('name')                             + σ(':') + μ() + identifier()
-    | ς('version')                          + σ(':') + μ() + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS) + ς('.') + SPAN(_DIGITS)
+    | ς('version')                          + σ(':') + μ() + SPAN(DIGITS) + ς('.') + SPAN(DIGITS) + ς('.') + SPAN(DIGITS)
     | ς('source')                           + σ(':') + BREAK('\n')
     | ς('patches')                          + σ(':') + BREAK('\n') + η() + (yamlPatches() | ε())
     | ς('url')                              + σ(':') + NOTANY('\n') + BREAK('\n')
@@ -124,26 +124,26 @@ def yamlStatement():    yield from  \
 @pattern
 def yamlTokens():
     yield from  \
-    ( POS(0)                    + Λ("""P = "yield from (\\n\"""")
+    ( POS(0)                    + λ("""P = "yield from (\\n\"""")
     + ARBNO(
         θ("OUTPUT") +
-        ( σ('\\\n')             + Λ("""P += "σ('\\\n') + \"""")
-        | σ('\n')               + Λ("""P += "η() +\\n\"""") 
-        | SPAN(" \t\r\f")     # + Λ("""P += "μ() + \"""")
-#       | SPAN(" \t\r\f\n")   # + Λ("""P += "η() +\\n\"""") # currently unreachable
-        | hashStyleComment()    + Λ("""P += "hashStyleComment() +\\n\"""")
-        | yamlStatement()       + Λ("""P += "yamlStatement() + \"""")
-        | stringLiteral()       + Λ("""P += "stringLiteral() + \"""")
-        | keyword()             + Λ("""P += "ς('" + tx + "') + \"""")
-        | identifier() + σ(':') + Λ("""P += "ς('" + tx + "') + σ(':') + \"""")
-        | identifier()          + Λ("""P += "identifier() + \"""")
-        | operator() % "tx"     + Λ("""P += "ς('" + tx + "') + \"""")
-        | SPAN(_DIGITS)         + Λ("""P += "SPAN(_DIGITS) + \"""")
-        | SPAN(_UCASE)          + Λ("""P += "SPAN(_UCASE) + \"""")
-        | SPAN(_LCASE)          + Λ("""P += "SPAN(_LCASE) + \"""")
-        | NOTANY(_DIGITS+_UCASE+_LCASE) % "tx" + Λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
+        ( σ('\\\n')             + λ("""P += "σ('\\\n') + \"""")
+        | σ('\n')               + λ("""P += "η() +\\n\"""")
+        | SPAN(" \t\r\f")     # + λ("""P += "μ() + \"""")
+#       | SPAN(" \t\r\f\n")   # + λ("""P += "η() +\\n\"""") # currently unreachable
+        | hashStyleComment()    + λ("""P += "hashStyleComment() +\\n\"""")
+        | yamlStatement()       + λ("""P += "yamlStatement() + \"""")
+        | stringLiteral()       + λ("""P += "stringLiteral() + \"""")
+        | keyword()             + λ("""P += "ς('" + tx + "') + \"""")
+        | identifier() + σ(':') + λ("""P += "ς('" + tx + "') + σ(':') + \"""")
+        | identifier()          + λ("""P += "identifier() + \"""")
+        | operator() % "tx"     + λ("""P += "ς('" + tx + "') + \"""")
+        | SPAN(DIGITS)         + λ("""P += "SPAN(DIGITS) + \"""")
+        | SPAN(UCASE)          + λ("""P += "SPAN(UCASE) + \"""")
+        | SPAN(LCASE)          + λ("""P += "SPAN(LCASE) + \"""")
+        | NOTANY(DIGITS+UCASE+LCASE) % "tx" + λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
         ) @ "OUTPUT"
       )
-    + RPOS(0)                   + Λ("""P += ")\\n\"""")
+    + RPOS(0)                   + λ("""P += ")\\n\"""")
     )
 #-------------------------------------------------------------------------------

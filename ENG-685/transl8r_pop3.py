@@ -2,8 +2,8 @@
 import re
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, θ, φ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, π, Λ, λ, θ, φ
 from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 from pprint import pprint
@@ -131,45 +131,45 @@ def trace(s): print(s); return True
 def Inbox():
     global lineno
     yield from \
-    ( POS(0)                                + Λ("""P = [];""")
+    ( POS(0)                                + λ("""P = [];""")
     + ARBNO(
         θ("p0") + # θ("OUTPUT") +
-        ( σ('\n')                           + Λ("""P.append("η() +\\n")""")
-        | φ(r"[ ]+") @ "tx"                 + Λ("""P.append("ς('" + tx + "')")""")
-        | φ(r"[ \t\r\f]+")                  + Λ("""P.append("μ()")""")
-        | Date_Time()                       + Λ("""P.append("Date_Time()")""")
-        | From()                            + Λ("""P.append("From()")""")
-        | X_account_key()                   + Λ("""P.append("X_account_key()")""")
-        | X_UIDL()                          + Λ("""P.append("X_UIDL()")""")
-        | X_Mozilla_Status()                + Λ("""P.append("X_Mozilla_Status()")""")
-        | X_Mozilla_Status2()               + Λ("""P.append("X_Mozilla_Status2()")""")
-        | X_Mozilla_Keys()                  + Λ("""P.append("X_Mozilla_Keys()")""")
-        | X_Originating_IP()                + Λ("""P.append("X_Originating_IP()")""")
-        | Return_Path()                     + Λ("""P.append("Return_Path()")""")
-        | Authentication_Results()          + Λ("""P.append("Authentication_Results()")""")
-        | Received()                        + Λ("""P.append("Received()")""")
-        | X_MimeOLE()                       + Λ("""P.append("X_MimeOLE()")""")
-        | Content_class()                   + Λ("""P.append("Content_class()")""")
-        | MIME_Version()                    + Λ("""P.append("MIME_Version()")""")
-        | Content_Type()                    + Λ("""P.append("Content_Type()")""")
-        | Subject()                         + Λ("""P.append("Subject()")""")
-        | Date()                            + Λ("""P.append("Date()")""")
-        | Message_ID()                      + Λ("""P.append("Message_ID()")""")
-        | X_MS_Has_Attach()                 + Λ("""P.append("X_MS_Has_Attach()")""")
-        | X_MS_TNEF_Correlator()            + Λ("""P.append("X_MS_TNEF_Correlator()")""")
-        | Thread_Topic()                    + Λ("""P.append("Thread_Topic()")""")
-        | Thread_Index()                    + Λ("""P.append("Thread_Index()")""")
-        | From_address()                    + Λ("""P.append("From_address()")""")
-        | To_address()                      + Λ("""P.append("To_address()")""")
-        | X_OriginalArrivalTime()           + Λ("""P.append("X_OriginalArrivalTime()")""")
-        | Content_Length()                  + Λ("""P.append("Content_Length()")""")
-        | Content_Type()                    + Λ("""P.append("Content_Type()")""")
-        | Content_Transfer_Encoding()       + Λ("""P.append("Content_Transfer_Encoding()")""")
-        | φ(r"[0-9]+")                      + Λ("""P.append("SPAN(_DIGITS)")""")
-        | φ(r"[A-Z]+")                      + Λ("""P.append("SPAN(_UCASE)")""")
-        | φ(r"[a-z]+")                      + Λ("""P.append("SPAN(_LCASE)")""")
-        | φ(r"[^ \t\r\f\n]+") @ "tx"        + Λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
-        | φ(r"[^0-9A-Za-z]+") @ "tx"        + Λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
+        ( σ('\n')                           + λ("""P.append("η() +\\n")""")
+        | φ(r"[ ]+") @ "tx"                 + λ("""P.append("ς('" + tx + "')")""")
+        | φ(r"[ \t\r\f]+")                  + λ("""P.append("μ()")""")
+        | Date_Time()                       + λ("""P.append("Date_Time()")""")
+        | From()                            + λ("""P.append("From()")""")
+        | X_account_key()                   + λ("""P.append("X_account_key()")""")
+        | X_UIDL()                          + λ("""P.append("X_UIDL()")""")
+        | X_Mozilla_Status()                + λ("""P.append("X_Mozilla_Status()")""")
+        | X_Mozilla_Status2()               + λ("""P.append("X_Mozilla_Status2()")""")
+        | X_Mozilla_Keys()                  + λ("""P.append("X_Mozilla_Keys()")""")
+        | X_Originating_IP()                + λ("""P.append("X_Originating_IP()")""")
+        | Return_Path()                     + λ("""P.append("Return_Path()")""")
+        | Authentication_Results()          + λ("""P.append("Authentication_Results()")""")
+        | Received()                        + λ("""P.append("Received()")""")
+        | X_MimeOLE()                       + λ("""P.append("X_MimeOLE()")""")
+        | Content_class()                   + λ("""P.append("Content_class()")""")
+        | MIME_Version()                    + λ("""P.append("MIME_Version()")""")
+        | Content_Type()                    + λ("""P.append("Content_Type()")""")
+        | Subject()                         + λ("""P.append("Subject()")""")
+        | Date()                            + λ("""P.append("Date()")""")
+        | Message_ID()                      + λ("""P.append("Message_ID()")""")
+        | X_MS_Has_Attach()                 + λ("""P.append("X_MS_Has_Attach()")""")
+        | X_MS_TNEF_Correlator()            + λ("""P.append("X_MS_TNEF_Correlator()")""")
+        | Thread_Topic()                    + λ("""P.append("Thread_Topic()")""")
+        | Thread_Index()                    + λ("""P.append("Thread_Index()")""")
+        | From_address()                    + λ("""P.append("From_address()")""")
+        | To_address()                      + λ("""P.append("To_address()")""")
+        | X_OriginalArrivalTime()           + λ("""P.append("X_OriginalArrivalTime()")""")
+        | Content_Length()                  + λ("""P.append("Content_Length()")""")
+        | Content_Type()                    + λ("""P.append("Content_Type()")""")
+        | Content_Transfer_Encoding()       + λ("""P.append("Content_Transfer_Encoding()")""")
+        | φ(r"[0-9]+")                      + λ("""P.append("SPAN(DIGITS)")""")
+        | φ(r"[A-Z]+")                      + λ("""P.append("SPAN(UCASE)")""")
+        | φ(r"[a-z]+")                      + λ("""P.append("SPAN(LCASE)")""")
+        | φ(r"[^ \t\r\f\n]+") @ "tx"        + λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
+        | φ(r"[^0-9A-Za-z]+") @ "tx"        + λ("""P.append("ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")""")
         ) # @ "OUTPUT"
       )
     + RPOS(0)

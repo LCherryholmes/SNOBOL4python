@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # ENG 685, Universal Tokenizer, Lon Cherryholmes Sr.
 #------------------------------------------------------------------------------
-from SNOBOL4python import GLOBALS, pattern, ε, σ, λ, Λ
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
+from SNOBOL4python import GLOBALS, pattern, ε, σ, Λ, λ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
 from SNOBOL4python import ANY, ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 from pprint import pprint
@@ -138,11 +138,11 @@ keywords = [
 ]
 #-------------------------------------------------------------------------------
 @pattern
-def wrd():      yield from  (ANY(_UCASE+_LCASE) + FENCE(SPAN(_LCASE) | ε()))
+def wrd():      yield from  (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
 @pattern
-def word():     yield from  wrd() @ "tx" + λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
+def word():     yield from  wrd() @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
 @pattern
-def keyword():  yield from  wrd() @ "tx" + λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
+def keyword():  yield from  wrd() @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #-------------------------------------------------------------------------------
 import wordnet
 from wordnet import Lexicon, lexicon
@@ -150,24 +150,24 @@ from wordnet import is_noun, is_verb, is_adjective, is_adverb
 @pattern
 def eTokens():
     yield from  \
-    ( POS(0)                    + Λ("""P = "(\\n\"""")
+    ( POS(0)                    + λ("""P = "(\\n\"""")
     + ARBNO(
 #       θ("OUTPUT") +
-        ( σ(' ')                + Λ("""P += "σ(' ') + \"""")
-        | σ('\n')               + Λ("""P += "σ('\\\\n') +\\n\"""") 
-        | wrd() @ "tx" + λ(lambda: is_noun(tx))         + Λ("""P += "noun() + \"""")
-        | wrd() @ "tx" + λ(lambda: is_verb(tx))         + Λ("""P += "verb() + \"""")
-        | wrd() @ "tx" + λ(lambda: is_adjective(tx))    + Λ("""P += "adj() + \"""")
-        | wrd() @ "tx" + λ(lambda: is_adverb(tx))       + Λ("""P += "adv() + \"""")
-#       | keyword()             + Λ("""P += "ς('" + w + "') + \"""")
-#       | word()                + Λ("""P += "word() + \"""")
-        | SPAN(_DIGITS)         + Λ("""P += "SPAN(_DIGITS) + \"""")
-        | SPAN(_UCASE)          + Λ("""P += "SPAN(_UCASE) + \"""")
-        | SPAN(_LCASE)          + Λ("""P += "SPAN(_LCASE) + \"""")
-        | NOTANY(_DIGITS+_UCASE+_LCASE) % "tx" + Λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
+        ( σ(' ')                + λ("""P += "σ(' ') + \"""")
+        | σ('\n')               + λ("""P += "σ('\\\\n') +\\n\"""")
+        | wrd() @ "tx" + Λ(lambda: is_noun(tx))         + λ("""P += "noun() + \"""")
+        | wrd() @ "tx" + Λ(lambda: is_verb(tx))         + λ("""P += "verb() + \"""")
+        | wrd() @ "tx" + Λ(lambda: is_adjective(tx))    + λ("""P += "adj() + \"""")
+        | wrd() @ "tx" + Λ(lambda: is_adverb(tx))       + λ("""P += "adv() + \"""")
+#       | keyword()             + λ("""P += "ς('" + w + "') + \"""")
+#       | word()                + λ("""P += "word() + \"""")
+        | SPAN(DIGITS)         + λ("""P += "SPAN(DIGITS) + \"""")
+        | SPAN(UCASE)          + λ("""P += "SPAN(UCASE) + \"""")
+        | SPAN(LCASE)          + λ("""P += "SPAN(LCASE) + \"""")
+        | NOTANY(DIGITS+UCASE+LCASE) % "tx" + λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
         ) # @ "OUTPUT"
       )
-    + RPOS(0)                   + Λ("""P += ")\\n\"""")
+    + RPOS(0)                   + λ("""P += ")\\n\"""")
     )
 #-------------------------------------------------------------------------------
 def traverse(tree):

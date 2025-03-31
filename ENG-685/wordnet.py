@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS, REPLACE
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, Λ, λ, θ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS, REPLACE
 from SNOBOL4python import ANY, ARBNO, BAL, BREAK, LEN, NOTANY, POS
 from SNOBOL4python import REM, RPOS, RTAB, SPAN, TAB
 #-------------------------------------------------------------------------------
@@ -34,20 +34,20 @@ def is_noun(wrd):
     lemma = wrd        
     if lemma == "is": return False
     if lemma in ( POS(0)
-                + ( RTAB(4) % "stem" + σ('ches') + Λ("lemma = stem + 'ch'")
-                  | RTAB(4) % "stem" + σ('shes') + Λ("lemma = stem + 'sh'")
-                  | RTAB(3) % "stem" + σ('ies')  + Λ("lemma = stem + 'y'")
-                  | RTAB(3) % "stem" + σ('ses')  + Λ("lemma = stem + 's'")
-                  | RTAB(3) % "stem" + σ('xes')  + Λ("lemma = stem + 'x'")
-                  | RTAB(3) % "stem" + σ('zes')  + Λ("lemma = stem + 'z'")
-                  | RTAB(3) % "stem" + σ('men')  + Λ("lemma = stem + 'man'")
-                  | RTAB(1) % "stem" + σ('s')    + Λ("lemma = stem")
+                + ( RTAB(4) % "stem" + σ('ches') + λ("lemma = stem + 'ch'")
+                  | RTAB(4) % "stem" + σ('shes') + λ("lemma = stem + 'sh'")
+                  | RTAB(3) % "stem" + σ('ies')  + λ("lemma = stem + 'y'")
+                  | RTAB(3) % "stem" + σ('ses')  + λ("lemma = stem + 's'")
+                  | RTAB(3) % "stem" + σ('xes')  + λ("lemma = stem + 'x'")
+                  | RTAB(3) % "stem" + σ('zes')  + λ("lemma = stem + 'z'")
+                  | RTAB(3) % "stem" + σ('men')  + λ("lemma = stem + 'man'")
+                  | RTAB(1) % "stem" + σ('s')    + λ("lemma = stem")
                   )  
                 + RPOS(0)
                 ):
         return is_pos(lemma, 'n')
     if lemma in ( POS(0)
-                + RTAB(3) % "stem" + σ('ing')  + Λ("lemma = stem")
+                + RTAB(3) % "stem" + σ('ing')  + λ("lemma = stem")
                 + RPOS(0)
                 ):
         return is_pos(lemma, 'v') or is_pos(f"{lemma}e", 'v')
@@ -58,16 +58,16 @@ def is_verb(wrd):
     if is_pos(wrd, 'v'): return True
     lemma = wrd        
     if lemma in ( POS(0)
-                + ( RTAB(3) % "stem" + σ('ied') + Λ("lemma = stem + 'y'")
-                  | RTAB(3) % "stem" + σ('ies') + Λ("lemma = stem + 'y'")
-                  | RTAB(1) % "stem" + σ('s')   + Λ("lemma = stem")
+                + ( RTAB(3) % "stem" + σ('ied') + λ("lemma = stem + 'y'")
+                  | RTAB(3) % "stem" + σ('ies') + λ("lemma = stem + 'y'")
+                  | RTAB(1) % "stem" + σ('s')   + λ("lemma = stem")
                   )  
                 + RPOS(0)
                 ):
         return is_pos(lemma, 'v')
     if lemma in ( POS(0)
-                + ( RTAB(2) % "stem" + σ('es')  + Λ("lemma = stem")
-                  | RTAB(2) % "stem" + σ('ed')  + Λ("lemma = stem")
+                + ( RTAB(2) % "stem" + σ('es')  + λ("lemma = stem")
+                  | RTAB(2) % "stem" + σ('ed')  + λ("lemma = stem")
                   )  
                 + RPOS(0)
                 ):
@@ -79,8 +79,8 @@ def is_adjective(wrd):
     if is_pos(wrd, 'a') or is_pos(wrd, 's'): return True
     lemma = wrd        
     if lemma in ( POS(0)
-                + ( RTAB(3) % "stem" + σ('est') + Λ("lemma = stem")
-                  | RTAB(2) % "stem" + σ('er')  + Λ("lemma = stem")
+                + ( RTAB(3) % "stem" + σ('est') + λ("lemma = stem")
+                  | RTAB(2) % "stem" + σ('er')  + λ("lemma = stem")
                   )  
                 + RPOS(0)
                 ):
@@ -99,7 +99,7 @@ def sno_wordnet():
                 + ARBNO( # header / license banner
                     σ('  ') + SPAN('0123456789')
                   + σ(' ') + BREAK("\n")
-                  + λ(lambda: inc())
+                  + Λ(lambda: inc())
                   + σ('\n')
                   )
                 + ARBNO( # data rows
@@ -109,7 +109,7 @@ def sno_wordnet():
                   + σ(' ') + SPAN('0123456789abcdef') @ "nhex"
                   + σ(' ')
                   + ARBNO(
-                      BREAK(' (') % "word" + Λ("enter(word, word_pos)")
+                      BREAK(' (') % "word" + λ("enter(word, word_pos)")
                     + (σ(' ') | σ('(') + BREAK(')') + σ(') '))
                     + SPAN('0123456789abcdef') + σ(' ')
                     )
@@ -118,7 +118,7 @@ def sno_wordnet():
                   + ANY('0123456789')
                   + σ(' ')
                   + BREAK("\n")
-                  + λ(lambda: inc())
+                  + Λ(lambda: inc())
                   + σ('\n')
                   )
                 + RPOS(0)

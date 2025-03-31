@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, θ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, π, Λ, λ, θ
 from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------
@@ -75,18 +75,18 @@ keywords = {
     'struct', 'switch', 'token', 'type', 'union', 'while'
     }
 @pattern
-def ident():            yield from  ( ANY(_UCASE + '_' + _LCASE) 
-                                    + FENCE(SPAN(_DIGITS + _UCASE + '_' + _LCASE) | ε())
+def ident():            yield from  ( ANY(UCASE + '_' + LCASE)
+                                    + FENCE(SPAN(DIGITS + UCASE + '_' + LCASE) | ε())
                                     )
 @pattern
-def keyword():          yield from  ident() @ "tx" + λ("tx in keywords")
+def keyword():          yield from  ident() @ "tx" + Λ("tx in keywords")
 @pattern
-def identifier():       yield from  ident() @ "tx" + λ("tx not in keywords")
+def identifier():       yield from  ident() @ "tx" + Λ("tx not in keywords")
 @pattern
 def resword():          yield from  ( σ('%')
-                                    + SPAN(_LCASE)
-                                    + FENCE(σ('-') + SPAN(_LCASE) | ε())
-                                    | σ('#') + SPAN(_LCASE)
+                                    + SPAN(LCASE)
+                                    + FENCE(σ('-') + SPAN(LCASE) | ε())
+                                    | σ('#') + SPAN(LCASE)
                                     )
 #-------------------------------------------------------------------------------
 @pattern
@@ -193,54 +193,54 @@ def cTokens():
 def cToken(blind):
     yield from (
     	η() +
-        ( cStyleComment()     + Λ("""P += "cStyleComment() + \"""" if not blind else None)
-        | cppStyleComment()   + Λ("""P += "cppStyleComment() + \"""" if not blind else None)
-        | floatingLiteral()   + Λ("""P += "floatingLiteral() + \"""" if not blind else None)
-        | integerLiteral()    + Λ("""P += "integerLiteral() + \"""" if not blind else None)
-        | characterLiteral()  + Λ("""P += "characterLiteral() + \"""" if not blind else None)
-        | stringLiteral()     + Λ("""P += "stringLiteral() + \"""" if not blind else None)
-        | keyword() % "tx"    + Λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
-        | identifier()        + Λ("""P += "identifier() + \"""" if not blind else None)
-        | σ('$$')             + Λ("""P += "ς('$$') + \"""" if not blind else None)
-        | ζ('$#')             + Λ("""P += "ζ('$#') + \"""" if not blind else None)
-        | ζ('@#')             + Λ("""P += "ζ('@#') + \"""" if not blind else None)
-        | ζ('$<>$')           + Λ("""P += "ζ('$<>$') + \"""" if not blind else None)
-        | ζ('$<>#')           + Λ("""P += "ζ('$<>#') + \"""" if not blind else None)
-        | operator() % "tx"   + Λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
+        ( cStyleComment()     + λ("""P += "cStyleComment() + \"""" if not blind else None)
+        | cppStyleComment()   + λ("""P += "cppStyleComment() + \"""" if not blind else None)
+        | floatingLiteral()   + λ("""P += "floatingLiteral() + \"""" if not blind else None)
+        | integerLiteral()    + λ("""P += "integerLiteral() + \"""" if not blind else None)
+        | characterLiteral()  + λ("""P += "characterLiteral() + \"""" if not blind else None)
+        | stringLiteral()     + λ("""P += "stringLiteral() + \"""" if not blind else None)
+        | keyword() % "tx"    + λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
+        | identifier()        + λ("""P += "identifier() + \"""" if not blind else None)
+        | σ('$$')             + λ("""P += "ς('$$') + \"""" if not blind else None)
+        | ζ('$#')             + λ("""P += "ζ('$#') + \"""" if not blind else None)
+        | ζ('@#')             + λ("""P += "ζ('@#') + \"""" if not blind else None)
+        | ζ('$<>$')           + λ("""P += "ζ('$<>$') + \"""" if not blind else None)
+        | ζ('$<>#')           + λ("""P += "ζ('$<>#') + \"""" if not blind else None)
+        | operator() % "tx"   + λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
         )
     )
 #-------------------------------------------------------------------------------
 @pattern
 def yTokens():
-    yield from  ( POS(0)                + Λ("""P = "yield from (\\n\"""")
+    yield from  ( POS(0)                + λ("""P = "yield from (\\n\"""")
                 + ARBNO(
-                    σ('\\\n')           + Λ("""P += "σ('\\\n') + \"""")
-                  | σ('\n')             + Λ("""P += "η() +\\n\"""") 
-                  | SPAN(" \t\r\f\n") # + Λ("""P += "η() +\\n\"""")
-                  | SPAN(" \t\r\f")     + Λ("""P += "μ() + \"""")
-                  | pct_union()         + Λ("""P += "pct_union() + \"""")
-                  | pct_token()         + Λ("""P += "pct_token() + \"""")
-                  | pct_type()          + Λ("""P += "pct_type() + \"""")
-                  | pct_left()          + Λ("""P += "pct_left() + \"""")
-                  | pct_right()         + Λ("""P += "pct_right() + \"""")
-                  | pct_start()         + Λ("""P += "pct_start() + \"""")
-                  | pct_block()         + Λ("""P += "pct_block() + \"""")
-                  | pct_parse_param()   + Λ("""P += "pct_parse_param() + \"""")
-                  | pct_lex_param()     + Λ("""P += "pct_lex_param() + \"""")
-                  | pct_expect()        + Λ("""P += "pct_expect() + \"""")
-                  | pct_define()        + Λ("""P += "pct_define() + \"""")
-                  | resword() % "tx"    + Λ("""P += "σ('" + tx + "') + \"""")
-                  | σ('%{')             + Λ("""P += "σ('%{') + \"""")
-                  | σ('%}')             + Λ("""P += "σ('%}') + \"""")
-                  | σ('%%')             + Λ("""P += "σ('%%') + \"""")
-                  | yProduction()       + Λ("""P += "yProduction() + \"""")
-                  | cBlock()            + Λ("""P += "cBlock() + \"""")
-                  | cToken(False)     # + Λ("""P += "cToken() + \"""")
-                  | σ('{')              + Λ("""P += "σ('{') + \"""")
-                  | σ('}')              + Λ("""P += "σ('}') + \"""")
-                  | σ('(')              + Λ("""P += "σ('(') + \"""")
-                  | σ(')')              + Λ("""P += "σ(')') + \"""")
+                    σ('\\\n')           + λ("""P += "σ('\\\n') + \"""")
+                  | σ('\n')             + λ("""P += "η() +\\n\"""")
+                  | SPAN(" \t\r\f\n") # + λ("""P += "η() +\\n\"""")
+                  | SPAN(" \t\r\f")     + λ("""P += "μ() + \"""")
+                  | pct_union()         + λ("""P += "pct_union() + \"""")
+                  | pct_token()         + λ("""P += "pct_token() + \"""")
+                  | pct_type()          + λ("""P += "pct_type() + \"""")
+                  | pct_left()          + λ("""P += "pct_left() + \"""")
+                  | pct_right()         + λ("""P += "pct_right() + \"""")
+                  | pct_start()         + λ("""P += "pct_start() + \"""")
+                  | pct_block()         + λ("""P += "pct_block() + \"""")
+                  | pct_parse_param()   + λ("""P += "pct_parse_param() + \"""")
+                  | pct_lex_param()     + λ("""P += "pct_lex_param() + \"""")
+                  | pct_expect()        + λ("""P += "pct_expect() + \"""")
+                  | pct_define()        + λ("""P += "pct_define() + \"""")
+                  | resword() % "tx"    + λ("""P += "σ('" + tx + "') + \"""")
+                  | σ('%{')             + λ("""P += "σ('%{') + \"""")
+                  | σ('%}')             + λ("""P += "σ('%}') + \"""")
+                  | σ('%%')             + λ("""P += "σ('%%') + \"""")
+                  | yProduction()       + λ("""P += "yProduction() + \"""")
+                  | cBlock()            + λ("""P += "cBlock() + \"""")
+                  | cToken(False)     # + λ("""P += "cToken() + \"""")
+                  | σ('{')              + λ("""P += "σ('{') + \"""")
+                  | σ('}')              + λ("""P += "σ('}') + \"""")
+                  | σ('(')              + λ("""P += "σ('(') + \"""")
+                  | σ(')')              + λ("""P += "σ(')') + \"""")
                   )
-                + RPOS(0)               + Λ("""P += ")\\n\"""")
+                + RPOS(0)               + λ("""P += ")\\n\"""")
                 )
 #-------------------------------------------------------------------------------

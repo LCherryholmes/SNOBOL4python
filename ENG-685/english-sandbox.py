@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, Λ, λ, θ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
 from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------
 def space():            yield from SPAN(' ')
@@ -11,7 +11,7 @@ def μ():                yield from FENCE(space() | ε())
 def η():                yield from FENCE(whitespace() | ε())
 def ς(s):               yield from η() + σ(s)
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------
-def eWordSegment():     yield from SPAN(_UCASE+_LCASE)
+def eWordSegment():     yield from SPAN(UCASE+LCASE)
 def eWordSegments():    yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
 def eWord():            yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
 def eUnknownWord():     yield from eWord() @ "tx" + notmatch(lambda: eWords, lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import SNOBOL4python
 from SNOBOL4python import GLOBALS, pattern
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
-from SNOBOL4python import ε, σ, Σ, Π, λ, Λ, θ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
+from SNOBOL4python import ε, σ, Σ, Π, Λ, λ, θ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 GLOBALS(globals())
@@ -41,17 +41,17 @@ assert False is ('CCXXAA$' in Pairs())
 @pattern
 def PAIRS(): yield from \
     (
-        θ('pos') + λ(lambda: print('POS try', pos))
+        θ('pos') + Λ(lambda: print('POS try', pos))
     +   POS(0)
-    +   λ(lambda: print('POS got'))
+    +   Λ(lambda: print('POS got'))
     +   ARBNO(
-          (θ('pos') + λ(lambda: print('AA try', pos))     + σ('AA') @ 'tx' + λ(lambda: print(tx, 'got')))
-        | (θ('pos') + λ(lambda: print('LEN(2) try', pos)) + LEN(2)  @ 'tx' + λ(lambda: print(tx, 'got')))
-        | (θ('pos') + λ(lambda: print('XX try', pos))     + σ('XX') @ 'tx' + λ(lambda: print(tx, 'got')))
+          (θ('pos') + Λ(lambda: print('AA try', pos))     + σ('AA') @ 'tx' + Λ(lambda: print(tx, 'got')))
+        | (θ('pos') + Λ(lambda: print('LEN(2) try', pos)) + LEN(2)  @ 'tx' + Λ(lambda: print(tx, 'got')))
+        | (θ('pos') + Λ(lambda: print('XX try', pos))     + σ('XX') @ 'tx' + Λ(lambda: print(tx, 'got')))
         )
-    +   θ('pos') + λ(lambda: print('RPOS try', pos))
+    +   θ('pos') + Λ(lambda: print('RPOS try', pos))
     +   RPOS(0)
-    +   λ(lambda: print('RPOS got'))
+    +   Λ(lambda: print('RPOS got'))
     )
 # assert False is ('CCXXAA$' in PAIRS())
 #------------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # ENG 685, VBG Exercise, Lon Cherryholmes Sr.
 #------------------------------------------------------------------------------
-from SNOBOL4python import GLOBALS, pattern, ε, σ, λ, Λ
-from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
+from SNOBOL4python import GLOBALS, pattern, ε, σ, Λ, λ
+from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
 from SNOBOL4python import ANY, ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 from pprint import pprint
@@ -41,19 +41,19 @@ def treebank():
                 )
 #------------------------------------------------------------------------------
 @pattern
-def init_list(v):   yield from Λ(f"{v} = None") \
-                             + Λ(f"tags = dict()") \
-                             + Λ(f"stack = []")
+def init_list(v):   yield from λ(f"{v} = None") \
+                             + λ(f"tags = dict()") \
+                             + λ(f"stack = []")
 @pattern
-def push_list(v):   yield from Λ(f"count_tag({v})") \
-                             + Λ(f"stack.append(list())") \
-                             + Λ(f"stack[-1].append({v})")
+def push_list(v):   yield from λ(f"count_tag({v})") \
+                             + λ(f"stack.append(list())") \
+                             + λ(f"stack[-1].append({v})")
 @pattern
-def push_item(v):   yield from Λ(f"stack[-1].append({v})")
+def push_item(v):   yield from λ(f"stack[-1].append({v})")
 @pattern
-def pop_list():     yield from Λ(f"stack[-2].append(tuple(stack.pop()))")
+def pop_list():     yield from λ(f"stack[-2].append(tuple(stack.pop()))")
 @pattern
-def pop_final(v):   yield from Λ(f"{v} = tuple(stack.pop())")
+def pop_final(v):   yield from λ(f"{v} = tuple(stack.pop())")
 #------------------------------------------------------------------------------
 def count_tag(tag):
     if tag not in tags:
@@ -381,17 +381,17 @@ def list_to_tuple(t):
 def claws_info():
     yield from \
     ( POS(0)
-    + Λ("mem = dict()")
+    + λ("mem = dict()")
     + ARBNO(
-        ( SPAN(_DIGITS) % "num" + σ('_CRD :_PUN')
-        + Λ("num = int(num)")
-        + Λ("mem[num] = dict()")
+        ( SPAN(DIGITS) % "num" + σ('_CRD :_PUN')
+        + λ("num = int(num)")
+        + λ("mem[num] = dict()")
         | (NOTANY("_") + BREAK("_")) % "wrd"
         + σ('_')
-        + (ANY(_UCASE) + SPAN(_DIGITS+_UCASE)) % "tag"
-        + Λ("if wrd not in mem[num]:      mem[num][wrd] = dict()")
-        + Λ("if tag not in mem[num][wrd]: mem[num][wrd][tag] = 0")
-        + Λ("mem[num][wrd][tag] += 1")
+        + (ANY(UCASE) + SPAN(DIGITS+UCASE)) % "tag"
+        + λ("if wrd not in mem[num]:      mem[num][wrd] = dict()")
+        + λ("if tag not in mem[num][wrd]: mem[num][wrd][tag] = 0")
+        + λ("mem[num][wrd][tag] += 1")
         )
       + σ(' ')
       )

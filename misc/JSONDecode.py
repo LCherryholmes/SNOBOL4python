@@ -1,6 +1,6 @@
 import SNOBOL4python
-from SNOBOL4python import pattern, MATCH, _UCASE, _LCASE, _digits
-from SNOBOL4python import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, Λ, λ, θ
+from SNOBOL4python import pattern, MATCH, UCASE, LCASE, _digits
+from SNOBOL4python import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, λ, Λ, θ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import CHAR, REPLACE, _RETURN, _NRETURN, _END
 from SNOBOL4python import S, F, Ξ
@@ -37,11 +37,11 @@ def _005():         str in \
                         | σ('/') % ch
                         | σ('"') % ch
                         | σ("'") % ch
-                        | σ('b') + Λ("ch = CHAR(8)")
-                        | σ('t') + Λ("ch = CHAR(9)")
-                        | σ('n') + Λ("ch = CHAR(10)")
-                        | σ('f') + Λ("ch = CHAR(12)")
-                        | σ('r') + Λ("ch = CHAR(13)")
+                        | σ('b') + λ("ch = CHAR(8)")
+                        | σ('t') + λ("ch = CHAR(9)")
+                        | σ('n') + λ("ch = CHAR(10)")
+                        | σ('f') + λ("ch = CHAR(12)")
+                        | σ('r') + λ("ch = CHAR(13)")
                         ) << _NULL
 #-------------------------------------------------------------------------------------------------------
 @S(_error)
@@ -50,7 +50,7 @@ def _006():         (str in FENCE() + σ('\\')) << _NULL
 @Ξ(_JSONDecode2, _error)
 def _007():         (str in FENCE() + LEN(1) % ch) << _NULL
 #-------------------------------------------------------------------------------------------------------
-def _JSONDecode1(): xchs = REPLACE(xchs, _LCASE, _UCASE)
+def _JSONDecode1(): xchs = REPLACE(xchs, LCASE, UCASE)
 #-------------------------------------------------------------------------------------------------------
 @F(_JSONDecode3)
 def _009():         xchs in \
