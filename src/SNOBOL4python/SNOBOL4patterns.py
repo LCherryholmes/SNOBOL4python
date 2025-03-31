@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.3.0.tar.gz
+#> python -m pip install ./dist/snobol4python-0.3.1.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -13,6 +13,7 @@
 #> python ENG-685/transl8r_pop3.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
+from pprint import pformat
 from functools import wraps
 #----------------------------------------------------------------------------------------------------------------------
 import logging
@@ -141,7 +142,7 @@ def Δ(P, N) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . N
         logger.debug("%s = delta(%s) SUCCESS", N, repr(_1))
         if _1 == "":
             S[_].cstack.append(f"{N} = ''")
-        else: S[_].cstack.append(f"{N} = S[_].subject[{_1[0]} : {_1[1]}]")
+        else: S[_].cstack.append(f"{N} = S[_].subject[{_1[0]}:{_1[1]}]")
         yield _1
         logger.debug("%s = delta(%s) backtracking...", N, repr(_1))
         S[_].cstack.pop()
@@ -290,9 +291,9 @@ def φ(rex) -> PATTERN:
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
     if matches := _rexs[rex].match(S[_].subject, pos = S[_].pos, endpos = len(S[_].subject)):
-        if S[_].pos == matches.start():
-            pos0 = S[_].pos
-            if S[_].pos < matches.end(): #must consume something
+        pos0 = S[_].pos
+        if pos0 == matches.start():
+            if pos0 < matches.end(): #must consume something
                 S[_].pos = matches.end()
                 for (N, V) in matches.groupdict().items():
                     _globals[N] = V
@@ -302,7 +303,29 @@ def φ(rex) -> PATTERN:
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Φ(): print("Yikes! Φ()"); yield ""
+def Φ(rex) -> PATTERN:
+    global S, _, _rexs
+    if rex not in _rexs:
+        _rexs[rex] = re.compile(rex, re.MULTILINE)
+    if matches := _rexs[rex].match(S[_].subject, pos = S[_].pos, endpos = len(S[_].subject)):
+        pos0 = S[_].pos
+        if pos0 == matches.start():
+            if pos0 < matches.end(): #must consume something
+                S[_].pos = matches.end()
+                push_count = 0
+                for item in matches.re.groupindex.items():
+                    N = item[0]
+                    span = matches.span(item[1])
+                    if span != (-1, -1):
+                        push_count += 1
+                        S[_].cstack.append(f"{N} = S[_].subject[{span[0]}:{span[1]}]")
+                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
+                for i in range(push_count):
+                    S[_].cstack.pop()
+                S[_].pos = pos0
+            else: raise Exeption("Regular expression can not match epsilon.")
+        else: raise Exeption("Yikes! Internal error.")
+#----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ψ(): print("Yikes! ψ()"); yield ""
 @pattern
@@ -576,5 +599,5 @@ if __name__ == "__main__":
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
         print(name)
-    if "001_01C717AB.5C51AFDE" in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
+    if "001_01C717AB.5C51AFDE ..." in Φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
