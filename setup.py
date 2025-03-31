@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 VERSION = '0.3'
 DESCRIPTION = 'Python SNOBOL4 package'
-LONG_DESCRIPTION = 'SNOBOL4 string pattern matching for Python.'
+LONG_DESCRIPTION = 'SNOBOL4 string pattern matching for Python with regular expressions.'
 
 setup(
     name='SNOBOL4python',
@@ -14,6 +14,6 @@ setup(
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
     install_requires=[],
-    keywords=['python', 'SNOBOL4', 'string pattern matching'],
+    keywords=['python', 'SNOBOL', 'SNOBOL4', 'string pattern matching'],
     classifiers= []
 )
