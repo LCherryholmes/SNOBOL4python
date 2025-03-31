@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
 from SNOBOL4python import _ALPHABET, _UCASE, _LCASE, _DIGITS
@@ -100,25 +101,22 @@ def Content_Transfer_Encoding():    yield from φ(r"Content-Transfer-Encoding:.*
 def base64():                   yield from φ(r"(([0-9/+A-Za-z]{76})\n)+")
 @pattern
 def part_id():                  yield from φ(r"[0-9]{3}[0-9A-F]{8}[0-9A-F]{8}")
-@pattern
 #-------------------------------------------------------------------------------
-def NextPart_BEGIN():           yield from φ(r"------_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}") # \n
-@pattern
-def NextPart_END():             yield from φ(r"------_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}") # \n
 @pattern
 def Line():                     yield from φ(r".*\n")
 @pattern
-def UptoPart():                 yield from φ(r"(.*\n)+(?=------_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8})")
+def UptoPart():                 yield from φ( r"(?!------_=_NextPart_)"
+                                              r"(?:.*\n)+?"
+                                              r"(?=------_=_NextPart_)"
+                                            ) % "upto"
 @pattern
 def NextPart():                 yield from φ( r"------_=_NextPart_"
                                               r"([0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8})\n"
                                               r"(?:.*\n)*"
                                               r"------_=_NextPart_"
-                                              r"\1\n"
+                                              r"\1--\n"
                                             )
 #-------------------------------------------------------------------------------
-lineno = 1
-def inc_lineno():   global lineno; lineno += 1; return True
 def trace(s):       print(s); return True
 #-------------------------------------------------------------------------------
 @pattern
@@ -128,43 +126,43 @@ def Inbox():
     ( POS(0)
     + ARBNO(
         θ("p0") + # θ("OUTPUT") +
-        ( base64()            + θ("p1") + λ(lambda: trace(f"@{p0}-{p1} BASE64"))
-#       | UptoPart() @ "upto" + θ("p1") + λ(lambda: trace(f"@{p0}-{p1} {upto[0:21]}"))
-        | NextPart() @ "part" + θ("p1") + λ(lambda: trace(f"@{p0}-{p1} {part[18:39]}"))
+        ( UptoPart() @ "upto" + θ("p1") + λ(lambda: trace(f"@{p0}-{p1}"))
+        + NextPart() @ "part" + θ("p2") + λ(lambda: trace(f"@{p1}-{p2} {part[18:39]}"))
+        | base64()            + θ("p1") + λ(lambda: trace(f"@{p0}-{p1} BASE64"))
         | Line() # @ "line" + θ("p1")   # + λ(lambda: trace(f"#{lineno} @{p0}-{p1} {line[0:21]}"))
-#       | σ('\n')                       + λ(lambda: inc_lineno()) # + λ(lambda: trace("η() +\\n"))
-#       | NextPart_BEGIN() @ "part"     + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
-#       | NextPart_END() @ "part"       + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
-#       | φ(r"[ ]+") @ "tx"           # + λ(lambda: trace("ς('" + tx + "')"))
-#       | φ(r"[ \t\r\f]+")            # + λ(lambda: trace("μ()"))
-#       | Date_Time()                 # + λ(lambda: trace("Date_Time()"))
-#       | From()                      # + λ(lambda: trace("From()"))
-#       | X_account_key()             # + λ(lambda: trace("X_account_key()"))
-#       | X_UIDL()                    # + λ(lambda: trace("X_UIDL()"))
-#       | X_Mozilla_Status()          # + λ(lambda: trace("X_Mozilla_Status()"))
-#       | X_Mozilla_Status2()         # + λ(lambda: trace("X_Mozilla_Status2()"))
-#       | X_Mozilla_Keys()            # + λ(lambda: trace("X_Mozilla_Keys()"))
-#       | X_Originating_IP()          # + λ(lambda: trace("X_Originating_IP()"))
-#       | Return_Path()               # + λ(lambda: trace("Return_Path()"))
-#       | Authentication_Results()    # + λ(lambda: trace("Authentication_Results()"))
-#       | Received()                  # + λ(lambda: trace("Received()"))
-#       | X_MimeOLE()                 # + λ(lambda: trace("X_MimeOLE()"))
-#       | Content_class()             # + λ(lambda: trace("Content_class()"))
-#       | MIME_Version()              # + λ(lambda: trace("MIME_Version()"))
-#       | Content_Type()              # + λ(lambda: trace("Content_Type()"))
-#       | Subject()                   # + λ(lambda: trace("Subject()"))
-#       | Date()                      # + λ(lambda: trace("Date()"))
-#       | Message_ID()                # + λ(lambda: trace("Message_ID()"))
-#       | X_MS_Has_Attach()           # + λ(lambda: trace("X_MS_Has_Attach()"))
-#       | X_MS_TNEF_Correlator()      # + λ(lambda: trace("X_MS_TNEF_Correlator()"))
-#       | Thread_Topic()              # + λ(lambda: trace("Thread_Topic()"))
-#       | Thread_Index()              # + λ(lambda: trace("Thread_Index()"))
-#       | From()                      # + λ(lambda: trace("From()"))
-#       | To()                        # + λ(lambda: trace("To()"))
-#       | X_OriginalArrivalTime()     # + λ(lambda: trace("X_OriginalArrivalTime()"))
-#       | Content_Length()            # + λ(lambda: trace("Content_Length()"))
-#       | Content_Type()              # + λ(lambda: trace("Content_Type()"))
-#       | Content_Transfer_Encoding() # + λ(lambda: trace("Content_Transfer_Encoding()"))
+        | σ('\n')                       + λ(lambda: trace("η() +\\n"))
+        | NextPart_BEGIN() @ "part"     + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
+        | NextPart_END() @ "part"       + λ(lambda: trace(f"#{lineno} {part} @ {p0}"))
+        | φ(r"[ ]+") @ "tx"           # + λ(lambda: trace("ς('" + tx + "')"))
+        | φ(r"[ \t\r\f]+")            # + λ(lambda: trace("μ()"))
+        | Date_Time()                 # + λ(lambda: trace("Date_Time()"))
+        | From()                      # + λ(lambda: trace("From()"))
+        | X_account_key()             # + λ(lambda: trace("X_account_key()"))
+        | X_UIDL()                    # + λ(lambda: trace("X_UIDL()"))
+        | X_Mozilla_Status()          # + λ(lambda: trace("X_Mozilla_Status()"))
+        | X_Mozilla_Status2()         # + λ(lambda: trace("X_Mozilla_Status2()"))
+        | X_Mozilla_Keys()            # + λ(lambda: trace("X_Mozilla_Keys()"))
+        | X_Originating_IP()          # + λ(lambda: trace("X_Originating_IP()"))
+        | Return_Path()               # + λ(lambda: trace("Return_Path()"))
+        | Authentication_Results()    # + λ(lambda: trace("Authentication_Results()"))
+        | Received()                  # + λ(lambda: trace("Received()"))
+        | X_MimeOLE()                 # + λ(lambda: trace("X_MimeOLE()"))
+        | Content_class()             # + λ(lambda: trace("Content_class()"))
+        | MIME_Version()              # + λ(lambda: trace("MIME_Version()"))
+        | Content_Type()              # + λ(lambda: trace("Content_Type()"))
+        | Subject()                   # + λ(lambda: trace("Subject()"))
+        | Date()                      # + λ(lambda: trace("Date()"))
+        | Message_ID()                # + λ(lambda: trace("Message_ID()"))
+        | X_MS_Has_Attach()           # + λ(lambda: trace("X_MS_Has_Attach()"))
+        | X_MS_TNEF_Correlator()      # + λ(lambda: trace("X_MS_TNEF_Correlator()"))
+        | Thread_Topic()              # + λ(lambda: trace("Thread_Topic()"))
+        | Thread_Index()              # + λ(lambda: trace("Thread_Index()"))
+        | From()                      # + λ(lambda: trace("From()"))
+        | To()                        # + λ(lambda: trace("To()"))
+        | X_OriginalArrivalTime()     # + λ(lambda: trace("X_OriginalArrivalTime()"))
+        | Content_Length()            # + λ(lambda: trace("Content_Length()"))
+        | Content_Type()              # + λ(lambda: trace("Content_Type()"))
+        | Content_Transfer_Encoding() # + λ(lambda: trace("Content_Transfer_Encoding()"))
         | φ(r"[^ \t\r\f\n]+") @ "tx"  # + λ(lambda: trace("ς('" + tx + "')"))
         | φ(r"[0-9]")                 # + λ(lambda: trace("SPAN(_DIGITS)"))
         | φ(r"[A-Z]")                 # + λ(lambda: trace("SPAN(_UCASE)"))
@@ -175,17 +173,51 @@ def Inbox():
     + RPOS(0)
     )
 #-------------------------------------------------------------------------------
+def lineno(offset):
+    while offset < total_size and offset not in linenos:
+        offset += 1
+    return linenos[offset]
+#-------------------------------------------------------------------------------
+linenos = dict()
+def scan_lines():
+    global linenos
+    print("Scanning lines.", end="", flush=True)
+    lineno = 1
+    for match in re.finditer(r"\n", inbox):
+        offset = match.span()[0] + 1
+        linenos[offset] = lineno
+        lineno += 1
+    print(f" {len(linenos)} lines.")
+#-------------------------------------------------------------------------------
+parts = []
+def scan_parts():
+    global parts
+    print("Scanning parts.", end="", flush=True)
+    for match in re.finditer(r"------_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}(?:--|)\n", inbox):
+        parts.append(match.span()[0])
+    parts.append(total_size)
+    print(f" {len(parts)} parts.")
+#-------------------------------------------------------------------------------
+inbox = None
+total_size = None
 def main():
+    global inbox, total_size
     inbox_nm = "C:/Users/lcher/AppData/Local/Packages/MozillaThunderbird.MZLA_h5892qc0xkpca" \
                "/LocalCache/Roaming/Thunderbird/Profiles/nsn6odxd.default-esr" \
                "/Mail/pop.mail.yahoo.com/Inbox"
     with open(inbox_nm, "r", encoding="latin-1") as inbox_file:
-        print("Reading.")
+        print("Reading inbox.", end="", flush=True)
         inbox = inbox_file.read()
-        print("Matching.")
-        if inbox in Inbox():
-            print(" + ".join(P))
-        else: print("Yikes!!!")
+        total_size = len(inbox)
+        print(f" {total_size} bytes.")
+        scan_lines()
+        scan_parts()
+#       for part in parts:
+#           print(f"offset {part} line {lineno(part)}")
+#       print("Matching.")
+#       if inbox in Inbox():
+#           print(" + ".join(P))
+#       else: print("Yikes!!!")
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())
