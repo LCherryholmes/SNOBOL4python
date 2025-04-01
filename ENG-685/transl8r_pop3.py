@@ -107,17 +107,26 @@ def Value(X):
     ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
-        | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
-        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ(f'''{X}.append("σ('" + tx + "')")''')
-        | φ(r"[ ]+") % "tx"                     + λ(f'''{X}.append("σ('" + tx + "')")''')
-        | φ(r"[0-9]{2,}")                       + λ(f"""{X}.append('φ(r"[0-9]+")')""")
-        | φ(r"[0-9]")                           + λ(f"""{X}.append('φ(r"[0-9]")')""")
-        | φ(r"[A-Z]{2,}")                       + λ(f"""{X}.append('φ(r"[A-Z]+")')""")
-        | φ(r"[A-Z]")                           + λ(f"""{X}.append('φ(r"[A-Z]")')""")
-        | φ(r"[a-z]{2,}")                       + λ(f"""{X}.append('φ(r"[a-z]+")')""")
-        | φ(r"[a-z]")                           + λ(f"""{X}.append('φ(r"[a-z]")')""")
-        | LEN(1) % "tx"                         + λ(f'''{X}.append("σ('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
+        ( φ(r"[ ]{2,}")                         + λ(f'''{X}.append(r'[ ]+')''')
+        | φ(r"[ ]")                             + λ(f'''{X}.append(r' ')''')
+        | φ(r"[\t]{2,}")                        + λ(f'''{X}.append(r'[\\t]+')''')
+        | φ(r"[\t]+")                           + λ(f'''{X}.append(r'\\t')''')
+        | φ(r"\r")                              + λ(f'''{X}.append(r'\\r')''')
+        | φ(r"\n")                              + λ(f'''{X}.append(r'\\n')''')
+        | φ(r"\f")                              + λ(f'''{X}.append(r'\\f')''')
+        | φ(r"\\")                              + λ(f'''{X}.append(r'\\\\')''')
+        | φ(r"\.")                              + λ(f'''{X}.append(r'\\.')''')
+        | φ(r"\+")                              + λ(f'''{X}.append(r'\\+')''')
+        | φ(r"\?")                              + λ(f'''{X}.append(r'\\?')''')
+        | φ(r"\*")                              + λ(f'''{X}.append(r'\\*')''')
+        | φ(r"[0-9]{2,}")                       + λ(f"""{X}.append(r'[0-9]+')""")
+        | φ(r"[0-9]")                           + λ(f"""{X}.append(r'[0-9]')""")
+        | φ(r"[A-Z]{2,}")                       + λ(f"""{X}.append(r'[A-Z]+')""")
+        | φ(r"[A-Z]")                           + λ(f"""{X}.append(r'[A-Z]')""")
+        | φ(r"[a-z]{2,}")                       + λ(f"""{X}.append(r'[a-z]+')""")
+        | φ(r"[a-z]")                           + λ(f"""{X}.append(r'[a-z]')""")
+        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ(f'''{X}.append(tx)''')
+        | LEN(1) % "tx"                         + λ(f'''{X}.append(tx)''')
         ) # @ "OUTPUT"
       )
     + RPOS(0)
@@ -249,7 +258,8 @@ def remember(tag, value):
     if seen is None: seen = dict()
     if tag not in seen: seen[tag] = dict()
     if value in Value('R'):
-        ptrn = " + ".join(R)
+        ptrn = "".join(R)
+        pprint((tag, value, ptrn))
         if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
         if value not in seen[tag][ptrn]:
             seen[tag][ptrn][value] = 1
@@ -268,6 +278,9 @@ def main():
     with open(inbox_nm, "r", encoding="latin-1") as inbox_file:
         print("# Reading inbox.", end="", flush=True)
         inbox = inbox_file.read()
+#       inbox = ""
+#       for _ in range(31):
+#           inbox += inbox_file.readline()
         total_size = len(inbox)
         print(f" {total_size} bytes.", flush=True)
         scan_lines()
