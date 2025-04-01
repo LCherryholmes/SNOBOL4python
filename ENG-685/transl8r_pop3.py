@@ -12,95 +12,137 @@ from pprint import pprint
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------
 @pattern
-def Authentication_Results():       yield from Φ(r"(?P<tag>Authentication-Results:)(?P<tx>.*)")
+def Authentication_Results():       yield from Φ(r"(?P<tag>Authentication-Results:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Comment():                      yield from Φ(r"(?P<tag>Comment:)(?P<tx>.*)")
+def Comment():                      yield from Φ(r"(?P<tag>Comment:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Content_class():                yield from Φ(r"(?P<tag>Content-[Cc]lass:)(?P<tx>.*)")
+def Content_class():                yield from Φ(r"(?P<tag>Content-[Cc]lass:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Content_Length():               yield from Φ(r"(?P<tag>Content-Length:)(?P<tx>.*)")
+def Content_Length():               yield from Φ(r"(?P<tag>Content-Length:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Content_Transfer_Encoding():    yield from Φ(r"(?P<tag>Content-Transfer-Encoding:)(?P<tx>.*)")
+def Content_Transfer_Encoding():    yield from Φ(r"(?P<tag>Content-Transfer-Encoding:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Date():                         yield from Φ(r"(?P<tag>Date:)(?P<tx>.*)")
+def Date():                         yield from Φ(r"(?P<tag>Date:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def From():                         yield from Φ(r"(?P<tag>From:)(?P<tx>.*)")
+def From():                         yield from Φ(r"(?P<tag>From:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Importance():                   yield from Φ(r"(?P<tag>Importance:)(?P<tx>.*)")
+def Importance():                   yield from Φ(r"(?P<tag>Importance:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def In_Reply_To():                  yield from Φ(r"(?P<tag>In-Reply-To:)(?P<tx>.*)")
+def In_Reply_To():                  yield from Φ(r"(?P<tag>In-Reply-To:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Message_ID():                   yield from Φ(r"(?P<tag>Message-ID:)(?P<tx>.*)")
+def Message_ID():                   yield from Φ(r"(?P<tag>Message-ID:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def MIME_Version():                 yield from Φ(r"(?P<tag>MIME-Version:)(?P<tx>.*)")
+def MIME_Version():                 yield from Φ(r"(?P<tag>MIME-Version:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Priority():                     yield from Φ(r"(?P<tag>Priority:)(?P<tx>.*)")
+def Priority():                     yield from Φ(r"(?P<tag>Priority:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def References():                   yield from Φ(r"(?P<tag>References:)(?P<tx>.*)")
+def References():                   yield from Φ(r"(?P<tag>References:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Return_Path():                  yield from Φ(r"(?P<tag>Return-Path:)(?P<tx>.*)")
+def Return_Path():                  yield from Φ(r"(?P<tag>Return-Path:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Subject():                      yield from Φ(r"(?P<tag>Subject:)(?P<tx>.*)")
+def Subject():                      yield from Φ(r"(?P<tag>Subject:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Thread_Index():                 yield from Φ(r"(?P<tag>[Tt]hread-[Ii]ndex:)(?P<tx>.*)")
+def Thread_Index():                 yield from Φ(r"(?P<tag>[Tt]hread-[Ii]ndex:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def Thread_Topic():                 yield from Φ(r"(?P<tag>Thread-Topic:)(?P<tx>.*)")
+def Thread_Topic():                 yield from Φ(r"(?P<tag>Thread-Topic:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def To():                           yield from Φ(r"(?P<tag>To:)(?P<tx>.*)")
+def To():                           yield from Φ(r"(?P<tag>To:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Account_Key():                yield from Φ(r"(?P<tag>X-Account-Key:)(?P<tx>.*)")
+def X_Account_Key():                yield from Φ(r"(?P<tag>X-Account-Key:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Apparently_To():              yield from Φ(r"(?P<tag>X-Apparently-To:)(?P<tx>.*)")
+def X_Apparently_To():              yield from Φ(r"(?P<tag>X-Apparently-To:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_MAIL_FROM():                  yield from Φ(r"(?P<tag>X-MAIL-FROM:)(?P<tx>.*)")
+def X_MAIL_FROM():                  yield from Φ(r"(?P<tag>X-MAIL-FROM:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Mailer():                     yield from Φ(r"(?P<tag>X-Mailer:)(?P<tx>.*)")
+def X_Mailer():                     yield from Φ(r"(?P<tag>X-Mailer:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_MimeOLE():                    yield from Φ(r"(?P<tag>X-(?:Mime|MIME)OLE:)(?P<tx>.*)")
+def X_MimeOLE():                    yield from Φ(r"(?P<tag>X-(?:Mime|MIME)OLE:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Mozilla_Keys():               yield from Φ(r"(?P<tag>X-Mozilla-Keys:)(?P<tx>.*)")
+def X_Mozilla_Keys():               yield from Φ(r"(?P<tag>X-Mozilla-Keys:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Mozilla_Status():             yield from Φ(r"(?P<tag>X-Mozilla-Status:)(?P<tx>.*)")
+def X_Mozilla_Status():             yield from Φ(r"(?P<tag>X-Mozilla-Status:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Mozilla_Status2():            yield from Φ(r"(?P<tag>X-Mozilla-Status2:)(?P<tx>.*)")
+def X_Mozilla_Status2():            yield from Φ(r"(?P<tag>X-Mozilla-Status2:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_MS_Has_Attach():              yield from Φ(r"(?P<tag>X-MS-Has-Attach:)(?P<tx>.*)")
+def X_MS_Has_Attach():              yield from Φ(r"(?P<tag>X-MS-Has-Attach:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_MS_TNEF_Correlator():         yield from Φ(r"(?P<tag>X-MS-TNEF-Correlator:)(?P<tx>.*)")
+def X_MS_TNEF_Correlator():         yield from Φ(r"(?P<tag>X-MS-TNEF-Correlator:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_MSMail_Priority():            yield from Φ(r"(?P<tag>X-MSMail-Priority:)(?P<tx>.*)")
+def X_MSMail_Priority():            yield from Φ(r"(?P<tag>X-MSMail-Priority:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_OriginalArrivalTime():        yield from Φ(r"(?P<tag>X-OriginalArrivalTime:)(?P<tx>.*)")
+def X_OriginalArrivalTime():        yield from Φ(r"(?P<tag>X-OriginalArrivalTime:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Originating_IP():             yield from Φ(r"(?P<tag>X-Originating-IP:)(?P<tx>.*)")
+def X_Originating_IP():             yield from Φ(r"(?P<tag>X-Originating-IP:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Priority():                   yield from Φ(r"(?P<tag>X-Priority:)(?P<tx>.*)")
+def X_Priority():                   yield from Φ(r"(?P<tag>X-Priority:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_SF_Loop():                    yield from Φ(r"(?P<tag>X-SF-Loop:)(?P<tx>.*)")
+def X_SF_Loop():                    yield from Φ(r"(?P<tag>X-SF-Loop:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_SOURCE_IP():                  yield from Φ(r"(?P<tag>X-SOURCE-IP:)(?P<tx>.*)")
+def X_SOURCE_IP():                  yield from Φ(r"(?P<tag>X-SOURCE-IP:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Spam():                       yield from Φ(r"(?P<tag>X-Spam:)(?P<tx>.*)")
+def X_Spam():                       yield from Φ(r"(?P<tag>X-Spam:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_UIDL():                       yield from Φ(r"(?P<tag>X-UIDL:)(?P<tx>.*)")
+def X_UIDL():                       yield from Φ(r"(?P<tag>X-UIDL:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Virus_Scanned():              yield from Φ(r"(?P<tag>X-Virus-Scanned:)(?P<tx>.*)")
+def X_Virus_Scanned():              yield from Φ(r"(?P<tag>X-Virus-Scanned:)")
+                                             + Φ(r"(?P<tx>.*)")
 @pattern
-def X_Yahoo_Newman_Property():      yield from Φ(r"(?P<tag>X-Yahoo-Newman-Property:)(?P<tx>.*)")
+def X_Yahoo_Newman_Property():      yield from Φ(r"(?P<tag>X-Yahoo-Newman-Property:)")
+                                             + Φ(r"(?P<tx>.*)")
 #-------------------------------------------------------------------------------
 @pattern
-def Cc():                           yield from Φ(r"(?P<tag>Cc:)(?P<tx>.*(?:\n\t.*)*)")
+def Cc():                           yield from Φ(r"(?P<tag>Cc:)")
+                                             + Φ(r"(?P<tx>.*(?:\n\t.*)*)")
 @pattern
-def Content_Type():                 yield from Φ(r"(?P<tag>Content-Type:)(?P<tx>.*\n.*)")
+def Content_Type():                 yield from Φ(r"(?P<tag>Content-Type:)")
+                                             + Φ(r"(?P<tx>.*\n.*)")
 @pattern
-def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature:)(?P<tx>.*(?:\n[ \t].*)?)")
+def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature:)")
+                                             + Φ(r"(?P<tx>.*(?:\n[ \t].*)?)")
 @pattern
-def Received():                     yield from Φ(r"(?P<tag>Received:)(?P<tx>.*(?:\n[ \t].*)*)")
+def Received():                     yield from Φ(r"(?P<tag>Received:)")
+                                             + Φ(r"(?P<tx>.*(?:\n[ \t].*)*)")
 #-------------------------------------------------------------------------------
 hex_number_rex = r"(0[xX])?[\dA-Fa-f]+"
 real_number_rex = r"(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?"
 #-------------------------------------------------------------------------------
-xl8r = \
+xlr8 = \
 {
     'tag':          (r'^[^: \t\r\f\n]+:'  , '''\\g<tag>'''),
     'sps':          (r'[ ]{2,}'           , '''[ ]+'''),
@@ -133,16 +175,17 @@ xl8r = \
     'anychar':      (r'.'                 , '''\\g<anychar>'''),
 }
 #-------------------------------------------------------------------------------
-xl8r_rex = "|".join((f"(?P<{item[0]}>{item[1][0]})" for item in xl8r.items()))
-xl8r_re = re.compile(xl8r_rex)
+xlr8_rex = "|".join((f"(?P<{item[0]}>{item[1][0]})" for item in xlr8.items()))
+xlr8_re = re.compile(xlr8_rex)
 #-------------------------------------------------------------------------------
-def xl8r_pattern(s):
+def xlr8_pattern(s):
     rexs = []
-    for matches in re.finditer(xl8r_re, s):
-        lastindex = matches.lastindex
+    for matches in re.finditer(xlr8_re, s):
         lastgroup = matches.lastgroup
-        expansion = xl8r[lastgroup][1]
-        rexs.append(matches.expand(expansion))
+        expansion = xlr8[lastgroup][1]
+        expansion = matches.expand(expansion)
+        expansion = re.escape(expansion)
+        rexs.append(expansion)
     return "".join(rexs)
 #-------------------------------------------------------------------------------
 @pattern
@@ -275,7 +318,7 @@ def remember(tag, value):
     global R, seen
     if seen is None: seen = dict()
     if tag not in seen: seen[tag] = dict()
-    ptrn = xl8r_pattern(value)
+    ptrn = xlr8_pattern(value)
     if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
     if value not in seen[tag][ptrn]:
         seen[tag][ptrn][value] = 1
@@ -300,7 +343,7 @@ def reminisce():
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
-ITERATIONS = 4
+ITERATIONS = 32
 def main():
     global inbox, total_size
     inbox_nm = "C:/Users/lcher/AppData/Local/Packages/" \
