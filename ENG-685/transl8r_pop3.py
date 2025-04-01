@@ -9,12 +9,11 @@ from SNOBOL4python import FENCE, LEN, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
 from pprint import pprint
 #-------------------------------------------------------------------------------
+ITERATIONS = 4
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------
 @pattern
 def Authentication_Results():       yield from Φ(r"(?P<tag>Authentication-Results:)(?P<tx>.*)")
-@pattern
-def Cc():                           yield from Φ(r"(?P<tag>Cc:(?P<tx>.*)(?:\n\t.*)*)")
 @pattern
 def Comment():                      yield from Φ(r"(?P<tag>Comment:)(?P<tx>.*)")
 @pattern
@@ -91,86 +90,103 @@ def X_Virus_Scanned():              yield from Φ(r"(?P<tag>X-Virus-Scanned:)(?P
 def X_Yahoo_Newman_Property():      yield from Φ(r"(?P<tag>X-Yahoo-Newman-Property:)(?P<tx>.*)")
 #-------------------------------------------------------------------------------
 @pattern
+def Cc():                           yield from Φ(r"(?P<tag>Cc:)(?P<tx>.*(?:\n\t.*)*)")
+@pattern
 def Content_Type():                 yield from Φ(r"(?P<tag>Content-Type:)(?P<tx>.*\n.*)")
 @pattern
 def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature:)(?P<tx>.*(?:\n[ \t].*)?)")
 @pattern
 def Received():                     yield from Φ(r"(?P<tag>Received:)(?P<tx>.*(?:\n[ \t].*)*)")
 #-------------------------------------------------------------------------------
-mem = dict()
-def remember(tag, value):
-    global mem
-    if tag not in mem: mem[tag] = dict()
-    if value not in mem[tag]:
-        mem[tag][value] = 1
-    else: mem[tag][value] += 1
-    return True
-#-------------------------------------------------------------------------------
 hex_number= r"(0[xX])?[\dA-Fa-f]+"
 real_number = r"(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?"
 #-------------------------------------------------------------------------------
 @pattern
-def Inbox():
-    global lineno
+def Value(X):
     yield from \
-    ( POS(0)                                    + λ('''P = []''')
+    ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(reFromSection)                      + λ('''P.append("φ(reFromSection)")''')
-        | φ(r"\n")                              + λ('''P.append('η()\\n')''')
-        | φ(r"[ \t\r\f]+")                      + λ('''P.append('μ()')''')
-        | ( Authentication_Results()            + λ("""P.append("Authentication_Results()")""")
-          | Cc()                                + λ("""P.append("Cc()")""")
-          | Comment()                           + λ("""P.append("Comment()")""")
-          | Content_class()                     + λ("""P.append("Content_class()")""")
-          | Content_Length()                    + λ("""P.append("Content_Length()")""")
-          | Content_Transfer_Encoding()         + λ("""P.append("Content_Transfer_Encoding()")""")
-          | Content_Type()                      + λ("""P.append("Content_Type()")""")
-          | Date()                              + λ("""P.append("Date()")""")
-          | DomainKey_Signature()               + λ("""P.append("DomainKey_Signature()")""")
-          | From()                              + λ("""P.append("From()")""")
-          | Importance()                        + λ("""P.append("Importance()")""")
-          | In_Reply_To()                       + λ("""P.append("In_Reply_To()")""")
-          | Message_ID()                        + λ("""P.append("Message_ID()")""")
-          | MIME_Version()                      + λ("""P.append("MIME_Version()")""")
-          | Priority()                          + λ("""P.append("Priority()")""")
-          | Received()                          + λ("""P.append("Received()")""")
-          | References()                        + λ("""P.append("References()")""")
-          | Return_Path()                       + λ("""P.append("Return_Path()")""")
-          | Subject()                           + λ("""P.append("Subject()")""")
-          | Thread_Index()                      + λ("""P.append("Thread_Index()")""")
-          | Thread_Topic()                      + λ("""P.append("Thread_Topic()")""")
-          | To()                                + λ("""P.append("To()")""")
-          | X_Account_Key()                     + λ("""P.append("X_Account_Key()")""")
-          | X_Apparently_To()                   + λ("""P.append("X_Apparently_To()")""")
-          | X_MAIL_FROM()                       + λ("""P.append("X_MAIL_FROM()")""")
-          | X_Mailer()                          + λ("""P.append("X_Mailer()")""")
-          | X_MimeOLE()                         + λ("""P.append("X_MimeOLE()")""")
-          | X_Mozilla_Keys()                    + λ("""P.append("X_Mozilla_Keys()")""")
-          | X_Mozilla_Status()                  + λ("""P.append("X_Mozilla_Status()")""")
-          | X_Mozilla_Status2()                 + λ("""P.append("X_Mozilla_Status2()")""")
-          | X_MS_Has_Attach()                   + λ("""P.append("X_MS_Has_Attach()")""")
-          | X_MS_TNEF_Correlator()              + λ("""P.append("X_MS_TNEF_Correlator()")""")
-          | X_MSMail_Priority()                 + λ("""P.append("X_MSMail_Priority()")""")
-          | X_OriginalArrivalTime()             + λ("""P.append("X_OriginalArrivalTime()")""")
-          | X_Originating_IP()                  + λ("""P.append("X_Originating_IP()")""")
-          | X_Priority()                        + λ("""P.append("X_Priority()")""")
-          | X_SF_Loop()                         + λ("""P.append("X_SF_Loop()")""")
-          | X_SOURCE_IP()                       + λ("""P.append("X_SOURCE_IP()")""")
-          | X_Spam()                            + λ("""P.append("X_Spam()")""")
-          | X_UIDL()                            + λ("""P.append("X_UIDL()")""")
-          | X_Virus_Scanned()                   + λ("""P.append("X_Virus_Scanned()")""")
-          | X_Yahoo_Newman_Property()           + λ("""P.append("X_Yahoo_Newman_Property()")""")
-          )                                     + λ("""remember(tag, tx)""") # REMEMBER every piece
-        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ('''P.append("σ('" + tx + "')")''')
-        | φ(r"[ ]+") % "tx"                     + λ('''P.append("σ('" + tx + "')")''')
-        | φ(r"[0-9]{2,}")                       + λ("""P.append('φ(r"[0-9]+")')""")
-        | φ(r"[0-9]")                           + λ("""P.append('φ(r"[0-9]")')""")
-        | φ(r"[A-Z]{2,}")                       + λ("""P.append('φ(r"[A-Z]+")')""")
-        | φ(r"[A-Z]")                           + λ("""P.append('φ(r"[A-Z]")')""")
-        | φ(r"[a-z]{2,}")                       + λ("""P.append('φ(r"[a-z]+")')""")
-        | φ(r"[a-z]")                           + λ("""P.append('φ(r"[a-z]")')""")
-        | LEN(1) % "tx"                         + λ('''P.append("σ('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
+        ( φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
+        | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
+        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ(f'''{X}.append("σ('" + tx + "')")''')
+        | φ(r"[ ]+") % "tx"                     + λ(f'''{X}.append("σ('" + tx + "')")''')
+        | φ(r"[0-9]{2,}")                       + λ(f"""{X}.append('φ(r"[0-9]+")')""")
+        | φ(r"[0-9]")                           + λ(f"""{X}.append('φ(r"[0-9]")')""")
+        | φ(r"[A-Z]{2,}")                       + λ(f"""{X}.append('φ(r"[A-Z]+")')""")
+        | φ(r"[A-Z]")                           + λ(f"""{X}.append('φ(r"[A-Z]")')""")
+        | φ(r"[a-z]{2,}")                       + λ(f"""{X}.append('φ(r"[a-z]+")')""")
+        | φ(r"[a-z]")                           + λ(f"""{X}.append('φ(r"[a-z]")')""")
+        | LEN(1) % "tx"                         + λ(f'''{X}.append("σ('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
+        ) # @ "OUTPUT"
+      )
+    + RPOS(0)
+    )
+#-------------------------------------------------------------------------------
+@pattern
+def Inbox(X):
+    global lineno
+    yield from \
+    ( POS(0)                                    + λ(f'''{X} = []''')
+    + ARBNO(
+#       θ("OUTPUT") +
+        ( φ(reFromSection)                      + λ(f'''{X}.append("φ(reFromSection)")''')
+        | φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
+        | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
+        | ε() % "tag"
+        + ε() % "tx"
+        + ( Authentication_Results()            + λ(f"""{X}.append("Authentication_Results()")""")
+          | Cc()                                + λ(f"""{X}.append("Cc()")""")
+          | Comment()                           + λ(f"""{X}.append("Comment()")""")
+          | Content_class()                     + λ(f"""{X}.append("Content_class()")""")
+          | Content_Length()                    + λ(f"""{X}.append("Content_Length()")""")
+          | Content_Transfer_Encoding()         + λ(f"""{X}.append("Content_Transfer_Encoding()")""")
+          | Content_Type()                      + λ(f"""{X}.append("Content_Type()")""")
+          | Date()                              + λ(f"""{X}.append("Date()")""")
+          | DomainKey_Signature()               + λ(f"""{X}.append("DomainKey_Signature()")""")
+          | From()                              + λ(f"""{X}.append("From()")""")
+          | Importance()                        + λ(f"""{X}.append("Importance()")""")
+          | In_Reply_To()                       + λ(f"""{X}.append("In_Reply_To()")""")
+          | Message_ID()                        + λ(f"""{X}.append("Message_ID()")""")
+          | MIME_Version()                      + λ(f"""{X}.append("MIME_Version()")""")
+          | Priority()                          + λ(f"""{X}.append("Priority()")""")
+          | Received()                          + λ(f"""{X}.append("Received()")""")
+          | References()                        + λ(f"""{X}.append("References()")""")
+          | Return_Path()                       + λ(f"""{X}.append("Return_Path()")""")
+          | Subject()                           + λ(f"""{X}.append("Subject()")""")
+          | Thread_Index()                      + λ(f"""{X}.append("Thread_Index()")""")
+          | Thread_Topic()                      + λ(f"""{X}.append("Thread_Topic()")""")
+          | To()                                + λ(f"""{X}.append("To()")""")
+          | X_Account_Key()                     + λ(f"""{X}.append("X_Account_Key()")""")
+          | X_Apparently_To()                   + λ(f"""{X}.append("X_Apparently_To()")""")
+          | X_MAIL_FROM()                       + λ(f"""{X}.append("X_MAIL_FROM()")""")
+          | X_Mailer()                          + λ(f"""{X}.append("X_Mailer()")""")
+          | X_MimeOLE()                         + λ(f"""{X}.append("X_MimeOLE()")""")
+          | X_Mozilla_Keys()                    + λ(f"""{X}.append("X_Mozilla_Keys()")""")
+          | X_Mozilla_Status()                  + λ(f"""{X}.append("X_Mozilla_Status()")""")
+          | X_Mozilla_Status2()                 + λ(f"""{X}.append("X_Mozilla_Status2()")""")
+          | X_MS_Has_Attach()                   + λ(f"""{X}.append("X_MS_Has_Attach()")""")
+          | X_MS_TNEF_Correlator()              + λ(f"""{X}.append("X_MS_TNEF_Correlator()")""")
+          | X_MSMail_Priority()                 + λ(f"""{X}.append("X_MSMail_Priority()")""")
+          | X_OriginalArrivalTime()             + λ(f"""{X}.append("X_OriginalArrivalTime()")""")
+          | X_Originating_IP()                  + λ(f"""{X}.append("X_Originating_IP()")""")
+          | X_Priority()                        + λ(f"""{X}.append("X_Priority()")""")
+          | X_SF_Loop()                         + λ(f"""{X}.append("X_SF_Loop()")""")
+          | X_SOURCE_IP()                       + λ(f"""{X}.append("X_SOURCE_IP()")""")
+          | X_Spam()                            + λ(f"""{X}.append("X_Spam()")""")
+          | X_UIDL()                            + λ(f"""{X}.append("X_UIDL()")""")
+          | X_Virus_Scanned()                   + λ(f"""{X}.append("X_Virus_Scanned()")""")
+          | X_Yahoo_Newman_Property()           + λ(f"""{X}.append("X_Yahoo_Newman_Property()")""")
+          )                                     + λ(f"""remember(tag, tx)""") # REMEMBER every piece
+        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ(f'''{X}.append("σ('" + tx + "')")''')
+        | φ(r"[ ]+") % "tx"                     + λ(f'''{X}.append("σ('" + tx + "')")''')
+        | φ(r"[0-9]{2,}")                       + λ(f"""{X}.append('φ(r"[0-9]+")')""")
+        | φ(r"[0-9]")                           + λ(f"""{X}.append('φ(r"[0-9]")')""")
+        | φ(r"[A-Z]{2,}")                       + λ(f"""{X}.append('φ(r"[A-Z]+")')""")
+        | φ(r"[A-Z]")                           + λ(f"""{X}.append('φ(r"[A-Z]")')""")
+        | φ(r"[a-z]{2,}")                       + λ(f"""{X}.append('φ(r"[a-z]+")')""")
+        | φ(r"[a-z]")                           + λ(f"""{X}.append('φ(r"[a-z]")')""")
+        | LEN(1) % "tx"                         + λ(f'''{X}.append("σ('" + ("\\\\" if tx == "\\\\" else "") + tx + "')")''')
         ) # @ "OUTPUT"
       )
     + RPOS(0)
@@ -211,20 +227,35 @@ def scan_sections():
     print(f" {len(sections)} sections.", flush=True)
 #-------------------------------------------------------------------------------
 def parse_emails():
+    global H
     print("# Parsing emails.\n", flush=True)
     iteration = 0
     start_offset = None
     finish_offset = 0
     for section in sections:
-        if iteration > 8: break
+        if iteration > ITERATIONS: break
         iteration += 1
         start_offset = finish_offset
         finish_offset = section
         email = inbox[start_offset:finish_offset]
         if match := re.match(r"(?:.*\n)+(?:Content-Length: [0-9]+\n)", email):
             email_header = match.group()
-            if email_header in Inbox():
-                print(" + ".join(P))
+            if email_header in Inbox('H'):
+                print(" + ".join(H))
+#-------------------------------------------------------------------------------
+seen = None
+def remember(tag, value):
+    global R, seen
+    if seen is None: seen = dict()
+    if tag not in seen: seen[tag] = dict()
+    if value in Value('R'):
+        ptrn = " + ".join(R)
+        if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
+        if value not in seen[tag][ptrn]:
+            seen[tag][ptrn][value] = 1
+        else: seen[tag][ptrn][value] += 1
+    else: print("Yikes!")
+    return True
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None
@@ -242,7 +273,7 @@ def main():
         scan_lines()
         scan_sections()
         parse_emails()
-        pprint(mem)
+        pprint(seen, width=170, indent=2)
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())
