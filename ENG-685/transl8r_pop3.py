@@ -98,34 +98,90 @@ def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature:
 @pattern
 def Received():                     yield from Φ(r"(?P<tag>Received:)(?P<tx>.*(?:\n[ \t].*)*)")
 #-------------------------------------------------------------------------------
-hex_number= r"(0[xX])?[\dA-Fa-f]+"
-real_number = r"(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?"
+hex_number_rex = r"(0[xX])?[\dA-Fa-f]+"
+real_number_rex = r"(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?"
+#-------------------------------------------------------------------------------
+xl8r = \
+{
+    'tag':          (r'^[^: \t\r\f\n]+:'  , '''\\g<tag>'''),
+    'sps':          (r'[ ]{2,}'           , '''[ ]+'''),
+    'sp':           (r'[ ]'               , ''' '''),
+    'htabs':        (r'[\t]{2,}'          , '''[\\t]+'''),
+    'htab':         (r'[\t]'              , '''\\t'''),
+    'cr':           (r'\r'                , '''\\r'''),
+    'lf':           (r'\n'                , '''\\n'''),
+    'ff':           (r'\f'                , '''\\f'''),
+    'bslash':       (r'\\'                , '''\\\\'''),
+    'dot':          (r'\.'                , '''\\.'''),
+    'star':         (r'\*'                , '''\\*'''),
+    'plus':         (r'\+'                , '''\\+'''),
+    'qmark':        (r'\?'                , '''\\?'''),
+    'lbrakect':     (r'\['                , '''\\['''),
+    'rbracket':     (r'\]'                , '''\\]'''),
+    'lparen':       (r'\('                , '''\\('''),
+    'rparen':       (r'\)'                , '''\\)'''),
+    'lcurly':       (r'\{'                , '''\\{'''),
+    'rcurly':       (r'\}'                , '''\\}'''),
+    'caret':        (r'\^'                , '''\\^'''),
+    'dolsign':      (r'\$'                , '''\\$'''),
+    'vertbar':      (r'\|'                , '''\\|'''),
+    'digits':       (r'[0-9]{2,}'         , '''[0-9]+'''),
+    'digit':        (r'[0-9]'             , '''[0-9]'''),
+    'ucases':       (r'[A-Z]{2,}'         , '''[A-Z]+'''),
+    'ucase':        (r'[A-Z]'             , '''[A-Z]'''),
+    'lcases':       (r'[a-z]{2,}'         , '''[a-z]+'''),
+    'lcase':        (r'[a-z]'             , '''[a-z]'''),
+    'anychar':      (r'.'                 , '''\\g<anychar>'''),
+}
+#-------------------------------------------------------------------------------
+xl8r_rex = "|".join((f"(?P<{item[0]}>{item[1][0]})" for item in xl8r.items()))
+xl8r_re = re.compile(xl8r_rex)
+#-------------------------------------------------------------------------------
+def xl8r_pattern(s):
+    rexs = []
+    for matches in re.finditer(xl8r_re, s):
+        lastindex = matches.lastindex
+        lastgroup = matches.lastgroup
+        expansion = xl8r[lastgroup][1]
+        rexs.append(matches.expand(expansion))
+    return "".join(rexs)
 #-------------------------------------------------------------------------------
 @pattern
 def Value(X):
+    lcurly = '{'
+    rcurly = '}'
     yield from \
     ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(r"[ ]{2,}")                         + λ(f'''{X}.append(r'[ ]+')''')
-        | φ(r"[ ]")                             + λ(f'''{X}.append(r' ')''')
-        | φ(r"[\t]{2,}")                        + λ(f'''{X}.append(r'[\\t]+')''')
-        | φ(r"[\t]+")                           + λ(f'''{X}.append(r'\\t')''')
-        | φ(r"\r")                              + λ(f'''{X}.append(r'\\r')''')
-        | φ(r"\n")                              + λ(f'''{X}.append(r'\\n')''')
-        | φ(r"\f")                              + λ(f'''{X}.append(r'\\f')''')
-        | φ(r"\\")                              + λ(f'''{X}.append(r'\\\\')''')
-        | φ(r"\.")                              + λ(f'''{X}.append(r'\\.')''')
-        | φ(r"\+")                              + λ(f'''{X}.append(r'\\+')''')
-        | φ(r"\?")                              + λ(f'''{X}.append(r'\\?')''')
-        | φ(r"\*")                              + λ(f'''{X}.append(r'\\*')''')
-        | φ(r"[0-9]{2,}")                       + λ(f"""{X}.append(r'[0-9]+')""")
-        | φ(r"[0-9]")                           + λ(f"""{X}.append(r'[0-9]')""")
-        | φ(r"[A-Z]{2,}")                       + λ(f"""{X}.append(r'[A-Z]+')""")
-        | φ(r"[A-Z]")                           + λ(f"""{X}.append(r'[A-Z]')""")
-        | φ(r"[a-z]{2,}")                       + λ(f"""{X}.append(r'[a-z]+')""")
-        | φ(r"[a-z]")                           + λ(f"""{X}.append(r'[a-z]')""")
-        | φ(r"^[^: \t\r\f\n]+:") % "tx"         + λ(f'''{X}.append(tx)''')
+        ( φ(r'^[^: \t\r\f\n]+:') % "tx"         + λ(f'''{X}.append(tx)''')
+        | φ(r'[ ]{2,}')                         + λ(f'''{X}.append(r'[ ]+')''')
+        | φ(r'[ ]')                             + λ(f'''{X}.append(r' ')''')
+        | φ(r'[\t]{2,}')                        + λ(f'''{X}.append(r'[\\t]+')''')
+        | φ(r'[\t]')                            + λ(f'''{X}.append(r'\\t')''')
+        | φ(r'\r')                              + λ(f'''{X}.append(r'\\r')''')
+        | φ(r'\n')                              + λ(f'''{X}.append(r'\\n')''')
+        | φ(r'\f')                              + λ(f'''{X}.append(r'\\f')''')
+        | φ(r'\\')                              + λ(f'''{X}.append(r'\\\\')''')
+        | φ(r'\.')                              + λ(f'''{X}.append(r'\\.')''')
+        | φ(r'\*')                              + λ(f'''{X}.append(r'\\*')''')
+        | φ(r'\+')                              + λ(f'''{X}.append(r'\\+')''')
+        | φ(r'\?')                              + λ(f'''{X}.append(r'\\?')''')
+        | φ(r'\[')                              + λ(f'''{X}.append(r'\\[')''')
+        | φ(r'\]')                              + λ(f'''{X}.append(r'\\]')''')
+        | φ(r'\(')                              + λ(f'''{X}.append(r'\\(')''')
+        | φ(r'\)')                              + λ(f'''{X}.append(r'\\)')''')
+        | φ(r'\{')                              + λ(f'''{X}.append(r'\\{lcurly}')''')
+        | φ(r'\}')                              + λ(f'''{X}.append(r'\\{rcurly}')''')
+        | φ(r'\^')                              + λ(f'''{X}.append(r'\\^')''')
+        | φ(r'\$')                              + λ(f'''{X}.append(r'\\$')''')
+        | φ(r'\|')                              + λ(f'''{X}.append(r'\\|')''')
+        | φ(r'[0-9]{2,}')                       + λ(f'''{X}.append(r'[0-9]+')''')
+        | φ(r'[0-9]')                           + λ(f'''{X}.append(r'[0-9]')''')
+        | φ(r'[A-Z]{2,}')                       + λ(f'''{X}.append(r'[A-Z]+')''')
+        | φ(r'[A-Z]')                           + λ(f'''{X}.append(r'[A-Z]')''')
+        | φ(r'[a-z]{2,}')                       + λ(f'''{X}.append(r'[a-z]+')''')
+        | φ(r'[a-z]')                           + λ(f'''{X}.append(r'[a-z]')''')
         | LEN(1) % "tx"                         + λ(f'''{X}.append(tx)''')
         ) # @ "OUTPUT"
       )
@@ -139,7 +195,7 @@ def Inbox(X):
     ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(reFromSection)                      + λ(f'''{X}.append("φ(reFromSection)")''')
+        ( φ(re_from_section)                    + λ(f'''{X}.append("φ(re_from_section)")''')
         | φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
         | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
         | ε() % "tag"
@@ -217,7 +273,7 @@ def scan_lines():
         lineno += 1
     print(f" {len(linenos)} lines.", flush=True)
 #-------------------------------------------------------------------------------
-reFromSection = (
+re_from_section = (
     r"From -"
     r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
     r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
@@ -230,7 +286,7 @@ sections = []
 def scan_sections():
     global sections
     print("# Scanning sections.", end="", flush=True)
-    for match in re.finditer(r"^" + reFromSection + r"$", inbox, re.MULTILINE):
+    for match in re.finditer(r"^" + re_from_section + r"$", inbox, re.MULTILINE):
         sections.append(match.span()[0])
     sections.append(total_size)
     print(f" {len(sections)} sections.", flush=True)
@@ -257,14 +313,12 @@ def remember(tag, value):
     global R, seen
     if seen is None: seen = dict()
     if tag not in seen: seen[tag] = dict()
-    if value in Value('R'):
-        ptrn = "".join(R)
-        pprint((tag, value, ptrn))
-        if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
-        if value not in seen[tag][ptrn]:
-            seen[tag][ptrn][value] = 1
-        else: seen[tag][ptrn][value] += 1
-    else: print("Yikes!")
+    ptrn = xl8r_pattern(value)
+    pprint((tag, value, ptrn))
+    if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
+    if value not in seen[tag][ptrn]:
+        seen[tag][ptrn][value] = 1
+    else: seen[tag][ptrn][value] += 1
     return True
 #-------------------------------------------------------------------------------
 inbox = None
