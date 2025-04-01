@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.3.1.tar.gz
+#> python -m pip install ./dist/snobol4python-0.3.2.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -13,7 +13,7 @@
 #> python ENG-685/transl8r_pop3.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
-from pprint import pformat
+from pprint import pprint, pformat
 from functools import wraps
 #----------------------------------------------------------------------------------------------------------------------
 import logging
@@ -78,10 +78,10 @@ def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
 # Immediate cursor assignment during pattern matching
 @pattern
 def θ(N) -> PATTERN:
-    global S, _, _globals
-    if N == "OUTPUT": print("", S[_].pos, end="")
+    global Ϣ, _globals
+    if N == "OUTPUT": print("", Ϣ[-1].pos, end="")
     logger.debug("theta(%s) SUCCESS", N)
-    _globals[N] = S[_].pos
+    _globals[N] = Ϣ[-1].pos
     yield ""
     logger.debug("theta(%s) backtracking...", N)
     del _globals[N]
@@ -93,7 +93,7 @@ def Ω(P, N) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ N
     logger.debug("OMEGA(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
         if _1 == "": v = ""
-        else: v = S[_].subject[_1[0] : _1[1]]
+        else: v = Ϣ[-1].subject[_1[0]:_1[1]]
         if N == "OUTPUT": print('', v, end="")
         logger.debug("%s = OMEGA(%s)", N, repr(v))
         _globals[N] = v
@@ -106,7 +106,7 @@ def δ(P, N) -> PATTERN: # delta, binary '@', SNOBOL4: P $ N
     logger.debug("delta(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
         if _1 == "": v = ""
-        else: v = S[_].subject[_1[0] : _1[1]]
+        else: v = Ϣ[-1].subject[_1[0]:_1[1]]
         if N == "OUTPUT": print('', v, end="")
         logger.debug("%s = delta(%s)", N, repr(v))
         _globals[N] = v
@@ -136,88 +136,88 @@ def Λ(expression) -> PATTERN: # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *f
 # Conditional match assignment (after successful complete pattern match)
 @pattern
 def Δ(P, N) -> PATTERN: # DELTA, binary '%', SNOBOL4: P . N
-    global S, _
+    global Ϣ
     logger.debug("delta(%s, %s)", PROTOTYPE(P), N)
     for _1 in P:
         logger.debug("%s = delta(%s) SUCCESS", N, repr(_1))
         if _1 == "":
-            S[_].cstack.append(f"{N} = ''")
-        else: S[_].cstack.append(f"{N} = S[_].subject[{_1[0]}:{_1[1]}]")
+            Ϣ[-1].cstack.append(f"{N} = ''")
+        else: Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{_1[0]}:{_1[1]}]")
         yield _1
         logger.debug("%s = delta(%s) backtracking...", N, repr(_1))
-        S[_].cstack.pop()
+        Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
 @pattern
 def λ(command) -> PATTERN: # LAMBDA, P . *exec(), P . tx . *func(tx)
-    global S, _
+    global Ϣ
     logger.debug("LAMBDA(%s) compiling...", repr(command))
     if command:
         if compile(command, '<string>', 'exec'): # 'single', 'eval'
             logger.debug("LAMBDA(%s) SUCCESS", repr(command))
-            S[_].cstack.append(command)
+            Ϣ[-1].cstack.append(command)
             yield ""
             logger.debug("LAMBDA(%s) backtracking...", repr(command))
-            S[_].cstack.pop()
+            Ϣ[-1].cstack.pop()
         else: logger.debug("LAMBDA(%s) Error compiling. FAIL", repr(command))
     else: yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def nPush() -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("nPush() SUCCESS")
-    S[_].cstack.append(f"S[_].itop += 1");
-    S[_].cstack.append(f"S[_].istack.append(0)");
+    Ϣ[-1].cstack.append(f"Ϣ[-1].itop += 1");
+    Ϣ[-1].cstack.append(f"Ϣ[-1].istack.append(0)");
     yield "";
     logger.debug("nPush() backtracking...")
-    S[_].cstack.pop()
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
+    Ϣ[-1].cstack.pop()
 @pattern
 def nInc() -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("nInc() SUCCESS")
-    S[_].cstack.append(f"S[_].istack[S[_].itop] += 1");
+    Ϣ[-1].cstack.append(f"Ϣ[-1].istack[Ϣ[-1].itop] += 1");
     yield "";
     logger.debug("nInc() backtracking...")
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
 @pattern
 def nPop() -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("nPop() SUCCESS")
-    S[_].cstack.append(f"S[_].istack.pop()");
-    S[_].cstack.append(f"S[_].itop -= 1");
+    Ϣ[-1].cstack.append(f"Ϣ[-1].istack.pop()");
+    Ϣ[-1].cstack.append(f"Ϣ[-1].itop -= 1");
     yield "";
     logger.debug("nPop() backtracking...")
-    S[_].cstack.pop()
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
+    Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Shift(t, v='') -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("Shift(%s, %s) SUCCESS", repr(t), repr(v))
     if v is None:
-        S[_].cstack.append(f"S[_].shift('{t}')")
-    else: S[_].cstack.append(f"S[_].shift('{t}', {v})")
+        Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}')")
+    else: Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}', {v})")
     yield ""
     logger.debug("Shift(%s, %s) backtracking...", repr(t), repr(v))
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
 @pattern
 def Reduce(t, n=None) -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("Reduce(%s, %d) SUCCESS", repr(t), n)
-    if n is None: n = "S[_].istack[S[_].itop]"
-    S[_].cstack.append(f"S[_].reduce('{t}', {n})")
+    if n is None: n = "Ϣ[-1].istack[Ϣ[-1].itop]"
+    Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{t}', {n})")
     yield ""
     logger.debug("Reduce(%s, %d) backtracking...", repr(t), n)
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
 @pattern
 def Pop(v) -> PATTERN:
-    global S, _
+    global Ϣ
     logger.debug("Pop(%s) SUCCESS", v)
-    S[_].cstack.append(f"{v} = S[_].pop()")
+    Ϣ[-1].cstack.append(f"{v} = Ϣ[-1].pop()")
     yield ""
     logger.debug("Pop(%s) backtracking...", v)
-    S[_].cstack.pop()
+    Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
@@ -232,97 +232,97 @@ def FENCE(P=None) -> PATTERN: # FENCE and FENCE(P)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def POS(n) -> PATTERN:
-    global S, _
-    if S[_].pos == n:
-        logger.debug("POS(%d) SUCCESS(%d,%d)=", n, S[_].pos, 0)
+    global Ϣ
+    if Ϣ[-1].pos == n:
+        logger.debug("POS(%d) SUCCESS(%d,%d)=", n, Ϣ[-1].pos, 0)
         yield ""
         logger.debug("POS(%d) backtracking...", n)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def RPOS(n) -> PATTERN:
-    global S, _
-    if S[_].pos == len(S[_].subject) - n:
-        logger.debug("RPOS(%d) SUCCESS(%d,%d)=", n, S[_].pos, 0)
+    global Ϣ
+    if Ϣ[-1].pos == len(Ϣ[-1].subject) - n:
+        logger.debug("RPOS(%d) SUCCESS(%d,%d)=", n, Ϣ[-1].pos, 0)
         yield ""
         logger.debug("RPOS(%d) backtracking...", n)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def α():
-    global S, _
-    if (S[_].pos == 0) or \
-       (S[_].pos > 0 and S[_].subject[S[_].pos - 1 : S[_].pos] == '\n'):
+    global Ϣ
+    if (Ϣ[-1].pos == 0) or \
+       (Ϣ[-1].pos > 0 and Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos] == '\n'):
         yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ω():
-    global S, _
-    if (S[_].pos == len(S[_].subject)) or \
-       (S[_].pos < len(S[_].subject) and S[_].subject[S[_].pos : S[_].pos + 1] == '\n'):
+    global Ϣ
+    if (Ϣ[-1].pos == len(Ϣ[-1].subject)) or \
+       (Ϣ[-1].pos < len(Ϣ[-1].subject) and Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + 1] == '\n'):
        yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def LEN(n) -> PATTERN:
-    global S, _
-    if S[_].pos + n <= len(S[_].subject):
-        logger.debug("LEN(%d) SUCCESS(%d,%d)=%s", n, S[_].pos, n, S[_].subject[S[_].pos : S[_].pos + n])
-        S[_].pos += n
-        yield (S[_].pos - n, S[_].pos) # S[_].subject[S[_].pos - n : S[_].pos]
-        S[_].pos -= n
-        logger.debug("LEN(%d) backtracking(%d)...", n, S[_].pos)
+    global Ϣ
+    if Ϣ[-1].pos + n <= len(Ϣ[-1].subject):
+        logger.debug("LEN(%d) SUCCESS(%d,%d)=%s", n, Ϣ[-1].pos, n, Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + n])
+        Ϣ[-1].pos += n
+        yield (Ϣ[-1].pos - n, Ϣ[-1].pos) # Ϣ[-1].subject[Ϣ[-1].pos - n:Ϣ[-1].pos]
+        Ϣ[-1].pos -= n
+        logger.debug("LEN(%d) backtracking(%d)...", n, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
-    global S, _
-    logger.debug("sigma(%s) trying(%d)", repr(s), S[_].pos)
-    if S[_].pos + len(s) <= len(S[_].subject):
-        if s == S[_].subject[S[_].pos : S[_].pos + len(s)]:
-            S[_].pos += len(s)
-            logger.debug("sigma(%s) SUCCESS(%d,%d)=", repr(s), S[_].pos - len(s), len(s))
-            yield (S[_].pos - len(s), S[_].pos) # s
-            S[_].pos -= len(s)
-            logger.debug("sigma(%s) backtracking(%d)...", repr(s), S[_].pos)
+    global Ϣ
+    logger.debug("sigma(%s) trying(%d)", repr(s), Ϣ[-1].pos)
+    if Ϣ[-1].pos + len(s) <= len(Ϣ[-1].subject):
+        if s == Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + len(s)]:
+            Ϣ[-1].pos += len(s)
+            logger.debug("sigma(%s) SUCCESS(%d,%d)=", repr(s), Ϣ[-1].pos - len(s), len(s))
+            yield (Ϣ[-1].pos - len(s), Ϣ[-1].pos) # s
+            Ϣ[-1].pos -= len(s)
+            logger.debug("sigma(%s) backtracking(%d)...", repr(s), Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching
 import re
 _rexs = dict()
 @pattern
 def φ(rex) -> PATTERN:
-    global S, _, _rexs
+    global Ϣ, _rexs
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
-    if matches := _rexs[rex].match(S[_].subject, pos = S[_].pos, endpos = len(S[_].subject)):
-        pos0 = S[_].pos
+    if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
+        pos0 = Ϣ[-1].pos
         if pos0 == matches.start():
             if pos0 < matches.end(): #must consume something
-                S[_].pos = matches.end()
+                Ϣ[-1].pos = matches.end()
                 for (N, V) in matches.groupdict().items():
                     _globals[N] = V
-                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
-                S[_].pos = pos0
+                yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+                Ϣ[-1].pos = pos0
             else: raise Exeption("Regular expression can not match epsilon.")
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Φ(rex) -> PATTERN:
-    global S, _, _rexs
+    global Ϣ, _rexs
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
-    if matches := _rexs[rex].match(S[_].subject, pos = S[_].pos, endpos = len(S[_].subject)):
-        pos0 = S[_].pos
+    if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
+        pos0 = Ϣ[-1].pos
         if pos0 == matches.start():
             if pos0 < matches.end(): #must consume something
-                S[_].pos = matches.end()
+                Ϣ[-1].pos = matches.end()
                 push_count = 0
                 for item in matches.re.groupindex.items():
                     N = item[0]
                     span = matches.span(item[1])
                     if span != (-1, -1):
                         push_count += 1
-                        S[_].cstack.append(f"{N} = S[_].subject[{span[0]}:{span[1]}]")
-                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
+                        Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{span[0]}:{span[1]}]")
+                yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
                 for i in range(push_count):
-                    S[_].cstack.pop()
-                S[_].pos = pos0
+                    Ϣ[-1].cstack.pop()
+                Ϣ[-1].pos = pos0
             else: raise Exeption("Regular expression can not match epsilon.")
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
@@ -335,132 +335,132 @@ def Ϙ(): print("Yikes! Ϙ()"); yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def TAB(n) -> PATTERN:
-    global S, _
-    if n <= len(S[_].subject):
-        if n >= S[_].pos:
-            pos0 = S[_].pos
-            S[_].pos = n
-            yield (pos0, n) # S[_].subject[pos0 : n]
-            S[_].pos = pos0
+    global Ϣ
+    if n <= len(Ϣ[-1].subject):
+        if n >= Ϣ[-1].pos:
+            pos0 = Ϣ[-1].pos
+            Ϣ[-1].pos = n
+            yield (pos0, n) # Ϣ[-1].subject[pos0:n]
+            Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def RTAB(n) -> PATTERN:
-    global S, _
-    if n <= len(S[_].subject):
-        n = len(S[_].subject) - n
-        if n >= S[_].pos:
-            pos0 = S[_].pos
-            S[_].pos = n
-            yield (pos0, n) # S[_].subject[pos0 : n]
-            S[_].pos = pos0
+    global Ϣ
+    if n <= len(Ϣ[-1].subject):
+        n = len(Ϣ[-1].subject) - n
+        if n >= Ϣ[-1].pos:
+            pos0 = Ϣ[-1].pos
+            Ϣ[-1].pos = n
+            yield (pos0, n) # Ϣ[-1].subject[pos0:n]
+            Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def REM() -> PATTERN:
-    global S, _
-    pos0 = S[_].pos
-    S[_].pos = len(S[_].subject)
-    yield (pos0, S[_].pos) # S[_].subject[pos0:]
-    S[_].pos = pos0
+    global Ϣ
+    pos0 = Ϣ[-1].pos
+    Ϣ[-1].pos = len(Ϣ[-1].subject)
+    yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:]
+    Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ANY(characters) -> PATTERN:
-    global S, _
-    logger.debug("ANY(%s) trying(%d)", repr(characters), S[_].pos)
-    if S[_].pos < len(S[_].subject):
-        if S[_].subject[S[_].pos] in characters:
-            logger.debug("ANY(%s) SUCCESS(%d,%d)=%s", repr(characters), S[_].pos, 1, S[_].subject[S[_].pos])
-            S[_].pos += 1
-            yield (S[_].pos - 1, S[_].pos) # S[_].subject[S[_].pos - 1]
-            S[_].pos -= 1
-            logger.debug("ANY(%s) backtracking(%d)...", repr(characters), S[_].pos)
+    global Ϣ
+    logger.debug("ANY(%s) trying(%d)", repr(characters), Ϣ[-1].pos)
+    if Ϣ[-1].pos < len(Ϣ[-1].subject):
+        if Ϣ[-1].subject[Ϣ[-1].pos] in characters:
+            logger.debug("ANY(%s) SUCCESS(%d,%d)=%s", repr(characters), Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
+            Ϣ[-1].pos += 1
+            yield (Ϣ[-1].pos - 1, Ϣ[-1].pos) # Ϣ[-1].subject[Ϣ[-1].pos - 1]
+            Ϣ[-1].pos -= 1
+            logger.debug("ANY(%s) backtracking(%d)...", repr(characters), Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def NOTANY(characters) -> PATTERN:
-    global S, _
-    logger.debug("NOTANY(%s) trying(%d)", repr(characters), S[_].pos)
-    if S[_].pos < len(S[_].subject):
-        if not S[_].subject[S[_].pos] in characters:
-            logger.debug("NOTANY(%s) SUCCESS(%d,%d)=%s", repr(characters), S[_].pos, 1, S[_].subject[S[_].pos])
-            S[_].pos += 1
-            yield (S[_].pos - 1, S[_].pos) # S[_].subject[S[_].pos - 1]
-            S[_].pos -= 1
-            logger.debug("NOTANY(%s) backtracking(%d)...", repr(characters), S[_].pos)
+    global Ϣ
+    logger.debug("NOTANY(%s) trying(%d)", repr(characters), Ϣ[-1].pos)
+    if Ϣ[-1].pos < len(Ϣ[-1].subject):
+        if not Ϣ[-1].subject[Ϣ[-1].pos] in characters:
+            logger.debug("NOTANY(%s) SUCCESS(%d,%d)=%s", repr(characters), Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
+            Ϣ[-1].pos += 1
+            yield (Ϣ[-1].pos - 1, Ϣ[-1].pos) # Ϣ[-1].subject[Ϣ[-1].pos - 1]
+            Ϣ[-1].pos -= 1
+            logger.debug("NOTANY(%s) backtracking(%d)...", repr(characters), Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def SPAN(characters) -> PATTERN:
-    global S, _
-    pos0 = S[_].pos
+    global Ϣ
+    pos0 = Ϣ[-1].pos
     logger.debug("SPAN(%s) trying(%d)", repr(characters), pos0)
     while True:
-        if S[_].pos >= len(S[_].subject): break
-        if S[_].subject[S[_].pos] in characters:
-            S[_].pos += 1
+        if Ϣ[-1].pos >= len(Ϣ[-1].subject): break
+        if Ϣ[-1].subject[Ϣ[-1].pos] in characters:
+            Ϣ[-1].pos += 1
         else: break
-    if S[_].pos > pos0:
-        logger.debug("SPAN(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
-        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
-        S[_].pos = pos0
-        logger.debug("SPAN(%s) backtracking(%d)...", repr(characters), S[_].pos)
+    if Ϣ[-1].pos > pos0:
+        logger.debug("SPAN(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
+        yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+        Ϣ[-1].pos = pos0
+        logger.debug("SPAN(%s) backtracking(%d)...", repr(characters), Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BREAK(characters) -> PATTERN:
-    global S, _
-    pos0 = S[_].pos
+    global Ϣ
+    pos0 = Ϣ[-1].pos
     logger.debug("BREAK(%s) SUCCESS(%d)", repr(characters), pos0)
     while True:
-        if S[_].pos >= len(S[_].subject): break
-        if not S[_].subject[S[_].pos] in characters:
-            S[_].pos += 1
+        if Ϣ[-1].pos >= len(Ϣ[-1].subject): break
+        if not Ϣ[-1].subject[Ϣ[-1].pos] in characters:
+            Ϣ[-1].pos += 1
         else: break
-    if S[_].pos < len(S[_].subject):
-        logger.debug("BREAK(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
-        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
-        S[_].pos = pos0
-        logger.debug("BREAK(%s) backtracking(%d)...", repr(characters), S[_].pos)
+    if Ϣ[-1].pos < len(Ϣ[-1].subject):
+        logger.debug("BREAK(%s) SUCCESS(%d,%d)=%s", repr(characters), pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
+        yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+        Ϣ[-1].pos = pos0
+        logger.debug("BREAK(%s) backtracking(%d)...", repr(characters), Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BREAKX(characters) -> PATTERN: yield from BREAK(characters)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARB() -> PATTERN: # ARB
-    global S, _
-    pos0 = S[_].pos
-    while S[_].pos <= len(S[_].subject):
-        yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
-        S[_].pos += 1
-    S[_].pos = pos0
+    global Ϣ
+    pos0 = Ϣ[-1].pos
+    while Ϣ[-1].pos <= len(Ϣ[-1].subject):
+        yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+        Ϣ[-1].pos += 1
+    Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BAL() -> PATTERN: # BAL
-    global S, _
-    pos0 = S[_].pos
+    global Ϣ
+    pos0 = Ϣ[-1].pos
     nest = 0
-    S[_].pos += 1
-    while S[_].pos <= len(S[_].subject):
-        ch = S[_].subject[S[_].pos - 1 : S[_].pos]
+    Ϣ[-1].pos += 1
+    while Ϣ[-1].pos <= len(Ϣ[-1].subject):
+        ch = Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos]
         match ch:
             case '(': nest += 1
             case ')': nest -= 1
         if nest < 0: break
-        elif nest > 0 and S[_].pos >= len(S[_].subject): break
-        elif nest == 0: yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
-        S[_].pos += 1
-    S[_].pos = pos0
+        elif nest > 0 and Ϣ[-1].pos >= len(Ϣ[-1].subject): break
+        elif nest == 0: yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+        Ϣ[-1].pos += 1
+    Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ξ(P, Q) -> PATTERN: # PSI, AND, conjunction
-    global S, _
-    pos0 = S[_].pos
+    global Ϣ
+    pos0 = Ϣ[-1].pos
     for _1 in P:
-        pos1 = S[_].pos
+        pos1 = Ϣ[-1].pos
         try:
-            S[_].pos = pos0
+            Ϣ[-1].pos = pos0
             next(Q)
-            if (S[_].pos == pos1):
+            if (Ϣ[-1].pos == pos1):
                 yield _1
-                S[_].pos = pos0
+                Ϣ[-1].pos = pos0
         except StopIteration:
-            S[_].pos = pos0
+            Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def π(P) -> PATTERN: # pi, optional, SNOBOL4: P | epsilon
@@ -469,16 +469,16 @@ def π(P) -> PATTERN: # pi, optional, SNOBOL4: P | epsilon
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Π(*AP) -> PATTERN: # PI, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
-    global S, _
+    global Ϣ
     logger.debug("PI([%s]) trying(%d)...",
-        "|".join([PROTOTYPE(P) for P in AP]), S[_].pos)
+        "|".join([PROTOTYPE(P) for P in AP]), Ϣ[-1].pos)
     for P in AP:
         yield from P
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
-    global S, _
-    pos0 = S[_].pos
+    global Ϣ
+    pos0 = Ϣ[-1].pos
     logger.debug("SIGMA([%s]) trying(%d)...",
         " ".join([PROTOTYPE(P) for P in AP]), pos0)
     cursor = 0
@@ -491,8 +491,8 @@ def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
             next(AP[cursor])
             cursor += 1
             if cursor >= len(AP):
-                logger.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
-                yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
+                logger.debug("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
+                yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
                 logger.debug("SIGMA(*) backtracking(%d)...", pos0)
                 cursor -= 1
         except StopIteration:
@@ -504,9 +504,9 @@ def MARBNO(P) -> PATTERN: yield from ARBNO(P)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ARBNO(P) -> PATTERN:
-    global S, _
-    pos0 = S[_].pos
-    logger.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
+    global Ϣ
+    pos0 = Ϣ[-1].pos
+    logger.debug("ARBNO(%s) SUCCESS(%d,%d)=%s", PROTOTYPE(P), pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
     yield ""
     logger.debug("ARBNO(*) backtracking(%d)...", pos0)
     AP = []
@@ -514,14 +514,14 @@ def ARBNO(P) -> PATTERN:
     highmark = 0
     while cursor >= 0:
         if cursor >= highmark:
-            AP.append((S[_].pos, copy.copy(P)))
+            AP.append((Ϣ[-1].pos, copy.copy(P)))
             iter(AP[cursor][1])
             highmark += 1
         try:
             next(AP[cursor][1])
             cursor += 1
-            logger.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, S[_].pos - pos0, S[_].subject[pos0 : S[_].pos])
-            yield (pos0, S[_].pos) # S[_].subject[pos0 : S[_].pos]
+            logger.debug("ARBNO(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
+            yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
             logger.debug("ARBNO(*) backtracking(%d)...", pos0)
         except StopIteration:
             cursor -= 1
@@ -529,10 +529,10 @@ def ARBNO(P) -> PATTERN:
             AP.pop()
 #----------------------------------------------------------------------------------------------------------------------
 def _push(lyst):
-    S[_].vstack.append(lyst)
+    Ϣ[-1].vstack.append(lyst)
 #----------------------------------------------------------------------------------------------------------------------
 def _pop():
-    return S[_].vstack.pop()
+    return Ϣ[-1].vstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 def _shift(t, v=None):
     global _globals
@@ -552,6 +552,7 @@ def _reduce(t, n):
 #----------------------------------------------------------------------------------------------------------------------
 class SNOBOL:
     __slots__ = ['pos', 'subject', 'cstack', 'itop', 'istack', 'vstack', 'shift', 'reduce', 'pop']
+    def __repr__(self): return f"('SNOBOL', {pformat(self.pos)}, {len(self.subject)}, {pformat(self.subject)}, {pformat(self.cstack)})"
     def __init__(self, pos, subject, cstack, itop, istack, vstack):
         self.pos    = pos
         self.subject = subject
@@ -563,35 +564,34 @@ class SNOBOL:
         self.reduce = _reduce
         self.pop    = _pop
 #----------------------------------------------------------------------------------------------------------------------
-S = [] # search stack
-_ = -1 # top level of search stack
+Ϣ = [] # search stack
 _globals = None # global variables
 #----------------------------------------------------------------------------------------------------------------------
 def GLOBALS(g): global _globals; _globals = g
 def MATCH     (string, P) -> bool: return SEARCH(string, POS(0) + P)
 def FULLMATCH (string, P) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
 def SEARCH    (string, P) -> bool:
-    global _globals, S, _
+    global _globals, Ϣ
     if _globals is None:
         _globals = globals()
-    S.append(SNOBOL(0, string, [], -1, [], []))
-    _ += 1
+    Ϣ.append(SNOBOL(0, string, [], -1, [], []))
     try:
         m = next(P)
-        logger.debug(f'SEARCH(): "{string}" ? "{m}"')
-        for command in S[_].cstack:
-            logger.debug(f'SEARCH(): {command}')
+        logger.debug(f'SNOBOL(): "{string}" ? "{m}"')
+        for command in Ϣ[-1].cstack:
+            logger.debug(f'SNOBOL(): {command}')
         for var, val in _globals.items():
-            logger.debug(f'SEARCH(): var={var} val={val}')
-        _globals['S'] = S
-        _globals['_'] = _
-        for command in S[_].cstack:
+            logger.debug(f'SNOBOL(): var={var} val={val}')
+        _globals['Ϣ'] = Ϣ
+        for command in Ϣ[-1].cstack:
             exec(command, _globals)
         result = True
+    except IndexError:
+        print('IndexError:', command)
+        result = False
     except StopIteration:
         result = False
-    _ -= 1
-    S.pop()
+    Ϣ.pop()
     return result
 #----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -601,3 +601,4 @@ if __name__ == "__main__":
         print(name)
     if "001_01C717AB.5C51AFDE ..." in Φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
+#----------------------------------------------------------------------------------------------------------------------
