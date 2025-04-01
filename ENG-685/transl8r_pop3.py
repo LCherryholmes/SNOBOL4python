@@ -9,7 +9,6 @@ from SNOBOL4python import FENCE, LEN, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
 from pprint import pprint
 #-------------------------------------------------------------------------------
-ITERATIONS = 4
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------
 @pattern
@@ -106,11 +105,11 @@ xl8r = \
     'tag':          (r'^[^: \t\r\f\n]+:'  , '''\\g<tag>'''),
     'sps':          (r'[ ]{2,}'           , '''[ ]+'''),
     'sp':           (r'[ ]'               , ''' '''),
-    'htabs':        (r'[\t]{2,}'          , '''[\\t]+'''),
-    'htab':         (r'[\t]'              , '''\\t'''),
-    'cr':           (r'\r'                , '''\\r'''),
-    'lf':           (r'\n'                , '''\\n'''),
-    'ff':           (r'\f'                , '''\\f'''),
+    'htabs':        (r'[\t]{2,}'          , '''[\\\\t]+'''),
+    'htab':         (r'[\t]'              , '''\\\\t'''),
+    'cr':           (r'\r'                , '''\\\\r'''),
+    'lf':           (r'\n'                , '''\\\\n'''),
+    'ff':           (r'\f'                , '''\\\\f'''),
     'bslash':       (r'\\'                , '''\\\\'''),
     'dot':          (r'\.'                , '''\\.'''),
     'star':         (r'\*'                , '''\\*'''),
@@ -147,55 +146,13 @@ def xl8r_pattern(s):
     return "".join(rexs)
 #-------------------------------------------------------------------------------
 @pattern
-def Value(X):
-    lcurly = '{'
-    rcurly = '}'
-    yield from \
-    ( POS(0)                                    + λ(f'''{X} = []''')
-    + ARBNO(
-#       θ("OUTPUT") +
-        ( φ(r'^[^: \t\r\f\n]+:') % "tx"         + λ(f'''{X}.append(tx)''')
-        | φ(r'[ ]{2,}')                         + λ(f'''{X}.append(r'[ ]+')''')
-        | φ(r'[ ]')                             + λ(f'''{X}.append(r' ')''')
-        | φ(r'[\t]{2,}')                        + λ(f'''{X}.append(r'[\\t]+')''')
-        | φ(r'[\t]')                            + λ(f'''{X}.append(r'\\t')''')
-        | φ(r'\r')                              + λ(f'''{X}.append(r'\\r')''')
-        | φ(r'\n')                              + λ(f'''{X}.append(r'\\n')''')
-        | φ(r'\f')                              + λ(f'''{X}.append(r'\\f')''')
-        | φ(r'\\')                              + λ(f'''{X}.append(r'\\\\')''')
-        | φ(r'\.')                              + λ(f'''{X}.append(r'\\.')''')
-        | φ(r'\*')                              + λ(f'''{X}.append(r'\\*')''')
-        | φ(r'\+')                              + λ(f'''{X}.append(r'\\+')''')
-        | φ(r'\?')                              + λ(f'''{X}.append(r'\\?')''')
-        | φ(r'\[')                              + λ(f'''{X}.append(r'\\[')''')
-        | φ(r'\]')                              + λ(f'''{X}.append(r'\\]')''')
-        | φ(r'\(')                              + λ(f'''{X}.append(r'\\(')''')
-        | φ(r'\)')                              + λ(f'''{X}.append(r'\\)')''')
-        | φ(r'\{')                              + λ(f'''{X}.append(r'\\{lcurly}')''')
-        | φ(r'\}')                              + λ(f'''{X}.append(r'\\{rcurly}')''')
-        | φ(r'\^')                              + λ(f'''{X}.append(r'\\^')''')
-        | φ(r'\$')                              + λ(f'''{X}.append(r'\\$')''')
-        | φ(r'\|')                              + λ(f'''{X}.append(r'\\|')''')
-        | φ(r'[0-9]{2,}')                       + λ(f'''{X}.append(r'[0-9]+')''')
-        | φ(r'[0-9]')                           + λ(f'''{X}.append(r'[0-9]')''')
-        | φ(r'[A-Z]{2,}')                       + λ(f'''{X}.append(r'[A-Z]+')''')
-        | φ(r'[A-Z]')                           + λ(f'''{X}.append(r'[A-Z]')''')
-        | φ(r'[a-z]{2,}')                       + λ(f'''{X}.append(r'[a-z]+')''')
-        | φ(r'[a-z]')                           + λ(f'''{X}.append(r'[a-z]')''')
-        | LEN(1) % "tx"                         + λ(f'''{X}.append(tx)''')
-        ) # @ "OUTPUT"
-      )
-    + RPOS(0)
-    )
-#-------------------------------------------------------------------------------
-@pattern
 def Inbox(X):
     global lineno
     yield from \
     ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(re_from_section)                    + λ(f'''{X}.append("φ(re_from_section)")''')
+        ( φ(From_rex) % "from_marker"           + λ(f'''{X}.append("φ(From_rex)")''')
         | φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
         | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
         | ε() % "tag"
@@ -273,7 +230,7 @@ def scan_lines():
         lineno += 1
     print(f" {len(linenos)} lines.", flush=True)
 #-------------------------------------------------------------------------------
-re_from_section = (
+From_rex = (
     r"From -"
     r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
     r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
@@ -286,11 +243,12 @@ sections = []
 def scan_sections():
     global sections
     print("# Scanning sections.", end="", flush=True)
-    for match in re.finditer(r"^" + re_from_section + r"$", inbox, re.MULTILINE):
+    for match in re.finditer(fr"^{From_rex}$", inbox, re.MULTILINE):
         sections.append(match.span()[0])
     sections.append(total_size)
     print(f" {len(sections)} sections.", flush=True)
 #-------------------------------------------------------------------------------
+mem = dict()
 def parse_emails():
     global H
     print("# Parsing emails.\n", flush=True)
@@ -306,7 +264,11 @@ def parse_emails():
         if match := re.match(r"(?:.*\n)+(?:Content-Length: [0-9]+\n)", email):
             email_header = match.group()
             if email_header in Inbox('H'):
-                print(" + ".join(H))
+                print('#', from_marker)
+                email_pattern = " + ".join(H)
+                if email_pattern not in mem:
+                    mem[email_pattern] = 1
+                else: mem[email_pattern] += 1
 #-------------------------------------------------------------------------------
 seen = None
 def remember(tag, value):
@@ -314,15 +276,31 @@ def remember(tag, value):
     if seen is None: seen = dict()
     if tag not in seen: seen[tag] = dict()
     ptrn = xl8r_pattern(value)
-    pprint((tag, value, ptrn))
     if ptrn not in seen[tag]: seen[tag][ptrn] = dict()
     if value not in seen[tag][ptrn]:
         seen[tag][ptrn][value] = 1
     else: seen[tag][ptrn][value] += 1
     return True
 #-------------------------------------------------------------------------------
+def reminisce():
+#   pprint(seen, width=170, indent=2)
+    nl = '\n'
+    bslash = '\\\\'
+    for (tag, patterns) in seen.items():
+        print(f"#{'-' * 119}")
+        print(f"@pattern")
+        print(f"def {tag.replace('-', '_')}: yield from (")
+        bar = ' '
+        for (ptrn, texts) in patterns.items():
+            print(f"{bar}   r'{ptrn}'")
+            for (text, count) in texts.items():
+                print(f"""   #{count}:{text.replace(nl, '{bslash}n')}""")
+            bar = '|'
+        print(f")")
+#-------------------------------------------------------------------------------
 inbox = None
 total_size = None
+ITERATIONS = 4
 def main():
     global inbox, total_size
     inbox_nm = "C:/Users/lcher/AppData/Local/Packages/" \
@@ -332,15 +310,13 @@ def main():
     with open(inbox_nm, "r", encoding="latin-1") as inbox_file:
         print("# Reading inbox.", end="", flush=True)
         inbox = inbox_file.read()
-#       inbox = ""
-#       for _ in range(31):
-#           inbox += inbox_file.readline()
         total_size = len(inbox)
         print(f" {total_size} bytes.", flush=True)
         scan_lines()
         scan_sections()
         parse_emails()
-        pprint(seen, width=170, indent=2)
+        reminisce()
+        pprint(mem)
 #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     GLOBALS(globals())
