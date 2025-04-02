@@ -2,7 +2,7 @@
 import SNOBOL4python
 from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
-from SNOBOL4python import ε, σ, Σ, Π, Λ, λ, θ
+from SNOBOL4python import ε, σ, Σ, Π, Λ, λ, Θ
 from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, LEN, POS, RPOS, SPAN
 #------------------------------------------------------------------------------
 GLOBALS(globals())
@@ -41,15 +41,15 @@ assert False is ('CCXXAA$' in Pairs())
 @pattern
 def PAIRS(): yield from \
     (
-        θ('pos') + Λ(lambda: print('POS try', pos))
+        Θ('pos') + Λ(lambda: print('POS try', pos))
     +   POS(0)
     +   Λ(lambda: print('POS got'))
     +   ARBNO(
-          (θ('pos') + Λ(lambda: print('AA try', pos))     + σ('AA') @ 'tx' + Λ(lambda: print(tx, 'got')))
-        | (θ('pos') + Λ(lambda: print('LEN(2) try', pos)) + LEN(2)  @ 'tx' + Λ(lambda: print(tx, 'got')))
-        | (θ('pos') + Λ(lambda: print('XX try', pos))     + σ('XX') @ 'tx' + Λ(lambda: print(tx, 'got')))
+          (Θ('pos') + Λ(lambda: print('AA try', pos))     + σ('AA') @ 'tx' + Λ(lambda: print(tx, 'got')))
+        | (Θ('pos') + Λ(lambda: print('LEN(2) try', pos)) + LEN(2)  @ 'tx' + Λ(lambda: print(tx, 'got')))
+        | (Θ('pos') + Λ(lambda: print('XX try', pos))     + σ('XX') @ 'tx' + Λ(lambda: print(tx, 'got')))
         )
-    +   θ('pos') + Λ(lambda: print('RPOS try', pos))
+    +   Θ('pos') + Λ(lambda: print('RPOS try', pos))
     +   RPOS(0)
     +   Λ(lambda: print('RPOS got'))
     )

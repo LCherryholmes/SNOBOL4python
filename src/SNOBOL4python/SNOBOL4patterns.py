@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.3.2.tar.gz
+#> python -m pip install ./dist/snobol4python-0.3.3.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -77,7 +77,7 @@ def ε() -> PATTERN: yield "" # NULL, epsilon, zero-length string
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
 @pattern
-def θ(N) -> PATTERN:
+def Θ(N) -> PATTERN:
     global Ϣ, _globals
     if N == "OUTPUT": print("", Ϣ[-1].pos, end="")
     logger.debug("theta(%s) SUCCESS", N)
@@ -85,6 +85,17 @@ def θ(N) -> PATTERN:
     yield ""
     logger.debug("theta(%s) backtracking...", N)
     del _globals[N]
+#----------------------------------------------------------------------------------------------------------------------
+# Conditional cursor assignment (after successful complete pattern match)
+@pattern
+def θ(N) -> PATTERN:
+    global Ϣ
+    if N == "OUTPUT": print("", Ϣ[-1].pos, end="")
+    logger.debug("THETA(%s) SUCCESS", N)
+    Ϣ[-1].cstack.append(f"{N} = {Ϣ[-1].pos}")
+    yield ""
+    logger.debug("THETA(%s) backtracking...", N)
+    Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (permanent)
 @pattern
@@ -99,7 +110,7 @@ def Ω(P, N) -> PATTERN: # OMEGA, binary '/', SNOBOL4: P $ N
         _globals[N] = v
         yield _1
 #----------------------------------------------------------------------------------------------------------------------
-# Immediate match assignment during pattern matching (backtracking)
+# Immediate match assignment during pattern matching (backtracking with undo; TODO: needs ref count)
 @pattern
 def δ(P, N) -> PATTERN: # delta, binary '@', SNOBOL4: P $ N
     global _globals
@@ -286,7 +297,7 @@ def σ(s) -> PATTERN: # sigma, sequence of characters, literal string patttern
 import re
 _rexs = dict()
 @pattern
-def φ(rex) -> PATTERN:
+def Φ(rex) -> PATTERN:
     global Ϣ, _rexs
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
@@ -301,7 +312,7 @@ def φ(rex) -> PATTERN:
         else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Φ(rex) -> PATTERN:
+def φ(rex) -> PATTERN:
     global Ϣ, _rexs
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
@@ -427,6 +438,9 @@ def ARB() -> PATTERN: # ARB
     Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
+def MARB() -> PATTERN: pass # ARB
+#----------------------------------------------------------------------------------------------------------------------
+@pattern
 def BAL() -> PATTERN: # BAL
     global Ϣ
     pos0 = Ϣ[-1].pos
@@ -496,9 +510,6 @@ def Σ(*AP) -> PATTERN: # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
             highmark -= 1
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def MARBNO(P) -> PATTERN: yield from ARBNO(P)
-#----------------------------------------------------------------------------------------------------------------------
-@pattern
 def ARBNO(P) -> PATTERN:
     global Ϣ
     pos0 = Ϣ[-1].pos
@@ -524,11 +535,11 @@ def ARBNO(P) -> PATTERN:
             highmark -= 1
             AP.pop()
 #----------------------------------------------------------------------------------------------------------------------
-def _push(lyst):
-    Ϣ[-1].vstack.append(lyst)
+@pattern
+def MARBNO(P) -> PATTERN: yield from ARBNO(P)
 #----------------------------------------------------------------------------------------------------------------------
-def _pop():
-    return Ϣ[-1].vstack.pop()
+def _push(lyst): Ϣ[-1].vstack.append(lyst)
+def _pop():      return Ϣ[-1].vstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 def _shift(t, v=None):
     global _globals
@@ -595,6 +606,6 @@ if __name__ == "__main__":
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
         print(name)
-    if "001_01C717AB.5C51AFDE ..." in Φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
+    if "001_01C717AB.5C51AFDE ..." in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
 #----------------------------------------------------------------------------------------------------------------------
