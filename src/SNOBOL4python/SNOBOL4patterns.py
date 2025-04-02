@@ -293,13 +293,11 @@ def φ(rex) -> PATTERN:
     if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
         pos0 = Ϣ[-1].pos
         if pos0 == matches.start():
-            if pos0 < matches.end(): #must consume something
-                Ϣ[-1].pos = matches.end()
-                for (N, V) in matches.groupdict().items():
-                    _globals[N] = V
-                yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
-                Ϣ[-1].pos = pos0
-            else: raise Exeption("Regular expression can not match epsilon.")
+            Ϣ[-1].pos = matches.end()
+            for (N, V) in matches.groupdict().items():
+                _globals[N] = V
+            yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+            Ϣ[-1].pos = pos0
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -310,20 +308,18 @@ def Φ(rex) -> PATTERN:
     if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
         pos0 = Ϣ[-1].pos
         if pos0 == matches.start():
-            if pos0 < matches.end(): #must consume something
-                Ϣ[-1].pos = matches.end()
-                push_count = 0
-                for item in matches.re.groupindex.items():
-                    N = item[0]
-                    span = matches.span(item[1])
-                    if span != (-1, -1):
-                        push_count += 1
-                        Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{span[0]}:{span[1]}]")
-                yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
-                for i in range(push_count):
-                    Ϣ[-1].cstack.pop()
-                Ϣ[-1].pos = pos0
-            else: raise Exeption("Regular expression can not match epsilon.")
+            Ϣ[-1].pos = matches.end()
+            push_count = 0
+            for item in matches.re.groupindex.items():
+                N = item[0]
+                span = matches.span(item[1])
+                if span != (-1, -1):
+                    push_count += 1
+                    Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{span[0]}:{span[1]}]")
+            yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
+            for i in range(push_count):
+                Ϣ[-1].cstack.pop()
+            Ϣ[-1].pos = pos0
         else: raise Exeption("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
