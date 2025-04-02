@@ -161,70 +161,71 @@ def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature)
 def Received():                     yield from Φ(r"(?P<tag>Received): ?") \
                                              + Φ(r"(.*(?:\n[ \t].*)*)")
 #-------------------------------------------------------------------------------
-decimal3_rex        = r'[0-9]{3}'
-upper_hex8_rex      = r'[0-9A-F]{8}'
-hex_number_rex      = r'(0[xX])?[\dA-Fa-f]+'
-military_time_rex   = r'[0-9]{2}:[0-9]{2}:[0-9]{2}'
-real_number_rex     = r'(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?'
-ipaddress_rex       = r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
-day_of_week_rex     = r'(Sun|Mon|Tue|Wed|Thu|Fri|Sat)'
-short_month_rex     = r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)'
-time_zone_rex       = r'(?<=\s)-[0-9]{4}(?=\s)'
+rex_decimal3        = r'[0-9]{3}'
+rex_upper_hex8      = r'[0-9A-F]{8}'
+rex_hex_number      = r'(0[xX])?[\dA-Fa-f]+'
+rex_military_time   = r'[0-9]{2}:[0-9]{2}:[0-9]{2}'
+rex_real_number     = r'(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?'
+rex_ipaddress       = r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+rex_day_of_week     = r'(Sun|Mon|Tue|Wed|Thu|Fri|Sat)'
+rex_short_month     = r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)'
+rex_time_zone       = r'(?<=\s)-[0-9]{4}(?=\s)'
 #-------------------------------------------------------------------------------
 xlr8 = \
 {
-    'tag':              (r'^[0-9-A-Za-z]+:'   , '''\\g<tag>'''),
-    'ipaddress':        (ipaddress_rex        , ipaddress_rex.replace(r'\.', "\\.")),
-    'day_of_week':      (day_of_week_rex      , day_of_week_rex), #.replace(r'\b', "")
-    'short_month':      (short_month_rex      , short_month_rex), #.replace(r'\b', "")
-    'military_time':    (military_time_rex    , military_time_rex),
-    'time_zone':        (time_zone_rex        , '''-[0-9]{4}'''),
-    'sps':              (r'[ ]{2,}'           , '''[ ]+'''),
-    'sp':               (r'[ ]'               , ''' '''),
-    'tabs':             (r'[\t]{2,}'          , '''[\\\\t]+'''),
-    'tab':              (r'[\t]'              , '''\\\\t'''),
-    'vt':               (r'[\v]'              , '''\\\\v'''),
-    'bel':              (r'\a'                , '''\\\\a'''),
-#   'bs':               (r'\b'                , '''\\\\b'''),
-    'lf':               (r'\n'                , '''\\\\n'''),
-    'cr':               (r'\r'                , '''\\\\r'''),
-    'ff':               (r'\f'                , '''\\\\f'''),
-    'bslash':           (r'\\'                , '''\\\\'''),
-    'dot':              (r'\.'                , '''\\.'''),
-    'star':             (r'\*'                , '''\\*'''),
-    'plus':             (r'\+'                , '''\\+'''),
-    'qmark':            (r'\?'                , '''\\?'''),
-    'lbrakect':         (r'\['                , '''\\['''),
-    'rbracket':         (r'\]'                , '''\\]'''),
-    'lparen':           (r'\('                , '''\\('''),
-    'rparen':           (r'\)'                , '''\\)'''),
-    'lcurly':           (r'\{'                , '''\\{'''),
-    'rcurly':           (r'\}'                , '''\\}'''),
-    'caret':            (r'\^'                , '''\\^'''),
-    'dolsign':          (r'\$'                , '''\\$'''),
-    'vertbar':          (r'\|'                , '''\\|'''),
-    'digits':           (r'[0-9]{2,}'         , '''[0-9]+'''),
-    'digit':            (r'[0-9]'             , '''[0-9]'''),
-    'ucases':           (r'[A-Z]{2,}'         , '''[A-Z]+'''),
-    'ucase':            (r'[A-Z]'             , '''[A-Z]'''),
-    'lcases':           (r'[a-z]{2,}'         , '''[a-z]+'''),
-    'lcase':            (r'[a-z]'             , '''[a-z]'''),
-    'anychar':          (r'.'                 , '''\\g<anychar>'''),
+    'tag':              (r'^[0-9-A-Za-z]+:'   , (lambda t: t[0:-1])),
+    'ipaddress':        (rex_ipaddress        , (lambda t: rex_ipaddress.replace(r'\.', "\\."))),
+    'day_of_week':      (rex_day_of_week      , (lambda t: rex_day_of_week)),
+    'short_month':      (rex_short_month      , (lambda t: rex_short_month)),
+    'military_time':    (rex_military_time    , (lambda t: rex_military_time)),
+    'time_zone':        (rex_time_zone        , (lambda t: r'-[0-9]{4}')),
+    'sps':              (r'[ ]{2,}'           , (lambda t: r'[ ]{' + str(len(t)) + r'}')),
+    'sp':               (r'[ ]'               , (lambda t: r' ')),
+    'tabs':             (r'[\t]{2,}'          , (lambda t: r'\\t+')),
+    'tab':              (r'[\t]'              , (lambda t: r'\\t')),
+    'vt':               (r'[\v]'              , (lambda t: r'\\v')),
+    'bel':              (r'\a'                , (lambda t: r'\\a')),
+#   'bs':               (r'\b'                , (lambda t: r'\\b')),
+    'lf':               (r'\n'                , (lambda t: r'\\n')),
+    'cr':               (r'\r'                , (lambda t: r'\\r')),
+    'ff':               (r'\f'                , (lambda t: r'\\f')),
+    'bslash':           (r'\\'                , (lambda t: r'\\')),
+    'dot':              (r'\.'                , (lambda t: r'\.')),
+    'star':             (r'\*'                , (lambda t: r'\*')),
+    'plus':             (r'\+'                , (lambda t: r'\+')),
+    'qmark':            (r'\?'                , (lambda t: r'\?')),
+    'lbrakect':         (r'\['                , (lambda t: r'\[')),
+    'rbracket':         (r'\]'                , (lambda t: r'\]')),
+    'lparen':           (r'\('                , (lambda t: r'\(')),
+    'rparen':           (r'\)'                , (lambda t: r'\)')),
+    'lcurly':           (r'\{'                , (lambda t: r'\{')),
+    'rcurly':           (r'\}'                , (lambda t: r'\}')),
+    'caret':            (r'\^'                , (lambda t: r'\^')),
+    'dolsign':          (r'\$'                , (lambda t: r'\$')),
+    'vertbar':          (r'\|'                , (lambda t: r'\|')),
+    'digits':           (r'[0-9]{2,}'         , (lambda t: r'[0-9]{' + str(len(t)) + r'}')),
+    'digit':            (r'[0-9]'             , (lambda t: r'[0-9]')),
+    'ucases':           (r'[A-Z]{2,}'         , (lambda t: r'[A-Z]{' + str(len(t)) + r'}')),
+    'ucase':            (r'[A-Z]'             , (lambda t: r'[A-Z]')),
+    'lcases':           (r'[a-z]{2,}'         , (lambda t: r'[a-z]{' + str(len(t)) + r'}')),
+    'lcase':            (r'[a-z]'             , (lambda t: r'[a-z]')),
+    'anychar':          (r'.'                 , (lambda t: t))
 }
 #-------------------------------------------------------------------------------
 xlr8_rex = "|".join((f"(?P<{item[0]}>{item[1][0]})" for item in xlr8.items()))
-xlr8_re = re.compile(xlr8_rex)
+xlr8_re  = re.compile(xlr8_rex)
 #-------------------------------------------------------------------------------
-def xlr8_pattern(s):
-    rexs = []
-    for matches in re.finditer(xlr8_re, s):
+def xlr8_pattern(string):
+    regexs = []
+    for matches in re.finditer(xlr8_re, string):
         lastgroup = matches.lastgroup
         expansion = xlr8[lastgroup][1]
-        expansion = matches.expand(expansion)
-        if tag in ('tag', 'anychar'):
+        text = matches.groupdict()[lastgroup]
+        expansion = expansion(text)
+        if lastgroup in ('tag', 'anychar'):
             expansion = re.escape(expansion)
-        rexs.append(expansion)
-    return "".join(rexs)
+        regexs.append(expansion)
+    return "".join(regexs)
 #-------------------------------------------------------------------------------
 @pattern
 def Inbox(X):
@@ -233,12 +234,10 @@ def Inbox(X):
     ( POS(0)                                    + λ(f'''{X} = []''')
     + ARBNO(
 #       θ("OUTPUT") +
-        ( φ(From_rex) % "from_marker"           + λ(f'''{X}.append("φ(From_rex)")''')
+        ( φ(rex_From) % "from_marker"           + λ(f'''{X}.append("φ(rex_From)")''')
         | φ(r"\n")                              + λ(f'''{X}.append('η()\\n')''')
         | φ(r"[ \t\r\f]+")                      + λ(f'''{X}.append('μ()')''')
-        | ε() % "tag"
-        + ε() % "txt"
-        + ε() % "lit"
+        | ε() % "tag" % "txt" % "lit"
         + ( Authentication_Results()            + λ(f"""{X}.append("Authentication_Results()")""")
           | Cc()                                + λ(f"""{X}.append("Cc()")""")
           | Comment()                           + λ(f"""{X}.append("Comment()")""")
@@ -312,7 +311,7 @@ def scan_lines():
         lineno += 1
     print(f" {len(linenos)} lines.", flush=True)
 #-------------------------------------------------------------------------------
-From_rex = (
+rex_From = (
     r"From -"
     r" (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
     r" (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
@@ -325,7 +324,7 @@ sections = []
 def scan_sections():
     global sections
     print("# Scanning sections.", end="", flush=True)
-    for match in re.finditer(fr"^{From_rex}$", inbox, re.MULTILINE):
+    for match in re.finditer(fr"^{rex_From}$", inbox, re.MULTILINE):
         sections.append(match.span()[0])
     sections.append(total_size)
     print(f" {len(sections)} sections.", flush=True)
@@ -351,6 +350,16 @@ def parse_emails():
                 if email_pattern not in mem:
                     mem[email_pattern] = 1
                 else: mem[email_pattern] += 1
+#   ----------------------------------------------------------------------------
+    print(f"#{'-' * 119}")
+    print(f"@pattern")
+    print(f"def Inbox(): yield from (")
+    bar = ' '
+    for (code, count) in mem.items():
+        code = code.replace('\n + ', ' + ')
+        print(f"{bar}   {code}", end="")
+        bar = '|'
+    print(f")")
 #-------------------------------------------------------------------------------
 seen = None
 def remember(tag, txt, lit):
@@ -384,16 +393,6 @@ def reminisce():
                 print(f"""   #{count}:""" + text.replace('\n', '\\n'))
             bar = '|'
         print(f")")
-#   ----------------------------------------------------------------------------
-    print(f"#{'-' * 119}")
-    print(f"@pattern")
-    print(f"def Inbox(): yield from (")
-    bar = ' '
-    for (code, count) in mem.items():
-        code = code.replace('\n + ', ' + ')
-        print(f"{bar}   {code}", end="")
-        bar = '|'
-    print(f")")
 #-------------------------------------------------------------------------------
 inbox = None
 total_size = None

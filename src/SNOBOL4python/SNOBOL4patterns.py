@@ -10,7 +10,7 @@
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
-#> python ENG-685/transl8r_pop3.py
+#> python ENG-685/transl8r_pop3.py > ENG-685/pop3.py
 #----------------------------------------------------------------------------------------------------------------------
 import copy
 from pprint import pprint, pformat
@@ -298,7 +298,7 @@ def φ(rex) -> PATTERN:
                 _globals[N] = V
             yield (pos0, Ϣ[-1].pos) # Ϣ[-1].subject[pos0:Ϣ[-1].pos]
             Ϣ[-1].pos = pos0
-        else: raise Exeption("Yikes! Internal error.")
+        else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Φ(rex) -> PATTERN:
@@ -320,7 +320,7 @@ def Φ(rex) -> PATTERN:
             for i in range(push_count):
                 Ϣ[-1].cstack.pop()
             Ϣ[-1].pos = pos0
-        else: raise Exeption("Yikes! Internal error.")
+        else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ψ(): print("Yikes! ψ()"); yield ""
