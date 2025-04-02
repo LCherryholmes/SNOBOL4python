@@ -12,29 +12,56 @@ from pprint import pformat, pprint
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------
 @pattern
+def Accept_Language():              yield from Φ(r"(?P<tag>[Aa]ccept-?[Ll]anguage): ?") \
+                                             + ( Φ(r'en-US')
+                                               | Φ(r"(?P<lit>.*)")
+                                               )
+@pattern
 def Authentication_Results():       yield from Φ(r"(?P<tag>Authentication-Results): ?") \
-                                             + Φ(r"(?P<lit>.*)")
+                                             + Φ(r"(?P<txt>.*)")
+@pattern
+def Cc():                           yield from Φ(r"(?P<tag>Cc): ?") \
+                                             + Φ(r"(?P<txt>.*(?:\n\t.*)*)")
 @pattern
 def Comment():                      yield from Φ(r"(?P<tag>Comment): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
 def Content_class():                yield from Φ(r"(?P<tag>Content-[Cc]lass): ?") \
-                                             + Φ(r"(?P<lit>.*)")
+                                             + ( Φ(r'urn:content\-classes:message')
+                                               | Φ(r"(?P<lit>.*)")
+                                               )
+@pattern
+def Content_Language():             yield from Φ(r"(?P<tag>Content-Language): ?") \
+                                             + ( Φ(r'en-US')
+                                               | Φ(r"(?P<txt>.*)")
+                                               )
 @pattern
 def Content_Length():               yield from Φ(r"(?P<tag>Content-Length): ?") \
                                              + Φ(r"(?P<lit>[0-9]+)")
 @pattern
 def Content_Transfer_Encoding():    yield from Φ(r"(?P<tag>Content-Transfer-Encoding): ?") \
-                                             + Φ(r"(?P<txt>.*)")
+                                             + Φ(r"(?P<lit>.*)")
+@pattern
+def Content_Type():                 yield from Φ(r"(?P<tag>Content-Type): ?") \
+                                             + ( Φ( r'multipart/alternative;\n'
+                                                    r'\tboundary="\-\-\-\-_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}"'
+                                                  )
+                                               | Φ(r"(?P<lit>.*\n.*)")
+                                               )
 @pattern
 def Date():                         yield from Φ(r"(?P<tag>Date): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
+def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature): ?") \
+                                             + Φ(r"(?P<txt>.*(?:\n[ \t].*)?)")
+@pattern
 def From():                         yield from Φ(r"(?P<tag>From): ?") \
-                                             + Φ(r"(?P<txt>.*)")
+                                             + Φ(r"(?P<lit>.*)")
 @pattern
 def Importance():                   yield from Φ(r"(?P<tag>Importance): ?") \
-                                             + Φ(r"(?P<txt>.*)")
+                                             + ( Φ(r'[Nn]ormal')
+                                               | Φ(r"(?P<lit>.*)")
+                                               )
 @pattern
 def In_Reply_To():                  yield from Φ(r"(?P<tag>In-Reply-To): ?") \
                                              + Φ(r"(?P<txt>.*)")
@@ -43,12 +70,25 @@ def Message_ID():                   yield from Φ(r"(?P<tag>Message-ID): ?") \
                                              + Φ(r"(?P<lit>.*)")
 @pattern
 def MIME_Version():                 yield from Φ(r"(?P<tag>MIME-Version): ?") \
-                                             + Φ(r"(?P<lit>.*)")
+                                             + ( Φ(r'1\.0')
+                                               | Φ(r"(?P<lit>.*)")
+                                               )
 @pattern
-def Priority():                     yield from Φ(r"(?P<tag>Priority): ?") \
+def Message_ID():                   yield from Φ(r"(?P<tag>Message-ID): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
+def Priority():                     yield from Φ(r"(?P<tag>Priority): ?") \
+                                             + ( Φ(r'[Nn]ormal')
+                                               | Φ(r"(?P<lit>.*)")
+                                               )
+@pattern
+def Received():                     yield from Φ(r"(?P<tag>Received): ?") \
+                                             + Φ(r"(.*(?:\n[ \t].*)*)")
+@pattern
 def References():                   yield from Φ(r"(?P<tag>References): ?") \
+                                             + Φ(r"(?P<txt>.*)")
+@pattern
+def Reply_To():                     yield from Φ(r"(?P<tag>Reply-To): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
 def Return_Path():                  yield from Φ(r"(?P<tag>Return-Path): ?") \
@@ -75,16 +115,17 @@ def X_Account_Key():                yield from Φ(r"(?P<tag>X-Account-Key): ?") 
                                                | Φ(r"(?P<txt>.*)")
                                                )
 @pattern
-def X_Apparently_To():              yield from  ( Φ(r"(?P<tag>X-Apparently-To): ?")
-                                                + ( Φ( r"lcherryh@yahoo.com via"
-                                                       r" [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
-                                                       r"; (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
-                                                       r", [0-9]{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{4}"
-                                                       r" [0-9]{2}:[0-9]{2}:[0-9]{2} -[0-9]{4}"
-                                                     )
-                                                 | Φ(r"(?P<txt>.*)")
-                                                   )
-                                                )
+def X_Apparently_To():              yield from Φ(r"(?P<tag>X-Apparently-To): ?") \
+                                             + ( Φ( r"lcherryh@yahoo.com via"
+                                                    r" [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+                                                    r"; (Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
+                                                    r", [0-9]{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{4}"
+                                                    r" [0-9]{2}:[0-9]{2}:[0-9]{2} -[0-9]{4}"
+                                                  )
+                                               | Φ(r"(?P<txt>.*)")
+                                               )
+def X_ELNK_Trace():                 yield from Φ(r"(?P<tag>X-ELNK-Trace): ?") \
+                                             + Φ(r"(?P<txt>.*)")
 @pattern
 def X_MAIL_FROM():                  yield from Φ(r"(?P<tag>X-MAIL-FROM): ?") \
                                              + Φ(r"(?P<txt>.*)")
@@ -139,30 +180,19 @@ def X_SOURCE_IP():                  yield from Φ(r"(?P<tag>X-SOURCE-IP): ?") \
 def X_Spam():                       yield from Φ(r"(?P<tag>X-Spam): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
+def X_Spam_Flag():                  yield from Φ(r"(?P<tag>X-Spam-Flag): ?") \
+                                             + Φ(r"(?P<txt>.*)")
+@pattern
 def X_UIDL():                       yield from Φ(r"(?P<tag>X-UIDL): ?") + Φ(r"[+/0-9A-Za-z]{27}")
 @pattern
 def X_Virus_Scanned():              yield from Φ(r"(?P<tag>X-Virus-Scanned): ?") \
                                              + Φ(r"(?P<txt>.*)")
 @pattern
+def X_YMail_OSG():                  yield from Φ(r"(?P<tag>X-YMail-OSG): ?") \
+                                             + Φ(r"(?P<txt>.*)")
+@pattern
 def X_Yahoo_Newman_Property():      yield from Φ(r"(?P<tag>X-Yahoo-Newman-Property): ?") \
                                              + Φ(r"(?P<txt>.*)")
-#-------------------------------------------------------------------------------
-@pattern
-def Cc():                           yield from Φ(r"(?P<tag>Cc): ?") \
-                                             + Φ(r"(?P<txt>.*(?:\n\t.*)*)")
-@pattern
-def Content_Type():                 yield from Φ(r"(?P<tag>Content-Type): ?") \
-                                             + ( Φ( r'multipart/alternative;\n'
-                                                    r'\tboundary="\-\-\-\-_=_NextPart_[0-9]{3}_[0-9A-F]{8}\.[0-9A-F]{8}"'
-                                                  )
-                                               | Φ(r"(?P<lit>.*\n.*)")
-                                               )
-@pattern
-def DomainKey_Signature():          yield from Φ(r"(?P<tag>DomainKey-Signature): ?") \
-                                             + Φ(r"(?P<txt>.*(?:\n[ \t].*)?)")
-@pattern
-def Received():                     yield from Φ(r"(?P<tag>Received): ?") \
-                                             + Φ(r"(.*(?:\n[ \t].*)*)")
 #-------------------------------------------------------------------------------
 rex_decimal3            = r'[0-9]{3}'
 rex_upper_hex8          = r'[0-9A-F]{8}'
@@ -186,11 +216,16 @@ exp_ip_address          = r'[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}'
 rex_url_address         = r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\.){3}\d{1,3})(?::\d+)?(?:/\S*)?'
 exp_url_address         = r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})(?::\d+)?(?:/\S*)?'
 #-------------------------------------------------------------------------------
+rex_domain_name         = r'(?:(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\.){3}\d{1,3})'
+exp_domain_name         = r'(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})'
+#-------------------------------------------------------------------------------
 rex_email_address       = r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
 exp_email_address       = r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}'
 #-------------------------------------------------------------------------------
 @pattern
 def ip_address():       yield from Φ(rex_ip_address)
+@pattern
+def domain_name():      yield from Φ(rex_domain_name)
 @pattern
 def url_address():      yield from Φ(rex_url_address)
 @pattern
@@ -198,11 +233,13 @@ def email_address():    yield from Φ(rex_email_address)
 #-------------------------------------------------------------------------------
 xlr8 = \
 {
-    'tag':                  (r'^[0-9-A-Za-z]+:'   , (lambda t: t[0:-1])),
+    'tag1':                 (r'^[0-9-A-Za-z]+: '  , (lambda t: t[0:-2])),
+    'tag2':                 (r'^[0-9-A-Za-z]+:'   , (lambda t: t[0:-1])),
     'time_zone':            (rex_time_zone        , (lambda t: r'-[0-9]{4}')),
     'ip_address':           (rex_ip_address       , (lambda t: exp_ip_address)),
     'day_of_week':          (rex_day_of_week      , (lambda t: rex_day_of_week)),
     'short_month':          (rex_short_month      , (lambda t: rex_short_month)),
+    'rex_domain_name':      (rex_domain_name      , (lambda t: exp_domain_name)),
     'rex_url_address':      (rex_url_address      , (lambda t: exp_url_address)),
     'rex_email_address':    (rex_email_address    , (lambda t: exp_email_address)),
     'military_time':        (rex_military_time    , (lambda t: rex_military_time)),

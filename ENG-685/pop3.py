@@ -38,51 +38,60 @@
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Accept_Language(): yield from (
-    Φ(r'\ en\-US')
+    Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D468@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BE@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BF@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4C1@UKBXMBW01.prod.quest.corp>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A68B2119@UKBXMBW01.prod.quest.corp>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A6B4B6D5@UKBXMBW01.prod.quest.corp>
+|   Φ(r'\ en\-US')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Authentication_Results(): yield from (
-    Φ(r'mta526\.mail\.mud\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta188\.mail\.re3\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta224\.mail\.re4\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta368\.mail\.re4\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta243\.mail\.re4\.yahoo\.com\ \ from=yahoogroups\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta305\.mail\.re4\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta179\.mail\.re4\.yahoo\.com\ \ from=VentiSolutions\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta416\.mail\.mud\.yahoo\.com\ \ from=austin\.rr\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta191\.mail\.re3\.yahoo\.com\ \ from=database\-brothers\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta199\.mail\.re4\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta312\.mail\.mud\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta303\.mail\.mud\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta219\.mail\.mud\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta233\.mail\.re4\.yahoo\.com\ \ from=hotmail\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta234\.mail\.re3\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta253\.mail\.mud\.yahoo\.com\ \ from=hotmail\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta233\.mail\.mud\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta499\.mail\.mud\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta203\.mail\.mud\.yahoo\.com\ \ from=hotmail\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta352\.mail\.mud\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta186\.mail\.re4\.yahoo\.com\ \ from=quest\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta159\.mail\.re4\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta230\.mail\.re4\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta188\.mail\.mud\.yahoo\.com\ \ from=alcoa\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta268\.mail\.re4\.yahoo\.com\ \ from=austin\.rr\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta500\.mail\.mud\.yahoo\.com\ \ from=yahoo\.com;\ domainkeys=pass\ \(ok\)')
-|   Φ(r'mta243\.mail\.re4\.yahoo\.com\ \ from=riverranchradiology\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta544\.mail\.mud\.yahoo\.com\ \ from=peoplepc\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta173\.mail\.re2\.yahoo\.com\ \ from=austin\.rr\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta294\.mail\.re4\.yahoo\.com\ \ from=mw\-ar\.com;\ domainkeys=neutral\ \(no\ sig\)')
-|   Φ(r'mta215\.mail\.mud\.yahoo\.com\ \ from=aol\.com;\ domainkeys=neutral\ \(no\ sig\)')
+    Φ(r'(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})[ ]{2}[a-z]{4}=(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3}); [a-z]{10}=[a-z]{7} \([a-z]{2} [a-z]{3}\)')
+     #1:mta526.mail.mud.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta188.mail.re3.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta224.mail.re4.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta368.mail.re4.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta305.mail.re4.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta179.mail.re4.yahoo.com  from=VentiSolutions.com; domainkeys=neutral (no sig)
+     #1:mta416.mail.mud.yahoo.com  from=austin.rr.com; domainkeys=neutral (no sig)
+     #1:mta191.mail.re3.yahoo.com  from=database-brothers.com; domainkeys=neutral (no sig)
+     #1:mta199.mail.re4.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta312.mail.mud.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #2:mta303.mail.mud.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta219.mail.mud.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta233.mail.re4.yahoo.com  from=hotmail.com; domainkeys=neutral (no sig)
+     #1:mta253.mail.mud.yahoo.com  from=hotmail.com; domainkeys=neutral (no sig)
+     #1:mta203.mail.mud.yahoo.com  from=hotmail.com; domainkeys=neutral (no sig)
+     #1:mta186.mail.re4.yahoo.com  from=quest.com; domainkeys=neutral (no sig)
+     #1:mta188.mail.mud.yahoo.com  from=alcoa.com; domainkeys=neutral (no sig)
+     #1:mta268.mail.re4.yahoo.com  from=austin.rr.com; domainkeys=neutral (no sig)
+     #1:mta243.mail.re4.yahoo.com  from=riverranchradiology.com; domainkeys=neutral (no sig)
+     #1:mta544.mail.mud.yahoo.com  from=peoplepc.com; domainkeys=neutral (no sig)
+     #1:mta173.mail.re2.yahoo.com  from=austin.rr.com; domainkeys=neutral (no sig)
+     #1:mta294.mail.re4.yahoo.com  from=mw-ar.com; domainkeys=neutral (no sig)
+     #1:mta215.mail.mud.yahoo.com  from=aol.com; domainkeys=neutral (no sig)
+|   Φ(r'(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})[ ]{2}[a-z]{4}=(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3}); [a-z]{10}=[a-z]{4} \([a-z]{2}\)')
+     #1:mta243.mail.re4.yahoo.com  from=yahoogroups.com; domainkeys=pass (ok)
+     #1:mta234.mail.re3.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta233.mail.mud.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta499.mail.mud.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta352.mail.mud.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta159.mail.re4.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta230.mail.re4.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
+     #1:mta500.mail.mud.yahoo.com  from=yahoo.com; domainkeys=pass (ok)
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Cc(): yield from (
-    Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{4}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>,\n\t"[A-Z][a-z]{4} [A-Z][a-z]{7}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+    Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{4}" <(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>,\n\t"[A-Z][a-z]{4} [A-Z][a-z]{7}" <(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:"Ken Moses" <Ken.Moses@quest.com>,\n	"Keren Kamilian" <Keren.Kamilian@quest.com>
-|   Φ(r'"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z] [A-Z][a-z]{5}" <(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+|   Φ(r'"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z] [A-Z][a-z]{5}" <(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:"Mark Wright" <Mark.Wright@quest.com>
-|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{4}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>,\n\t"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" <\'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\'>')
+|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{4}" <(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>,\n\t"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" <\'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\'>')
      #1:"Ken Moses" <Ken.Moses@quest.com>,\n	"lcherryh@yahoo.com" <'lcherryh@yahoo.com'>
 |   Φ(r'"[A-Z][a-z]{4} [A-Z][a-z]{5} \- [A-Z][a-z]{4} [A-Z][a-z]{4} [A-Z][a-z]{8}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
      #1:"Angie Garcia - River Ranch Radiology" <agarcia@riverranchradiology.com>
@@ -90,18 +99,20 @@ def Cc(): yield from (
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Comment(): yield from (
-    Φ(r'[A-Z][a-z]{5}[A-Z][a-z]{3}\? [A-Z][a-z]{2} [a-z]{4}://[a-z]{8}\.[a-z]{5}\.[a-z]{3}/[a-z]{10}')
+    Φ(r'[A-Z][a-z]{5}[A-Z][a-z]{3}\? [A-Z][a-z]{2} (?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})(?::\d+)?(?:/\S*)?')
      #1:DomainKeys? See http://antispam.yahoo.com/domainkeys
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Content_Class(): yield from (
-    Φ(r'urn:content\-classes:message')
-)
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
 def Content_Language(): yield from (
-    Φ(r'\ en\-US')
+    Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D468@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BE@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BF@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4C1@UKBXMBW01.prod.quest.corp>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A68B2119@UKBXMBW01.prod.quest.corp>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A6B4B6D5@UKBXMBW01.prod.quest.corp>
+|   Φ(r'\ en\-US')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -142,8 +153,7 @@ def Content_Length(): yield from (
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Content_Transfer_Encoding(): yield from (
-    Φ(r'[0-9][a-z]{3}')
-     #1:7bit
+    Φ(r'7bit')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -176,11 +186,6 @@ def Content_Type(): yield from (
 |   Φ(r'multipart/alternative;\n\tboundary="\-\-\-\-=_NextPart_000_00BC_01C8577E\.C8509840"')
 |   Φ(r'multipart/alternative;\n\tboundary="\-\-\-\-=_NextPart_000_015F_01C857CE\.43B00DF0"')
 |   Φ(r'multipart/alternative;\ boundary="\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-1200488544"\nX\-Mailer:\ 9\.0\ SE\ for\ Windows\ sub\ 5004')
-)
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Content_class(): yield from (
-    Φ(r'urn:content\-classes:message')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -229,142 +234,119 @@ def Date(): yield from (
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def DomainKey_Signature(): yield from (
-    Φ(r'[a-z]=[a-z]{3}\-[a-z]{3}[0-9]; [a-z]=[a-z]{3}; [a-z]=[a-z]{5}; [a-z]=[a-z]{4}; [a-z]=[a-z]{11}\.[a-z]{3};\n\t[a-z]=[a-z]{3}[0-9][a-z][A-Z][a-z]{2}[A-Z]{2}[a-z]{2}[0-9][a-z][0-9]\+[A-Z]{5}[a-z]{4}[A-Z][a-z][A-Z][0-9][A-Z]{2}[a-z][A-Z]{2}[0-9][A-Z][a-z]/[A-Z]{4}[a-z]{3}[A-Z]{2}[0-9][a-z][0-9][a-z][A-Z][0-9][A-Z]{2}[a-z][A-Z][a-z][A-Z]{6}[a-z]{3}[A-Z]{2}/[A-Z]{2}[a-z]{6}[A-Z]/[a-z][0-9]{2}[a-z][A-Z][a-z][A-Z][a-z][A-Z][a-z][A-Z]{3}[a-z]{2}/[A-Z]{2}[a-z][A-Z][a-z]{2}[A-Z][0-9][A-Z][a-z][A-Z][a-z]\+[A-Z]{2}[0-9][A-Z][a-z][A-Z]{2}\+[a-z]{3}[0-9]{3}[A-Z][a-z][0-9][a-z][A-Z];')
+    Φ(r'[a-z]=[a-z]{3}\-[a-z]{3}[0-9]; [a-z]=[a-z]{3}; [a-z]=[a-z]{5}; [a-z]=[a-z]{4}; [a-z]=(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3});\n\t[a-z]=[a-z]{3}[0-9][a-z][A-Z][a-z]{2}[A-Z]{2}[a-z]{2}[0-9][a-z][0-9]\+[A-Z]{5}[a-z]{4}[A-Z][a-z][A-Z][0-9][A-Z]{2}[a-z][A-Z]{2}[0-9][A-Z][a-z]/[A-Z]{4}[a-z]{3}[A-Z]{2}[0-9][a-z][0-9][a-z][A-Z][0-9][A-Z]{2}[a-z][A-Z][a-z][A-Z]{6}[a-z]{3}[A-Z]{2}/[A-Z]{2}[a-z]{6}[A-Z]/[a-z][0-9]{2}[a-z][A-Z][a-z][A-Z][a-z][A-Z][a-z][A-Z]{3}[a-z]{2}/[A-Z]{2}[a-z][A-Z][a-z]{2}[A-Z][0-9][A-Z][a-z][A-Z][a-z]\+[A-Z]{2}[0-9][A-Z][a-z][A-Z]{2}\+[a-z]{3}[0-9]{3}[A-Z][a-z][0-9][a-z][A-Z];')
      #1:a=rsa-sha1; q=dns; c=nofws; s=lima; d=yahoogroups.com;\n	b=nce6rTvfJLmw6r7+SDFNRbllvIiA8ZMhRY0Hj/XSTWwxkPG1z0lS3OHfTlVSRJLKtxwEE/HLdaoimnN/d19uSvWuKmSZLwt/JTfWwoO8SgSw+RD6HaXY+wkf196Vz2dP;
-|   Φ(r'[a-z]=[a-z]{3}\-[a-z]{3}[0-9]; [a-z]=[a-z]{3}; [a-z]=[a-z]{5};\n[ ]{2}[a-z]=[a-z][0-9]{4}; [a-z]=[a-z]{5}\.[a-z]{3};')
+|   Φ(r'[a-z]=[a-z]{3}\-[a-z]{3}[0-9]; [a-z]=[a-z]{3}; [a-z]=[a-z]{5};\n[ ]{2}[a-z]=[a-z][0-9]{4}; [a-z]=(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3});')
      #7:a=rsa-sha1; q=dns; c=nofws;\n  s=s1024; d=yahoo.com;
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def From(): yield from (
-    Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{4}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Ken Moses" <Ken.Moses@quest.com>
-|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{3}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Pat Luis" <pat.luis@quest.com>
-|   Φ(r'"[A-Z][a-z]{3} [A-Z][a-z]{6}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Lisa Radford" <Lisa.Radford@quest.com>
-|   Φ(r'"[A-Z][a-z]{4} [A-Z][a-z]{7}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Keren Kamilian" <Keren.Kamilian@quest.com>
-|   Φ(r'[A-Z][a-z]{4}! [A-Z][a-z]{5} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:Yahoo! Groups <notify@yahoogroups.com>
-|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{11}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Lon Cherryholmes" <Lon.Cherryholmes@quest.com>
-|   Φ(r'"[A-Z][a-z]{3} [A-Z][a-z][A-Z][a-z]{5}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Tony DeLollis" <Tony.DeLollis@VentiSolutions.com>
-|   Φ(r'"[A-Z][a-z]{4} [A-Z][a-z]{8}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Rusty Bullerman" <rbullerman@austin.rr.com>
-|   Φ(r'"[A-Z][a-z]{3} [A-Z][a-z]{2}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Jeff Omo" <jeff.omo@database-brothers.com>
-|   Φ(r'[A-Z][a-z]{2} [A-Z][a-z]{11} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #4:Lon Cherryholmes <Lon.Cherryholmes@quest.com>
-     #1:Lon Cherryholmes <lcherryh@yahoo.com>
-|   Φ(r'[A-Z][a-z]{2} [A-Z][a-z]{4} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #2:Adi Izhar <adi.izhar@quest.com>
-|   Φ(r'[A-Z][a-z]{5} [A-Z][a-z]{11} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #3:Leslie Cherryholmes <lesliecherryholmes@hotmail.com>
-|   Φ(r'"[A-Z][a-z]{2} [A-Z]\. [A-Z][a-z]{11}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #6:"Lon T. Cherryholmes" <ness_78759@yahoo.com>
-|   Φ(r'"[A-Z][a-z]{5}, [A-Z][a-z]{4} [A-Z] \\\([A-Z]\&[A-Z]\\\)" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Sheets, Chris A \(T&K\)" <Chris.Sheets@alcoa.com>
-|   Φ(r'"[A-Z][a-z][A-Z][a-z]{4} [A-Z][a-z]{3} \& [A-Z][a-z]{4}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #2:"DeAtley Tile & Stone" <tdeatley@austin.rr.com>
-|   Φ(r'"[A-Z][a-z]{4} [A-Z][a-z]{7}[ ]{2}\- [A-Z][a-z]{4} [A-Z][a-z]{4} [A-Z][a-z]{8}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Becky Thompson  - River Ranch Radiology" <bthompson@riverranchradiology.com>
-|   Φ(r'"[A-Z][a-z]{8} [A-Z][a-z]{6}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"Elizabeth Flowers" <shalomyaall@peoplepc.com>
-|   Φ(r'"[a-z]{7} [a-z]{4} [a-z]{9}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
-     #1:"midwest auto recycling" <parts@mw-ar.com>
-|   Φ(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
-     #1:CMONEYMAKER72@aol.com
-)
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Importance(): yield from (
-    Φ(r'[a-z]{6}')
-     #1:normal
-|   Φ(r'[A-Z][a-z]{5}')
-     #3:Normal
+    Φ(r'"Ken\ Moses"\ <Ken\.Moses@quest\.com>')
+|   Φ(r'"Pat\ Luis"\ <pat\.luis@quest\.com>')
+|   Φ(r'"Lisa\ Radford"\ <Lisa\.Radford@quest\.com>')
+|   Φ(r'"Keren\ Kamilian"\ <Keren\.Kamilian@quest\.com>')
+|   Φ(r'Yahoo!\ Groups\ <notify@yahoogroups\.com>')
+|   Φ(r'"Lon\ Cherryholmes"\ <Lon\.Cherryholmes@quest\.com>')
+|   Φ(r'"Tony\ DeLollis"\ <Tony\.DeLollis@VentiSolutions\.com>')
+|   Φ(r'"Rusty\ Bullerman"\ <rbullerman@austin\.rr\.com>')
+|   Φ(r'"Jeff\ Omo"\ <jeff\.omo@database\-brothers\.com>')
+|   Φ(r'Lon\ Cherryholmes\ <Lon\.Cherryholmes@quest\.com>')
+|   Φ(r'Adi\ Izhar\ <adi\.izhar@quest\.com>')
+|   Φ(r'Leslie\ Cherryholmes\ <lesliecherryholmes@hotmail\.com>')
+|   Φ(r'"Lon\ T\.\ Cherryholmes"\ <ness_78759@yahoo\.com>')
+|   Φ(r'Lon\ Cherryholmes\ <lcherryh@yahoo\.com>')
+|   Φ(r'"Sheets,\ Chris\ A\ \\\(T\&K\\\)"\ <Chris\.Sheets@alcoa\.com>')
+|   Φ(r'"DeAtley\ Tile\ \&\ Stone"\ <tdeatley@austin\.rr\.com>')
+|   Φ(r'"Becky\ Thompson\ \ \-\ River\ Ranch\ Radiology"\ <bthompson@riverranchradiology\.com>')
+|   Φ(r'"Elizabeth\ Flowers"\ <shalomyaall@peoplepc\.com>')
+|   Φ(r'"midwest\ auto\ recycling"\ <parts@mw\-ar\.com>')
+|   Φ(r'CMONEYMAKER72@aol\.com')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def In_Reply_To(): yield from (
-    Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+    Φ(r'<(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:<721514.94331.qm@web59106.mail.re1.yahoo.com>
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def MIME_Version(): yield from (
-    Φ(r'1\.0')
-)
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
 def Message_ID(): yield from (
-    Φ(r'<78CD474EB76D9C4C9E8F03720184A36B0B5BCBF2@ALVMBXW02\.prod\.quest\.corp>')
-|   Φ(r'<FA13712B13469646A618BC95F7E1BA8F01ABD6E9@alvmbxw01\.prod\.quest\.corp>')
-|   Φ(r'<81B3912B246E23449049CFA9C12D04F6036620A7@alvmbxw01\.prod\.quest\.corp>')
-|   Φ(r'<E61E658006418E47861A484DE76F4FC507310D8B@ukbmbxw01\.prod\.quest\.corp>')
-|   Φ(r'<1178457296\.118\.80517\.m48@yahoogroups\.com>')
-|   Φ(r'<23D8DB429EF0494783E86044C51F865903DB9CEB@ALVMBXW02\.prod\.quest\.corp>')
-|   Φ(r'<007c01c7ef44\$e6f551c0\$6501a8c0@VentiRD>')
-|   Φ(r'<07E41628A4DA494AAA597D2D0C85A834@ownerPC>')
-|   Φ(r'<005401c81272\$62031500\$ea0a14ac@jomolaptop>')
-|   Φ(r'<E52BA26B1940E24FAF1E0BD9F876E23847F2D468@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BE@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BF@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<E52BA26B1940E24FAF1E0BD9F876E23847F2D4C1@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<65BB6DF6A76DAF4984F1B08936F2FC34A68B2119@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<BAY124\-W3489E28ECAB87E6AF5089AD2570@phx\.gbl>')
-|   Φ(r'<851320\.95298\.qm@web52611\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<BAY124\-W459446EDB4502DFA58F5CD2520@phx\.gbl>')
-|   Φ(r'<600240\.23902\.qm@web52601\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<364748\.51156\.qm@web52604\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<BAY124\-W746E761573BD76BDEF3EED24C0@phx\.gbl>')
-|   Φ(r'<482054\.98701\.qm@web52605\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<65BB6DF6A76DAF4984F1B08936F2FC34A6B4B6D5@UKBXMBW01\.prod\.quest\.corp>')
-|   Φ(r'<659587\.36147\.qm@web52610\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<454556\.89358\.qm@web59107\.mail\.re1\.yahoo\.com>')
-|   Φ(r'<9BDA6601615804418B799762F41EA1D7021D166D@NOANDC\-MXU24\.NOA\.Alcoa\.com>')
-|   Φ(r'<004201c856bd\$f2aad9f0\$a9557046@DeAtleyFloor>')
-|   Φ(r'<467603\.6022\.qm@web52605\.mail\.re2\.yahoo\.com>')
-|   Φ(r'<B9307879C62717418BD7CB1FF0E256730315BB29@server\.RiverRanchRadiology\.local>')
-|   Φ(r'<002701c85780\$d64510a0\$7d90e604@your27e1513d96>')
-|   Φ(r'<00bf01c857b1\$13458450\$a9557046@DeAtleyFloor>')
-|   Φ(r'<016401c85800\$8e8ae250\$6701a8c0@VALUED2D4C2DDC>')
-|   Φ(r'<bcd\.1d0cad8e\.34bf5a60@aol\.com>')
-)
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Priority(): yield from (
-    Φ(r'[a-z]{6}')
-     #1:normal
+    Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+     #1:<78CD474EB76D9C4C9E8F03720184A36B0B5BCBF2@ALVMBXW02.prod.quest.corp>
+     #1:<FA13712B13469646A618BC95F7E1BA8F01ABD6E9@alvmbxw01.prod.quest.corp>
+     #1:<81B3912B246E23449049CFA9C12D04F6036620A7@alvmbxw01.prod.quest.corp>
+     #1:<E61E658006418E47861A484DE76F4FC507310D8B@ukbmbxw01.prod.quest.corp>
+     #1:<1178457296.118.80517.m48@yahoogroups.com>
+     #1:<23D8DB429EF0494783E86044C51F865903DB9CEB@ALVMBXW02.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D468@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BE@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4BF@UKBXMBW01.prod.quest.corp>
+     #1:<E52BA26B1940E24FAF1E0BD9F876E23847F2D4C1@UKBXMBW01.prod.quest.corp>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A68B2119@UKBXMBW01.prod.quest.corp>
+     #1:<BAY124-W3489E28ECAB87E6AF5089AD2570@phx.gbl>
+     #1:<BAY124-W459446EDB4502DFA58F5CD2520@phx.gbl>
+     #1:<BAY124-W746E761573BD76BDEF3EED24C0@phx.gbl>
+     #1:<65BB6DF6A76DAF4984F1B08936F2FC34A6B4B6D5@UKBXMBW01.prod.quest.corp>
+     #1:<9BDA6601615804418B799762F41EA1D7021D166D@NOANDC-MXU24.NOA.Alcoa.com>
+     #1:<B9307879C62717418BD7CB1FF0E256730315BB29@server.RiverRanchRadiology.local>
+     #1:<bcd.1d0cad8e.34bf5a60@aol.com>
+|   Φ(r'<[0-9]{3}[a-z][0-9]{2}[a-z][0-9][a-z]{2}[0-9]{2}\$[a-z][0-9][a-z][0-9]{3}[a-z][0-9]\$[0-9]{4}[a-z][0-9][a-z][0-9]@[A-Z][a-z]{4}[A-Z]{2}>')
+     #1:<007c01c7ef44$e6f551c0$6501a8c0@VentiRD>
+|   Φ(r'<[0-9]{2}[A-Z][0-9]{5}[A-Z][0-9][A-Z]{2}[0-9]{3}[A-Z]{3}[0-9]{3}[A-Z][0-9][A-Z][0-9][A-Z][0-9]{2}[A-Z][0-9]{3}@[a-z]{5}[A-Z]{2}>')
+     #1:<07E41628A4DA494AAA597D2D0C85A834@ownerPC>
+|   Φ(r'<[0-9]{6}[a-z][0-9]{5}\$[0-9]{8}\$[a-z]{2}[0-9][a-z][0-9]{2}[a-z]{2}@[a-z]{10}>')
+     #1:<005401c81272$62031500$ea0a14ac@jomolaptop>
+|   Φ(r'<(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
+     #1:<851320.95298.qm@web52611.mail.re2.yahoo.com>
+     #1:<600240.23902.qm@web52601.mail.re2.yahoo.com>
+     #1:<364748.51156.qm@web52604.mail.re2.yahoo.com>
+     #1:<482054.98701.qm@web52605.mail.re2.yahoo.com>
+     #1:<659587.36147.qm@web52610.mail.re2.yahoo.com>
+     #1:<454556.89358.qm@web59107.mail.re1.yahoo.com>
+     #1:<467603.6022.qm@web52605.mail.re2.yahoo.com>
+|   Φ(r'<[0-9]{6}[a-z][0-9]{3}[a-z]{2}\$[a-z][0-9][a-z]{3}[0-9][a-z][0-9]\$[a-z][0-9]{7}@[A-Z][a-z][A-Z][a-z]{4}[A-Z][a-z]{4}>')
+     #1:<004201c856bd$f2aad9f0$a9557046@DeAtleyFloor>
+|   Φ(r'<[0-9]{6}[a-z][0-9]{5}\$[a-z][0-9]{5}[a-z][0-9]\$[0-9][a-z][0-9]{2}[a-z][0-9]{3}@[a-z]{4}[0-9]{2}[a-z][0-9]{4}[a-z][0-9]{2}>')
+     #1:<002701c85780$d64510a0$7d90e604@your27e1513d96>
+|   Φ(r'<[0-9]{2}[a-z]{2}[0-9]{2}[a-z][0-9]{3}[a-z][0-9]\$[0-9]{8}\$[a-z][0-9]{7}@[A-Z][a-z][A-Z][a-z]{4}[A-Z][a-z]{4}>')
+     #1:<00bf01c857b1$13458450$a9557046@DeAtleyFloor>
+|   Φ(r'<[0-9]{6}[a-z][0-9]{5}\$[0-9][a-z][0-9][a-z]{2}[0-9]{3}\$[0-9]{4}[a-z][0-9][a-z][0-9]@[A-Z]{6}[0-9][A-Z][0-9][A-Z][0-9][A-Z]{3}>')
+     #1:<016401c85800$8e8ae250$6701a8c0@VALUED2D4C2DDC>
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def References(): yield from (
     Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
      #1:<FA13712B13469646A618BC95F7E1BA8F01ABD6E9@alvmbxw01.prod.quest.corp>
+|   Φ(r'<(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:<20080116033202.6569.qmail@outbound.qualityautoparts.com>
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Reply_To(): yield from (
-    Φ(r'\ "Elizabeth\ Flowers"\ <shalomyaall@peoplepc\.com>')
+    Φ(r'<[0-9]{6}[a-z][0-9]{5}\$[a-z][0-9]{5}[a-z][0-9]\$[0-9][a-z][0-9]{2}[a-z][0-9]{3}@[a-z]{4}[0-9]{2}[a-z][0-9]{4}[a-z][0-9]{2}>')
+     #1:<002701c85780$d64510a0$7d90e604@your27e1513d96>
+|   Φ(r'\ "Elizabeth\ Flowers"\ <shalomyaall@peoplepc\.com>')
+|   Φ(r'<[0-9]{6}[a-z][0-9]{5}\$[0-9][a-z][0-9][a-z]{2}[0-9]{3}\$[0-9]{4}[a-z][0-9][a-z][0-9]@[A-Z]{6}[0-9][A-Z][0-9][A-Z][0-9][A-Z]{3}>')
+     #1:<016401c85800$8e8ae250$6701a8c0@VALUED2D4C2DDC>
 |   Φ(r'\ "midwest\ auto\ recycling"\ <parts@mw\-ar\.com>')
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def Return_Path(): yield from (
-    Φ(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
+    Φ(r'(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})')
      #1:Ken.Moses@quest.com
      #1:pat.luis@quest.com
      #1:Lisa.Radford@quest.com
      #1:Keren.Kamilian@quest.com
      #4:Lon.Cherryholmes@quest.com
      #2:adi.izhar@quest.com
-     #3:lesliecherryholmes@hotmail.com
      #1:Chris.Sheets@alcoa.com
 |   Φ(r'<>')
      #1:<>
+|   Φ(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
+     #3:lesliecherryholmes@hotmail.com
 )
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
@@ -393,7 +375,7 @@ def To(): yield from (
      #6:<lcherryh@yahoo.com>
      #5:<LCherryh@yahoo.com>
      #1:<LCherryh@Yahoo.com>
-|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{3}" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+|   Φ(r'"[A-Z][a-z]{2} [A-Z][a-z]{3}" <(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:"Pat Luis" <pat.luis@quest.com>
 |   Φ(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
      #1:lcherryh@yahoo.com
@@ -402,7 +384,7 @@ def To(): yield from (
      #5:"LCherryh@Yahoo.com" <LCherryh@Yahoo.com>
 |   Φ(r'"[A-Z]{2}:" <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
      #1:"RE:" <LCherryh@Yahoo.com>
-|   Φ(r'[A-Z][a-z]{2} [A-Z][a-z]{11} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>, [A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
+|   Φ(r'[A-Z][a-z]{2} [A-Z][a-z]{11} <(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>, [A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}')
      #6:Lon Cherryholmes <lon.cherryholmes@quest.com>, lcherryh@yahoo.com
 |   Φ(r'[A-Z][a-z]{2} [A-Z][a-z]{11} <[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>, [A-Z][a-z]{2} [A-Z][a-z]{11}')
      #2:Lon Cherryholmes <lcherryh@yahoo.com>, Lon Cherryholmes
@@ -423,7 +405,7 @@ def X_ELNK_Trace(): yield from (
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def X_MAIL_FROM(): yield from (
-    Φ(r'<[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}>')
+    Φ(r'<(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})@(?:(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}|localhost|(?:\d{1,3}\\.){3}\d{1,3})>')
      #1:<tony.delollis@ventisolutions.com>
 )
 #-----------------------------------------------------------------------------------------------------------------------
