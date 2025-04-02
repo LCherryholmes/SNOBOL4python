@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, Λ, λ, θ
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, Λ, λ, Θ
 from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
 from SNOBOL4python import ARBNO, BAL, BREAK, NOTANY, POS, RPOS, SPAN
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------

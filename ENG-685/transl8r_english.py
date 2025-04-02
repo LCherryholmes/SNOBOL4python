@@ -152,7 +152,7 @@ def eTokens():
     yield from  \
     ( POS(0)                    + λ("""P = "(\\n\"""")
     + ARBNO(
-#       θ("OUTPUT") +
+#       Θ("OUTPUT") +
         ( σ(' ')                + λ("""P += "σ(' ') + \"""")
         | σ('\n')               + λ("""P += "σ('\\\\n') +\\n\"""")
         | wrd() @ "tx" + Λ(lambda: is_noun(tx))         + λ("""P += "noun() + \"""")

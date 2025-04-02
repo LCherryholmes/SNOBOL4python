@@ -2,7 +2,7 @@
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, GLOBALS
 from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
-from SNOBOL4python import ε, σ, π, Λ, λ, θ
+from SNOBOL4python import ε, σ, π, Λ, λ, Θ
 from SNOBOL4python import ANY, ARBNO, BREAK, BREAKX, FENCE
 from SNOBOL4python import LEN, MARBNO, NOTANY, POS, RPOS, SPAN
 #-------------------------------------------------------------------------------

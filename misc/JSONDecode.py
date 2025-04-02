@@ -1,6 +1,6 @@
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, UCASE, LCASE, _digits
-from SNOBOL4python import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, λ, Λ, θ
+from SNOBOL4python import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, λ, Λ, Θ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import CHAR, REPLACE, _RETURN, _NRETURN, _END
 from SNOBOL4python import S, F, Ξ
@@ -63,16 +63,16 @@ def _009():         xchs in \
                          )
 #-------------------------------------------------------------------------------------------------------
 @F(_JSONDecode3)
-def _010():         jHex in BREAK(xch3) + θ(h3)
+def _010():         jHex in BREAK(xch3) + Θ(h3)
 #-------------------------------------------------------------------------------------------------------
 @F(_JSONDecode3)
-def _011():         jHex in BREAK(xch2) + θ(h2)
+def _011():         jHex in BREAK(xch2) + Θ(h2)
 #-------------------------------------------------------------------------------------------------------
 @F(_JSONDecode3)
-def _012():         jHex in BREAK(xch1) + θ(h1)
+def _012():         jHex in BREAK(xch1) + Θ(h1)
 #-------------------------------------------------------------------------------------------------------
 @F(_JSONDecode3)
-def _013():         jHex in BREAK(xch0) + θ(h0)
+def _013():         jHex in BREAK(xch0) + Θ(h0)
 def _014():         h = ((h3 * 16 + h2) * 16 + h1) * 16 + h0
 def _015():         xchs = wchar_to_utf8(h)
 #-------------------------------------------------------------------------------------------------------
