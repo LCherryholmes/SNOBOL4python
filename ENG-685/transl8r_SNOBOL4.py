@@ -10,6 +10,11 @@ from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
+str_SorF = None
+str_Brackets = None
+def set_SorF(goto):     global str_SorF; str_SorF = goto; return True
+def set_Brackets(pair): global str_Brackets; str_Brackets = pair; return True
+#-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def nl():           yield from  σ('\n')
 @pattern
@@ -56,15 +61,15 @@ Functions       =   { 'ANY', 'APPLY', 'ARBNO', 'ARG', 'ARRAY', 'ATAN', 'BACKSPAC
                       'SUBSTR', 'TAB', 'TABLE', 'TAN', 'TIME', 'TRACE', 'TRIM', 'UNLOAD' }
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Function():     yield from  φ("\\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\\b")
+def Function():     yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\b")
 @pattern
-def BuiltinVar():   yield from  φ("\\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\\b")
+def BuiltinVar():   yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\b")
 @pattern
-def SpecialNm():    yield from  φ("\\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\\b")
+def SpecialNm():    yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\b")
 @pattern
-def ProtKwd():      yield from  φ("(?P<nm>&"   + "|".join((nm for nm in ProtKwds))    + ")\\b")
+def ProtKwd():      yield from  φ(r"\&(?P<nm>"   + "|".join((nm for nm in ProtKwds))    + ")\b")
 @pattern
-def UnprotKwd():    yield from  φ("(?P<nm>&"   + "|".join((nm for nm in UnprotKwds))  + ")\\b")
+def UnprotKwd():    yield from  φ(r"\&(?P<nm>"   + "|".join((nm for nm in UnprotKwds))  + ")\b")
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ζ(op):
@@ -198,28 +203,28 @@ def Expr17():       yield from  FENCE(
                                 )
 
 @pattern
-def SGoto():        yield from  (σ('S') | σ('s')) + λ("SorF = 'S'")
+def SGoto():        yield from  (σ('S') | σ('s')) + Λ(lambda: set_SorF('S'))
 @pattern
-def FGoto():        yield from  (σ('F') | σ('f')) + λ("SorF = 'F'")
+def FGoto():        yield from  (σ('F') | σ('f')) + Λ(lambda: set_SorF('F'))
 @pattern
 def SorF():         yield from  SGoto() | FGoto()
 @pattern
-def Target():       yield from  ( ζ('(') + λ("Brackets = '()'") + Expr() + ζ(')')
-                                | ζ('<') + λ("Brackets = '<>'") + Expr() + ζ('>')
+def Target():       yield from  ( ζ('(') + Λ(lambda: set_Brackets('()')) + Expr() + ζ(')')
+                                | ζ('<') + Λ(lambda: set_Brackets('<>')) + Expr() + ζ('>')
                                 )
 @pattern
 def Goto():         yield from  ( Gray() + σ(':')
                                 + Gray()
                                 + FENCE(
-                                    Target()                         + Reduce("*(':' + Brackets)", 1) + Shift()
-                                  | SorF() + Target()                + Reduce("*(':' SorF + Brackets)", 1)
-                                  + FENCE(Gray() + SorF() + Target() + Reduce("*(':' SorF Brackets)", 1) | Shift())
+                                    Target()                         + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
+                                  | SorF() + Target()                + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
+                                  + FENCE(Gray() + SorF() + Target() + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
                                   )
                                 )
 @pattern
-def Control():      yield from  σ('-') + BREAK("\n;")
+def Control():      yield from  σ('-') + BREAK("\n;") % "tx"
 @pattern
-def Comment():      yield from  σ('*') + BREAK("\n")
+def Comment():      yield from  σ('*') + BREAK("\n") % "tx"
 @pattern
 def Label():        yield from  BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
 @pattern
@@ -252,8 +257,8 @@ def Commands():     yield from  Command() + FENCE(Commands() | ε())
 @pattern
 def Command():      yield from  ( nInc()
                                 + FENCE(
-                                    Comment() + Shift('comment') + Reduce('Comment', 1) + nl()
-                                  | Control() + Shift('control') + Reduce('Control', 1) + (nl() | σ(';'))
+                                    Comment() + Shift('comment', "tx") + Reduce('Comment', 1) + nl()
+                                  | Control() + Shift('control', "tx") + Reduce('Control', 1) + (nl() | σ(';'))
                                   | Stmt() + Reduce('Stmt', 7) + (nl() | σ(';'))
                                   )
                                 )
@@ -281,38 +286,70 @@ def Parse():        yield from  ( POS(0)
                                 + RPOS(0)
                                 )
 str_Parse = """\
-    Parse           =             POS(0)
-+                                 nPush()
-+                                 ARBNO(*Command)
-+                                 ("'Parse'" & 'nTop()')
-+                                 nPop()
-+                                 RPOS(0)
+                  doDebug        =  0
+                  snoSpace       =  SPAN(' ' tab) | epsilon
+main00            snoLine        =  INPUT                                           :F(END)
+main01            snoSrc         =
+                  snoLine        POS(0) ANY('*-')                                   :F(main02)
+                  OUTPUT         =  snoLine                                         :(main00)
+main02            snoSrc         =  snoSrc snoLine nl
+                  snoLine        =  INPUT                                           :F(main05)
+                  snoLine        POS(0) ANY('.+')                                   :S(main02)
+                  snoSrc         POS(0) *snoParse *snoSpace RPOS(0)                 :F(mainErr1)
+                  DIFFER(sno = Pop())                                               :F(mainErr2)
+                  pp(sno)                                                           :(main01)
+main05            snoSrc         POS(0) *snoParse *snoSpace RPOS(0)                 :F(mainErr1)
+                  DIFFER(sno = Pop())                                               :F(mainErr2)
+                  pp(sno)                                                           :(END)
+mainErr1          OUTPUT         =  'Parse Error'
+                  OUTPUT         =  snoSrc                                          :(END)
+mainErr2          OUTPUT         =  'Internal Error'
+                  OUTPUT         =  snoSrc                                          :(END)
+*-INCLUDE 'debug.sno'
+END
 """
 #----------------------------------------------------------------------------------------------------------------------
 def xl8(t):
     global display
     match t:
         case [''                 ]: return ""
-        case ['='                ]: return ""
+        case ['comment',       tx]: return tx
         case ['Label',         tx]: return tx
         case ['Integer',       tx]: return tx
         case ['String',        tx]: return tx
         case ['Real',          tx]: return tx
         case ['Id',            nm]: return nm
         case ['Function',      nm]: return nm.upper()
-        case ['=', lvalue, rvalue]: return f"{lvalue} = {rvalue}"
+        case ['SpecialNm',     nm]: return nm.upper()
+        case ['ProtKwd',       nm]: return f"&{nm.upper()}"
+        case ['UnprotKwd',     nm]: return f"&{nm.upper()}"
+        case ['=', lvalue, rvalue]: return f"{xl8(lvalue)} = {xl8(rvalue)}"
+        case ['='                ]: return "="
         case ['&',         *exprs]: #
-                                    if len(exprs) == 1:     return f"&{xl8(exprs[0])}"
-                                    elif len(exprs) == 2:   return f"{xl8(exprs[0])} & {xl8(exprs[1])}"
+                                    if len(exprs) == 1:   return f"&{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} & {xl8(exprs[1])}"
         case ['*',         *exprs]: #
-                                    if len(exprs) == 1:     return f"*{xl8(exprs[0])}"
-                                    elif len(exprs) == 2:   return f"{xl8(exprs[0])} * {xl8(exprs[1])}"
+                                    if len(exprs) == 1:   return f"*{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} * {xl8(exprs[1])}"
         case ['()',          expr]: return f"({xl8(expr)})"
+        case ['S()',         expr]: return f"S({xl8(expr)})"
+        case ['F()',         expr]: return f"F({xl8(expr)})"
         case ['Call',   nm, elist]: return f"{xl8(nm)}({xl8(elist)})"
         case ['..',        *exprs]: return " + ".join((xl8(expr) for expr in exprs))
+        case ['|',         *exprs]: return " | ".join((xl8(expr) for expr in exprs))
         case ['ExprList',  *exprs]: return ", ".join((xl8(expr) for expr in exprs))
-        case ['Stmt',      *parts]: return "\n".join((xl8(part) for part in parts)) + "\n"
-        case ['Parse',  *commands]: return "".join((xl8(command) for command in commands))
+        case ['Parse',  *commands]: return "\n".join((xl8(command) for command in commands))
+#       ----------------------------------------------------------------------------------------------------------------
+        case ['Comment',     part]: return xl8(part)
+        case ['Control',     part]: return xl8(part)
+        case ['Stmt', labl, subj,
+             patrn, asgn, repl,
+             go1, go2]:             return f"{xl8(labl)} {xl8(subj)}" \
+                                           f"{' ' if patrn != [''] else ''}{xl8(patrn)}" \
+                                           f"{' ' if asgn  != [''] else ''}{xl8(asgn)}" \
+                                           f"{' ' if repl  != [''] else ''}{xl8(repl)}" \
+                                         + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
+#       ----------------------------------------------------------------------------------------------------------------
         case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
