@@ -215,6 +215,7 @@ def Shift(t=None, v=None) -> PATTERN:
 @pattern
 def Reduce(t, n=-1) -> PATTERN:
     global Ϣ
+    if type(t).__name__ == 'function': t = t()
     logger.debug("Reduce(%s, %d) SUCCESS", repr(t), n)
     if   n == -2: n = "Ϣ[-1].istack[Ϣ[-1].itop + 1]"
     elif n == -1: n = "Ϣ[-1].istack[Ϣ[-1].itop]"
