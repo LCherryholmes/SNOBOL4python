@@ -14,32 +14,32 @@ from pprint import PrettyPrinter
 ppr = PrettyPrinter(indent=2, width=80)
 #------------------------------------------------------------------------------
 @pattern
-def ς(s):            yield from  σ(f" {s}")
+def ς(s): yield from σ(f" {s}")
 #------------------------------------------------------------------------------
 @pattern
 def Sentence():
     yield from                   ( DeclarativeSentence()
                                  | InterrogativeSentence()
                                  | ImperativeSentence()
-                                 )
+                                 ) @ "OUTPUT"
 @pattern
 def DeclarativeSentence():
     yield from                   ( SimpleSentence()
                                  + ARBNO(Coordinator() + SimpleSentence())
                                  + (SubordinateClause() | ε())
-                                 )
+                                 ) @ "OUTPUT"
 @pattern
 def SimpleSentence():
-    yield from                   NounPhrase() + VerbPhrase() + SentenceEnd()
+    yield from                   (NounPhrase() + VerbPhrase() + SentenceEnd()) @ "OUTPUT"
 @pattern
 def InterrogativeSentence():
-    yield from                   InterroWord() + SimpleSentence() + σ("?")
+    yield from                   (InterroWord() + SimpleSentence() + σ("?"))  @ "OUTPUT"
 @pattern
 def ImperativeSentence():
-    yield from                   VerbPhraseImperative() + SentenceEnd()
+    yield from                   (VerbPhraseImperative() + SentenceEnd())  @ "OUTPUT"
 @pattern
 def SubordinateClause():
-    yield from                   Subordinator() + SimpleSentence()
+    yield from                   (Subordinator() + SimpleSentence()) @ "OUTPUT"
 @pattern
 def NounPhrase():
     yield from                   ( (Determiner() | ε())
@@ -48,10 +48,10 @@ def NounPhrase():
                                  + (RelativeClause() | ε())
                                  | ProperNoun() + (RelativeClause() | ε())
                                  | NounPhrase() + Conjunction() + NounPhrase()
-                                 )
+                                 ) @ "OUTPUT"
 @pattern
 def RelativeClause():
-    yield from                   RelativePronoun() + VerbPhrase()
+    yield from                   (RelativePronoun() + VerbPhrase()) @ "OUTPUT"
 @pattern
 def VerbPhrase():
     yield from                   ( Verb()
@@ -62,53 +62,51 @@ def VerbPhrase():
                                  + Verb()
                                  + (NounPhrase() | ε())
                                  + (PrepositionalPhraseList() | ε())
-                                 )
+                                 ) @ "OUTPUT"
 @pattern
 def VerbPhraseImperative():
     yield from                   ( Verb()
                                  + (NounPhrase() | ε())
                                  + (PrepositionalPhraseList() | ε())
-                                 )
+                                 ) @ "OUTPUT"
 @pattern
 def AdverbPhrase():
-    yield from                   Adverb() + ARBNO(Adverb())
+    yield from                   (Adverb() + ARBNO(Adverb())) @ "OUTPUT"
 @pattern
 def PrepositionalPhraseList():
-    yield from                   PrepositionalPhrase() + ARBNO(PrepositionalPhrase())
+    yield from                   (PrepositionalPhrase() + ARBNO(PrepositionalPhrase())) @ "OUTPUT"
 @pattern
 def PrepositionalPhrase():
-    yield from                   Preposition() + NounPhrase()
+    yield from                   (Preposition() + NounPhrase()) @ "OUTPUT"
 #------------------------------------------------------------------------------
 @pattern
-def Coordinator():      yield from  ς("and") | ς("or") | ς("but")
+def Coordinator():      yield from  (ς("and") | ς("or") | ς("but")) @ "OUTPUT"
 @pattern
-def Conjunction():      yield from  ς("and") | ς("or")
+def Conjunction():      yield from  (ς("and") | ς("or")) @ "OUTPUT"
 @pattern
-def Subordinator():     yield from  ς("because") | ς("since") | ς("when") | ς("although")
+def Subordinator():     yield from  (ς("because") | ς("since") | ς("when") | ς("although")) @ "OUTPUT"
 @pattern
-def RelativePronoun():  yield from  ς("who") | ς("whom") | ς("which") | ς("that")
+def RelativePronoun():  yield from  (ς("who") | ς("whom") | ς("which") | ς("that")) @ "OUTPUT"
 @pattern
-def InterroWord():      yield from  ς("what") | ς("who") | ς("where") | ς("when") | ς("why") | ς("how")
+def InterroWord():      yield from  (ς("what") | ς("who") | ς("where") | ς("when") | ς("why") | ς("how")) @ "OUTPUT"
 @pattern
-def Determiner():       yield from  ς("the") | ς("a") | ς("an") | ς("this") | ς("that") | ς("these") | ς("those")
+def Determiner():       yield from  (ς("the") | ς("a") | ς("an") | ς("this") | ς("that") | ς("these") | ς("those")) @ "OUTPUT"
 @pattern
-def Noun():             yield from  ς("dog") | ς("cat") | ς("man") | ς("woman") | ς("city") | ς("car") | ς("book") | ς("tree") | ς("child")
+def Noun():             yield from  (wrd() @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
 @pattern
-def ProperNoun():       yield from  ς("John") | ς("Mary") | ς("Paris") | ς("London") | ς("Alice")
+def ProperNoun():       yield from  (ς("John") | ς("Mary") | ς("Paris") | ς("London") | ς("Alice")) @ "OUTPUT"
 @pattern
-def Verb():             yield from  ς("sees") | ς("likes") | ς("chases") | ς("finds") | ς("eats") | ς("drives") | ς("reads") | ς("walks") | ς("runs")
+def Verb():             yield from  (wrd() @ "tx" + Λ(lambda: is_verb(tx))) @ "OUTPUT"
 @pattern
-def Auxiliary():        yield from  ς("can") | ς("could") | ς("will") | ς("would") | ς("should") | ς("may") | ς("might")
+def Auxiliary():        yield from  (ς("can") | ς("could") | ς("will") | ς("would") | ς("should") | ς("may") | ς("might")) @ "OUTPUT"
 @pattern
-def Adjective():        yield from  ς("big") | ς("small") | ς("red") | ς("quick") | ς("happy") | ς("sad")
+def Adjective():        yield from  (wrd() @ "tx" + Λ(lambda: is_adjective(tx))) @ "OUTPUT"
 @pattern
-def Adverb():           yield from  ς("quickly") | ς("silently") | ς("eagerly") | ς("loudly") | ς("gracefully")
+def Adverb():           yield from  (wrd() @ "tx" + Λ(lambda: is_adverb(tx))) @ "OUTPUT"
 @pattern
-def Preposition():      yield from  ς("in") | ς("on") | ς("at") | ς("by") | ς("with") | ς("under") | ς("over") | ς("through")
+def Preposition():      yield from  (ς("in") | ς("on") | ς("at") | ς("by") | ς("with") | ς("under") | ς("over") | ς("through")) @ "OUTPUT"
 @pattern
-def SentenceEnd():      yield from  σ("." ) | σ("!" ) | σ("?")
-#------------------------------------------------------------------------------
-GLOBALS(globals())
+def SentenceEnd():      yield from  (σ("." ) | σ("!" ) | σ("?")) @ "OUTPUT"
 #------------------------------------------------------------------------------
 keywords = [
      None, 
@@ -142,36 +140,38 @@ keywords = [
 ]
 #-------------------------------------------------------------------------------
 @pattern
-def wrd():      yield from  (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
+def wrd():      yield from  SPAN(UCASE+LCASE) # (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
 @pattern
 def word():     yield from  wrd() @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
 @pattern
 def keyword():  yield from  wrd() @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #-------------------------------------------------------------------------------
 import wordnet
-from wordnet import Lexicon, lexicon
+from wordnet import Lexicon, lexicon, pos
 from wordnet import is_noun, is_verb, is_adjective, is_adverb
 @pattern
-def eTokens():
+def eTokens(X):
     yield from  \
-    ( POS(0)                    + λ("""P = "(\\n\"""")
+    ( POS(0)                                            + λ(f'''{X} = []''')
     + ARBNO(
 #       Θ("OUTPUT") +
-        ( σ(' ')                + λ("""P += "σ(' ') + \"""")
-        | σ('\n')               + λ("""P += "σ('\\\\n') +\\n\"""")
-        | wrd() @ "tx" + Λ(lambda: is_noun(tx))         + λ("""P += "noun() + \"""")
-        | wrd() @ "tx" + Λ(lambda: is_verb(tx))         + λ("""P += "verb() + \"""")
-        | wrd() @ "tx" + Λ(lambda: is_adjective(tx))    + λ("""P += "adj() + \"""")
-        | wrd() @ "tx" + Λ(lambda: is_adverb(tx))       + λ("""P += "adv() + \"""")
-#       | keyword()             + λ("""P += "ς('" + w + "') + \"""")
-#       | word()                + λ("""P += "word() + \"""")
-        | SPAN(DIGITS)         + λ("""P += "SPAN(DIGITS) + \"""")
-        | SPAN(UCASE)          + λ("""P += "SPAN(UCASE) + \"""")
-        | SPAN(LCASE)          + λ("""P += "SPAN(LCASE) + \"""")
-        | NOTANY(DIGITS+UCASE+LCASE) % "tx" + λ("""P += "ς('" + ("\\\\" if tx == "\\\\" else "") + tx + "') + \"""")
+        ( σ(' ')                                        + λ(f'''{X}.append("σ(' ')")''')
+        | σ('\n')                                       + λ(f'''{X}.append("σ('\\\\n')\\n"''')
+        | wrd() @ "tx" % "tx" + Λ(lambda: pos(tx))      + λ(f'''{X}.append(pos(tx))''')
+        | wrd() % "tx"                                  + λ(f'''{X}.append("ς('" + tx + "')")''')
+        | wrd() @ "tx" + Λ(lambda: is_noun(tx))         + λ(f'''{X}.append("noun()")''')
+        | wrd() @ "tx" + Λ(lambda: is_verb(tx))         + λ(f'''{X}.append("verb()")''')
+        | wrd() @ "tx" + Λ(lambda: is_adjective(tx))    + λ(f'''{X}.append("adj()")''')
+        | wrd() @ "tx" + Λ(lambda: is_adverb(tx))       + λ(f'''{X}.append("adv()")''')
+        | keyword()                                     + λ(f'''{X}.append("ς('" + w + "')")''')
+        | word()                                        + λ(f'''{X}.append("word()")''')
+        | SPAN(DIGITS)                                  + λ(f'''{X}.append("SPAN(DIGITS)")''')
+        | SPAN(UCASE)                                   + λ(f'''{X}.append("SPAN(UCASE)")''')
+        | SPAN(LCASE)                                   + λ(f'''{X}.append("SPAN(LCASE)")''')
+        | NOTANY(DIGITS+UCASE+LCASE) % "tx"             + λ(f'''{X}.append("σ('" + tx + "')")''')
         ) # @ "OUTPUT"
       )
-    + RPOS(0)                   + λ("""P += ")\\n\"""")
+    + RPOS(0)
     )
 #-------------------------------------------------------------------------------
 def traverse(tree):
@@ -189,21 +189,32 @@ def traverse(tree):
             traverse(child)
 #-------------------------------------------------------------------------------
 import stanza
+ITERATIONS = 200
 def main():
 #   nlp = stanza.Pipeline('en', processors='tokenize,mwt,pos,constituency')
     Lexicon()
     eInput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.txt"
-#   eOutput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english.out"
+    eOutput_nm = "C:/SNOBOL4python/ENG-685/transl8r_english_out.py"
+    iterations = 0
     with open(eInput_nm, "r", encoding="utf-8") as eInput:
-#       with open(eOutput_nm, "w", encoding="utf-8") as eOutput:
+        with open(eOutput_nm, "w", encoding="utf-8") as eOutput:
             while eSource := eInput.readline():
+                iterations += 1
+                if iterations > ITERATIONS: break
                 sentence = eSource[0:-1]
-                print('#', sentence)
-                if sentence in eTokens():
-                    print(P)
+                eOutput.write(f'''"{sentence}" in ''')
+                if sentence in eTokens('P'):
+                    eOutput.write("POS(0) + " + " + ".join(P) + " + RPOS(0)")
+#                   if sentence.lower() in POS(0) + Sentence() + RPOS(0):
+#                       eOutput.write("Yeah!!!\n")
+                    eOutput.write("\n")
 #               bank = nlp(sentence)
 #               for root in bank.sentences:
 #                   constituency = root.constituency
 #                   traverse(constituency)
 #                   print()
+#-------------------------------------------------------------------------------
+if __name__ == "__main__":
+    GLOBALS(globals())
+    main()
 #-------------------------------------------------------------------------------

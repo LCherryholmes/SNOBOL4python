@@ -18,15 +18,23 @@ def enter(word, word_pos):
     global lexicon
     word = REPLACE(word, '_', ' ')
     if word in lexicon:
-        if word_pos not in lexicon[word]:
-            lexicon[word] += word_pos
-    else: lexicon[word] = word_pos 
+        for letter in word_pos:
+            if letter not in lexicon[word]:
+                lexicon[word].add(letter)
+    else: lexicon[word] = {word_pos}
     return True
+#-------------------------------------------------------------------------------
+def pos(wrd):
+    if wrd.lower() in lexicon:
+        return "".join(lexicon[wrd.lower()]).upper()
+    else: return None
 #-------------------------------------------------------------------------------
 def is_pos(wrd, word_pos):
     if wrd in lexicon:
-        return word_pos in lexicon[wrd]
-    else: return False    
+        result = word_pos in lexicon[wrd]
+    else: result = False
+#   print('', wrd, word_pos, result, lexicon[wrd] if wrd in lexicon else "None", end="")
+    return result
 #-------------------------------------------------------------------------------
 def is_noun(wrd):
     wrd = wrd.lower()
@@ -138,12 +146,12 @@ def Lexicon_sno():
 #-------------------------------------------------------------------------------
 import re
 re_word_id = re.compile(r" ([^ ]+) [0123456789abcdef]{1,2}")
-re_wordnet = re.compile(
+re_wordnet_data = re.compile(
     r"^[0123456789]{8}"
     r" [0123456789]{2}"
     r" ([asrnv])"
     r" [0123456789abcdef]{2}"
-    r"( [^ ]+ [0123456789abcdef]{1,2})+"
+    r"(( [^ ]+ [0123456789abcdef]{1,2})+)"
     r" [0123456789]{3}"
      "("
         r" (?:\$|\\|\+|\*|<|=|&|!|-c|-r|-u|#m|#p|#s|~i|%m|%p|%s|;c|;r|;u|~|@|@i|>|\^)"
@@ -154,6 +162,7 @@ re_wordnet = re.compile(
     r"( [0123456789]{2}( \+( [0123456789abcdef]{2})*)*)?"
     r" \| .*\n$"
 )
+re_wordnet_exc = re.compile(r"^([^ ]+) (.*)\n$")
 #-------------------------------------------------------------------------------
 def Lexicon():
     for lex in ("adv", "verb", "adj", "noun"):
@@ -166,7 +175,7 @@ def Lexicon():
                 lineno += 1
             while line := file.readline():
                 lineno += 1
-                wordnet = re.fullmatch(re_wordnet, line)
+                wordnet = re.fullmatch(re_wordnet_data, line)
                 if wordnet:
                     word_pos = wordnet.group(1)
                     word_list = wordnet.group(2)
@@ -176,6 +185,19 @@ def Lexicon():
                 elif line != "\n":
                     print(f'{lineno}: <<<{line}>>>')
                     exit()
+        file_name = "C:/nltk_data/corpora/wordnet2022/" + lex + ".exc"
+        print(f"Reading: {file_name}")
+        with open(file_name, "r", encoding="utf-8") as file:
+            lineno = 0
+            while line := file.readline():
+                lineno += 1
+                wordnet = re.fullmatch(re_wordnet_exc, line)
+                if wordnet:
+                    word_exc = wordnet.group(1)
+                    word_alias = wordnet.group(2)
+                    if word_alias in lexicon:
+                        enter(word_exc, "".join(lexicon[word_alias]))
+                    else: print("Warning:", word_alias, word_exc)
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
     Lexicon()
