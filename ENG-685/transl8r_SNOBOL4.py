@@ -29,7 +29,7 @@ def Real():         yield from  ( SPAN(DIGITS)
                                     | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
                                     ) % "tx"
 @pattern
-def Id():           yield from  (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "tx"
+def Id():           yield from  (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
 @pattern
 def Gray():         yield from  White() | ε()
 @pattern
@@ -111,11 +111,11 @@ def Expr1():        yield from  Expr2() + FENCE(ζ('?') + Expr1()  + Reduce('?',
 @pattern
 def Expr2():        yield from  Expr3() + FENCE(ζ('&') + Expr2()  + Reduce('&', 2) | ε())
 @pattern
-def Expr3():        yield from  nPush() + X3()    + Reduce('|', -1)  + nPop()
+def Expr3():        yield from  nPush() + X3() + Reduce('|', -1)  + nPop()
 @pattern
-def X3():           yield from  nInc()  + Expr4() + FENCE(ζ('|')     + X3() | ε())
+def X3():           yield from  nInc()  + Expr4() + FENCE(ζ('|')  + X3() | ε())
 @pattern
-def Expr4():        yield from  nPush() + X4()    + Reduce('..', -1) + nPop()
+def Expr4():        yield from  nPush() + X4() + Reduce('..', -1) + nPop()
 @pattern
 def X4():           yield from  nInc()  + Expr5() + FENCE(White() + X4() | ε())
 @pattern
@@ -187,11 +187,11 @@ def Expr17():       yield from  FENCE(
                                   + ζ(')')
                                   + nPop()
                                   )
-                                | Function()   % "tx" + Shift('Function', "nm") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
-                                | Id()         % "tx" + Shift('Id', "tx") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
-                                | BuiltinVar() % "tx" + Shift('BuiltinVar', "nm")
-                                | SpecialNm()  % "tx" + Shift('SpecialNm', "nm")
-                                | Id()         % "tx" + Shift('Id', "tx")
+                                | Function()          + Shift('Function', "nm") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
+                                | Id()                + Shift('Id', "nm") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
+                                | BuiltinVar()        + Shift('BuiltinVar', "nm")
+                                | SpecialNm()         + Shift('SpecialNm', "nm")
+                                | Id()                + Shift('Id', "nm")
                                 | String()     % "tx" + Shift('String', "tx")
                                 | Real()       % "tx" + Shift('Real', "tx")
                                 | Integer()    % "tx" + Shift('Integer', "tx")
@@ -211,8 +211,8 @@ def Target():       yield from  ( ζ('(') + λ("Brackets = '()'") + Expr() + ζ(
 def Goto():         yield from  ( Gray() + σ(':')
                                 + Gray()
                                 + FENCE(
-                                    Target()                               + Reduce("*(':' + Brackets)", 1) + Shift()
-                                  | SorF() + Target()                   + Reduce("*(':' SorF + Brackets)", 1)
+                                    Target()                         + Reduce("*(':' + Brackets)", 1) + Shift()
+                                  | SorF() + Target()                + Reduce("*(':' SorF + Brackets)", 1)
                                   + FENCE(Gray() + SorF() + Target() + Reduce("*(':' SorF Brackets)", 1) | Shift())
                                   )
                                 )
@@ -280,7 +280,7 @@ def Parse():        yield from  ( POS(0)
                                 + Pop('SNOBOL4_tree')
                                 + RPOS(0)
                                 )
-str_snoParse = """\
+str_Parse = """\
     Parse           =             POS(0)
 +                                 nPush()
 +                                 ARBNO(*Command)
@@ -288,8 +288,35 @@ str_snoParse = """\
 +                                 nPop()
 +                                 RPOS(0)
 """
+#----------------------------------------------------------------------------------------------------------------------
+def xl8(t):
+    global display
+    match t:
+        case [''                 ]: return ""
+        case ['='                ]: return ""
+        case ['Label',         tx]: return tx
+        case ['Integer',       tx]: return tx
+        case ['String',        tx]: return tx
+        case ['Real',          tx]: return tx
+        case ['Id',            nm]: return nm
+        case ['Function',      nm]: return nm.upper()
+        case ['=', lvalue, rvalue]: return f"{lvalue} = {rvalue}"
+        case ['&',         *exprs]: #
+                                    if len(exprs) == 1:     return f"&{xl8(exprs[0])}"
+                                    elif len(exprs) == 2:   return f"{xl8(exprs[0])} & {xl8(exprs[1])}"
+        case ['*',         *exprs]: #
+                                    if len(exprs) == 1:     return f"*{xl8(exprs[0])}"
+                                    elif len(exprs) == 2:   return f"{xl8(exprs[0])} * {xl8(exprs[1])}"
+        case ['()',          expr]: return f"({xl8(expr)})"
+        case ['Call',   nm, elist]: return f"{xl8(nm)}({xl8(elist)})"
+        case ['..',        *exprs]: return " + ".join((xl8(expr) for expr in exprs))
+        case ['ExprList',  *exprs]: return ", ".join((xl8(expr) for expr in exprs))
+        case ['Stmt',      *parts]: return "\n".join((xl8(part) for part in parts)) + "\n"
+        case ['Parse',  *commands]: return "".join((xl8(command) for command in commands))
+        case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
-if str_snoParse in Parse() % "OUTPUT":
+if str_Parse in Parse():
     pprint(SNOBOL4_tree)
-#-----------------------------------------------------------------------------------------------------------------------
+    print(xl8(SNOBOL4_tree))
+#----------------------------------------------------------------------------------------------------------------------
