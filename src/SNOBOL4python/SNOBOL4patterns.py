@@ -203,20 +203,21 @@ def nPop() -> PATTERN:
     Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
-def Shift(t, v='') -> PATTERN:
+def Shift(t=None, v=None) -> PATTERN:
     global Ϣ
     logger.debug("Shift(%s, %s) SUCCESS", repr(t), repr(v))
-    if v is None:
-        Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}')")
-    else: Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}', {v})")
+    if t is None:   Ϣ[-1].cstack.append(f"Ϣ[-1].shift()")
+    elif v is None: Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}')")
+    else:           Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{t}', {v})")
     yield ""
     logger.debug("Shift(%s, %s) backtracking...", repr(t), repr(v))
     Ϣ[-1].cstack.pop()
 @pattern
-def Reduce(t, n=None) -> PATTERN:
+def Reduce(t, n=-1) -> PATTERN:
     global Ϣ
     logger.debug("Reduce(%s, %d) SUCCESS", repr(t), n)
-    if n is None: n = "Ϣ[-1].istack[Ϣ[-1].itop]"
+    if   n == -2: n = "Ϣ[-1].istack[Ϣ[-1].itop + 1]"
+    elif n == -1: n = "Ϣ[-1].istack[Ϣ[-1].itop]"
     Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{t}', {n})")
     yield ""
     logger.debug("Reduce(%s, %d) backtracking...", repr(t), n)
@@ -541,7 +542,7 @@ def MARBNO(P) -> PATTERN: yield from ARBNO(P)
 def _push(lyst): Ϣ[-1].vstack.append(lyst)
 def _pop():      return Ϣ[-1].vstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
-def _shift(t, v=None):
+def _shift(t='', v=None):
     global _globals
     if v is None:
         _push([t])
@@ -551,7 +552,7 @@ def _reduce(t, n):
     global _globals
     if n == 0 and t == 'Σ':
         _push(['ε'])
-    elif n != 1 or t not in ('Σ', 'Π', 'ξ'):
+    elif n != 1 or t not in ('Σ', 'Π', 'ξ', 'snoExprList', '|', '..'):
         x = [t]
         for i in range(n):
             x.insert(1, _pop())
