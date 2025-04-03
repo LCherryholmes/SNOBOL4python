@@ -32,7 +32,7 @@ def Real():         yield from  ( SPAN(DIGITS)
                                     + (σ('+') | σ('-') | ε())
                                     + SPAN(DIGITS)
                                     | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
-                                    ) % "tx"
+                                ) % "tx"
 @pattern
 def Id():           yield from  (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
 @pattern
@@ -275,39 +275,6 @@ def Compiland():    yield from  ( POS(0)
                                 + Pop('SNOBOL4_tree')
                                 + RPOS(0)
                                 )
-#-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Parse():        yield from  ( POS(0)
-                                + nPush()
-                                + ARBNO(Command())
-                                + Reduce('Parse', -1)
-                                + nPop()
-                                + Pop('SNOBOL4_tree')
-                                + RPOS(0)
-                                )
-str_Parse = """\
-                  doDebug        =  0
-                  snoSpace       =  SPAN(' ' tab) | epsilon
-main00            snoLine        =  INPUT                                           :F(END)
-main01            snoSrc         =
-                  snoLine        POS(0) ANY('*-')                                   :F(main02)
-                  OUTPUT         =  snoLine                                         :(main00)
-main02            snoSrc         =  snoSrc snoLine nl
-                  snoLine        =  INPUT                                           :F(main05)
-                  snoLine        POS(0) ANY('.+')                                   :S(main02)
-                  snoSrc         POS(0) *snoParse *snoSpace RPOS(0)                 :F(mainErr1)
-                  DIFFER(sno = Pop())                                               :F(mainErr2)
-                  pp(sno)                                                           :(main01)
-main05            snoSrc         POS(0) *snoParse *snoSpace RPOS(0)                 :F(mainErr1)
-                  DIFFER(sno = Pop())                                               :F(mainErr2)
-                  pp(sno)                                                           :(END)
-mainErr1          OUTPUT         =  'Parse Error'
-                  OUTPUT         =  snoSrc                                          :(END)
-mainErr2          OUTPUT         =  'Internal Error'
-                  OUTPUT         =  snoSrc                                          :(END)
-*-INCLUDE 'debug.sno'
-END
-"""
 #----------------------------------------------------------------------------------------------------------------------
 def xl8(t):
     global display
@@ -328,6 +295,9 @@ def xl8(t):
         case ['&',         *exprs]: #
                                     if len(exprs) == 1:   return f"&{xl8(exprs[0])}"
                                     elif len(exprs) == 2: return f"{xl8(exprs[0])} & {xl8(exprs[1])}"
+        case ['.',         *exprs]: #
+                                    if len(exprs) == 1:   return f".{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} . {xl8(exprs[1])}"
         case ['*',         *exprs]: #
                                     if len(exprs) == 1:   return f"*{xl8(exprs[0])}"
                                     elif len(exprs) == 2: return f"{xl8(exprs[0])} * {xl8(exprs[1])}"
@@ -348,12 +318,33 @@ def xl8(t):
                                            f"{' ' if patrn != [''] else ''}{xl8(patrn)}" \
                                            f"{' ' if asgn  != [''] else ''}{xl8(asgn)}" \
                                            f"{' ' if repl  != [''] else ''}{xl8(repl)}" \
-                                         + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
+                                        + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
 #       ----------------------------------------------------------------------------------------------------------------
         case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
+@pattern
+def Parse():        yield from  ( POS(0)
+                                + nPush()
+                                + ARBNO(Command())
+                                + Reduce('Parse', -1)
+                                + nPop()
+                                + Pop('SNOBOL4_tree')
+                                + λ("pprint(SNOBOL4_tree)")
+                                + λ("print(xl8(SNOBOL4_tree))")
+                                + RPOS(0)
+
+                                )
+str_Parse = """\
+    snoParse        =             POS(0)
++                                 nPush()
++                                 ARBNO(*snoCommand)
++                                 ("'snoParse'" & 'nTop()')
++                                 nPop() . *Pop("SNOBOL4_tree)
++                                        . *pprint(SNOBOL4_tree)
++                                        . *print(xl8(SNOBOL4_tree))
++                                 RPOS(0)
+"""
+#-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
-if str_Parse in Parse():
-    pprint(SNOBOL4_tree)
-    print(xl8(SNOBOL4_tree))
+str_Parse in Parse()
 #----------------------------------------------------------------------------------------------------------------------
