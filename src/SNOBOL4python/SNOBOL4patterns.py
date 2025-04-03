@@ -552,7 +552,7 @@ def _reduce(t, n):
     global _globals
     if n == 0 and t == 'Σ':
         _push(['ε'])
-    elif n != 1 or t not in ('Σ', 'Π', 'ξ'):
+    elif n != 1 or t not in ('Σ', 'Π', 'ξ', 'snoExprList', '|', '..'):
         x = [t]
         for i in range(n):
             x.insert(1, _pop())
