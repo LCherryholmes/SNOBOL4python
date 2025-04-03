@@ -305,7 +305,7 @@ def xl8(t):
         case ['S()',         expr]: return f"S({xl8(expr)})"
         case ['F()',         expr]: return f"F({xl8(expr)})"
         case ['Call',   nm, elist]: return f"{xl8(nm)}({xl8(elist)})"
-        case ['..',        *exprs]: return " + ".join((xl8(expr) for expr in exprs))
+        case ['..',        *exprs]: return " ".join((xl8(expr) for expr in exprs))
         case ['|',         *exprs]: return " | ".join((xl8(expr) for expr in exprs))
         case ['ExprList',  *exprs]: return ", ".join((xl8(expr) for expr in exprs))
         case ['Parse',  *commands]: return "\n".join((xl8(command) for command in commands))
@@ -339,7 +339,7 @@ str_Parse = """\
 +                                 nPush()
 +                                 ARBNO(*snoCommand)
 +                                 ("'snoParse'" & 'nTop()')
-+                                 nPop() . *Pop("SNOBOL4_tree)
++                                 nPop() . *Pop("SNOBOL4_tree")
 +                                        . *pprint(SNOBOL4_tree)
 +                                        . *print(xl8(SNOBOL4_tree))
 +                                 RPOS(0)
