@@ -2,15 +2,15 @@
 #-----------------------------------------------------------------------------------------------------------------------
 # Parse JSON string
 #-----------------------------------------------------------------------------------------------------------------------
-import SNOBOL4python
-import operator
-from datetime import datetime
-from SNOBOL4python import GLOBALS, pattern
-from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
-from SNOBOL4python import ε, σ, π, Λ, λ
-from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import JSONDecode
+from datetime import datetime
+import operator
 #-----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ς(s):           yield from (SPAN(" \t\r\n") | ε()) + σ(s)

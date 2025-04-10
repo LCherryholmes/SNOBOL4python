@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import SNOBOL4python as S4p
-from SNOBOL4python import GLOBALS, pattern
-from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
-from SNOBOL4python import ε, σ, π, Λ, λ
-from SNOBOL4python import ANY, ARB, ARBNO, BAL, FENCE, POS, RPOS, SPAN
+#------------------------------------------------------------------------------
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 #------------------------------------------------------------------------------
 # Parse Regular Expression language

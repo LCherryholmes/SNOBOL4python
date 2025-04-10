@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # ENG 685, Universal Tokenizer, Lon Cherryholmes Sr.
 #------------------------------------------------------------------------------
-from SNOBOL4python import ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
-from SNOBOL4python import GLOBALS, pattern
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 #------------------------------------------------------------------------------
@@ -14,6 +13,7 @@ from pprint import PrettyPrinter
 #------------------------------------------------------------------------------
 @pattern
 def ς(s): yield from σ(f" {s}")
+#------------------------------------------------------------------------------
 @pattern
 def Noun():             yield from  (wrd() @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
 @pattern

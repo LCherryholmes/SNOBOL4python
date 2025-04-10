@@ -24,13 +24,13 @@ __all__ = [
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
             "RTAB", "SPAN", "SUCCESS", "TAB",
+            "ALPHABET", "DIGITS", "UCASE", "LCASE",
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
 
             "PATTERN", "SEARCH", "MATCH", "FULLMATCH",
             "Σ", "Π", "ξ", "Δ", "δ",
             "ψ", "Ψ", "Ϙ",
 
-            "ALPHABET", "DIGITS", "UCASE", "LCASE",
             "CHAR", "DIFFER", "IDENT", "INTEGER", "REPLACE",
             "JSONDecode",
             "S", "F", "Ξ", "_END", "_RETURN", "_FRETURN", "_NRETURN",

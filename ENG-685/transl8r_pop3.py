@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
-import SNOBOL4python
-from SNOBOL4python import GLOBALS, pattern
-from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS
-from SNOBOL4python import ε, σ, π, λ, Λ, Θ, α, ω, φ, Φ
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
-from SNOBOL4python import FENCE, LEN, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
-from pprint import pformat, pprint
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
+from pprint import pprint, pformat
 #-------------------------------------------------------------------------------
 def trace(s): print(s, flush=True); return True
 #-------------------------------------------------------------------------------

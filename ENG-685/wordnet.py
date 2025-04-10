@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+#------------------------------------------------------------------------------
+from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, Λ, λ, Θ
-from SNOBOL4python import ALPHABET, UCASE, LCASE, DIGITS, REPLACE
-from SNOBOL4python import ANY, ARBNO, BAL, BREAK, LEN, NOTANY, POS
-from SNOBOL4python import REM, RPOS, RTAB, SPAN, TAB
 #-------------------------------------------------------------------------------
 lineno = 0
 def inc():
