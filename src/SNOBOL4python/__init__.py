@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import GLOBALS, pattern
+from .SNOBOL4patterns import GLOBALS, TRACE, WINDOW, pattern
 from .SNOBOL4patterns import ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from .SNOBOL4patterns import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
@@ -19,7 +19,7 @@ from .SNOBOL4functions import S, F, Ξ, _END, _RETURN, _FRETURN, _NRETURN
 # Ν ν Ξ ξ Ο ο Π π Ρ ρ Σ σ Τ τ Υ υ φ Φ Χ χ Ψ ψ Ω ω
 #-------------------------------------------------------------------------------
 __all__ = [
-            "GLOBALS", "pattern",
+            "GLOBALS", "TRACE", "WINDOW", "pattern",
             "ε", "σ", "π", "λ", "Λ", "θ", "Θ", "φ", "Φ", "α", "ω",
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
