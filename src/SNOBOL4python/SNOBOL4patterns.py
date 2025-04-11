@@ -140,20 +140,22 @@ def δ(P:PATTERN, N:str): # delta, binary '@', SNOBOL4: P $ N
 @pattern
 def Λ(expression:str|object): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     global _globals
-    logger.debug("Λ(%r) evaluating...", expression)
     match type(expression).__name__:
         case 'str':
+            logger.debug("Λ(%r) evaluating...", expression)
             if eval(expression, _globals):
                 logger.info("Λ(%r) SUCCESS", expression)
                 yield ""
                 logger.warning("Λ(%r) backtracking...", expression)
-            else: logger.error("Λ(%r) Error evaluating. FAIL", expression)
+            else: logger.error("Λ(%r) Error evaluating. FAIL!", expression)
         case 'function':
-            if expression():
-                logger.info("Λ(%r) SUCCESS", expression)
-                yield ""
-                logger.warning("Λ(%r) backtracking...", expression)
-            else: logger.error("Λ(%r) Error evaluating. FAIL", expression)
+            logger.debug("Λ(...) evaluating...")
+            try:
+                if expression():
+                    logger.info("Λ(...) SUCCESS")
+                    yield ""
+                    logger.warning("Λ(...) backtracking...")
+            except: logger.error("Λ(...) Exception evaluating. FAIL!")
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern
@@ -619,12 +621,12 @@ def GLOBALS(g:dict): global _globals; _globals = g
 def WINDOW(size:int): global _window_size; _window_size = size
 def TRACE(level:int):
     global handler
-    if   level >  logging.CRITICAL: handler.setLevel(level)
-    elif level == logging.CRITICAL: handler.setLevel(logging.CRITICAL)
-    elif level >= logging.ERROR:    handler.setLevel(logging.ERROR)
-    elif level >= logging.WARNING:  handler.setLevel(logging.WARNING)
-    elif level >= logging.INFO:     handler.setLevel(logging.INFO)
-    elif level >= logging.DEBUG:    handler.setLevel(logging.DEBUG)
+    if   level >  logging.CRITICAL: logger.setLevel(level);             handler.setLevel(level)
+    elif level == logging.CRITICAL: logger.setLevel(logging.CRITICAL);  handler.setLevel(logging.CRITICAL)
+    elif level >= logging.ERROR:    logger.setLevel(logging.ERROR);     handler.setLevel(logging.ERROR)
+    elif level >= logging.WARNING:  logger.setLevel(logging.WARNING);   handler.setLevel(logging.WARNING)
+    elif level >= logging.INFO:     logger.setLevel(logging.INFO);      handler.setLevel(logging.INFO)
+    elif level >= logging.DEBUG:    logger.setLevel(logging.DEBUG);     handler.setLevel(logging.DEBUG)
 #----------------------------------------------------------------------------------------------------------------------
 def MATCH     (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P)
 def FULLMATCH (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
@@ -657,6 +659,16 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
 if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
+    TRACE(10)
+    WINDOW(32)
+    for N in range(1,3):
+        for subject in ['FOX', 'WOLF']:
+            matches = subject in (
+                Λ(lambda: N == 1) + σ('FOX')
+              | Λ(lambda: N == 2) + σ('WOLF')
+            )
+            pprint([N, subject, matches])
+    exit(0)
     @pattern
     def word(): yield from (ANY(UCASE+LCASE) + (SPAN(LCASE) | ε())) # SPAN(UCASE+LCASE)
     @pattern
