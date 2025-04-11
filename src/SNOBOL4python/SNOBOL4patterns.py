@@ -43,12 +43,12 @@ class PATTERN(object):
                                         case 'BREAK':   repr = f"BREAK({pformat(self.args[0])})"
                                         case 'BREAKX':  repr = f"BREAKX({pformat(self.args[0])})"
                                         case 'NOTANY':  repr = f"NOTANY({pformat(self.args[0])})"
-                                        case 'POS':     repr = f"POS({self.args[0]})"
+                                        case 'POS':     repr = f"POS({pformat(self.args[0])})"
                                         case 'REM':     repr = f"REM()"
-                                        case 'RPOS':    repr = f"RPOS({self.args[0]})"
-                                        case 'RTAB':    repr = f"RTAB({self.args[0]})"
+                                        case 'RPOS':    repr = f"RPOS({pformat(self.args[0])})"
+                                        case 'RTAB':    repr = f"RTAB({pformat(self.args[0])})"
                                         case 'SPAN':    repr = f"SPAN({pformat(self.args[0])})"
-                                        case 'TAB':     repr = f"TAB({self.args[0]})"
+                                        case 'TAB':     repr = f"TAB({pformat(self.args[0])})"
                                         case _:         #
                                                         if len(self.args) > 0:
                                                             repr = f"{self.func.__name__}(*{len(self.args)})"
@@ -264,7 +264,10 @@ def FENCE(P:PATTERN = None): # FENCE and FENCE(P)
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def POS(n:int):
-    global Ϣ; n = int(n)
+    global Ϣ
+    if not isinstance(n, int):
+        if callable(n): n = int(n())
+        else:           n = int(n)
     if Ϣ[-1].pos == n:
         logger.info("POS(%d) SUCCESS(%d,%d)=", n, Ϣ[-1].pos, 0)
         yield ""
@@ -272,7 +275,10 @@ def POS(n:int):
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def RPOS(n:int):
-    global Ϣ; n = int(n)
+    global Ϣ
+    if not isinstance(n, int):
+        if callable(n): n = int(n())
+        else:           n = int(n)
     if Ϣ[-1].pos == len(Ϣ[-1].subject) - n:
         logger.info("RPOS(%d) SUCCESS(%d,%d)=", n, Ϣ[-1].pos, 0)
         yield ""
@@ -294,7 +300,10 @@ def ω():
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def LEN(n:int):
-    global Ϣ; n = int(n)
+    global Ϣ
+    if not isinstance(n, int):
+        if callable(n): n = int(n())
+        else:           n = int(n)
     if Ϣ[-1].pos + n <= len(Ϣ[-1].subject):
         logger.info("LEN(%d) SUCCESS(%d,%d)=%s", n, Ϣ[-1].pos, n, Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + n])
         Ϣ[-1].pos += n
@@ -304,7 +313,10 @@ def LEN(n:int):
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def σ(s:str): # sigma, σ, sequence of characters, literal string patttern
-    global Ϣ; pos0 = Ϣ[-1].pos; s = str(s)
+    global Ϣ; pos0 = Ϣ[-1].pos
+    if not isinstance(s, str):
+        if callable(s): s = str(s())
+        else:           s = str(s)
     logger.debug("σ(%r) trying(%d)", s, pos0)
     if pos0 + len(s) <= len(Ϣ[-1].subject):
         if s == Ϣ[-1].subject[pos0:pos0 + len(s)]:
@@ -321,6 +333,9 @@ _rexs = dict()
 @pattern
 def Φ(rex:str):
     global Ϣ, _rexs
+    if not isinstance(rex, str):
+        if callable(rex): rex = str(rex())
+        else:             rex = str(rex)
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
     if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
@@ -336,6 +351,9 @@ def Φ(rex:str):
 @pattern
 def φ(rex:str):
     global Ϣ, _rexs
+    if not isinstance(rex, str):
+        if callable(rex): rex = str(rex())
+        else:             rex = str(rex)
     if rex not in _rexs:
         _rexs[rex] = re.compile(rex, re.MULTILINE)
     if matches := _rexs[rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
@@ -364,7 +382,10 @@ def Ϙ(): print("Yikes! Ϙ()"); yield ""
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def TAB(n:int):
-    global Ϣ; n = int(n)
+    global Ϣ
+    if not isinstance(n, int):
+        if callable(n): n = int(n())
+        else:           n = int(n)
     if n <= len(Ϣ[-1].subject):
         if n >= Ϣ[-1].pos:
             pos0 = Ϣ[-1].pos
@@ -375,6 +396,9 @@ def TAB(n:int):
 @pattern
 def RTAB(n:int):
     global Ϣ; n = int(n)
+    if not isinstance(n, int):
+        if callable(n): n = int(n())
+        else:           n = int(n)
     if n <= len(Ϣ[-1].subject):
         n = len(Ϣ[-1].subject) - n
         if n >= Ϣ[-1].pos:
@@ -392,7 +416,12 @@ def REM():
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def ANY(characters:str):
-    global Ϣ; assert type(characters) == str
+    global Ϣ
+    if not isinstance(characters, str):
+        if not isinstance(characters, set):
+            if callable(characters):
+                characters = characters()
+            else: characters = str(characters)
     logger.debug("ANY(%r) trying(%d)", characters, Ϣ[-1].pos)
     if Ϣ[-1].pos < len(Ϣ[-1].subject):
         if Ϣ[-1].subject[Ϣ[-1].pos] in characters:
@@ -404,7 +433,12 @@ def ANY(characters:str):
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def NOTANY(characters:str):
-    global Ϣ; assert type(characters) == str
+    global Ϣ
+    if not isinstance(characters, str):
+        if not isinstance(characters, set):
+            if callable(characters):
+                characters = characters()
+            else: characters = str(characters)
     logger.debug("NOTANY(%r) trying(%d)", characters, Ϣ[-1].pos)
     if Ϣ[-1].pos < len(Ϣ[-1].subject):
         if not Ϣ[-1].subject[Ϣ[-1].pos] in characters:
@@ -416,7 +450,12 @@ def NOTANY(characters:str):
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def SPAN(characters:str):
-    global Ϣ; pos0 = Ϣ[-1].pos; assert type(characters) == str
+    global Ϣ; pos0 = Ϣ[-1].pos
+    if not isinstance(characters, str):
+        if not isinstance(characters, set):
+            if callable(characters):
+                characters = characters()
+            else: characters = str(characters)
     logger.debug("SPAN(%r) trying(%d)", characters, pos0)
     while True:
         if Ϣ[-1].pos >= len(Ϣ[-1].subject): break
@@ -432,7 +471,12 @@ def SPAN(characters:str):
 #----------------------------------------------------------------------------------------------------------------------
 @pattern
 def BREAK(characters:str):
-    global Ϣ; pos0 = Ϣ[-1].pos; assert type(characters) == str
+    global Ϣ; pos0 = Ϣ[-1].pos
+    if not isinstance(characters, str):
+        if not isinstance(characters, set):
+            if callable(characters):
+                characters = characters()
+            else: characters = str(characters)
     logger.debug("BREAK(%r) SUCCESS(%d)", characters, pos0)
     while True:
         if Ϣ[-1].pos >= len(Ϣ[-1].subject): break
@@ -666,52 +710,13 @@ if __name__ == "__main__":
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
     TRACE(10)
     WINDOW(32)
-    for N in range(1,3):
-        for subject in ['FOX', 'WOLF']:
-            matches = subject in (
-                Λ(lambda: N == 1) + σ('FOX')
-              | Λ(lambda: N == 2) + σ('WOLF')
-            )
-            pprint([N, subject, matches])
+    @pattern
+    def PAT(): yield from TAB(lambda: I) % "OUTPUT" + SPAN(lambda: S) % "OUTPUT"
+    SUB = '123AABBCC'
+    I = 4
+    S = 'AB'
+    SUB in PAT()
     exit(0)
-    @pattern
-    def word(): yield from (ANY(UCASE+LCASE) + (SPAN(LCASE) | ε())) # SPAN(UCASE+LCASE)
-    @pattern
-    def delimiter():
-        yield from σ(', ')
-        yield from σ(', and ')
-        yield from σ(' and ')
-        return None
-    sentences = ["I went to X, and Y looking for Z."]
-#                 000000000011111111112222222222333
-#                 012345678901234567890123456789012
-    for sentence in sentences:
-        if sentence in \
-              ( POS(0)
-              + (σ('I') | σ('He') | σ('You'))
-              + σ(' went to ')
-              + word()
-              + ARBNO((delimiter() + word()))
-              + σ(' looking for ')
-              + word()
-              + ARBNO((delimiter() + word()))
-              + σ('.')
-              + RPOS(0)
-              ):
-              pprint(['Matched.', None, None, None, sentence])
-        else: pprint(['Unmatched!', None, None, None, sentence])
-    @pattern
-    def As():
-        yield from \
-            (   POS(0)
-            +   ARBNO(σ('a')) @ 'OUTPUT'
-            +   RPOS(0)
-            )
-    assert True is ("" in As())
-    assert True is ("a" in As())
-    assert True is ("aa" in As())
-    assert True is ("aaa" in As())
-    assert True is ("aaaa" in As())
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
