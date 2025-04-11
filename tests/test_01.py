@@ -38,6 +38,7 @@ def real_number():
         )
 assert True is ("12.99E+3" in real_number())
 #------------------------------------------------------------------------------
+from SNOBOL4python import Σ, Π
 @pattern
 def test_one():
     yield from Σ( POS(0) @ 'OUTPUT'
