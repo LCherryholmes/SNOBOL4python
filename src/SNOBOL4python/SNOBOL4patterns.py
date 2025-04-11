@@ -143,11 +143,14 @@ def Λ(expression:str|object): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *f
     match type(expression).__name__:
         case 'str':
             logger.debug("Λ(%r) evaluating...", expression)
-            if eval(expression, _globals):
-                logger.info("Λ(%r) SUCCESS", expression)
-                yield ""
-                logger.warning("Λ(%r) backtracking...", expression)
-            else: logger.error("Λ(%r) Error evaluating. FAIL!", expression)
+            try:
+                if eval(expression, _globals):
+                    logger.info("Λ(%r) SUCCESS", expression)
+                    yield ""
+                    logger.warning("Λ(%r) backtracking...", expression)
+                else: logger.warning("Λ(%r) FAIL!", expression)
+            except Exception as e:
+                logger.error("Λ(%r) EXCEPTION evaluating. (%r) FAIL!", expression, e)
         case 'function':
             logger.debug("Λ(function) evaluating...")
             try:
@@ -155,6 +158,7 @@ def Λ(expression:str|object): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *f
                     logger.info("Λ(function) SUCCESS")
                     yield ""
                     logger.warning("Λ(function) backtracking...")
+                else: logger.warning("Λ(function) FAIL!")
             except Exception as e:
                 logger.error("Λ(function) EXCEPTION evaluating. (%r) FAIL!", e)
 #----------------------------------------------------------------------------------------------------------------------
@@ -621,14 +625,14 @@ def _reduce(t:str, n:int):
 class SNOBOL:
     __slots__ = ['pos', 'subject', 'depth', 'cstack', 'itop', 'istack', 'vstack', 'nl' , 'shift', 'reduce', 'pop']
     def __repr__(self): return f"('SNOBOL', {self.depth}, {self.pos}, {len(self.subject)}, {pformat(self.subject)}, {pformat(self.cstack)})"
-    def __init__(self, pos:int, subject:str, cstack:list, itop:int, istack:int, vstack:list):
+    def __init__(self, pos:int, subject:str):
         self.pos:int        = pos
         self.subject:str    = subject
         self.depth:int      = 0
-        self.cstack:list    = cstack
-        self.itop:int       = itop
-        self.istack:list    = istack
-        self.vstack:list    = vstack
+        self.cstack:list    = []
+        self.itop:int       = -1
+        self.istack:list    = []
+        self.vstack:list    = []
         self.nl:bool        = False
         self.shift          = _shift
         self.reduce         = _reduce
@@ -646,10 +650,10 @@ class DEBUG_formatter(logging.Formatter):
             return f"{pformat(pad_left+left)}|{Ϣ[-1].pos:4d}|{pformat(right+pad_right)}"
         else: return " " * (6 + 2 * size)
     def format(self, record):
-        global Ϣ, _window_size
+        global Ϣ, _window
         original_message = super().format(record)
         if len(Ϣ) > 0:
-            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window_size // 2), '  ' * Ϣ[-1].depth, original_message)
+            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window // 2), '  ' * Ϣ[-1].depth, original_message)
         else: formatted_message = original_message
         return formatted_message
 #----------------------------------------------------------------------------------------------------------------------
@@ -663,19 +667,17 @@ handler.setFormatter(DEBUG_formatter("%(message)s"))
 logger.addHandler(handler)
 #----------------------------------------------------------------------------------------------------------------------
 Ϣ = [] # SNOBOL stack
+_window = 24
 _globals = None # global variables
-_window_size = 24
 #----------------------------------------------------------------------------------------------------------------------
-def GLOBALS(g:dict): global _globals; _globals = g
-def WINDOW(size:int): global _window_size; _window_size = size
-def TRACE(level:int):
+def GLOBALS(g:dict): global _globals; _globals = g; _globals['Ϣ'] = Ϣ
+def TRACE(level:int=None, window:int=None):
     global handler
-    if   level >  logging.CRITICAL: logger.setLevel(level);             handler.setLevel(level)
-    elif level == logging.CRITICAL: logger.setLevel(logging.CRITICAL);  handler.setLevel(logging.CRITICAL)
-    elif level >= logging.ERROR:    logger.setLevel(logging.ERROR);     handler.setLevel(logging.ERROR)
-    elif level >= logging.WARNING:  logger.setLevel(logging.WARNING);   handler.setLevel(logging.WARNING)
-    elif level >= logging.INFO:     logger.setLevel(logging.INFO);      handler.setLevel(logging.INFO)
-    elif level >= logging.DEBUG:    logger.setLevel(logging.DEBUG);     handler.setLevel(logging.DEBUG)
+    if window is not None:
+        _window = window
+    if level is not None:
+        logger.setLevel(level)
+        handler.setLevel(level)
 #----------------------------------------------------------------------------------------------------------------------
 def MATCH     (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P)
 def FULLMATCH (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
@@ -683,40 +685,53 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
     global _globals, Ϣ
     if _globals is None:
         _globals = globals()
-    Ϣ.append(SNOBOL(0, string, [], -1, [], []))
     command = None
-    try:
-        m = next(P)
-        if Ϣ[-1].nl: print()
-        logger.info(f'SEARCH(): "{string}" ? "{m}"')
-        for command in Ϣ[-1].cstack:
-            logger.debug(f'SEARCH(): {command}')
-#       for var, val in _globals.items():
-#           logger.debug(f'SEARCH(): var={var} val={val}')
-        _globals['Ϣ'] = Ϣ
-        for command in Ϣ[-1].cstack:
-            exec(command, _globals)
-        result = True
-    except IndexError:
-        logger.error("SEARCH(): IndexError: %s", command)
-        result = False
-    except StopIteration:
-        result = False
+    result = None
+    Ϣ.append(None)
+    for cursor in range(0, 1+len(string)):
+        TRY = copy.deepcopy(P)
+        try:
+            Ϣ[-1] = SNOBOL(cursor, string)
+            m = next(TRY)
+            if Ϣ[-1].nl: print()
+            logger.info(f'SEARCH(): "{string}" ? "{m}"')
+            for command in Ϣ[-1].cstack:
+                logger.debug('SEARCH(): %r', command)
+            try:
+                for command in Ϣ[-1].cstack:
+                    exec(command, _globals)
+                result = True
+            except Exception as e:
+                logger.error("SEARCH(): Exception: %r, command: %r", e, command)
+                result = False
+            break
+        except StopIteration: pass
+        except Exception as e:
+            logger.critical("SEARCH(): Yikes: %r", e)
     Ϣ.pop()
     return result
 #----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
-    TRACE(10)
-    WINDOW(32)
+    TRACE(level=10, window=32)
+    @pattern
+    def Arb(): yield from POS(0) + ARB() @ 'OUTPUT' + RPOS(0)
+    pprint("" in Arb())
+    pprint("0" in Arb())
+    pprint("01" in Arb())
+    exit(0)
+    B = 'SINGING BLUEBIRD'
+    print(B in σ('FISH'))
+    print(B in (σ('FISH') | σ('BIRD')))
+    print(B in (σ('GOLD') | σ('BLUE')) + (σ('FISH') | σ('BIRD')))
+    exit(0)
     @pattern
     def PAT(): yield from TAB(lambda: I) % "OUTPUT" + SPAN(lambda: S) % "OUTPUT"
     SUB = '123AABBCC'
     I = 4
     S = 'AB'
     SUB in PAT()
-    exit(0)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):

@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import GLOBALS, TRACE, WINDOW, pattern
+from .SNOBOL4patterns import GLOBALS, TRACE, pattern
 from .SNOBOL4patterns import ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from .SNOBOL4patterns import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
