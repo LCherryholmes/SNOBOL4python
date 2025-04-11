@@ -149,13 +149,14 @@ def Λ(expression:str|object): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *f
                 logger.warning("Λ(%r) backtracking...", expression)
             else: logger.error("Λ(%r) Error evaluating. FAIL!", expression)
         case 'function':
-            logger.debug("Λ(...) evaluating...")
+            logger.debug("Λ(function) evaluating...")
             try:
                 if expression():
-                    logger.info("Λ(...) SUCCESS")
+                    logger.info("Λ(function) SUCCESS")
                     yield ""
-                    logger.warning("Λ(...) backtracking...")
-            except: logger.error("Λ(...) Exception evaluating. FAIL!")
+                    logger.warning("Λ(function) backtracking...")
+            except Exception as e:
+                logger.error("Λ(function) EXCEPTION evaluating. (%r) FAIL!", e)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
 @pattern
@@ -603,7 +604,9 @@ class DEBUG_formatter(logging.Formatter):
     def format(self, record):
         global Ϣ, _window_size
         original_message = super().format(record)
-        formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window_size // 2), '  ' * Ϣ[-1].depth, original_message)
+        if len(Ϣ) > 0:
+            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window_size // 2), '  ' * Ϣ[-1].depth, original_message)
+        else: formatted_message = original_message
         return formatted_message
 #----------------------------------------------------------------------------------------------------------------------
 logger = logging.getLogger(__name__)
@@ -644,8 +647,8 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
         logger.info(f'SEARCH(): "{string}" ? "{m}"')
         for command in Ϣ[-1].cstack:
             logger.debug(f'SEARCH(): {command}')
-        for var, val in _globals.items():
-            logger.debug(f'SEARCH(): var={var} val={val}')
+#       for var, val in _globals.items():
+#           logger.debug(f'SEARCH(): var={var} val={val}')
         _globals['Ϣ'] = Ϣ
         for command in Ϣ[-1].cstack:
             exec(command, _globals)
