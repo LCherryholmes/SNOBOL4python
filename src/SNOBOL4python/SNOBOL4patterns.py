@@ -608,6 +608,8 @@ class DEBUG_formatter(logging.Formatter):
 #----------------------------------------------------------------------------------------------------------------------
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
+logger.handlers.clear()
+logger.propagate = False
 handler = logging.StreamHandler()
 handler.setLevel(logging.ERROR)
 handler.setFormatter(DEBUG_formatter("%(message)s"))
