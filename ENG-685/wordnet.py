@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
@@ -104,9 +104,7 @@ def is_adverb(wrd):
     wrd = wrd.lower()
     return is_pos(wrd, 'r')
 #-------------------------------------------------------------------------------
-@pattern
-def sno_wordnet():
-    yield from  ( POS(0)
+sno_wordnet =   ( POS(0)
                 + ARBNO( # header / license banner
                     σ('  ') + SPAN('0123456789')
                   + σ(' ') + BREAK("\n")
@@ -144,7 +142,7 @@ def Lexicon_sno():
             lex_info = file.read()
             print(f"Parsing ....")
             lineno = 0
-            if lex_info in sno_wordnet():
+            if lex_info in sno_wordnet:
                 print("#" * 80)
 #-------------------------------------------------------------------------------
 import re

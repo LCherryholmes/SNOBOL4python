@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ENG 685, Universal Tokenizer, Lon Cherryholmes Sr.
 #------------------------------------------------------------------------------
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
@@ -11,19 +11,13 @@ from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
 from pprint import PrettyPrinter
 #------------------------------------------------------------------------------
-@pattern
-def ς(s): yield from σ(f" {s}")
+def ς(s): return σ(f" {s}")
 #------------------------------------------------------------------------------
-@pattern
-def Noun():             yield from  (wrd() @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
-@pattern
-def Verb():             yield from  (wrd() @ "tx" + Λ(lambda: is_verb(tx))) @ "OUTPUT"
-@pattern
-def Adjective():        yield from  (wrd() @ "tx" + Λ(lambda: is_adjective(tx))) @ "OUTPUT"
-@pattern
-def Adverb():           yield from  (wrd() @ "tx" + Λ(lambda: is_adverb(tx))) @ "OUTPUT"
-@pattern
-def SentenceEnd():      yield from  (σ("." ) | σ("!" ) | σ("?")) @ "OUTPUT"
+Noun =          (ζ('wrd') @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
+Verb =          (ζ('wrd') @ "tx" + Λ(lambda: is_verb(tx))) @ "OUTPUT"
+Adjective =     (ζ('wrd') @ "tx" + Λ(lambda: is_adjective(tx))) @ "OUTPUT"
+Adverb =        (ζ('wrd') @ "tx" + Λ(lambda: is_adverb(tx))) @ "OUTPUT"
+SentenceEnd =   (σ("." ) | σ("!" ) | σ("?")) @ "OUTPUT"
 #------------------------------------------------------------------------------
 keywords = [
      None, 
@@ -56,36 +50,31 @@ keywords = [
     { "experience", "understand" }
 ]
 #-------------------------------------------------------------------------------
-@pattern
-def wrd():      yield from  SPAN(UCASE+LCASE) # (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
-@pattern
-def word():     yield from  wrd() @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
-@pattern
-def keyword():  yield from  wrd() @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
+wrd =       SPAN(UCASE+LCASE) # (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
+word =      wrd() @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
+keyword =   wrd() @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #-------------------------------------------------------------------------------
 import wordnet
 from wordnet import Lexicon, lexicon, pos
 from wordnet import is_noun, is_verb, is_adjective, is_adverb
-@pattern
-def eTokens(x):
-    yield from  \
-    ( POS(0)                                            + λ(f'''{x} = []''')
+def eTokens(x): return \
+    ( POS(0)                                        + λ(f'''{x} = []''')
     + ARBNO(
 #       Θ("OUTPUT") +
-        ( σ(' ')                                      # + λ(f'''{x}.append("σ(' ')")''')
-        | σ('\n')                                     # + λ(f'''{x}.append("σ('\\\\n')\\n"''')
-        | wrd() @ "tx" % "tx" + Λ(lambda: pos(tx))      + λ(f'''{x}.append(pos(tx))''')
-        | wrd() % "tx"                                  + λ(f'''{x}.append("ς('" + tx + "')")''')
-        | wrd() @ "tx" + Λ(lambda: is_noun(tx))         + λ(f'''{x}.append("noun()")''')
-        | wrd() @ "tx" + Λ(lambda: is_verb(tx))         + λ(f'''{x}.append("verb()")''')
-        | wrd() @ "tx" + Λ(lambda: is_adjective(tx))    + λ(f'''{x}.append("adj()")''')
-        | wrd() @ "tx" + Λ(lambda: is_adverb(tx))       + λ(f'''{x}.append("adv()")''')
-        | keyword()                                     + λ(f'''{x}.append("ς('" + w + "')")''')
-        | word()                                        + λ(f'''{x}.append("word()")''')
-        | SPAN(DIGITS)                                  + λ(f'''{x}.append("SPAN(DIGITS)")''')
-        | SPAN(UCASE)                                   + λ(f'''{x}.append("SPAN(UCASE)")''')
-        | SPAN(LCASE)                                   + λ(f'''{x}.append("SPAN(LCASE)")''')
-        | NOTANY(DIGITS+UCASE+LCASE) % "tx"             + λ(f'''{x}.append("σ('" + tx + "')")''')
+        ( σ(' ')                                  # + λ(f'''{x}.append("σ(' ')")''')
+        | σ('\n')                                 # + λ(f'''{x}.append("σ('\\\\n')\\n"''')
+        | wrd @ "tx" % "tx" + Λ(lambda: pos(tx))    + λ(f'''{x}.append(pos(tx))''')
+        | wrd % "tx"                                + λ(f'''{x}.append("ς('" + tx + "')")''')
+        | wrd @ "tx" + Λ(lambda: is_noun(tx))       + λ(f'''{x}.append("noun()")''')
+        | wrd @ "tx" + Λ(lambda: is_verb(tx))       + λ(f'''{x}.append("verb()")''')
+        | wrd @ "tx" + Λ(lambda: is_adjective(tx))  + λ(f'''{x}.append("adj()")''')
+        | wrd @ "tx" + Λ(lambda: is_adverb(tx))     + λ(f'''{x}.append("adv()")''')
+        | keyword                                   + λ(f'''{x}.append("ς('" + w + "')")''')
+        | word                                      + λ(f'''{x}.append("word()")''')
+        | SPAN(DIGITS)                              + λ(f'''{x}.append("SPAN(DIGITS)")''')
+        | SPAN(UCASE)                               + λ(f'''{x}.append("SPAN(UCASE)")''')
+        | SPAN(LCASE)                               + λ(f'''{x}.append("SPAN(LCASE)")''')
+        | NOTANY(DIGITS+UCASE+LCASE) % "tx"         + λ(f'''{x}.append("σ('" + tx + "')")''')
         ) # @ "OUTPUT"
       )
     + RPOS(0)

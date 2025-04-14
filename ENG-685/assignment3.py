@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ENG 685, VBG Exercise, Lon Cherryholmes Sr.
 #------------------------------------------------------------------------------
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
@@ -10,53 +10,38 @@ from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint, PrettyPrinter
 ppr = PrettyPrinter(indent=2, width=80)
 #------------------------------------------------------------------------------
-@pattern
-def delim(): yield from SPAN(" \n")
-@pattern
-def word(): yield from NOTANY("( )\n") + BREAK("( )\n")
-@pattern
-def group():
-    yield from  ( σ('(')
-                + word() % "tag"
+def init_list(v): return λ(f"{v} = None") + λ(f"tags = dict()") + λ(f"stack = []")
+def push_list(v): return λ(f"count_tag({v})") + λ(f"stack.append(list())") + λ(f"stack[-1].append({v})")
+def push_item(v): return λ(f"stack[-1].append({v})")
+def pop_list():   return λ(f"stack[-2].append(tuple(stack.pop()))")
+def pop_final(v): return λ(f"{v} = tuple(stack.pop())")
+#------------------------------------------------------------------------------
+delim       =   SPAN(" \n")
+word        =   NOTANY("( )\n") + BREAK("( )\n")
+group       =   ( σ('(')
+                + word % "tag"
                 + push_list("tag")
                 + ARBNO(
-                    delim()
-                  + ( group()
-                    | word() % "wrd" + push_item("wrd")
+                    delim
+                  + ( ζ('group')
+                    | word % "wrd" + push_item("wrd")
                     )
                   )
                 + pop_list()
                 + σ(')')
                 )
-@pattern
-def treebank():
-    yield from  ( POS(0)
+treebank    =   ( POS(0)
                 + init_list("bank")
                 + push_list("'BANK'")
                 + ARBNO(
                     push_list("'ROOT'")
-                  + ARBNO(group())
+                  + ARBNO(ζ('group'))
                   + pop_list()
-                  + delim()
+                  + delim
                   )
                 + pop_final("bank")
                 + RPOS(0)
                 )
-#------------------------------------------------------------------------------
-@pattern
-def init_list(v):   yield from λ(f"{v} = None") \
-                             + λ(f"tags = dict()") \
-                             + λ(f"stack = []")
-@pattern
-def push_list(v):   yield from λ(f"count_tag({v})") \
-                             + λ(f"stack.append(list())") \
-                             + λ(f"stack[-1].append({v})")
-@pattern
-def push_item(v):   yield from λ(f"stack[-1].append({v})")
-@pattern
-def pop_list():     yield from λ(f"stack[-2].append(tuple(stack.pop()))")
-@pattern
-def pop_final(v):   yield from λ(f"{v} = tuple(stack.pop())")
 #------------------------------------------------------------------------------
 def count_tag(tag):
     if tag not in tags:
@@ -380,9 +365,7 @@ def list_to_tuple(t):
 # VVB, base form of lexical verb (except the infinitive)(e.g. TAKE, LIVE) flooding
 # PRP, preposition (except for OF) (e.g. FOR, ABOVE, TO) including
 #------------------------------------------------------------------------------
-@pattern
-def claws_info():
-    yield from \
+claws_info = \
     ( POS(0)
     + λ("mem = dict()")
     + ARBNO(
@@ -407,13 +390,13 @@ with open("CLAWS5inTASA.dat", "r") as claws_file:
     while line := claws_file.readline():
         lines.append(line[0:-1])
     claws_data = ''.join(lines)
-    if not claws_data in claws_info():
+    if not claws_data in claws_info:
         print("Yikes")
 #------------------------------------------------------------------------------
 with open("VBGinTASA.dat", "r") as bank_file:
     bank_source = bank_file.read()
     if bank_source in POS(0) + BAL() + RPOS(0):
-        if bank_source in treebank():
+        if bank_source in treebank:
             for root in bank:
                 traverse(root)
             rootno = 0

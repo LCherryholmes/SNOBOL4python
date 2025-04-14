@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import GLOBALS, TRACE, pattern
-from .SNOBOL4patterns import ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from .SNOBOL4patterns import GLOBALS, TRACE
+from .SNOBOL4patterns import ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from .SNOBOL4patterns import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from .SNOBOL4patterns import RTAB, SPAN, SUCCESS, TAB
@@ -15,12 +15,12 @@ from .SNOBOL4functions import CHAR, DIFFER, IDENT, INTEGER, REPLACE
 from .SNOBOL4functions import JSONDecode
 from .SNOBOL4functions import S, F, Ξ, _END, _RETURN, _FRETURN, _NRETURN
 #-------------------------------------------------------------------------------
- # Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ   Τ Υ Φ Χ Ψ Ω
- # α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ ς τ υ φ χ ψ ω
+# Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ   Τ Υ Φ Χ Ψ Ω
+# α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ ς τ υ φ χ ψ ω
 #-------------------------------------------------------------------------------
 __all__ = [
-            "GLOBALS", "TRACE", "WINDOW", "pattern",
-            "ε", "σ", "π", "λ", "Λ", "θ", "Θ", "φ", "Φ", "α", "ω",
+            "GLOBALS", "TRACE", "WINDOW",
+            "ε", "σ", "π", "λ", "Λ", "ζ", "θ", "Θ", "φ", "Φ", "α", "ω",
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
             "RTAB", "SPAN", "SUCCESS", "TAB",

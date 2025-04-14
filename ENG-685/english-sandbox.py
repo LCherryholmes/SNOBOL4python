@@ -7,21 +7,21 @@ from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------
-def space():            yield from SPAN(' ')
-def white():            yield from SPAN(' ')
-def whitespace():       yield from SPAN(' ')
-def μ():                yield from FENCE(space() | ε())
-def η():                yield from FENCE(whitespace() | ε())
-def ς(s):               yield from η() + σ(s)
+space =                 SPAN(' ')
+white =                 SPAN(' ')
+whitespace =            SPAN(' ')
+μ =                     FENCE(space() | ε())
+η =                     FENCE(whitespace() | ε())
+def ς(s):               return η + σ(s)
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------
-def eWordSegment():     yield from SPAN(UCASE+LCASE)
-def eWordSegments():    yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
-def eWord():            yield from eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
-def eUnknownWord():     yield from eWord() @ "tx" + notmatch(lambda: eWords, lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
-def eKnownWord():       yield from eWord() @ "tx" + match(lambda: eWords,    lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
-def eDQString():        yield from σ('"') + BREAK('"') + σ('"')
-def eSQString():        yield from σ("`") + BREAK("'") + σ("'") | σ("'") + BREAK("'") + σ("'")
-def eNumber():          yield from SPAN('0123456789')
+eWordSegment =          SPAN(UCASE+LCASE)
+eWordSegments =         eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
+eWord =                 eWordSegment() + FENCE(σ('-') + eWordSegments() | ε())
+eUnknownWord =          eWord() @ "tx" + notmatch(lambda: eWords, lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
+eKnownWord =            eWord() @ "tx" + match(lambda: eWords,    lambda: σ('/') + (σ(tx) | σ(lwr(tx))) + σ('/'))
+eDQString =             σ('"') + BREAK('"') + σ('"')
+eSQString =             σ("`") + BREAK("'") + σ("'") | σ("'") + BREAK("'") + σ("'")
+eNumber =               SPAN('0123456789')
 #---------- ----------------- ----- -------------------------------------------------------- ---------------------------
 eWords = (
     "/I/Shakespear/William/Winifred/children's/"

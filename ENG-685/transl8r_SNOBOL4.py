@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------------------------------------------------------------------
 # 31 flavors of patterns to choose from ...
-from SNOBOL4python import GLOBALS, pattern, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
@@ -14,32 +14,23 @@ str_Brackets = None
 def set_SorF(goto):     global str_SorF; str_SorF = goto; return True
 def set_Brackets(pair): global str_Brackets; str_Brackets = pair; return True
 #-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def nl():           yield from  σ('\n')
-@pattern
-def Integer():      yield from  SPAN(DIGITS) % "tx"
-@pattern
-def DQ():           yield from  σ('"') + BREAK('"\n') + σ('"') % "tx"
-@pattern
-def SQ():           yield from  σ("'") + BREAK("'\n") + σ("'") % "tx"
-@pattern
-def String():       yield from  SQ() | DQ()
-@pattern
-def Real():         yield from  ( SPAN(DIGITS)
-                                    + (σ('.') + FENCE(SPAN(DIGITS) | ε()) | ε())
-                                    + (σ('E') | σ('e'))
-                                    + (σ('+') | σ('-') | ε())
-                                    + SPAN(DIGITS)
-                                    | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
-                                ) % "tx"
-@pattern
-def Id():           yield from  (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
-@pattern
-def Gray():         yield from  White() | ε()
-@pattern
-def White():        yield from  (  SPAN(' \t') + FENCE(nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
-                                |  nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε())
-                                )
+nl =            σ('\n')
+Integer =       SPAN(DIGITS) % "tx"
+DQ =            σ('"') + BREAK('"\n') + σ('"') % "tx"
+SQ =            σ("'") + BREAK("'\n") + σ("'") % "tx"
+String =        SQ | DQ
+Real =          ( SPAN(DIGITS)
+                    + (σ('.') + FENCE(SPAN(DIGITS) | ε()) | ε())
+                    + (σ('E') | σ('e'))
+                    + (σ('+') | σ('-') | ε())
+                    + SPAN(DIGITS)
+                    | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
+                ) % "tx"
+Id =            (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
+White =         (  SPAN(' \t') + FENCE(nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
+                |  nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε())
+                )
+Gray =          White | ε()
 #-----------------------------------------------------------------------------------------------------------------------
 SpecialNms      =   { 'ABORT', 'CONTINUE', 'END', 'FRETURN', 'NRETURN', 'RETURN', 'SCONTINUE', 'START' }
 BuiltinVars     =   { 'ABORT', 'ARB', 'BAL', 'FAIL', 'FENCE', 'INPUT', 'OUTPUT', 'REM', 'TERMINAL' }
@@ -59,221 +50,180 @@ Functions       =   { 'ANY', 'APPLY', 'ARBNO', 'ARG', 'ARRAY', 'ATAN', 'BACKSPAC
                       'RSORT', 'RTAB', 'SET', 'SETEXIT', 'SIN', 'SIZE', 'SORT', 'SPAN', 'SQRT', 'STOPTR',
                       'SUBSTR', 'TAB', 'TABLE', 'TAN', 'TIME', 'TRACE', 'TRIM', 'UNLOAD' }
 #-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Function():     yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\b")
-@pattern
-def BuiltinVar():   yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\b")
-@pattern
-def SpecialNm():    yield from  φ(r"\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\b")
-@pattern
-def ProtKwd():      yield from  φ(r"\&(?P<nm>"   + "|".join((nm for nm in ProtKwds))    + ")\b")
-@pattern
-def UnprotKwd():    yield from  φ(r"\&(?P<nm>"   + "|".join((nm for nm in UnprotKwds))  + ")\b")
+Function =      φ(r"\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\b")
+BuiltinVar =    φ(r"\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\b")
+SpecialNm =     φ(r"\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\b")
+ProtKwd =       φ(r"\&(?P<nm>" + "|".join((nm for nm in ProtKwds))    + ")\b")
+UnprotKwd =     φ(r"\&(?P<nm>" + "|".join((nm for nm in UnprotKwds))  + ")\b")
 #-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def ζ(op):
+def τ(op):
     match op:
-        case '=':   yield from  White() + σ('=') + White()
-        case '?':   yield from  White() + σ('?') + White()
-        case '|':   yield from  White() + σ('|') + White()
-        case '+':   yield from  White() + σ('+') + White()
-        case '-':   yield from  White() + σ('-') + White()
-        case '/':   yield from  White() + σ('/') + White()
-        case '*':   yield from  White() + σ('*') + White()
-        case '^':   yield from  White() + σ('^') + White()
-        case '!':   yield from  White() + σ('!') + White()
-        case '**':  yield from  White() + σ('**') + White()
-        case '$':   yield from  White() + σ('$') + White()
-        case '.':   yield from  White() + σ('.') + White()
-        case '&':   yield from  White() + σ('&') + White()
-        case '@':   yield from  White() + σ('@') + White()
-        case '#':   yield from  White() + σ('#') + White()
-        case '%':   yield from  White() + σ('%') + White()
-        case '~':   yield from  White() + σ('~') + White()
-        case ',':   yield from  Gray() + σ(',') + Gray()
-        case '(':   yield from  σ('(') + Gray()
-        case '[':   yield from  σ('[') + Gray()
-        case '<':   yield from  σ('<') + Gray()
-        case ')':   yield from  Gray() + σ(')')
-        case ']':   yield from  Gray() + σ(']')
-        case '>':   yield from  Gray() + σ('>')
+        case '=':   return White() + σ('=') + White()
+        case '?':   return White() + σ('?') + White()
+        case '|':   return White() + σ('|') + White()
+        case '+':   return White() + σ('+') + White()
+        case '-':   return White() + σ('-') + White()
+        case '/':   return White() + σ('/') + White()
+        case '*':   return White() + σ('*') + White()
+        case '^':   return White() + σ('^') + White()
+        case '!':   return White() + σ('!') + White()
+        case '**':  return White() + σ('**') + White()
+        case '$':   return White() + σ('$') + White()
+        case '.':   return White() + σ('.') + White()
+        case '&':   return White() + σ('&') + White()
+        case '@':   return White() + σ('@') + White()
+        case '#':   return White() + σ('#') + White()
+        case '%':   return White() + σ('%') + White()
+        case '~':   return White() + σ('~') + White()
+        case ',':   return Gray() + σ(',') + Gray()
+        case '(':   return σ('(') + Gray()
+        case '[':   return σ('[') + Gray()
+        case '<':   return σ('<') + Gray()
+        case ')':   return Gray() + σ(')')
+        case ']':   return Gray() + σ(']')
+        case '>':   return Gray() + σ('>')
 #-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def ExprList():     yield from  ( nPush()
-                                + XList()
-                                + Reduce('ExprList', -1)
-                                + nPop()
-                                )
-@pattern
-def XList():        yield from  nInc() + (Expr() | Shift()) + FENCE(ζ(',') + XList() | ε())
-@pattern
-def Expr():         yield from  Expr0()
-@pattern
-def Expr0():        yield from  Expr1() + FENCE(ζ('=') + Expr0()  + Reduce('=', 2) | ε())
-@pattern
-def Expr1():        yield from  Expr2() + FENCE(ζ('?') + Expr1()  + Reduce('?', 2) | ε())
-@pattern
-def Expr2():        yield from  Expr3() + FENCE(ζ('&') + Expr2()  + Reduce('&', 2) | ε())
-@pattern
-def Expr3():        yield from  nPush() + X3() + Reduce('|', -1)  + nPop()
-@pattern
-def X3():           yield from  nInc()  + Expr4() + FENCE(ζ('|')  + X3() | ε())
-@pattern
-def Expr4():        yield from  nPush() + X4() + Reduce('..', -1) + nPop()
-@pattern
-def X4():           yield from  nInc()  + Expr5() + FENCE(White() + X4() | ε())
-@pattern
-def Expr5():        yield from  Expr6() + FENCE(ζ('@') + Expr5()  + Reduce('@', 2) | ε())
-@pattern
-def Expr6():        yield from  ( Expr7()
-                                + FENCE(
-                                    ζ('+') + Expr6() + Reduce('+', 2)
-                                  | ζ('-') + Expr6() + Reduce('-', 2)
-                                  | ε()
-                                  )
-                                )
-@pattern
-def Expr7():        yield from  Expr8()  + FENCE(ζ('#') + Expr7()  + Reduce('#', 2) | ε())
-@pattern
-def Expr8():        yield from  Expr9()  + FENCE(ζ('/') + Expr8()  + Reduce('/', 2) | ε())
-@pattern
-def Expr9():        yield from  Expr10() + FENCE(ζ('*') + Expr9()  + Reduce('*', 2) | ε())
-@pattern
-def Expr10():       yield from  Expr11() + FENCE(ζ('%') + Expr10() + Reduce('%', 2) | ε())
-@pattern
-def Expr11():       yield from  ( Expr12()
-                                + FENCE(
-                                    (ζ('^') | ζ('!') | ζ('**')) + Expr11() + Reduce('^', 2)
-                                  | ε()
-                                  )
-                                )
-@pattern
-def Expr12():       yield from  ( Expr13()
-                                + FENCE(
-                                    ζ('$') + Expr12() + Reduce('$', 2)
-                                  | ζ('.') + Expr12() + Reduce('.', 2)
-                                  | ε()
-                                  )
-                                )
-@pattern
-def Expr13():       yield from  Expr14() + FENCE(ζ('~') + Expr13() + Reduce('~', 2) | ε())
-@pattern
-def Expr14():       yield from  ( σ('@') + Expr14() + Reduce('@', 1)
-                                | σ('~') + Expr14() + Reduce('~', 1)
-                                | σ('?') + Expr14() + Reduce('?', 1)
-                                | ProtKwd()         + Shift('ProtKwd', "nm")
-                                | UnprotKwd()       + Shift('UnprotKwd', "nm")
-                                | σ('&') + Expr14() + Reduce('&', 1)
-                                | σ('+') + Expr14() + Reduce('+', 1)
-                                | σ('-') + Expr14() + Reduce('-', 1)
-                                | σ('*') + Expr14() + Reduce('*', 1)
-                                | σ('$') + Expr14() + Reduce('$', 1)
-                                | σ('.') + Expr14() + Reduce('.', 1)
-                                | σ('!') + Expr14() + Reduce('!', 1)
-                                | σ('%') + Expr14() + Reduce('%', 1)
-                                | σ('/') + Expr14() + Reduce('/', 1)
-                                | σ('#') + Expr14() + Reduce('#', 1)
-                                | σ('=') + Expr14() + Reduce('=', 1)
-                                | σ('|') + Expr14() + Reduce('|', 1)
-                                | Expr15()
-                                )
-@pattern
-def Expr15():       yield from  Expr17() + FENCE(nPush() + Expr16() + Reduce('[]', -2) + nPop() | ε())
-@pattern
-def Expr16():       yield from  nInc() + (ζ('[') + ExprList() + ζ(']') | ζ('<') + ExprList() + ζ('>')) + FENCE(Expr16() | ε())
-@pattern
-def Expr17():       yield from  FENCE(
-                                  ( nPush()
-                                  + ζ('(') + Expr()
-                                  + (  ζ(',') + XList() + Reduce(',', -2)
-                                    |  ε() + Reduce('()', 1)
-                                    )
-                                  + ζ(')')
-                                  + nPop()
-                                  )
-                                | Function()          + Shift('Function', "nm") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
-                                | Id()                + Shift('Id', "nm") + ζ('(') + ExprList() + ζ(')') + Reduce('Call', 2)
-                                | BuiltinVar()        + Shift('BuiltinVar', "nm")
-                                | SpecialNm()         + Shift('SpecialNm', "nm")
-                                | Id()                + Shift('Id', "nm")
-                                | String()     % "tx" + Shift('String', "tx")
-                                | Real()       % "tx" + Shift('Real', "tx")
-                                | Integer()    % "tx" + Shift('Integer', "tx")
-                                )
+ExprList =          ( nPush()
+                    + ζ('XList')
+                    + Reduce('ExprList', -1)
+                    + nPop()
+                    )
+XList =             nInc() + (ζ('Expr') | Shift()) + FENCE(τ(',') + ζ('XList') | ε())
+Expr =              ζ('Expr0')
+Expr0 =             ζ('Expr1') + FENCE(τ('=') + ζ('Expr0')  + Reduce('=', 2) | ε())
+Expr1 =             ζ('Expr2') + FENCE(τ('?') + ζ('Expr1')  + Reduce('?', 2) | ε())
+Expr2 =             ζ('Expr3') + FENCE(τ('&') + ζ('Expr2')  + Reduce('&', 2) | ε())
+Expr3 =             nPush() + ζ('X3') + Reduce('|', -1)  + nPop()
+X3 =                nInc()  + ζ('Expr4') + FENCE(τ('|')  + ζ('X3') | ε())
+Expr4 =             nPush() + ζ('X4') + Reduce('..', -1) + nPop()
+X4 =                nInc()  + ζ('Expr5') + FENCE(White() + ζ('X4') | ε())
+Expr5 =             ζ('Expr6') + FENCE(τ('@') + ζ('Expr5')  + Reduce('@', 2) | ε())
+Expr6 =             ( ζ('Expr7')
+                    + FENCE(
+                        τ('+') + ζ('Expr6') + Reduce('+', 2)
+                      | τ('-') + ζ('Expr6') + Reduce('-', 2)
+                      | ε()
+                      )
+                    )
+Expr7 =             ζ('Expr8')  + FENCE(τ('#') + ζ('Expr7')  + Reduce('#', 2) | ε())
+Expr8 =             ζ('Expr9')  + FENCE(τ('/') + ζ('Expr8')  + Reduce('/', 2) | ε())
+Expr9 =             ζ('Expr10') + FENCE(τ('*') + ζ('Expr9')  + Reduce('*', 2) | ε())
+Expr10 =            ζ('Expr11') + FENCE(τ('%') + ζ('Expr10') + Reduce('%', 2) | ε())
+Expr11 =            ( ζ('Expr12')
+                    + FENCE(
+                        (τ('^') | τ('!') | τ('**')) + ζ('Expr11') + Reduce('^', 2)
+                      | ε()
+                      )
+                    )
+Expr12 =            ( ζ('Expr13')
+                    + FENCE(
+                        τ('$') + ζ('Expr12') + Reduce('$', 2)
+                      | τ('.') + ζ('Expr12') + Reduce('.', 2)
+                      | ε()
+                      )
+                    )
+Expr13 =            ζ('Expr14') + FENCE(τ('~') + ζ('Expr13') + Reduce('~', 2) | ε())
+Expr14 =            ( σ('@') + ζ('Expr14') + Reduce('@', 1)
+                    | σ('~') + ζ('Expr14') + Reduce('~', 1)
+                    | σ('?') + ζ('Expr14') + Reduce('?', 1)
+                    | ProtKwd()            + Shift('ProtKwd', "nm")
+                    | UnprotKwd()          + Shift('UnprotKwd', "nm")
+                    | σ('&') + ζ('Expr14') + Reduce('&', 1)
+                    | σ('+') + ζ('Expr14') + Reduce('+', 1)
+                    | σ('-') + ζ('Expr14') + Reduce('-', 1)
+                    | σ('*') + ζ('Expr14') + Reduce('*', 1)
+                    | σ('$') + ζ('Expr14') + Reduce('$', 1)
+                    | σ('.') + ζ('Expr14') + Reduce('.', 1)
+                    | σ('!') + ζ('Expr14') + Reduce('!', 1)
+                    | σ('%') + ζ('Expr14') + Reduce('%', 1)
+                    | σ('/') + ζ('Expr14') + Reduce('/', 1)
+                    | σ('#') + ζ('Expr14') + Reduce('#', 1)
+                    | σ('=') + ζ('Expr14') + Reduce('=', 1)
+                    | σ('|') + ζ('Expr14') + Reduce('|', 1)
+                    | ζ('Expr15')
+                    )
+Expr15 =            ζ('Expr17') + FENCE(nPush() + ζ('Expr16') + Reduce('[]', -2) + nPop() | ε())
+Expr16 =            nInc() + (τ('[') + ζ('ExprList') + τ(']') | τ('<') + ζ('ExprList') + τ('>')) + FENCE(ζ('Expr16') | ε())
+Expr17 =            FENCE(
+                      ( nPush()
+                      + τ('(') + ζ('Expr')
+                      + (  τ(',') + ζ('XList') + Reduce(',', -2)
+                        |  ε() + Reduce('()', 1)
+                        )
+                      + τ(')')
+                      + nPop()
+                      )
+                    | Function()          + Shift('Function', "nm") + τ('(') + ζ('ExprList') + τ(')') + Reduce('Call', 2)
+                    | Id()                + Shift('Id', "nm") + τ('(') + ζ('ExprList') + τ(')') + Reduce('Call', 2)
+                    | BuiltinVar()        + Shift('BuiltinVar', "nm")
+                    | SpecialNm()         + Shift('SpecialNm', "nm")
+                    | Id()                + Shift('Id', "nm")
+                    | String()     % "tx" + Shift('String', "tx")
+                    | Real()       % "tx" + Shift('Real', "tx")
+                    | Integer()    % "tx" + Shift('Integer', "tx")
+                    )
 
-@pattern
-def SGoto():        yield from  (σ('S') | σ('s')) + Λ(lambda: set_SorF('S'))
-@pattern
-def FGoto():        yield from  (σ('F') | σ('f')) + Λ(lambda: set_SorF('F'))
-@pattern
-def SorF():         yield from  SGoto() | FGoto()
-@pattern
-def Target():       yield from  ( ζ('(') + Λ(lambda: set_Brackets('()')) + Expr() + ζ(')')
-                                | ζ('<') + Λ(lambda: set_Brackets('<>')) + Expr() + ζ('>')
-                                )
-@pattern
-def Goto():         yield from  ( Gray() + σ(':')
-                                + Gray()
-                                + FENCE(
-                                    Target()                         + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
-                                  | SorF() + Target()                + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
-                                  + FENCE(Gray() + SorF() + Target() + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
-                                  )
-                                )
-@pattern
-def Control():      yield from  σ('-') + BREAK("\n;") % "tx"
-@pattern
-def Comment():      yield from  σ('*') + BREAK("\n") % "tx"
-@pattern
-def Label():        yield from  BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
-@pattern
-def Stmt():         yield from  ( Label()
-                                + ( White()
-                                  + Expr14()
-                                  + FENCE(
-                                      Shift()
-                                    + White()
-                                    + ( σ('=') + Shift('=') + White() + Expr()
-                                      | σ('=') + Shift('=') + Shift()
-                                      )
-                                    | (ζ('?') | White()) + Expr1()
-                                    + FENCE(
-                                        White()
-                                      + ( σ('=') + Shift('=') + White() + Expr()
-                                        | σ('=') + Shift('=') + Shift()
-                                        )
-                                      | Shift() + Shift()
-                                      )
-                                    |  Shift() + Shift() + Shift()
-                                    )
-                                  | Shift() + Shift() + Shift() + Shift()
-                                  )
-                                + FENCE(Goto() | Shift() + Shift())
-                                + Gray()
-                                )
-@pattern
-def Commands():     yield from  Command() + FENCE(Commands() | ε())
-@pattern
-def Command():      yield from  ( nInc()
-                                + FENCE(
-                                    Comment() + Shift('comment', "tx") + Reduce('Comment', 1) + nl()
-                                  | Control() + Shift('control', "tx") + Reduce('Control', 1) + (nl() | σ(';'))
-                                  | Stmt() + Reduce('Stmt', 7) + (nl() | σ(';'))
-                                  )
-                                )
-@pattern
-def Compiland():    yield from  ( POS(0)
-                                + nPush()
-                                + ARBNO(Command())
-                                + Reduce('Parse', -1)
-                                + ( φ(r'[Ee][Nn][Dd]\b') + BREAK("\n") + nl()
-                                  + ARBNO(BREAK("\n") + nl())
-                                  | ε()
-                                  )
-                                + nPop()
-                                + Pop('SNOBOL4_tree')
-                                + RPOS(0)
-                                )
+SGoto =             (σ('S') | σ('s')) + Λ(lambda: set_SorF('S'))
+FGoto =             (σ('F') | σ('f')) + Λ(lambda: set_SorF('F'))
+SorF =              SGoto() | FGoto()
+Target =            ( τ('(') + Λ(lambda: set_Brackets('()')) + Expr() + τ(')')
+                    | τ('<') + Λ(lambda: set_Brackets('<>')) + Expr() + τ('>')
+                    )
+Goto =              ( Gray() + σ(':')
+                    + Gray()
+                    + FENCE(
+                        Target()                         + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
+                      | SorF() + Target()                + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
+                      + FENCE(Gray() + SorF() + Target() + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
+                      )
+                    )
+Control =           σ('-') + BREAK("\n;") % "tx"
+Comment =           σ('*') + BREAK("\n") % "tx"
+Label =             BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
+Stmt =              ( Label()
+                    + ( White()
+                      + Expr14()
+                      + FENCE(
+                          Shift()
+                        + White()
+                        + ( σ('=') + Shift('=') + White() + Expr()
+                          | σ('=') + Shift('=') + Shift()
+                          )
+                        | (τ('?') | White()) + Expr1()
+                        + FENCE(
+                            White()
+                          + ( σ('=') + Shift('=') + White() + Expr()
+                            | σ('=') + Shift('=') + Shift()
+                            )
+                          | Shift() + Shift()
+                          )
+                        |  Shift() + Shift() + Shift()
+                        )
+                      | Shift() + Shift() + Shift() + Shift()
+                      )
+                    + FENCE(Goto() | Shift() + Shift())
+                    + Gray()
+                    )
+Commands =          ζ('Command') + FENCE(ζ('Commands') | ε())
+Command =           ( nInc()
+                    + FENCE(
+                        Comment() + Shift('comment', "tx") + Reduce('Comment', 1) + nl()
+                      | Control() + Shift('control', "tx") + Reduce('Control', 1) + (nl() | σ(';'))
+                      | Stmt() + Reduce('Stmt', 7) + (nl() | σ(';'))
+                      )
+                    )
+Compiland =         ( POS(0)
+                    + nPush()
+                    + ARBNO(Command())
+                    + Reduce('Parse', -1)
+                    + ( φ(r'[Ee][Nn][Dd]\b') + BREAK("\n") + nl()
+                      + ARBNO(BREAK("\n") + nl())
+                      | ε()
+                      )
+                    + nPop()
+                    + Pop('SNOBOL4_tree')
+                    + RPOS(0)
+                    )
 #----------------------------------------------------------------------------------------------------------------------
 def xl8(t):
     global display
@@ -321,29 +271,28 @@ def xl8(t):
 #       ----------------------------------------------------------------------------------------------------------------
         case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
-@pattern
-def Parse():        yield from  ( POS(0)
-                                + nPush()
-                                + ARBNO(Command())
-                                + Reduce('Parse', -1)
-                                + nPop()
-                                + Pop('SNOBOL4_tree')
-                                + λ("pprint(SNOBOL4_tree)")
-                                + λ("print(xl8(SNOBOL4_tree))")
-                                + RPOS(0)
-
-                                )
+Parse =         ( POS(0)
+                + nPush()
+                + ARBNO(Command())
+                + Reduce('Parse', -1)
+                + nPop()
+                + Pop('SNOBOL4_tree')
+                + λ("pprint(SNOBOL4_tree)")
+                + λ("print(xl8(SNOBOL4_tree))")
+                + RPOS(0)
+                )
 str_Parse = """\
-    snoParse        =             POS(0)
-+                                 nPush()
-+                                 ARBNO(*snoCommand)
-+                                 ("'snoParse'" & 'nTop()')
-+                                 nPop() . *Pop("SNOBOL4_tree")
-+                                        . *pprint(SNOBOL4_tree)
-+                                        . *print(xl8(SNOBOL4_tree))
-+                                 RPOS(0)
+    snoParse  = POS(0)
++               nPush()
++               ARBNO(*snoCommand)
++               ("'snoParse'" & 'nTop()')
++               nPop() . *Pop("SNOBOL4_tree")
++                      . *pprint(SNOBOL4_tree)
++                      . *print(xl8(SNOBOL4_tree))
++               RPOS(0)
 """
 #-----------------------------------------------------------------------------------------------------------------------
+TRACE(50)
 GLOBALS(globals())
 str_Parse in Parse()
 #----------------------------------------------------------------------------------------------------------------------

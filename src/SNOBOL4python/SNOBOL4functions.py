@@ -181,6 +181,14 @@ def ENDFILE(u): # writes an end of file on (closes) the data set
 def BACKSPACE(u):           None # backspace one record
 def REWIND():               None # repositions the data set associated with the number to the first file
 #----------------------------------------------------------------------------------------------------------------------
+re_repr_function = re.compile(r"\<function\ ([^\s]+)\ at\ 0x([0-9A-F]{16})\>\(\*([0-9]+)\)")
+def PROTOTYPE(P):
+    global re_repr_function
+    p = repr(P)
+    r = re.fullmatch(re_repr_function, p)
+    if r: return f"{r.group(1)}(*{r.group(3)})"
+    else: return p
+#----------------------------------------------------------------------------------------------------------------------
 rex_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
 def DEFINE(proto, n=None):
     global re_DEFINE_proto

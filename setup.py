@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 
-VERSION = '0.3.4'
+VERSION = '0.4.0'
 DESCRIPTION = 'Python SNOBOL4 package'
 LONG_DESCRIPTION = 'SNOBOL4 string pattern matching for Python with regular expressions.'
 
