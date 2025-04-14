@@ -622,22 +622,6 @@ def _reduce(t:str, n:int):
             x.insert(1, _pop())
         _push(x)
 #----------------------------------------------------------------------------------------------------------------------
-class SNOBOL:
-    __slots__ = ['pos', 'subject', 'depth', 'cstack', 'itop', 'istack', 'vstack', 'nl' , 'shift', 'reduce', 'pop']
-    def __repr__(self): return f"('SNOBOL', {self.depth}, {self.pos}, {len(self.subject)}, {pformat(self.subject)}, {pformat(self.cstack)})"
-    def __init__(self, pos:int, subject:str):
-        self.pos:int        = pos
-        self.subject:str    = subject
-        self.depth:int      = 0
-        self.cstack:list    = []
-        self.itop:int       = -1
-        self.istack:list    = []
-        self.vstack:list    = []
-        self.nl:bool        = False
-        self.shift          = _shift
-        self.reduce         = _reduce
-        self.pop            = _pop
-#----------------------------------------------------------------------------------------------------------------------
 import logging
 class DEBUG_formatter(logging.Formatter):
     def window(self, size):
@@ -670,9 +654,25 @@ logger.addHandler(handler)
 _window = 24
 _globals = None # global variables
 #----------------------------------------------------------------------------------------------------------------------
+class SNOBOL:
+    __slots__ = ['pos', 'subject', 'depth', 'cstack', 'itop', 'istack', 'vstack', 'nl' , 'shift', 'reduce', 'pop']
+    def __repr__(self): return f"('SNOBOL', {self.depth}, {self.pos}, {len(self.subject)}, {pformat(self.subject)}, {pformat(self.cstack)})"
+    def __init__(self, pos:int, subject:str):
+        self.pos:int        = pos
+        self.subject:str    = subject
+        self.depth:int      = 0
+        self.cstack:list    = []
+        self.itop:int       = -1
+        self.istack:list    = []
+        self.vstack:list    = []
+        self.nl:bool        = False
+        self.shift          = _shift
+        self.reduce         = _reduce
+        self.pop            = _pop
+#----------------------------------------------------------------------------------------------------------------------
 def GLOBALS(g:dict): global _globals; _globals = g; _globals['Ϣ'] = Ϣ
 def TRACE(level:int=None, window:int=None):
-    global handler
+    global _window, logger, handler
     if window is not None:
         _window = window
     if level is not None:
@@ -705,7 +705,8 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
                 result = False
             break
-        except StopIteration: pass
+        except StopIteration:
+            if Ϣ[-1].nl: print()
         except Exception as e:
             logger.critical("SEARCH(): Yikes: %r", e)
     Ϣ.pop()

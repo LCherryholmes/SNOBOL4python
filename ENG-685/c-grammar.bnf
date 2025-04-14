@@ -1,0 +1,46 @@
+1. program → declList
+2. declList → declList decl | decl
+3. decl → varDecl | funDecl
+4. varDecl → typeSpec varDeclList ;
+5. scopedVarDecl → "static" typeSpec varDeclList ";" | typeSpec varDeclList ";"
+6. varDeclList → varDeclList "," varDeclInit | varDeclInit
+7. varDeclInit → varDeclId | varDeclId ":" simpleExp
+8. varDeclId → ID | ID "[" NUMCONST "]"
+9. typeSpec → "int" | "bool" | "char"
+10. funDecl → typeSpec ID "(" parms ")" stmt | ID "(" parms ")" stmt
+11. parms → parmList | ε
+12. parmList → parmList ";" parmTypeList | parmTypeList
+13. parmTypeList → typeSpec parmIdList
+14. parmIdList → parmIdList "," parmId | parmId
+15. parmId → ID | ID "[" "]"
+16. stmt → expStmt | compoundStmt | selectStmt | iterStmt | returnStmt | breakStmt
+17. expStmt → exp ";" | ";"
+18. compoundStmt → "{" localDecls stmtList "}"
+19. localDecls → localDecls scopedVarDecl | ε
+20. stmtList → stmtList stmt | ε
+21. selectStmt → "if" simpleExp "then" stmt | "if" simpleExp "then" stmt "else" stmt
+22. iterStmt → "while" simpleExp "do" stmt | "for" ID "=" iterRange "do" stmt
+23. iterRange → simpleExp "to" simpleExp | simpleExp "to" simpleExp "by" simpleExp
+24. returnStmt → "return" ";" | "return" exp ";"
+25. breakStmt → "break" ;
+26. exp → mutable "="" exp | mutable "+="" exp | mutable "−="" exp | mutable "∗="" exp | mutable "/="" exp | mutable "++"" | mutable "−−"" | simpleExp
+27. simpleExp → simpleExp "or" andExp | andExp
+28. andExp → andExp "and" unaryRelExp | unaryRelExp
+29. unaryRelExp → "not" unaryRelExp | relExp
+30. relExp → minmaxExp relop minmaxExp | minmaxExp
+31. relop → "<=" | "<" | ">" | ">=" | "==" | "!="
+32. minmaxExp → minmaxExp minmaxop sumExp | sumExp
+33. minmaxop → ":>:" | ":<:"
+34. sumExp → sumExp sumop mulExp | mulExp
+35. sumop → "+" | "−"
+36. mulExp → mulExp mulop unaryExp | unaryExp
+37. mulop → "∗" | "/" | "%"
+38. unaryExp → unaryop unaryExp | factor
+39. unaryop → "−" | "∗" | "?"
+40. factor → immutable | mutable
+41. mutable → ID | ID "[" exp "]"
+42. immutable → "(" exp ")" | call | constant
+43. call → ID "(" args ")"
+44. args → argList | ε
+45. argList → argList "," exp | exp
+46. constant → NUMCONST | CHARCONST | STRINGCONST | true | false

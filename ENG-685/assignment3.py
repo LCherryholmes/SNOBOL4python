@@ -21,7 +21,9 @@ def group():
                 + push_list("tag")
                 + ARBNO(
                     delim()
-                  + (group() | word() % "wrd" + push_item("wrd"))
+                  + ( group()
+                    | word() % "wrd" + push_item("wrd")
+                    )
                   )
                 + pop_list()
                 + σ(')')
