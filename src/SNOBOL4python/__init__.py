@@ -15,8 +15,8 @@ from .SNOBOL4functions import CHAR, DIFFER, IDENT, INTEGER, REPLACE
 from .SNOBOL4functions import JSONDecode
 from .SNOBOL4functions import S, F, Ξ, _END, _RETURN, _FRETURN, _NRETURN
 #-------------------------------------------------------------------------------
-# Α α Β β Θ γ Δ δ Ε ε Ζ ζ Η η θ Θ Ι ι Κ κ Λ λ Μ μ
-# Ν ν Ξ ξ Ο ο Π π Ρ ρ Σ σ Τ τ Υ υ φ Φ Χ χ Ψ ψ Ω ω
+ # Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ   Τ Υ Φ Χ Ψ Ω
+ # α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ ς τ υ φ χ ψ ω
 #-------------------------------------------------------------------------------
 __all__ = [
             "GLOBALS", "TRACE", "WINDOW", "pattern",
