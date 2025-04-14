@@ -14,10 +14,10 @@ _globals = None # WARNING: dummy, global variables
 _started = time.time_ns() // 1000
 _units = dict() # file name associations and unit numbers
 #----------------------------------------------------------------------------------------------------------------------
-globals()['DIGITS'] = "0123456789"
-globals()['UCASE'] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-globals()['LCASE'] = "abcdefghijklmnopqrstuvwxyz"
-globals()['ALPHABET'] = (
+DIGITS = "0123456789"
+UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+LCASE = "abcdefghijklmnopqrstuvwxyz"
+ALPHABET = (
     "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F"
     "\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F"
     "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2A\x2B\x2C\x2D\x2E\x2F"

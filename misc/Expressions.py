@@ -78,74 +78,87 @@ print()
 pos = 0
 subject = ""
 
-def POS(n):
-    global pos
-    if pos == n:
-        yield ""
+class PATTERN(object):
+    def __init__(self): self.generator = None
+    def __iter__(self): self.generator = self(); return self.generator
+    def __next__(self): return next(self.generator)
 
-def RPOS(n):
-    global pos, subject
-    if pos == len(subject) - n:
-        yield ""
+class POS(PATTERN):
+    def __init__(self, n): self.n = n
+    def __call__(self):
+        global pos
+        if pos == self.n:
+            yield ""
 
-def _(lit):
-    global pos, subject
-    if pos + len(lit) <= len(subject):
-        if lit == subject[pos : pos + len(lit)]:
-            pos += len(lit)
-            yield lit
-            pos -= len(lit)
+class RPOS(PATTERN):
+    def __init__(self, n): self.n = n
+    def __call__(self):
+        global pos, subject
+        if pos == len(subject) - self.n:
+            yield ""
 
-def SPAN(characters):
-    global pos, subject
-    pos0 = pos
-    while True:
-        if pos >= len(subject): break
-        if subject[pos] in characters:
-            pos += 1
-        else: break
-    if pos > pos0:
-        yield subject[pos0 : pos]
-        pos = pos0
+class σ(PATTERN):
+    def __init__(self, lit): self.lit = lit
+    def __call__(self):
+        global pos, subject
+        if pos + len(self.lit) <= len(subject):
+            if self.lit == subject[pos : pos + len(self.lit)]:
+                pos += len(self.lit)
+                yield self.lit
+                pos -= len(self.lit)
+
+class SPAN(PATTERN):
+    def __init__(self, characters): self.characters = characters
+    def __call__(self):
+        global pos, subject
+        pos0 = pos
+        while True:
+            if pos >= len(subject): break
+            if subject[pos] in self.characters:
+                pos += 1
+            else: break
+        if pos > pos0:
+            yield subject[pos0 : pos]
+            pos = pos0
 #------------------------------------------------------------------------------
 def parse_item():
     for _1 in SPAN("0123456789"): yield int(_1)
-    for _1 in _("x"): yield _1
-    for _1 in _("y"): yield _1
-    for _1 in _("z"): yield _1
-    for _1 in _("("):
+    for _1 in σ("x"): yield _1
+    for _1 in σ("y"): yield _1
+    for _1 in σ("z"): yield _1
+    for _1 in σ("("):
         for _2 in parse_term():
-            for _3 in _(")"):
+            for _3 in σ(")"):
                 yield _2
 
 def parse_element():
     for _1 in parse_item(): yield _1
-    for _1 in _("+"):
+    for _1 in σ("+"):
         for _2 in parse_element():
             yield (_1, _2)
-    for _1 in _("-"):
+    for _1 in σ("-"):
         for _2 in parse_element():
             yield (_1, _2)
 
 def parse_factor():
     for _1 in parse_element(): yield _1
     for _1 in parse_element():
-        for _2 in _("*"):
+        for _2 in σ("*"):
             for _3 in parse_factor():
                 yield (_2, _1, _3)
     for _1 in parse_element():
-        for _2 in _("/"):
+        for _2 in σ("/"):
             for _3 in parse_factor():
                 yield (_2, _1, _3)
 
 def parse_term():
     for _1 in parse_factor(): yield _1
     for _1 in parse_factor():
-        for _2 in _("+"):
+        for _2 in σ("+"):
             for _3 in parse_term():
                 yield (_2, _1, _3)
     for _1 in parse_factor():
-        for _2 in _("-"):
+        for _2 in σ("-"):
             for _3 in parse_term():
                 yield (_2, _1, _3)
 
