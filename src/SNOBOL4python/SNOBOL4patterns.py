@@ -35,6 +35,7 @@ class PATTERN(object):
                                         case 'Λ':       return f"Λ({pformat(self.expression)})"
                                         case 'λ':       return f"λ({pformat(self.command)})"
                                         case 'Θ':       return f"Θ({pformat(self.N)})"
+                                        case 'θ':       return f"θ({pformat(self.N)})"
                                         case 'ζ':       return f"ζ({pformat(self.N)})"
                                         case 'Φ':       return f"Φ({pformat(self.rex)})"
                                         case 'φ':       return f"φ({pformat(self.rex)})"
@@ -470,7 +471,7 @@ class RTAB(PATTERN):
             else: self.n = int(self.n)
         if self.n <= len(Ϣ[-1].subject):
             self.n = len(Ϣ[-1].subject) - self.n
-            if n >= Ϣ[-1].pos:
+            if self.n >= Ϣ[-1].pos:
                 pos0 = Ϣ[-1].pos
                 Ϣ[-1].pos = self.n
                 yield (pos0, self.n)
