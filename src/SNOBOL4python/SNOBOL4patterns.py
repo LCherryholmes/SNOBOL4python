@@ -20,9 +20,9 @@ class PATTERN(object):
     def __init__(self):             self.generator = self.γ()
     def __iter__(self):             self.generator = self.γ(); return self.generator
     def __next__(self):             return next(self.generator)
-    def __call__(self):             return self
+#   def __call__(self):             return self
     def __deepcopy__(self, memo):   return type(self)()
-    def __repr__(self):             return f"{type(self)().__name__}()"
+    def __repr__(self):             return f"{type(self).__name__}()"
     def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
     def __add__(self, other):       # SIGMA, Σ, binary '+', subsequent, '+' is left associative
                                     if type(self).__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
