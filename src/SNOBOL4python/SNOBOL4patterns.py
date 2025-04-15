@@ -19,9 +19,7 @@ class PATTERN(object):
     def __init__(self):             self.generator = self.γ()
     def __iter__(self):             self.generator = self.γ(); return self.generator
     def __next__(self):             return next(self.generator)
-#   def __call__(self):             return self
     def __deepcopy__(self, memo):   return type(self)()
-    def __repr__(self):             return f"{type(self).__name__}()"
     def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
     def __add__(self, other):       # SIGMA, Σ, binary '+', subsequent, '+' is left associative
                                     if type(self).__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
@@ -52,23 +50,23 @@ class ζ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class FAIL(PATTERN):
     def __init__(self): super().__init__()
-    def __repr__(self): pass
-    def γ(self): raise StopIteration # return?
+    def __repr__(self): return "FAIL()"
+    def γ(self): return
 #----------------------------------------------------------------------------------------------------------------------
 class ABORT(PATTERN):
     def __init__(self): super().__init__()
-    def __repr__(self): pass
+    def __repr__(self): return "ABORT()"
     def γ(self): raise Exception() # return?
 #----------------------------------------------------------------------------------------------------------------------
 class SUCCESS(PATTERN):
     def __init__(self): super().__init__()
-    def __repr__(self): pass
+    def __repr__(self): return "SUCCESS()"
     def γ(self):
         while True: yield ""
 #----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
-    def __repr__(self): return f"ε()"
+    def __repr__(self): return "ε()"
     def γ(self): yield ""
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
@@ -312,6 +310,7 @@ class RPOS(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class α(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "α()"
     def γ(self):
         global Ϣ
         if (Ϣ[-1].pos == 0) or \
@@ -320,6 +319,7 @@ class α(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class ω(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "ω()"
     def γ(self):
         global Ϣ
         if (Ϣ[-1].pos == len(Ϣ[-1].subject)) or \
@@ -415,18 +415,21 @@ class φ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class ψ(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "ψ()"
     def γ(self):
         print("Yikes! ψ()")
         yield ""
 #----------------------------------------------------------------------------------------------------------------------
 class Ψ(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "Ψ()"
     def γ(self):
         print("Yikes! Ψ()")
         yield ""
 #----------------------------------------------------------------------------------------------------------------------
 class Ϙ(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "Ϙ()"
     def γ(self):
         print("Yikes! Ϙ()")
         yield ""
@@ -466,6 +469,7 @@ class RTAB(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class REM(PATTERN):
     def __init__(self): super().__init__()
+    def __repr__(self): return "REM()"
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         Ϣ[-1].pos = len(Ϣ[-1].subject)
@@ -563,6 +567,7 @@ class BREAKX(BREAK): pass
 #----------------------------------------------------------------------------------------------------------------------
 class ARB(PATTERN): # ARB
     def __init__(self): super().__init__()
+    def __repr__(self): return "ARB()"
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         while Ϣ[-1].pos <= len(Ϣ[-1].subject):
@@ -574,6 +579,7 @@ class MARB(ARB): pass
 #----------------------------------------------------------------------------------------------------------------------
 class BAL(PATTERN): # BAL
     def __init__(self): super().__init__()
+    def __repr__(self): return "BAL()"
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos; nest = 0
         Ϣ[-1].pos += 1
@@ -622,7 +628,7 @@ class Π(PATTERN): # PI, Π, alternates, alternatives, SNOBOL4: P | Q | R | S | 
     def __deepcopy__(self, memo): return Π(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ
-        logger.debug("Π(%s) trying(%d)...", ", ".join([pformat(P) for P in self.AP]), Ϣ[-1].pos)
+        logger.debug("Π(*%d) trying(%d)...", len(self.AP), Ϣ[-1].pos) # ", ".join([pformat(P) for P in self.AP])
         Ϣ[-1].depth += 1
         for P in self.AP: yield from P
         Ϣ[-1].depth -= 1
@@ -633,7 +639,7 @@ class Σ(PATTERN): # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
     def __deepcopy__(self, memo): return Σ(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
-        logger.debug("Σ(%s) trying(%d)...", ", ".join([pformat(P) for P in self.AP]), pos0)
+        logger.debug("Σ(*%d) trying(%d)...", len(self.AP), pos0) # ", ".join([pformat(P) for P in self.AP])
         highmark = 0
         cursor = 0
         while cursor >= 0:
@@ -796,6 +802,9 @@ if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
     TRACE(level=10, window=32)
+    HEAD = None
+    pprint(["Test THETA" in ARB() + Θ('OUTPUT') + σ('THETA'), HEAD])
+    exit(0)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
