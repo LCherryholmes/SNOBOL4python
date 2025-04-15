@@ -22,45 +22,7 @@ class PATTERN(object):
     def __next__(self):             return next(self.generator)
     def __call__(self):             return self
     def __deepcopy__(self, memo):   return type(self)()
-    def __repr__(self):             #
-                                    match type(self).__name__:
-                                        case 'ε':       return f"ε()"
-                                        case 'σ':       return f"σ({pformat(self.s)})"
-                                        case 'π':       return f"π({pformat(self.P)})"
-                                        case 'Σ':       return  "Σ(*{0})".format(len(self.AP))
-                                        case 'Π':       return  "Π(*{0})".format(len(self.AP))
-                                        case 'ξ':       return  "ξ(*{0})".format(len(self.AP))
-                                        case 'Δ':       return f"Δ({pformat(self.P)}, {pformat(self.N)})"
-                                        case 'δ':       return f"δ({pformat(self.P)}, {pformat(self.N)})"
-                                        case 'Λ':       return f"Λ({pformat(self.expression)})"
-                                        case 'λ':       return f"λ({pformat(self.command)})"
-                                        case 'Θ':       return f"Θ({pformat(self.N)})"
-                                        case 'θ':       return f"θ({pformat(self.N)})"
-                                        case 'ζ':       return f"ζ({pformat(self.N)})"
-                                        case 'Φ':       return f"Φ({pformat(self.rex)})"
-                                        case 'φ':       return f"φ({pformat(self.rex)})"
-                                        case 'ANY':     return f"ANY({pformat(self.characters)})"
-                                        case 'ARB':     return f"ARB()"
-                                        case 'ARBNO':   return  "ARBNO({0})".format(pformat(self.P))
-                                        case 'BAL':     return f"BAL()"
-                                        case 'BREAK':   return f"BREAK({pformat(self.characters)})"
-                                        case 'BREAKX':  return f"BREAKX({pformat(self.characters)})"
-                                        case 'FENCE':   return f"FENCE({pformat(self.P)})"
-                                        case 'NOTANY':  return f"NOTANY({pformat(self.characters)})"
-                                        case 'LEN':     return f"LEN({pformat(self.n)})"
-                                        case 'POS':     return f"POS({pformat(self.n)})"
-                                        case 'REM':     return f"REM()"
-                                        case 'RPOS':    return f"RPOS({pformat(self.n)})"
-                                        case 'RTAB':    return f"RTAB({pformat(self.n)})"
-                                        case 'SPAN':    return f"SPAN({pformat(self.characters)})"
-                                        case 'TAB':     return f"TAB({pformat(self.n)})"
-                                        case 'Shift':   return f"Shift()"
-                                        case 'Reduce':  return f"Reduce()"
-                                        case 'Pop':     return f"Pop()"
-                                        case 'nPush':   return f"nPush"
-                                        case 'nInc':    return f"nInc()"
-                                        case 'nPop':    return f"nPop()"
-                                        case _:         raise Exception(f"Yipper Skipper! {type(self).__name__}")
+    def __repr__(self):             return f"{type(self)().__name__}()"
     def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
     def __add__(self, other):       # SIGMA, Σ, binary '+', subsequent, '+' is left associative
                                     if type(self).__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
@@ -80,6 +42,7 @@ class PATTERN(object):
 #----------------------------------------------------------------------------------------------------------------------
 class ζ(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
+    def __repr__(self): return f"ζ({pformat(self.N)})"
     def __deepcopy__(self, memo): return ζ(self.N)
     def γ(self):
         if not isinstance(self.N, str):
@@ -90,24 +53,29 @@ class ζ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class FAIL(PATTERN):
     def __init__(self): super().__init__()
+    def __repr__(self): pass
     def γ(self): raise StopIteration # return?
 #----------------------------------------------------------------------------------------------------------------------
 class ABORT(PATTERN):
     def __init__(self): super().__init__()
+    def __repr__(self): pass
     def γ(self): raise Exception() # return?
 #----------------------------------------------------------------------------------------------------------------------
 class SUCCESS(PATTERN):
     def __init__(self): super().__init__()
+    def __repr__(self): pass
     def γ(self):
         while True: yield ""
 #----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
+    def __repr__(self): return f"ε()"
     def γ(self): yield ""
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
 class Θ(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
+    def __repr__(self): f"Θ({pformat(self.N)})"
     def __deepcopy__(self, memo): return Θ(self.N)
     def γ(self):
         global Ϣ, _globals
@@ -123,6 +91,7 @@ class Θ(PATTERN):
 # Conditional cursor assignment (after successful complete pattern match)
 class θ(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
+    def __repr__(self): f"θ({pformat(self.N)})"
     def __deepcopy__(self, memo): return θ(self.N)
     def γ(self):
         global Ϣ; self.N = str(self.N)
@@ -138,6 +107,7 @@ class θ(PATTERN):
 # Immediate match assignment during pattern matching (permanent)
 class δ(PATTERN): # delta, binary '@', SNOBOL4: P $ N
     def __init__(self, P:PATTERN, N): super().__init__(); self.P:PATTERN = P; self.N = N
+    def __repr__(self): return f"δ({pformat(self.P)}, {pformat(self.N)})"
     def __deepcopy__(self, memo): return δ(copy.deepcopy(self.P), self.N)
     def γ(self):
         global _globals; self.N = str(self.N)
@@ -155,6 +125,7 @@ class δ(PATTERN): # delta, binary '@', SNOBOL4: P $ N
 # Immediate evaluation as test during pattern matching
 class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     def __init__(self, expression): super().__init__(); self.expression = expression
+    def __repr__(self): return f"Λ({pformat(self.expression)})"
     def __deepcopy__(self, memo): return Λ(self.expression)
     def γ(self):
         global _globals
@@ -183,6 +154,7 @@ class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
 # Conditional match assignment (after successful complete pattern match)
 class Δ(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
     def __init__(self, P:PATTERN, N): super().__init__(); self.P:PATTERN = P; self.N = N
+    def __repr__(self): return f"Δ({pformat(self.P)}, {pformat(self.N)})"
     def __deepcopy__(self, memo): return Δ(copy.deepcopy(self.P), self.N)
     def γ(self):
         global Ϣ; self.N = str(self.N)
@@ -204,6 +176,7 @@ class Δ(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
 # Conditional match execution (after successful complete pattern match)
 class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
     def __init__(self, command): super().__init__(); self.command = command
+    def __repr__(self): return f"λ({pformat(self.command)})"
     def __deepcopy__(self, memo): return λ(self.command)
     def γ(self):
         global Ϣ
@@ -220,6 +193,7 @@ class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
 #----------------------------------------------------------------------------------------------------------------------
 class nPush(PATTERN):
     def __init__(self): super().__init__()
+    def __repr__(self): return "nPush()"
     def γ(self):
         global Ϣ
         logger.info("nPush() SUCCESS")
@@ -232,6 +206,7 @@ class nPush(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class nInc(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "nInc()"
     def γ(self):
         global Ϣ
         logger.info("nInc() SUCCESS")
@@ -242,6 +217,7 @@ class nInc(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class nPop(PATTERN):
     def __init__(self): super().__init__();
+    def __repr__(self): return "nPop()"
     def γ(self):
         global Ϣ
         logger.info("nPop() SUCCESS")
@@ -254,6 +230,7 @@ class nPop(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class Shift(PATTERN):
     def __init__(self, t=None, v=None): super().__init__(); self.t = t; self.v = v
+    def __repr__(self): return f"Shift({pformat(self.t)}, {pformat(self.v)})"
     def __deepcopy__(self, memo): return Shift(self.t, self.v)
     def γ(self):
         global Ϣ
@@ -267,6 +244,7 @@ class Shift(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class Reduce(PATTERN):
     def __init__(self, t, n=-1): super().__init__(); self.t = t; self.n = n
+    def __repr__(self): return f"Reduce({pformat(self.t)}, {pformat(self.n)})"
     def __deepcopy__(self, memo): return Reduce(self.t, self.n)
     def γ(self):
         global Ϣ
@@ -281,6 +259,7 @@ class Reduce(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class Pop(PATTERN):
     def __init__(self, v): super().__init__(); self.v = v
+    def __repr__(self): return f"Pop({pformat(self.v)})"
     def __deepcopy__(self, memo): return Pop(self.v)
     def γ(self):
         global Ϣ
@@ -292,6 +271,7 @@ class Pop(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class FENCE(PATTERN): # FENCE and FENCE(P)
     def __init__(self, P:PATTERN=None): super().__init__(); self.P:PATTERN = P
+    def __repr__(self): return f"FENCE({pformat(self.P)})"
     def __deepcopy__(self, memo): return FENCE(copy.deepcopy(self.P))
     def γ(self):
         if self.P:
@@ -305,6 +285,7 @@ class FENCE(PATTERN): # FENCE and FENCE(P)
 #----------------------------------------------------------------------------------------------------------------------
 class POS(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
+    def __repr__(self): return f"POS({pformat(self.n)})"
     def __deepcopy__(self, memo): return POS(self.n)
     def γ(self):
         global Ϣ
@@ -318,6 +299,7 @@ class POS(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class RPOS(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
+    def __repr__(self): return f"RPOS({pformat(self.n)})"
     def __deepcopy__(self, memo): return RPOS(self.n)
     def γ(self):
         global Ϣ
@@ -347,6 +329,7 @@ class ω(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class LEN(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
+    def __repr__(self): return f"LEN({pformat(self.n)})"
     def __deepcopy__(self, memo): return LEN(self.n)
     def γ(self):
         global Ϣ
@@ -362,6 +345,7 @@ class LEN(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class σ(PATTERN): # sigma, σ, sequence of characters, literal string patttern
     def __init__(self, s): super().__init__(); self.s = s
+    def __repr__(self): return f"σ({pformat(self.s)})"
     def __deepcopy__(self, memo): return σ(self.s)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
@@ -383,6 +367,7 @@ import re
 _rexs = dict()
 class Φ(PATTERN):
     def __init__(self, rex): super().__init__(); self.rex = rex
+    def __repr__(self): return f"Φ({pformat(self.rex)})"
     def __deepcopy__(self, memo): return Φ(self.rex)
     def γ(self):
         global Ϣ, _rexs
@@ -403,6 +388,7 @@ class Φ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class φ(PATTERN):
     def __init__(self, rex): super().__init__(); self.rex = rex
+    def __repr__(self): return f"φ({pformat(self.rex)})"
     def __deepcopy__(self, memo): return φ(self.rex)
     def γ(self):
         global Ϣ, _rexs
@@ -448,6 +434,7 @@ class Ϙ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class TAB(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
+    def __repr__(self): return f"TAB({pformat(self.n)})"
     def __deepcopy__(self, memo): return TAB(self.n)
     def γ(self):
         global Ϣ
@@ -463,6 +450,7 @@ class TAB(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class RTAB(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
+    def __repr__(self): return f"RTAB({pformat(self.n)})"
     def __deepcopy__(self, memo): return RTAB(self.n)
     def γ(self):
         global Ϣ
@@ -487,6 +475,7 @@ class REM(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class ANY(PATTERN):
     def __init__(self, characters): super().__init__(); self.characters = characters
+    def __repr__(self): return f"ANY({pformat(self.characters)})"
     def __deepcopy__(self, memo): return ANY(self.characters)
     def γ(self):
         global Ϣ
@@ -506,6 +495,7 @@ class ANY(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class NOTANY(PATTERN):
     def __init__(self, characters): super().__init__(); self.characters = characters
+    def __repr__(self): return f"NOTANY({pformat(self.characters)})"
     def __deepcopy__(self, memo): return NOTANY(self.characters)
     def γ(self):
         global Ϣ
@@ -525,6 +515,7 @@ class NOTANY(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class SPAN(PATTERN):
     def __init__(self, characters): super().__init__(); self.characters:str = characters
+    def __repr__(self): return f"SPAN({pformat(self.characters)})"
     def __deepcopy__(self, memo): return SPAN(self.characters)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
@@ -548,6 +539,7 @@ class SPAN(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class BREAK(PATTERN):
     def __init__(self, characters): super().__init__(); self.characters:str = characters
+    def __repr__(self): return f"BREAK({pformat(self.characters)})"
     def __deepcopy__(self, memo): return BREAK(self.characters)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
@@ -599,6 +591,7 @@ class BAL(PATTERN): # BAL
 #----------------------------------------------------------------------------------------------------------------------
 class ξ(PATTERN): # PSI, AND, conjunction
     def __init__(self, P:PATTERN, Q:PATTERN): super().__init__(); self.P = P; self.Q = Q
+    def __repr__(self): return  "ξ(*{0})".format(len(self.AP))
     def __deepcopy__(self, memo): return ξ(copy.deepcopy(self.P), copy.deepcopy(self.Q))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
@@ -616,6 +609,7 @@ class ξ(PATTERN): # PSI, AND, conjunction
 #----------------------------------------------------------------------------------------------------------------------
 class π(PATTERN): # pi, optional, SNOBOL4: P | epsilon
     def __init__(self, P:PATTERN): super().__init__(); self.P = P
+    def __repr__(self): return f"π({pformat(self.P)})"
     def __deepcopy__(self, memo): return π(copy.deepcopy(self.P))
     def γ(self):
         Ϣ[-1].depth += 1
@@ -625,6 +619,7 @@ class π(PATTERN): # pi, optional, SNOBOL4: P | epsilon
 #----------------------------------------------------------------------------------------------------------------------
 class Π(PATTERN): # PI, Π, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
     def __init__(self, *AP:PATTERN): super().__init__(); self.AP = AP
+    def __repr__(self): return  "Π(*{0})".format(len(self.AP))
     def __deepcopy__(self, memo): return Π(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ
@@ -635,6 +630,7 @@ class Π(PATTERN): # PI, Π, alternates, alternatives, SNOBOL4: P | Q | R | S | 
 #----------------------------------------------------------------------------------------------------------------------
 class Σ(PATTERN): # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
     def __init__(self, *AP:PATTERN): super().__init__(); self.AP = AP
+    def __repr__(self): return  "Σ(*{0})".format(len(self.AP))
     def __deepcopy__(self, memo): return Σ(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
@@ -660,6 +656,7 @@ class Σ(PATTERN): # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
 #----------------------------------------------------------------------------------------------------------------------
 class ARBNO(PATTERN):
     def __init__(self, P:PATTERN): super().__init__(); self.P = P
+    def __repr__(self): return  "ARBNO({0})".format(pformat(self.P))
     def __deepcopy__(self, memo): return ARBNO(copy.deepcopy(self.P))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
@@ -691,13 +688,11 @@ def _push(lyst): Ϣ[-1].vstack.append(lyst)
 def _pop(): return Ϣ[-1].vstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 def _shift(t='', v=None):
-    global _globals
     if v is None:
         _push([t])
     else: _push([t, v])
 #----------------------------------------------------------------------------------------------------------------------
 def _reduce(t, n):
-    global _globals
     if n == 0 and t == 'Σ':
         _push(['ε'])
     elif n != 1 or t not in ('Σ', 'Π', 'ξ', 'snoExprList', '|', '..'):
@@ -801,7 +796,7 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
 if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
-    TRACE(level=50, window=32)
+    TRACE(level=10, window=32)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
