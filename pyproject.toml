@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "SNOBOL4python"
-version = "0.4.1"
+version = "0.4.2"
 description = "A Python library for SNOBOL4-style pattern matching with regular expressions"
 readme = "README.md"
 authors = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]

@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.1.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.2.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -414,11 +414,15 @@ class BREAKX(BREAK): pass
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
 class Θ(PATTERN):
-    def __init__(self, N): super().__init__(); self.N = N
-    def __repr__(self): f"Θ({pformat(self.N)})"
-    def __deepcopy__(self, memo): return Θ(self.N)
+    def __init__(self, N):
+        super().__init__()
+        self.N = N
+    def __repr__(self): return f"Θ({pformat(self.N)})"
+    def __deepcopy__(self, memo):
+        return Θ(self.N)
     def γ(self):
         global Ϣ, _globals
+        self.N = str(self.N)
         if self.N == "OUTPUT":
             Ϣ[-1].nl = True
             print(Ϣ[-1].pos, end='·');
@@ -429,11 +433,15 @@ class Θ(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional cursor assignment (after successful complete pattern match)
 class θ(PATTERN):
-    def __init__(self, N): super().__init__(); self.N = N
-    def __repr__(self): f"θ({pformat(self.N)})"
-    def __deepcopy__(self, memo): return θ(self.N)
+    def __init__(self, N):
+        super().__init__()
+        self.N = N
+    def __repr__(self): return f"θ({pformat(self.N)})"
+    def __deepcopy__(self, memo):
+        return θ(self.N)
     def γ(self):
-        global Ϣ; self.N = str(self.N)
+        global Ϣ
+        self.N = str(self.N)
         if self.N == "OUTPUT":
             Ϣ[-1].nl = True
             print(Ϣ[-1].pos, end='·')
@@ -811,18 +819,6 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
 if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
-    V = ANY(LCASE)
-    I = SPAN(DIGITS)
-    N = V | I
-    E = N | σ('(') + ζ('X') + σ(')')
-    X = ( E + ANY('+-') + ζ('X')
-        | E + ANY('*/') + ζ('X')
-        | ANY('+-') + ζ('X')
-        | E
-        )
-    TRACE(level=10, window=32)
-    '-x*y/y*17' in X
-    exit(0)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
