@@ -59,7 +59,7 @@ rexs = {
 #------------------------------------------------------------------------------
 from pprint import pprint
 results = dict()
-TRACE(50)
+TRACE(40)
 GLOBALS(results)
 for rex in rexs:
     print(rex)
