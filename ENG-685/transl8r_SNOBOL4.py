@@ -27,8 +27,8 @@ Real            =   ( SPAN(DIGITS)
                     | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
                     ) % "tx"
 Id              =   (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
-White           =   (  SPAN(' \t') + FENCE(nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
-                    |  nl() + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε())
+White           =   (  SPAN(' \t') + FENCE(nl + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
+                    |  nl + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε())
                     )
 Gray            =   White | ε()
 #-----------------------------------------------------------------------------------------------------------------------
@@ -61,76 +61,65 @@ UnprotKwd       =   φ(r"\&(?P<nm>" + "|".join((nm for nm in UnprotKwds))  + ")\
 #-----------------------------------------------------------------------------------------------------------------------
 def τ(op):
     match op:
-        case '=':   return White() + σ('=') + White()
-        case '?':   return White() + σ('?') + White()
-        case '|':   return White() + σ('|') + White()
-        case '+':   return White() + σ('+') + White()
-        case '-':   return White() + σ('-') + White()
-        case '/':   return White() + σ('/') + White()
-        case '*':   return White() + σ('*') + White()
-        case '^':   return White() + σ('^') + White()
-        case '!':   return White() + σ('!') + White()
-        case '**':  return White() + σ('**') + White()
-        case '$':   return White() + σ('$') + White()
-        case '.':   return White() + σ('.') + White()
-        case '&':   return White() + σ('&') + White()
-        case '@':   return White() + σ('@') + White()
-        case '#':   return White() + σ('#') + White()
-        case '%':   return White() + σ('%') + White()
-        case '~':   return White() + σ('~') + White()
-        case ',':   return Gray() + σ(',') + Gray()
-        case '(':   return σ('(') + Gray()
-        case '[':   return σ('[') + Gray()
-        case '<':   return σ('<') + Gray()
-        case ')':   return Gray() + σ(')')
-        case ']':   return Gray() + σ(']')
-        case '>':   return Gray() + σ('>')
+        case '=':   return White + σ('=') + White
+        case '?':   return White + σ('?') + White
+        case '|':   return White + σ('|') + White
+        case '+':   return White + σ('+') + White
+        case '-':   return White + σ('-') + White
+        case '/':   return White + σ('/') + White
+        case '*':   return White + σ('*') + White
+        case '^':   return White + σ('^') + White
+        case '!':   return White + σ('!') + White
+        case '**':  return White + σ('**') + White
+        case '$':   return White + σ('$') + White
+        case '.':   return White + σ('.') + White
+        case '&':   return White + σ('&') + White
+        case '@':   return White + σ('@') + White
+        case '#':   return White + σ('#') + White
+        case '%':   return White + σ('%') + White
+        case '~':   return White + σ('~') + White
+        case ',':   return Gray + σ(',') + Gray
+        case '(':   return σ('(') + Gray
+        case '[':   return σ('[') + Gray
+        case '<':   return σ('<') + Gray
+        case ')':   return Gray + σ(')')
+        case ']':   return Gray + σ(']')
+        case '>':   return Gray + σ('>')
 #-----------------------------------------------------------------------------------------------------------------------
-ExprList        =   ( nPush()
-                    + ζ(lambda: XList)
-                    + Reduce('ExprList', -1)
-                    + nPop()
-                    )
-XList           =   nInc() + (ζ(lambda: Expr) | Shift()) + FENCE(τ(',') + ζ(lambda: XList) | ε())
-Expr            =   ζ(lambda: Expr0)
-Expr0           =   ζ(lambda: Expr1) + FENCE(τ('=') + ζ(lambda: Expr0)  + Reduce('=', 2) | ε())
-Expr1           =   ζ(lambda: Expr2) + FENCE(τ('?') + ζ(lambda: Expr1)  + Reduce('?', 2) | ε())
-Expr2           =   ζ(lambda: Expr3) + FENCE(τ('&') + ζ(lambda: Expr2)  + Reduce('&', 2) | ε())
-Expr3           =   nPush() + ζ(lambda: X3) + Reduce('|', -1)  + nPop()
-X3              =   nInc()  + ζ(lambda: Expr4) + FENCE(τ('|')  + ζ(lambda: X3) | ε())
-Expr4           =   nPush() + ζ(lambda: X4) + Reduce('..', -1) + nPop()
-X4              =   nInc()  + ζ(lambda: Expr5) + FENCE(White() + ζ(lambda: X4) | ε())
-Expr5           =   ζ(lambda: Expr6) + FENCE(τ('@') + ζ(lambda: Expr5)  + Reduce('@', 2) | ε())
-Expr6           =   ( ζ(lambda: Expr7)
-                    + FENCE(
-                        τ('+') + ζ(lambda: Expr6) + Reduce('+', 2)
-                      | τ('-') + ζ(lambda: Expr6) + Reduce('-', 2)
-                      | ε()
+Expr17          =   FENCE(
+                      ( nPush()
+                      + τ('(') + ζ(lambda: Expr)
+                      + (  τ(',') + ζ(lambda: XList) + Reduce(',', -2)
+                        |  ε() + Reduce('()', 1)
+                        )
+                      + τ(')')
+                      + nPop()
                       )
+                    | Function            + Shift('Function', "nm")
+                                          + τ('(') + ζ(lambda: ExprList) + τ(')')
+                                          + Reduce('Call', 2)
+                    | Id                  + Shift('Id', "nm")
+                                          + τ('(') + ζ(lambda: ExprList) + τ(')')
+                                          + Reduce('Call', 2)
+                    | BuiltinVar          + Shift('BuiltinVar', "nm")
+                    | SpecialNm           + Shift('SpecialNm', "nm")
+                    | Id                  + Shift('Id', "nm")
+                    | String       % "tx" + Shift('String', "tx")
+                    | Real         % "tx" + Shift('Real', "tx")
+                    | Integer      % "tx" + Shift('Integer', "tx")
                     )
-Expr7           =   ζ(lambda: Expr8)  + FENCE(τ('#') + ζ(lambda: Expr7)  + Reduce('#', 2) | ε())
-Expr8           =   ζ(lambda: Expr9)  + FENCE(τ('/') + ζ(lambda: Expr8)  + Reduce('/', 2) | ε())
-Expr9           =   ζ(lambda: Expr10) + FENCE(τ('*') + ζ(lambda: Expr9)  + Reduce('*', 2) | ε())
-Expr10          =   ζ(lambda: Expr11) + FENCE(τ('%') + ζ(lambda: Expr10) + Reduce('%', 2) | ε())
-Expr11          =   ( ζ(lambda: Expr12)
-                    + FENCE(
-                        (τ('^') | τ('!') | τ('**')) + ζ(lambda: Expr11) + Reduce('^', 2)
-                      | ε()
+Expr16          =   ( nInc()
+                    + ( τ('[') + ζ(lambda: ExprList) + τ(']')
+                      | τ('<') + ζ(lambda: ExprList) + τ('>')
                       )
+                    + FENCE(ζ(lambda: Expr16) | ε())
                     )
-Expr12          =   ( ζ(lambda: Expr13)
-                    + FENCE(
-                        τ('$') + ζ(lambda: Expr12) + Reduce('$', 2)
-                      | τ('.') + ζ(lambda: Expr12) + Reduce('.', 2)
-                      | ε()
-                      )
-                    )
-Expr13          =   ζ(lambda: Expr14) + FENCE(τ('~') + ζ(lambda: Expr13) + Reduce('~', 2) | ε())
+Expr15          =   Expr17 + FENCE(nPush() + Expr16 + Reduce('[]', -2) + nPop() | ε())
 Expr14          =   ( σ('@') + ζ(lambda: Expr14) + Reduce('@', 1)
                     | σ('~') + ζ(lambda: Expr14) + Reduce('~', 1)
                     | σ('?') + ζ(lambda: Expr14) + Reduce('?', 1)
-                    | ProtKwd()                  + Shift('ProtKwd', "nm")
-                    | UnprotKwd()                + Shift('UnprotKwd', "nm")
+                    | ProtKwd                    + Shift('ProtKwd', "nm")
+                    | UnprotKwd                  + Shift('UnprotKwd', "nm")
                     | σ('&') + ζ(lambda: Expr14) + Reduce('&', 1)
                     | σ('+') + ζ(lambda: Expr14) + Reduce('+', 1)
                     | σ('-') + ζ(lambda: Expr14) + Reduce('-', 1)
@@ -143,66 +132,79 @@ Expr14          =   ( σ('@') + ζ(lambda: Expr14) + Reduce('@', 1)
                     | σ('#') + ζ(lambda: Expr14) + Reduce('#', 1)
                     | σ('=') + ζ(lambda: Expr14) + Reduce('=', 1)
                     | σ('|') + ζ(lambda: Expr14) + Reduce('|', 1)
-                    | ζ(lambda: Expr15)
+                    | Expr15
                     )
-Expr15          =   ζ(lambda: Expr17) + FENCE(nPush() + ζ(lambda: Expr16) + Reduce('[]', -2) + nPop() | ε())
-Expr16          =   ( nInc()
-                    + ( τ('[') + ζ(lambda: ExprList) + τ(']')
-                      | τ('<') + ζ(lambda: ExprList) + τ('>')
+Expr13          =   Expr14 + FENCE(τ('~') + ζ(lambda: Expr13) + Reduce('~', 2) | ε())
+Expr12          =   ( Expr13
+                    + FENCE(
+                        τ('$') + ζ(lambda: Expr12) + Reduce('$', 2)
+                      | τ('.') + ζ(lambda: Expr12) + Reduce('.', 2)
+                      | ε()
                       )
-                    + FENCE(ζ(lambda: Expr16) | ε())
                     )
-Expr17          =   FENCE(
-                      ( nPush()
-                      + τ('(') + ζ(lambda: Expr)
-                      + (  τ(',') + ζ(lambda: XList) + Reduce(',', -2)
-                        |  ε() + Reduce('()', 1)
-                        )
-                      + τ(')')
-                      + nPop()
+Expr11          =   ( Expr12
+                    + FENCE(
+                        (τ('^') | τ('!') | τ('**')) + ζ(lambda: Expr11) + Reduce('^', 2)
+                      | ε()
                       )
-                    | Function()          + Shift('Function', "nm")
-                                          + τ('(') + ζ(lambda: ExprList) + τ(')') + Reduce('Call', 2)
-                    | Id()                + Shift('Id', "nm")
-                                          + τ('(') + ζ(lambda: ExprList) + τ(')') + Reduce('Call', 2)
-                    | BuiltinVar()        + Shift('BuiltinVar', "nm")
-                    | SpecialNm()         + Shift('SpecialNm', "nm")
-                    | Id()                + Shift('Id', "nm")
-                    | String()     % "tx" + Shift('String', "tx")
-                    | Real()       % "tx" + Shift('Real', "tx")
-                    | Integer()    % "tx" + Shift('Integer', "tx")
                     )
-
+Expr10          =   Expr11 + FENCE(τ('%') + ζ(lambda: Expr10) + Reduce('%', 2) | ε())
+Expr9           =   Expr10 + FENCE(τ('*') + ζ(lambda: Expr9)  + Reduce('*', 2) | ε())
+Expr8           =   Expr9  + FENCE(τ('/') + ζ(lambda: Expr8)  + Reduce('/', 2) | ε())
+Expr7           =   Expr8  + FENCE(τ('#') + ζ(lambda: Expr7)  + Reduce('#', 2) | ε())
+Expr6           =   ( Expr7
+                    + FENCE(
+                        τ('+') + ζ(lambda: Expr6) + Reduce('+', 2)
+                      | τ('-') + ζ(lambda: Expr6) + Reduce('-', 2)
+                      | ε()
+                      )
+                    )
+Expr5           =   Expr6 + FENCE(τ('@') + ζ(lambda: Expr5)  + Reduce('@', 2) | ε())
+X4              =   nInc()  + Expr5 + FENCE(White + ζ(lambda: X4) | ε())
+Expr4           =   nPush() + X4 + Reduce('..', -1) + nPop()
+X3              =   nInc()  + Expr4 + FENCE(τ('|')  + ζ(lambda: X3) | ε())
+Expr3           =   nPush() + X3 + Reduce('|', -1)  + nPop()
+Expr2           =   Expr3 + FENCE(τ('&') + ζ(lambda: Expr2)  + Reduce('&', 2) | ε())
+Expr1           =   Expr2 + FENCE(τ('?') + ζ(lambda: Expr1)  + Reduce('?', 2) | ε())
+Expr0           =   Expr1 + FENCE(τ('=') + ζ(lambda: Expr0)  + Reduce('=', 2) | ε())
+Expr            =   Expr0
+XList           =   nInc() + (Expr | Shift()) + FENCE(τ(',') + ζ(lambda: XList) | ε())
+ExprList        =   ( nPush()
+                    + XList
+                    + Reduce('ExprList', -1)
+                    + nPop()
+                    )
+#-----------------------------------------------------------------------------------------------------------------------
 SGoto           =   (σ('S') | σ('s')) + Λ(lambda: set_SorF('S'))
 FGoto           =   (σ('F') | σ('f')) + Λ(lambda: set_SorF('F'))
-SorF            =   SGoto() | FGoto()
-Target          =   ( τ('(') + Λ(lambda: set_Brackets('()')) + Expr() + τ(')')
-                    | τ('<') + Λ(lambda: set_Brackets('<>')) + Expr() + τ('>')
+SorF            =   SGoto | FGoto
+Target          =   ( τ('(') + Λ(lambda: set_Brackets('()')) + Expr + τ(')')
+                    | τ('<') + Λ(lambda: set_Brackets('<>')) + Expr + τ('>')
                     )
-Goto            =   ( Gray() + σ(':')
-                    + Gray()
+Goto            =   ( Gray + σ(':')
+                    + Gray
                     + FENCE(
-                        Target()                         + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
-                      | SorF() + Target()                + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
-                      + FENCE(Gray() + SorF() + Target() + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
+                        Target                      + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
+                      | SorF + Target               + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
+                      + FENCE(Gray + SorF + Target  + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
                       )
                     )
 Control         =   σ('-') + BREAK("\n;") % "tx"
 Comment         =   σ('*') + BREAK("\n") % "tx"
 Label           =   BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
-Stmt            =   ( Label()
-                    + ( White()
-                      + Expr14()
+Stmt            =   ( Label
+                    + ( White
+                      + Expr14
                       + FENCE(
                           Shift()
-                        + White()
-                        + ( σ('=') + Shift('=') + White() + Expr()
+                        + White
+                        + ( σ('=') + Shift('=') + White + Expr
                           | σ('=') + Shift('=') + Shift()
                           )
-                        | (τ('?') | White()) + Expr1()
+                        | (τ('?') | White) + Expr1
                         + FENCE(
-                            White()
-                          + ( σ('=') + Shift('=') + White() + Expr()
+                            White
+                          + ( σ('=') + Shift('=') + White + Expr
                             | σ('=') + Shift('=') + Shift()
                             )
                           | Shift() + Shift()
@@ -211,23 +213,23 @@ Stmt            =   ( Label()
                         )
                       | Shift() + Shift() + Shift() + Shift()
                       )
-                    + FENCE(Goto() | Shift() + Shift())
-                    + Gray()
+                    + FENCE(Goto | Shift() + Shift())
+                    + Gray
                     )
 Commands        =   ζ(lambda: Command) + FENCE(ζ(lambda: Commands) | ε())
 Command         =   ( nInc()
                     + FENCE(
-                        Comment() + Shift('comment', "tx") + Reduce('Comment', 1) + nl()
-                      | Control() + Shift('control', "tx") + Reduce('Control', 1) + (nl() | σ(';'))
-                      | Stmt() + Reduce('Stmt', 7) + (nl() | σ(';'))
+                        Comment + Shift('comment', "tx") + Reduce('Comment', 1) + nl
+                      | Control + Shift('control', "tx") + Reduce('Control', 1) + (nl | σ(';'))
+                      | Stmt + Reduce('Stmt', 7) + (nl | σ(';'))
                       )
                     )
 Compiland       =   ( POS(0)
                     + nPush()
-                    + ARBNO(Command())
+                    + ARBNO(Command)
                     + Reduce('Parse', -1)
-                    + ( φ(r'[Ee][Nn][Dd]\b') + BREAK("\n") + nl()
-                      + ARBNO(BREAK("\n") + nl())
+                    + ( φ(r'[Ee][Nn][Dd]\b') + BREAK("\n") + nl
+                      + ARBNO(BREAK("\n") + nl)
                       | ε()
                       )
                     + nPop()
@@ -283,7 +285,7 @@ def xl8(t):
 #-----------------------------------------------------------------------------------------------------------------------
 Parse =         ( POS(0)
                 + nPush()
-                + ARBNO(Command())
+                + ARBNO(Command)
                 + Reduce('Parse', -1)
                 + nPop()
                 + Pop('SNOBOL4_tree')
@@ -304,5 +306,5 @@ str_Parse = """\
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(50)
 GLOBALS(globals())
-str_Parse in Parse()
+str_Parse in Parse
 #----------------------------------------------------------------------------------------------------------------------

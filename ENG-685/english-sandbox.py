@@ -57,7 +57,7 @@ CideText()
 #del dictionary['les']
 #del dictionary['unde']
 #del dictionary['i']
-Lexicon(eWord(), eWords)
+Lexicon(eWord, eWords)
 #=======================================================================================================================
 #                                   NOUNS
 #                                   A noun is the name of a person, place, or thing. Some of the things nouns name can
@@ -805,7 +805,7 @@ eCompoundSubject =                  eCompoundOrSubject | eCompoundAndSubject
 #                                   The simple subject is the essential noun, pronoun, or group of words acting as a noun that
 #                                   cannot be left out of the complete subject. The simple predicate is the essential verb or verb
 #                                   phrase that cannot be left out of the complete predicate.
-eCompleteSubject =                  eCompoundSubject # eSubject() #
+eCompleteSubject =                  eCompoundSubject # eSubject #
 eCompletePredicate =                ePredicate
 #                                   SENTENCE
 #                                   The two fundamental parts of every English sentence are the complete subject and the

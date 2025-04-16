@@ -44,5 +44,5 @@ PAIRS = \
     + RPOS(0)
     + Λ(lambda: print('RPOS got'))
     )
-# assert False is ('CCXXAA$' in PAIRS())
+# assert False is ('CCXXAA$' in PAIRS)
 #------------------------------------------------------------------------------
