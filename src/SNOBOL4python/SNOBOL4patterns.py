@@ -5,7 +5,7 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.0.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.1.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -43,10 +43,10 @@ class ζ(PATTERN):
     def __deepcopy__(self, memo): return ζ(self.N)
     def γ(self):
         if not isinstance(self.N, str):
-            if callable(self.N): self.N = self.N()
-            else: self.N = _globals[str(self.N)]
-        else: self.N = _globals[self.N]
-        yield from self.N
+            if callable(self.N): self.P = self.N()
+            else: self.P = _globals[str(self.N)]
+        else: self.P = _globals[self.N]
+        yield from self.P
 #----------------------------------------------------------------------------------------------------------------------
 class FAIL(PATTERN):
     def __init__(self): super().__init__()
@@ -286,13 +286,14 @@ class POS(PATTERN):
     def __deepcopy__(self, memo): return POS(self.n)
     def γ(self):
         global Ϣ
-        if not isinstance(self.n, int):
-            if callable(self.n): self.n = int(self.n())
-            else: self.n = int(self.n)
-        if Ϣ[-1].pos == self.n:
-            logger.info("POS(%d) SUCCESS(%d,%d)=", self.n, Ϣ[-1].pos, 0)
+        self.pos = self.n
+        if not isinstance(self.pos, int):
+            if callable(self.pos): self.pos = int(self.pos())
+            else: self.pos = self.n = int(self.pos)
+        if Ϣ[-1].pos == self.pos:
+            logger.info("POS(%d) SUCCESS(%d,%d)=", self.pos, Ϣ[-1].pos, 0)
             yield ""
-            logger.warning("POS(%d) backtracking...", self.n)
+            logger.warning("POS(%d) backtracking...", self.pos)
 #----------------------------------------------------------------------------------------------------------------------
 class RPOS(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
@@ -300,13 +301,14 @@ class RPOS(PATTERN):
     def __deepcopy__(self, memo): return RPOS(self.n)
     def γ(self):
         global Ϣ
-        if not isinstance(self.n, int):
-            if callable(self.n): self.n = int(self.n())
-            else: self.n = int(self.n)
-        if Ϣ[-1].pos == len(Ϣ[-1].subject) - self.n:
-            logger.info("RPOS(%d) SUCCESS(%d,%d)=", self.n, Ϣ[-1].pos, 0)
+        self.pos = self.n
+        if not isinstance(self.pos, int):
+            if callable(self.pos): self.pos = int(self.pos())
+            else: self.pos = self.n = int(self.pos)
+        if Ϣ[-1].pos == len(Ϣ[-1].subject) - self.pos:
+            logger.info("RPOS(%d) SUCCESS(%d,%d)=", self.pos, Ϣ[-1].pos, 0)
             yield ""
-            logger.warning("RPOS(%d) backtracking...", self.n)
+            logger.warning("RPOS(%d) backtracking...", self.pos)
 #----------------------------------------------------------------------------------------------------------------------
 class α(PATTERN):
     def __init__(self): super().__init__();
@@ -332,15 +334,16 @@ class LEN(PATTERN):
     def __deepcopy__(self, memo): return LEN(self.n)
     def γ(self):
         global Ϣ
-        if not isinstance(self.n, int):
-            if callable(self.n): self.n = int(self.n())
-            else: self.n = int(self.n)
-        if Ϣ[-1].pos + self.n <= len(Ϣ[-1].subject):
-            logger.info("LEN(%d) SUCCESS(%d,%d)=%s", self.n, Ϣ[-1].pos, self.n, Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + self.n])
-            Ϣ[-1].pos += self.n
-            yield (Ϣ[-1].pos - self.n, Ϣ[-1].pos)
-            Ϣ[-1].pos -= self.n
-            logger.warning("LEN(%d) backtracking(%d)...", self.n, Ϣ[-1].pos)
+        self.len = self.n
+        if not isinstance(self.len, int):
+            if callable(self.len): self.len = int(self.len())
+            else: self.len = self.n = int(self.len)
+        if Ϣ[-1].pos + self.len <= len(Ϣ[-1].subject):
+            logger.info("LEN(%d) SUCCESS(%d,%d)=%s", self.len, Ϣ[-1].pos, self.len, Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + self.len])
+            Ϣ[-1].pos += self.len
+            yield (Ϣ[-1].pos - self.len, Ϣ[-1].pos)
+            Ϣ[-1].pos -= self.len
+            logger.warning("LEN(%d) backtracking(%d)...", self.len, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class σ(PATTERN): # sigma, σ, sequence of characters, literal string patttern
     def __init__(self, s): super().__init__(); self.s = s
@@ -348,31 +351,33 @@ class σ(PATTERN): # sigma, σ, sequence of characters, literal string patttern
     def __deepcopy__(self, memo): return σ(self.s)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
-        if not isinstance(self.s, str):
-            if callable(self.s): self.s = str(self.s())
-            else: self.s = str(self.s)
-        logger.debug("σ(%r) trying(%d)", self.s, pos0)
-        if pos0 + len(self.s) <= len(Ϣ[-1].subject):
-            if self.s == Ϣ[-1].subject[pos0:pos0 + len(self.s)]:
-                logger.info("σ(%r) SUCCESS(%d,%d)=", self.s, Ϣ[-1].pos, len(self.s))
-                Ϣ[-1].pos += len(self.s)
+        self.lit = self.s
+        if not isinstance(self.lit, str):
+            if callable(self.lit): self.lit = str(self.lit())
+            else: self.lit = str(self.lit) # should possibly be exception
+        logger.debug("σ(%r) trying(%d)", self.lit, pos0)
+        if pos0 + len(self.lit) <= len(Ϣ[-1].subject):
+            if self.lit == Ϣ[-1].subject[pos0:pos0 + len(self.lit)]:
+                logger.info("σ(%r) SUCCESS(%d,%d)=", self.lit, Ϣ[-1].pos, len(self.lit))
+                Ϣ[-1].pos += len(self.lit)
                 yield (pos0, Ϣ[-1].pos)
-                Ϣ[-1].pos -= len(self.s)
-                logger.warning("σ(%r) backtracking(%d)...", self.s, Ϣ[-1].pos)
+                Ϣ[-1].pos -= len(self.lit)
+                logger.warning("σ(%r) backtracking(%d)...", self.lit, Ϣ[-1].pos)
         return None
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching
 import re
 _rexs = dict()
 class Φ(PATTERN):
-    def __init__(self, rex): super().__init__(); self.rex = rex
-    def __repr__(self): return f"Φ({pformat(self.rex)})"
-    def __deepcopy__(self, memo): return Φ(self.rex)
+    def __init__(self, r): super().__init__(); self.r = r
+    def __repr__(self): return f"Φ({pformat(self.r)})"
+    def __deepcopy__(self, memo): return Φ(self.r)
     def γ(self):
         global Ϣ, _rexs
+        self.rex = self.r
         if not isinstance(self.rex, str):
             if callable(self.rex): self.rex = str(self.rex())
-            else: self.rex = str(self.rex)
+            else: self.rex = str(self.rex) # should possibly be exception
         if self.rex not in _rexs:
             _rexs[self.rex] = re.compile(self.rex, re.MULTILINE)
         if matches := _rexs[self.rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
@@ -386,14 +391,15 @@ class Φ(PATTERN):
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 class φ(PATTERN):
-    def __init__(self, rex): super().__init__(); self.rex = rex
-    def __repr__(self): return f"φ({pformat(self.rex)})"
-    def __deepcopy__(self, memo): return φ(self.rex)
+    def __init__(self, r): super().__init__(); self.r = r
+    def __repr__(self): return f"φ({pformat(self.r)})"
+    def __deepcopy__(self, memo): return φ(self.r)
     def γ(self):
         global Ϣ, _rexs
+        self.rex = self.r
         if not isinstance(self.rex, str):
             if callable(self.rex): self.rex = str(self.rex())
-            else: self.rex = str(self.rex)
+            else: self.rex = str(self.rex) # should possibly be exception
         if self.rex not in _rexs:
             _rexs[self.rex] = re.compile(self.rex, re.MULTILINE)
         if matches := _rexs[self.rex].match(Ϣ[-1].subject, pos = Ϣ[-1].pos, endpos = len(Ϣ[-1].subject)):
@@ -440,14 +446,15 @@ class TAB(PATTERN):
     def __deepcopy__(self, memo): return TAB(self.n)
     def γ(self):
         global Ϣ
-        if not isinstance(self.n, int):
-            if callable(self.n): self.n = int(self.n())
-            else: self.n = int(self.n)
-        if self.n <= len(Ϣ[-1].subject):
-            if self.n >= Ϣ[-1].pos:
+        self.pos = self.n
+        if not isinstance(self.pos, int):
+            if callable(self.pos): self.pos = int(self.pos())
+            else: self.pos = self.n = int(self.pos)
+        if self.pos <= len(Ϣ[-1].subject):
+            if self.pos >= Ϣ[-1].pos:
                 pos0 = Ϣ[-1].pos
-                Ϣ[-1].pos = self.n
-                yield (pos0, self.n)
+                Ϣ[-1].pos = self.pos
+                yield (pos0, self.pos)
                 Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class RTAB(PATTERN):
@@ -456,15 +463,16 @@ class RTAB(PATTERN):
     def __deepcopy__(self, memo): return RTAB(self.n)
     def γ(self):
         global Ϣ
-        if not isinstance(self.n, int):
-            if callable(self.n): self.n = int(self.n())
-            else: self.n = int(self.n)
-        if self.n <= len(Ϣ[-1].subject):
-            self.n = len(Ϣ[-1].subject) - self.n
-            if self.n >= Ϣ[-1].pos:
+        self.pos = self.n
+        if not isinstance(self.pos, int):
+            if callable(self.pos): self.pos = int(self.pos())
+            else: self.pos = self.n = int(self.pos)
+        if self.pos <= len(Ϣ[-1].subject):
+            self.pos = len(Ϣ[-1].subject) - self.pos
+            if self.pos >= Ϣ[-1].pos:
                 pos0 = Ϣ[-1].pos
-                Ϣ[-1].pos = self.n
-                yield (pos0, self.n)
+                Ϣ[-1].pos = self.pos
+                yield (pos0, self.pos)
                 Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class REM(PATTERN):
@@ -477,11 +485,12 @@ class REM(PATTERN):
         Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class ANY(PATTERN):
-    def __init__(self, characters): super().__init__(); self.characters = characters
-    def __repr__(self): return f"ANY({pformat(self.characters)})"
-    def __deepcopy__(self, memo): return ANY(self.characters)
+    def __init__(self, chars): super().__init__(); self.chars = chars
+    def __repr__(self): return f"ANY({pformat(self.chars)})"
+    def __deepcopy__(self, memo): return ANY(self.chars)
     def γ(self):
         global Ϣ
+        self.characters = self.chars
         if not isinstance(self.characters, str):
             if not isinstance(self.characters, set):
                 if callable(self.characters):
@@ -497,11 +506,12 @@ class ANY(PATTERN):
                 logger.warning("ANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class NOTANY(PATTERN):
-    def __init__(self, characters): super().__init__(); self.characters = characters
-    def __repr__(self): return f"NOTANY({pformat(self.characters)})"
-    def __deepcopy__(self, memo): return NOTANY(self.characters)
+    def __init__(self, chars): super().__init__(); self.chars = chars
+    def __repr__(self): return f"NOTANY({pformat(self.chars)})"
+    def __deepcopy__(self, memo): return NOTANY(self.chars)
     def γ(self):
         global Ϣ
+        self.characters = self.chars
         if not isinstance(self.characters, str):
             if not isinstance(self.characters, set):
                 if callable(self.characters):
@@ -517,11 +527,12 @@ class NOTANY(PATTERN):
                 logger.warning("NOTANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class SPAN(PATTERN):
-    def __init__(self, characters): super().__init__(); self.characters:str = characters
-    def __repr__(self): return f"SPAN({pformat(self.characters)})"
-    def __deepcopy__(self, memo): return SPAN(self.characters)
+    def __init__(self, chars): super().__init__(); self.chars = chars
+    def __repr__(self): return f"SPAN({pformat(self.chars)})"
+    def __deepcopy__(self, memo): return SPAN(self.chars)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
+        self.characters = self.chars
         if not isinstance(self.characters, str):
             if not isinstance(self.characters, set):
                 if callable(self.characters):
@@ -541,11 +552,12 @@ class SPAN(PATTERN):
         return None
 #----------------------------------------------------------------------------------------------------------------------
 class BREAK(PATTERN):
-    def __init__(self, characters): super().__init__(); self.characters:str = characters
-    def __repr__(self): return f"BREAK({pformat(self.characters)})"
-    def __deepcopy__(self, memo): return BREAK(self.characters)
+    def __init__(self, chars): super().__init__(); self.chars = chars
+    def __repr__(self): return f"BREAK({pformat(self.chars)})"
+    def __deepcopy__(self, memo): return BREAK(self.chars)
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
+        self.characters = self.chars
         if not isinstance(self.characters, str):
             if not isinstance(self.characters, set):
                 if callable(self.characters):
@@ -628,7 +640,7 @@ class Π(PATTERN): # PI, Π, alternates, alternatives, SNOBOL4: P | Q | R | S | 
     def __deepcopy__(self, memo): return Π(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ
-        logger.debug("Π(*%d) trying(%d)...", len(self.AP), Ϣ[-1].pos) # ", ".join([pformat(P) for P in self.AP])
+        logger.debug("Π(%s) trying(%d)...", ", ".join([pformat(P) for P in self.AP]), Ϣ[-1].pos)
         Ϣ[-1].depth += 1
         for P in self.AP: yield from P
         Ϣ[-1].depth -= 1
@@ -639,7 +651,7 @@ class Σ(PATTERN): # SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
     def __deepcopy__(self, memo): return Σ(*(copy.deepcopy(P) for P in self.AP))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
-        logger.debug("Σ(*%d) trying(%d)...", len(self.AP), pos0) # ", ".join([pformat(P) for P in self.AP])
+        logger.debug("Σ(%s) trying(%d)...", ", ".join([pformat(P) for P in self.AP]), pos0)
         highmark = 0
         cursor = 0
         while cursor >= 0:
@@ -801,9 +813,17 @@ def SEARCH    (string:str, P:PATTERN) -> bool:
 if __name__ == "__main__":
     import SNOBOL4functions
     from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
+    V = ANY(LCASE)
+    I = SPAN(DIGITS)
+    N = V | I
+    E = N | σ('(') + ζ('X') + σ(')')
+    X = ( E + ANY('+-') + ζ('X')
+        | E + ANY('*/') + ζ('X')
+        | ANY('+-') + ζ('X')
+        | E
+        )
     TRACE(level=10, window=32)
-    HEAD = None
-    pprint(["Test THETA" in ARB() + Θ('OUTPUT') + σ('THETA'), HEAD])
+    '-x*y/y*17' in X
     exit(0)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
