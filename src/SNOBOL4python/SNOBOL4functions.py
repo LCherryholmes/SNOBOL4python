@@ -14,10 +14,11 @@ _globals = None # WARNING: dummy, global variables
 _started = time.time_ns() // 1000
 _units = dict() # file name associations and unit numbers
 #----------------------------------------------------------------------------------------------------------------------
-DIGITS = "0123456789"
-UCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-LCASE = "abcdefghijklmnopqrstuvwxyz"
-ALPHABET = (
+globals()['NULL'] = ""
+globals()['UCASE'] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+globals()['LCASE'] = "abcdefghijklmnopqrstuvwxyz"
+globals()['DIGITS'] = "0123456789"
+globals()['ALPHABET'] = (
     "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F"
     "\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F"
     "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2A\x2B\x2C\x2D\x2E\x2F"
@@ -233,39 +234,39 @@ def DATA(s): # DATA('Node(value,link)')
         _globals[name] = type(name, (object,), namespace)
         return ""
 #----------------------------------------------------------------------------------------------------------------------
-def _END(): None
-def _RETURN(): None
-def _FRETURN(): None
-def _NRETURN(): None
+def END(): pass
+def RETURN(): pass
+def FRETURN(): pass
+def NRETURN(): pass
 #======================================================================================================================
 def S(success):
-    def S_decorator(stmt):
-        @wraps(stmt)
+    def S_decorator(statement):
+        @wraps(statement)
         def S_wrapper():
             try:
-                stmt()
+                statement()
                 return success
             except: return None
         return S_wrapper
     return S_decorator
 #----------------------------------------------------------------------------------------------------------------------
 def F(failure):
-    def F_decorator(stmt):
-        @wraps(stmt)
+    def F_decorator(statement):
+        @wraps(statement)
         def F_wrapper():
             try:
-                stmt()
+                statement()
                 return None
             except: return failure
         return F_wrapper
     return F_decorator
 #----------------------------------------------------------------------------------------------------------------------
 def Ξ(success=None, failure=None):
-    def Ξ_decorator(stmt):
-        @wraps(stmt)
+    def Ξ_decorator(statement):
+        @wraps(statement)
         def Ξ_wrapper():
             try:
-                stmt()
+                statement()
                 return success
             except: return failure
         return Ξ_wrapper

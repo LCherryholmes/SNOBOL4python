@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+#-----------------------------------------------------------------------------------------------------------------------
+# 31 flavors of patterns to choose from ...
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
+from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
+from SNOBOL4python import S, F, Ξ, END, RETURN, FRETURN, NRETURN
+from SNOBOL4python import DEFINE, REPLACE
+from pprint import pprint
+#-----------------------------------------------------------------------------------------------------------------------
+def SUBSTITUTE():   pass
+#-----------------------------------------------------------------------------------------------------------------------
+def Ξ1():
+                    try:    DEFINE('Roman(n)units')
+                    except: pass
+def Ξ2():
+                    try:
+                            romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
+                            return ΞRomanEnd
+                    except: return ΞRomanEnd
+
+def ΞRoman():
+                    try:    n = SUBSTITUTE(n in RPOS(1) + LEN(1) % "units")
+                    except: return RETURN
+def Ξ4():
+                    try:    romanXlat in units + BREAK(',') % "units"
+                    except: return FRETURN
+def Ξ5():
+                    try:
+                            Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
+                            return RETURN
+                    except: return FRETURN
+def ΞRomanEnd():    pass
+def Ξ7():
+                    try:
+                            print('2025 = ', ϘRoman(2025))
+                            return END
+                    except: return END
+#-----------------------------------------------------------------------------------------------------------------------
+ξ = {3: ΞRoman, 6: ΞRomanEnd}
+Ξ = {ΞRoman: 3, ΞRomanEnd: 6}
+#-----------------------------------------------------------------------------------------------------------------------
+def ϘRoman(ϙn):
+    global Roman, n, units
+    _Roman = Roman if 'Roman' in globals() else None
+    Roman = ''
+    _n = n if 'n' in globals() else None
+    n = ϙn
+    _units = units if 'units' in globals() else None
+    units = NULL
+    ξ = RUN(ΞRoman)
+    ϙ = Roman
+    units = _units
+    n = _n
+    Roman = _Roman
+    return ϙ
+#-----------------------------------------------------------------------------------------------------------------------
+STNO = None
+def RUN(at):
+    global STNO; STNO = at
+    while STNO > 0:
+        if STNO in ξ:
+            stfunc = ξ[STNO]
+        elif f'Ξ{STNO}' in globals():
+            stfunc = globals()[f'Ξ{STNO}']
+        else: raise Exception("Ran off the end of the world.")
+        goto = stfunc()
+        if goto is None: STNO += 1
+        elif goto in (END, RETURN, FRETURN, NRETURN): return None
+        else: STNO = Ξ[goto]
+#-----------------------------------------------------------------------------------------------------------------------
+RUN(1)
+#-----------------------------------------------------------------------------------------------------------------------
