@@ -60,16 +60,18 @@ def ϘRoman(ϙn):
 #-----------------------------------------------------------------------------------------------------------------------
 STNO = None
 def RUN(at):
-    global STNO; STNO = at
-    while STNO > 0:
+    global STNO
+    STNO = at
+    while True:
         if STNO in ξ:
-            stfunc = ξ[STNO]
+            statement = ξ[STNO]
         elif f'Ξ{STNO}' in globals():
-            stfunc = globals()[f'Ξ{STNO}']
+            statement = globals()[f'Ξ{STNO}']
         else: raise Exception("Ran off the end of the world.")
-        goto = stfunc()
+        goto = statement()
         if goto is None: STNO += 1
-        elif goto in (END, RETURN, FRETURN, NRETURN): return None
+        elif goto in (END, RETURN, FRETURN, NRETURN):
+            return None
         else: STNO = Ξ[goto]
 #-----------------------------------------------------------------------------------------------------------------------
 RUN(1)
