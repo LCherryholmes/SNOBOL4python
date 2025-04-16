@@ -12,11 +12,15 @@ from pprint import pprint
 from pprint import PrettyPrinter
 #------------------------------------------------------------------------------
 def ς(s): return σ(f" {s}")
+#-------------------------------------------------------------------------------
+wrd =           SPAN(UCASE+LCASE) # (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
+word =          wrd @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
+keyword =       wrd @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #------------------------------------------------------------------------------
-Noun =          (ζ('wrd') @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
-Verb =          (ζ('wrd') @ "tx" + Λ(lambda: is_verb(tx))) @ "OUTPUT"
-Adjective =     (ζ('wrd') @ "tx" + Λ(lambda: is_adjective(tx))) @ "OUTPUT"
-Adverb =        (ζ('wrd') @ "tx" + Λ(lambda: is_adverb(tx))) @ "OUTPUT"
+Noun =          (wrd @ "tx" + Λ(lambda: is_noun(tx))) @ "OUTPUT"
+Verb =          (wrd @ "tx" + Λ(lambda: is_verb(tx))) @ "OUTPUT"
+Adjective =     (wrd @ "tx" + Λ(lambda: is_adjective(tx))) @ "OUTPUT"
+Adverb =        (wrd @ "tx" + Λ(lambda: is_adverb(tx))) @ "OUTPUT"
 SentenceEnd =   (σ("." ) | σ("!" ) | σ("?")) @ "OUTPUT"
 #------------------------------------------------------------------------------
 keywords = [
@@ -49,10 +53,6 @@ keywords = [
     { "something" },
     { "experience", "understand" }
 ]
-#-------------------------------------------------------------------------------
-wrd =       SPAN(UCASE+LCASE) # (ANY(UCASE+LCASE) + FENCE(SPAN(LCASE) | ε()))
-word =      wrd() @ "tx" + Λ(lambda: (len(tx) > 10) or (tx not in keywords[len(tx)]))
-keyword =   wrd() @ "tx" + Λ(lambda: (len(tx) <= 10) and (tx in keywords[len(tx)]))
 #-------------------------------------------------------------------------------
 import wordnet
 from wordnet import Lexicon, lexicon, pos

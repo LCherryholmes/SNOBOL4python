@@ -12,10 +12,10 @@ white =             σ('\\\n') | SPAN(" \t\r\f\n")
 hashStyleComment =  σ('#') + BREAK("\n") + σ('\n')
 space =             (   blanks
                     |   hashStyleComment
-                    ) + FENCE(ζ('space') | ε())
+                    ) + FENCE(ζ(lambda: space) | ε())
 whitespace =        (   white
                     |   hashStyleComment
-                    ) + FENCE(ζ('whitespace') | ε())
+                    ) + FENCE(ζ(lambda: whitespace) | ε())
 #-------------------------------------------------------------------------------
 μ =                 FENCE(space | ε())
 η =                 FENCE(whitespace | ε())
@@ -54,7 +54,7 @@ yamlPatch =         ( ς('-') + ς('patches')
                     + σ('-') + BREAK('\n')
                     + η()
                     )
-yamlPatches =       yamlPatch + FENCE(ζ('yamlPatches') | ε())
+yamlPatches =       yamlPatch + FENCE(ζ(lambda: yamlPatches) | ε())
 #-------------------------------------------------------------------------------
 yamlStatement = \
     ( ς('package')                          + σ(':') + BREAK('\n')

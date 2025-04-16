@@ -14,11 +14,11 @@ cppStyleComment =   σ('//') + BREAK("\n") + σ('\n')
 space =             (   blanks
                     |   cStyleComment
                     |   cppStyleComment
-                    ) + FENCE(ζ('space') | ε())
+                    ) + FENCE(ζ(lambda: space) | ε())
 whitespace =        (   white
                     |   cStyleComment
                     |   cppStyleComment
-                    ) + FENCE(ζ('whitespace') | ε())
+                    ) + FENCE(ζ(lambda: whitespace) | ε())
 #-------------------------------------------------------------------------------
 μ =                 FENCE(space | ε())
 η =                 FENCE(whitespace | ε())
@@ -100,24 +100,24 @@ def cToken(blind):
               | keyword % "tx"    + λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
               | identifier        + λ("""P += "identifier() + \"""" if not blind else None)
               | σ('$$')           + λ("""P += "ς('$$') + \"""" if not blind else None)
-              | ζ('$#')           + λ("""P += "τ('$#') + \"""" if not blind else None)
-              | ζ('@#')           + λ("""P += "τ('@#') + \"""" if not blind else None)
-              | ζ('$<>$')         + λ("""P += "τ('$<>$') + \"""" if not blind else None)
-              | ζ('$<>#')         + λ("""P += "τ('$<>#') + \"""" if not blind else None)
+              | τ('$#')           + λ("""P += "τ('$#') + \"""" if not blind else None)
+              | τ('@#')           + λ("""P += "τ('@#') + \"""" if not blind else None)
+              | τ('$<>$')         + λ("""P += "τ('$<>$') + \"""" if not blind else None)
+              | τ('$<>#')         + λ("""P += "τ('$<>#') + \"""" if not blind else None)
               | operator % "tx"   + λ("""P += "ς('" + tx + "') + \"""" if not blind else None)
               )
             )
 #-------------------------------------------------------------------------------
-cBlock =            ς('{') + ARBNO(ζ('cBlockBody')) + ς('}')
-cExpr =             ς('(') + ARBNO(ζ('cExprBody')) + ς(')')
+cBlock =            ς('{') + ARBNO(ζ(lambda: cBlockBody)) + ς('}')
+cExpr =             ς('(') + ARBNO(ζ(lambda: cExprBody)) + ς(')')
 cBlockBody =        cToken(True) | cBlock | cExpr
 cExprBody =         cToken(True) | cExpr
 #-------------------------------------------------------------------------------
 pct_block =         ς(r'%{') + ARBNO(cBlockBody) + ς(r'%}')
 pct_union =         ς(r'%union') + cBlock
 pct_type =          ς(r'%type') + ς('<') + η() + identifier + ς('>') + η() + identifier
-pct_token =         ς(r'%token') + (ς('<') + η() + identifier + ς('>') | ε()) + ζ('pct_token_names')
-pct_token_names =   η() + ζ('pct_token_name') + FENCE(ζ('pct_token_names') | ε())
+pct_token =         ς(r'%token') + (ς('<') + η() + identifier + ς('>') | ε()) + ζ(lambda: pct_token_names)
+pct_token_names =   η() + ζ(lambda: pct_token_name) + FENCE(ζ(lambda: pct_token_names) | ε())
 pct_token_name =    identifier | characterLiteral
 pct_left =          ς(r'%left') + pct_token_names
 pct_right =         ς(r'%right') + pct_token_names
@@ -127,11 +127,11 @@ pct_lex_param =     ς(r'%lex-param') + cBlock
 pct_expect =        ς(r'%expect') + η() + integerLiteral
 pct_define =        σ(r'%define') + η() + identifier + ς('.') + identifier + η() + identifier
 #-------------------------------------------------------------------------------
-yProduction =       η() + identifier % 'tx' + ς(':') + ζ('yAlternates')
-yAlternates =       ζ('yyAlternates')
-yyAlternates =      ζ('ySubsequents') + (ς('|') + ζ('yyAlternates') | ε())
-ySubsequents =      ζ('yySubsequents') | ε()
-yySubsequents =     ζ('yElement') + (ζ('yySubsequents') | ε())
+yProduction =       η() + identifier % 'tx' + ς(':') + ζ(lambda: yAlternates)
+yAlternates =       ζ(lambda: yyAlternates)
+yyAlternates =      ζ(lambda: ySubsequents) + (ς('|') + ζ(lambda: yyAlternates) | ε())
+ySubsequents =      ζ(lambda: yySubsequents) | ε()
+yySubsequents =     ζ(lambda: yElement) + (ζ(lambda: yySubsequents) | ε())
 yElement =          ( η() + identifier
                     | η() + characterLiteral
                     | cBlock

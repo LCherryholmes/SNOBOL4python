@@ -23,7 +23,7 @@ group       =   ( σ('(')
                 + push_list("tag")
                 + ARBNO(
                     delim
-                  + ( ζ('group')
+                  + ( ζ(lambda: group)
                     | word % "wrd" + push_item("wrd")
                     )
                   )
@@ -35,7 +35,7 @@ treebank    =   ( POS(0)
                 + push_list("'BANK'")
                 + ARBNO(
                     push_list("'ROOT'")
-                  + ARBNO(ζ('group'))
+                  + ARBNO(group)
                   + pop_list()
                   + delim
                   )

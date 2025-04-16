@@ -62,7 +62,7 @@ Received                  =   φ(r"(?P<tag>Received): ?")          + φ(r"(.*(?:
 References                =   φ(r"(?P<tag>References): ?")        + φ(r"(?P<txt>.*)")
 Reply_To                  =   φ(r"(?P<tag>Reply-To): ?")          + φ(r"(?P<txt>.*)")
 Return_Path               =   ( φ(r"(?P<tag>Return-Path): ?") \
-                              + ( φ(r"<") + ζ('email_address') + φ(r">")
+                              + ( φ(r"<") + ζ(lambda: email_address) + φ(r">")
                                 | φ(r"(?P<txt>.*)")
                                 )
                               )
