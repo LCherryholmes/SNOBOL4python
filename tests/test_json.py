@@ -152,10 +152,10 @@ def Traverse(tree):
         case _:           raise Exception(f"Traverse ERROR: type {tree[0]} unknown.")
     return result
 #-----------------------------------------------------------------------------------------------------------------------
+TRACE(40)
+GLOBALS(globals())
 print(JSON_sample)
 print()
-GLOBALS(globals())
-TRACE(50)
 if JSON_sample in jRecognizer:
     pprint(JSON_tree)
     print()

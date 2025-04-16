@@ -114,8 +114,8 @@ class nPush(PATTERN):
     def γ(self):
         global Ϣ
         logger.info("nPush() SUCCESS")
-        Ϣ[-1].cstack.append(f"Ϣ[-1].itop += 1");
-        Ϣ[-1].cstack.append(f"Ϣ[-1].istack.append(0)");
+        Ϣ[-1].cstack.append(f"Ϣ[-1].itop += 1")
+        Ϣ[-1].cstack.append(f"Ϣ[-1].istack.append(0)")
         yield "";
         logger.warning("nPush() backtracking...")
         Ϣ[-1].cstack.pop()
@@ -127,7 +127,7 @@ class nInc(PATTERN):
     def γ(self):
         global Ϣ
         logger.info("nInc() SUCCESS")
-        Ϣ[-1].cstack.append(f"Ϣ[-1].istack[Ϣ[-1].itop] += 1");
+        Ϣ[-1].cstack.append(f"Ϣ[-1].istack[Ϣ[-1].itop] += 1")
         yield "";
         logger.warning("nInc() backtracking...")
         Ϣ[-1].cstack.pop()
@@ -138,8 +138,8 @@ class nPop(PATTERN):
     def γ(self):
         global Ϣ
         logger.info("nPop() SUCCESS")
-        Ϣ[-1].cstack.append(f"Ϣ[-1].istack.pop()");
-        Ϣ[-1].cstack.append(f"Ϣ[-1].itop -= 1");
+        Ϣ[-1].cstack.append(f"Ϣ[-1].istack.pop()")
+        Ϣ[-1].cstack.append(f"Ϣ[-1].itop -= 1")
         yield "";
         logger.warning("nPop() backtracking...")
         Ϣ[-1].cstack.pop()
