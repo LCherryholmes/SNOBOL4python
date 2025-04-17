@@ -752,8 +752,8 @@ class SNOBOL:
 _globals = None # global variables
 _window_size = 24 # size of sliding window display for tracing
 #----------------------------------------------------------------------------------------------------------------------
-import SNOBOL4functions
-def GLOBALS(g:dict): SNOBOL4functions.GLOBALS(g); global _globals; _globals = g
+from .SNOBOL4functions import GLOBALS as F_GLOBALS
+def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
 #----------------------------------------------------------------------------------------------------------------------
 def TRACE(level:int=None, window:int=None):
     global _window_size, logger, handler
@@ -796,12 +796,11 @@ def SEARCH    (S:str, P:PATTERN) -> slice:
     Ϣ.pop()
     return slyce
 #-----------------------------------------------------------------------------------------------------------------------
-from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
-from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
-from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
-#-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     import SNOBOL4functions
+    from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+    from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
+    from .SNOBOL4functions import END, RETURN, FRETURN, NRETURN
     GLOBALS(globals())
     RUN(1)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
