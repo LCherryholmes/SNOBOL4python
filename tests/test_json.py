@@ -8,6 +8,7 @@ from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
+from SNOBOL4python import PATTERN, STRING
 from datetime import datetime
 import operator
 #-----------------------------------------------------------------------------------------------------------------------

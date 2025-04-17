@@ -8,7 +8,8 @@ from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
 from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
 from .SNOBOL4patterns  import nPush, nInc, nPop, Shift, Reduce, Pop
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns  import PATTERN, F, SEARCH, MATCH, FULLMATCH
+from .SNOBOL4patterns  import PATTERN, STRING
+from .SNOBOL4patterns  import F, SEARCH, MATCH, FULLMATCH
 from .SNOBOL4patterns  import Σ, Π, ρ, Δ, δ
 #-------------------------------------------------------------------------------
 from .SNOBOL4functions import CHAR, DIFFER, IDENT, INTEGER
@@ -27,7 +28,8 @@ __all__ = [
             "DEFINE", "REPLACE", "SUBSTITUTE"
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
 
-            "PATTERN", "F", "SEARCH", "MATCH", "FULLMATCH",
+            "PATTERN", "STRING",
+            "F", "SEARCH", "MATCH", "FULLMATCH",
             "Σ", "Π", "ρ", "Δ", "δ",
 
             "CHAR", "DIFFER", "IDENT", "INTEGER",

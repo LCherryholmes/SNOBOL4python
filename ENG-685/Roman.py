@@ -9,6 +9,7 @@ from SNOBOL4python import ALPHABET, DIGITS, LCASE, UCASE, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import DEFINE, REPLACE, SUBSTITUTE
 from SNOBOL4python import F, END, RETURN, FRETURN, NRETURN
+from SNOBOL4python import PATTERN, STRING
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
 def Ξ1():
@@ -16,16 +17,15 @@ def Ξ1():
                     except  F: pass
 def Ξ2():
                     try:
-                            global romanXlat; romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
-                            return ΞRomanEnd
-                    except  F: return ΞRomanEnd
+                            global romanXlat; romanXlat = STRING('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
+                            return ΞRomanEnd # S(RomanEnd)
+                    except  F: return ΞRomanEnd # F(RomanEnd)
 
 def ΞRoman():
-                    try:
-                            global n; n = SUBSTITUTE(n, n ^ RPOS(1) + LEN(1) % "units", NULL)
+                    try:    global n; n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
                     except  F: return RETURN
 def Ξ4():
-                    try:    romanXlat in σ(units) + BREAK(',') % "units"
+                    try:    romanXlat == units + BREAK(',') % "units"
                     except  F: return FRETURN
 def Ξ5():
                     try:
@@ -46,7 +46,7 @@ def Ξ7():
 def ϘRoman(ϙn):
     global Roman, n, units
     _Roman = Roman if 'Roman' in globals() else None
-    Roman = ''
+    Roman = STRING('')
     _n = n if 'n' in globals() else None
     n = ϙn
     _units = units if 'units' in globals() else None
@@ -63,15 +63,16 @@ def RUN(at):
     global STNO
     STNO = at
     while True:
-        if STNO in ξ:                 invocation = f'ΞGOTO = {ξ[STNO].__name__}()'
-        elif f'Ξ{STNO}' in globals(): invocation = f'ΞGOTO = Ξ{STNO}()'
-        else: raise Exception("Ran off the end of the world.")
-        exec(invocation, globals())
-        if ΞGOTO is None:
-            STNO += 1
-        elif ΞGOTO in (END, RETURN, FRETURN, NRETURN):
-            return None
-        else: STNO = Ξ[ΞGOTO]
+        if STNO in ξ:                 invocation = ξ[STNO]
+        elif f'Ξ{STNO}' in globals(): invocation = globals()[f'Ξ{STNO}']
+        else:                         raise Exception("It's the end of the world.")
+        goto = invocation()
+        if goto is None:      STNO += 1
+        elif goto == RETURN:  return goto
+        elif goto == FRETURN: return goto
+        elif goto == NRETURN: return goto
+        elif goto == END:     return goto
+        else:                 STNO = Ξ[goto]
 #-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
 RUN(1)

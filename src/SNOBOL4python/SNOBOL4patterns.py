@@ -5,39 +5,61 @@
 #> python -m pip install build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.2.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.3.tar.gz
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
 #> python ENG-685/transl8r_pop3.py > ENG-685/pop3.py
 #----------------------------------------------------------------------------------------------------------------------
+import re
 import copy
+import logging
 from pprint import pprint, pformat
 #----------------------------------------------------------------------------------------------------------------------
 class F(Exception): pass
+#----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
     def __init__(self):             self.generator = self.γ()
     def __iter__(self):             self.generator = self.γ(); return self.generator
     def __next__(self):             return next(self.generator)
-    def __deepcopy__(self, memo):   return type(self)()
     def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
-    def __add__(self, other):       # SIGMA, Σ, binary '+', subsequent, '+' is left associative
-                                    if type(self).__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
-                                        return Σ(*self.AP, other)
-                                    else: return Σ(self, other)
-    def __or__(self, other):        # PI, Π, binary '|', production, alternate
-                                    if type(self).__name__ == "Π": # ((P | Q) | R) | S, so flatten from the left
-                                        return Π(*self.AP, other)
-                                    else: return Π(self, other)
-    def __and__(self, other):       # PSI, binary '&', conjunction
-                                    if type(self).__name__ == "ρ": # ((P & Q) & R) & S, so flatten from the left
-                                        return ρ(*self.AP, other)
-                                    else: return ρ(self, other)
-    def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (permanent)
-    def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
-    def __rxor__(self, other):      return SEARCH(other, self, exc=True)
-    def __contains__(self, other):  return SEARCH(other, self, exc=False)
+    def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------
+                                    if isinstance(other, str):      other = σ(str(other))
+                                    if isinstance(self, Σ):         return Σ(*self.AP, other)
+                                    else:                           return Σ(self, other)
+    def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
+                                    if isinstance(other, str):      other = σ(str(other))
+                                    if isinstance(self, Π):         return Π(*self.AP, other)
+                                    else:                           return Π(self, other)
+    def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
+                                    if isinstance(other, str):      other = σ(str(other))
+                                    if isinstance(self, ρ):         return ρ(*self.AP, other)
+                                    else:                           return ρ(self, other)
+    def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------
+    def __matmul__(self, other):    return δ(self, other) # delta, binary @, immediate assignment
+    def __mod__(self, other):       return Δ(self, other) # DELTA, binary %, conditional assignment
+    def __eq__(self, other):        return SEARCH(other, self, exc=True) # equal == operator, returns slice
+    def __contains__(self, other):  return SEARCH(other, self, exc=False) # comparison in operator, returns bool
+#----------------------------------------------------------------------------------------------------------------------
+class STRING(str):
+    def __add__(self, other):       # SIGMA
+                                    if isinstance(other, Σ):        return Σ(σ(self), *other.AP)
+                                    elif isinstance(other, str):    return STRING(super().__add__(other))
+                                    else:                           return Σ(σ(self), other)
+    def __radd__(self, other):      # SIGMA
+                                    if isinstance(other, Σ):        return Σ(*other.AP, σ(self))
+                                    elif isinstance(other, str):    return STRING(other.__add__(self))
+                                    else:                           return Σ(other, σ(self))
+    def __or__(self, other):        # PI
+                                    if isinstance(other, Π):        return Π(σ(self), *other.AP)
+                                    else:                           return Π(σ(self), other)
+    def __xor__(self, other):       # PI
+                                    if isinstance(other, Π):        return Π(*other.AP, σ(self))
+                                    else:                           return Π(other, σ(self))
+    def __contains__(self, other):  # in operator
+                                    if isinstance(other, PATTERN):  return other.__contains__(self)
+                                    else:                           return super().__contains__(other)
 #----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
@@ -471,7 +493,7 @@ class δ(PATTERN): # delta, binary '@', SNOBOL4: P $ N
                 Ϣ[-1].nl = True
                 print(v, end='·')
             logger.debug("%s = δ(%r)", self.N, v)
-            _globals[self.N] = v
+            _globals[self.N] = STRING(v)
             yield _1
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
@@ -487,7 +509,7 @@ class Δ(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
             logger.info("%s = Δ(%r) SUCCESS", self.N, _1)
             if self.N == "OUTPUT":
                 Ϣ[-1].cstack.append(f"print(Ϣ[-1].subject[{_1.start}:{_1.stop}])")
-            else: Ϣ[-1].cstack.append(f"{self.N} = Ϣ[-1].subject[{_1.start}:{_1.stop}]")
+            else: Ϣ[-1].cstack.append(f"{self.N} = STRING(Ϣ[-1].subject[{_1.start}:{_1.stop}])")
             yield _1
             logger.warning("%s = Δ(%r) backtracking...", self.N, _1)
             Ϣ[-1].cstack.pop()
@@ -540,7 +562,6 @@ class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
         else: yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching (with immediate assignments)
-import re
 _rexs = dict()
 class Φ(PATTERN):
     def __init__(self, r): super().__init__(); self.r = r
@@ -705,7 +726,6 @@ def _reduce(t, n):
             x.insert(1, _pop())
         _push(x)
 #----------------------------------------------------------------------------------------------------------------------
-import logging
 class DEBUG_formatter(logging.Formatter):
     def window(self, size):
         global Ϣ
@@ -788,6 +808,7 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
                 logger.debug('SEARCH(): %r', command)
             try:
                 _globals['Ϣ'] = Ϣ
+                _globals['STRING'] = STRING
                 for command in Ϣ[-1].cstack:
                     exec(command, _globals)
             except Exception as e:
