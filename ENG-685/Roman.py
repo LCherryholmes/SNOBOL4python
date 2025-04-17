@@ -5,11 +5,11 @@ from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
-from SNOBOL4python import ALPHABET, DIGITS, LCASE, UCASE, NULL
+from SNOBOL4python import ALPHABET, DIGITS, LCASE, UCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import DEFINE, REPLACE, SUBSTITUTE
 from SNOBOL4python import F, END, RETURN, FRETURN, NRETURN
-from SNOBOL4python import PATTERN, Ϩ, STRING
+from SNOBOL4python import PATTERN, Ϩ, STRING, NULL
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
 def Ξ1():
@@ -46,11 +46,11 @@ def Ξ7():
 def ϘRoman(ϙn):
     global Roman, n, units
     _Roman = Roman if 'Roman' in globals() else None
-    Roman = STRING('')
+    Roman = NULL
     _n = n if 'n' in globals() else None
     n = ϙn
     _units = units if 'units' in globals() else None
-    units = STRING('')
+    units = NULL
     ξ = RUN(Ξ[ΞRoman])
     ϙ = Roman
     units = _units
