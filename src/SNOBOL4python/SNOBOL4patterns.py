@@ -64,7 +64,7 @@ class STRING(str):
 class Ϩ(STRING): pass
 globals()['NULL'] = STRING('')
 #----------------------------------------------------------------------------------------------------------------------
-class ε(PATTERN): # NULL, epsilon, zero-length string
+class ε(PATTERN): # epsilon, null string, zero-length string
     def __init__(self): super().__init__()
     def __repr__(self): return "ε()"
     def γ(self): global Ϣ; yield slice(Ϣ[-1].pos, Ϣ[-1].pos)

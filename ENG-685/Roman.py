@@ -12,14 +12,26 @@ from SNOBOL4python import F, END, RETURN, FRETURN, NRETURN
 from SNOBOL4python import PATTERN, Ϩ, STRING, NULL
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
+"""\
+         DEFINE('Roman(n)units')
+         romanXlat   =     '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'   :(RomanEnd)
+Roman    n           RPOS(1) LEN(1) . units =                           :F(RETURN)
+         romanXlat   units BREAK(',') . units                           :F(FRETURN)
+         Roman       =     REPLACE(Roman(n),'IVXLCDM','XLCDM**') units  :S(RETURN)F(FRETURN)
+RomanEnd
+         OUTPUT      =     "1961 = " + Roman(1961)
+         OUTPUT      =     "2025 = " + Roman(2025)                      :(END)
+END
+"""
+#-----------------------------------------------------------------------------------------------------------------------
 def Ξ1():
                     try:      DEFINE('Roman(n)units')
                     except F: pass
 def Ξ2():
                     try:
                               global romanXlat; romanXlat = Ϩ('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
-                              return ΞRomanEnd # S(RomanEnd)
-                    except F: return ΞRomanEnd # F(RomanEnd)
+                              return ΞRomanEnd
+                    except F: return ΞRomanEnd
 
 def ΞRoman():
                     try:      global n; n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
@@ -35,8 +47,8 @@ def Ξ5():
 def ΞRomanEnd():    pass
 def Ξ7():
                     try:
-                              print('1961 =', ϘRoman(1961))
-                              print('2025 =', ϘRoman(2025))
+                              print('1961 = ' + ϘRoman(1961))
+                              print('2025 = ' + ϘRoman(2025))
                               return END
                     except F: return END
 #-----------------------------------------------------------------------------------------------------------------------
@@ -45,13 +57,10 @@ def Ξ7():
 #-----------------------------------------------------------------------------------------------------------------------
 def ϘRoman(ϙn):
     global Roman, n, units
-    _Roman = Roman if 'Roman' in globals() else None
-    Roman = NULL
-    _n = n if 'n' in globals() else None
-    n = ϙn
-    _units = units if 'units' in globals() else None
-    units = NULL
-    ξ = RUN(Ξ[ΞRoman])
+    _Roman = Roman if 'Roman' in globals() else None; Roman = NULL
+    _n = n if 'n' in globals() else None; n = ϙn
+    _units = units if 'units' in globals() else None; units = NULL
+    Xi = RUN(Ξ[ΞRoman])
     ϙ = Roman
     units = _units
     n = _n

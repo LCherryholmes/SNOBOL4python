@@ -24,11 +24,11 @@ __all__ = [
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
             "RTAB", "SPAN", "SUCCESS", "TAB",
-            "ALPHABET", "DIGITS", "UCASE", "LCASE", "NULL",
+            "ALPHABET", "DIGITS", "UCASE", "LCASE",
             "DEFINE", "REPLACE", "SUBSTITUTE"
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
 
-            "PATTERN", "Ϩ", "STRING",
+            "PATTERN", "Ϩ", "STRING", "NULL",
             "F", "SEARCH", "MATCH", "FULLMATCH",
             "Σ", "Π", "ρ", "Δ", "δ",
 
