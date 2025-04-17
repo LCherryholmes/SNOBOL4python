@@ -67,7 +67,7 @@ def RUN(at):
         elif f'Ξ{STNO}' in globals(): invocation = globals()[f'Ξ{STNO}']
         else:                         raise Exception("It's the end of the world.")
         goto = invocation()
-        if goto is None:      STNO += 1
+        if   goto is None:    STNO += 1
         elif goto == RETURN:  return goto
         elif goto == FRETURN: return goto
         elif goto == NRETURN: return goto
