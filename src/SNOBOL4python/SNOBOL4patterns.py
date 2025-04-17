@@ -61,6 +61,9 @@ class STRING(str):
                                     if isinstance(other, PATTERN):  return other.__contains__(self)
                                     else:                           return super().__contains__(other)
 #----------------------------------------------------------------------------------------------------------------------
+class Ϩ(STRING): pass
+globals()['NULL'] = STRING('')
+#----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
     def __repr__(self): return "ε()"
@@ -832,7 +835,7 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
 #-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     import SNOBOL4functions
-    from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+    from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
     GLOBALS(globals())

@@ -14,7 +14,6 @@ _globals = None
 _started = time.time_ns() // 1000
 _units = dict() # file name associations and unit numbers
 #----------------------------------------------------------------------------------------------------------------------
-globals()['NULL'] = ""
 globals()['UCASE'] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 globals()['LCASE'] = "abcdefghijklmnopqrstuvwxyz"
 globals()['DIGITS'] = "0123456789"
