@@ -25,22 +25,23 @@ class PATTERN(object):
                                     if type(self).__name__ == "Σ": # ((P + Q) + R) + S, so flatten from the left
                                         return Σ(*self.AP, other)
                                     else: return Σ(self, other)
-    def __or__(self, other):        # PI, binary '|', alternate
+    def __or__(self, other):        # PI, Π, binary '|', production, alternate
                                     if type(self).__name__ == "Π": # ((P | Q) | R) | S, so flatten from the left
                                         return Π(*self.AP, other)
                                     else: return Π(self, other)
     def __and__(self, other):       # PSI, binary '&', conjunction
-                                    if type(self).__name__ == "ξ": # ((P & Q) & R) & S, so flatten from the left
-                                        return ξ(*self.AP, other)
-                                    else: return ξ(self, other)
+                                    if type(self).__name__ == "ρ": # ((P & Q) & R) & S, so flatten from the left
+                                        return ρ(*self.AP, other)
+                                    else: return ρ(self, other)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (permanent)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
+    def __rxor__(self, other):      return SEARCH(other, self)
     def __contains__(self, other):  return SEARCH(other, self)
 #----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
     def __repr__(self): return "ε()"
-    def γ(self): yield ""
+    def γ(self): global Ϣ; yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class FAIL(PATTERN):
     def __init__(self): super().__init__()
@@ -56,25 +57,27 @@ class SUCCESS(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "SUCCESS()"
     def γ(self):
-        while True: yield ""
+        global Ϣ
+        while True:
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class α(PATTERN):
     def __init__(self): super().__init__();
     def __repr__(self): return "α()"
     def γ(self):
         global Ϣ
-        if (Ϣ[-1].pos == 0) or \
-           (Ϣ[-1].pos > 0 and Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos] == '\n'):
-            yield ""
+        if  (Ϣ[-1].pos == 0) or \
+            (Ϣ[-1].pos > 0 and Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos] == '\n'):
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class ω(PATTERN):
     def __init__(self): super().__init__();
     def __repr__(self): return "ω()"
     def γ(self):
         global Ϣ
-        if (Ϣ[-1].pos == len(Ϣ[-1].subject)) or \
-           (Ϣ[-1].pos < len(Ϣ[-1].subject) and Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + 1] == '\n'):
-           yield ""
+        if  (Ϣ[-1].pos == len(Ϣ[-1].subject)) or \
+            (Ϣ[-1].pos < len(Ϣ[-1].subject) and Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + 1] == '\n'):
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class REM(PATTERN):
     def __init__(self): super().__init__()
@@ -82,7 +85,7 @@ class REM(PATTERN):
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         Ϣ[-1].pos = len(Ϣ[-1].subject)
-        yield (pos0, Ϣ[-1].pos)
+        yield slice(pos0, Ϣ[-1].pos)
         Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class ARB(PATTERN): # ARB
@@ -91,7 +94,7 @@ class ARB(PATTERN): # ARB
     def γ(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         while Ϣ[-1].pos <= len(Ϣ[-1].subject):
-            yield (pos0, Ϣ[-1].pos)
+            yield slice(pos0, Ϣ[-1].pos)
             Ϣ[-1].pos += 1
         Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
@@ -116,7 +119,7 @@ class nPush(PATTERN):
         logger.info("nPush() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].itop += 1")
         Ϣ[-1].cstack.append(f"Ϣ[-1].istack.append(0)")
-        yield "";
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("nPush() backtracking...")
         Ϣ[-1].cstack.pop()
         Ϣ[-1].cstack.pop()
@@ -128,7 +131,7 @@ class nInc(PATTERN):
         global Ϣ
         logger.info("nInc() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].istack[Ϣ[-1].itop] += 1")
-        yield "";
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("nInc() backtracking...")
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
@@ -140,7 +143,7 @@ class nPop(PATTERN):
         logger.info("nPop() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].istack.pop()")
         Ϣ[-1].cstack.append(f"Ϣ[-1].itop -= 1")
-        yield "";
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("nPop() backtracking...")
         Ϣ[-1].cstack.pop()
         Ϣ[-1].cstack.pop()
@@ -155,7 +158,7 @@ class Shift(PATTERN):
         if self.t is None:   Ϣ[-1].cstack.append(f"Ϣ[-1].shift()")
         elif self.v is None: Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{self.t}')")
         else:                Ϣ[-1].cstack.append(f"Ϣ[-1].shift('{self.t}', {self.v})")
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("Shift(%r, %r) backtracking...", self.t, self.v)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
@@ -170,7 +173,7 @@ class Reduce(PATTERN):
         if   self.n == -2: self.n = "Ϣ[-1].istack[Ϣ[-1].itop + 1]"
         elif self.n == -1: self.n = "Ϣ[-1].istack[Ϣ[-1].itop]"
         Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{self.t}', {self.n})")
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("Reduce(%r, %r) backtracking...", self.t, self.n)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
@@ -182,7 +185,7 @@ class Pop(PATTERN):
         global Ϣ
         logger.info("Pop(%s) SUCCESS", self.v)
         Ϣ[-1].cstack.append(f"{self.v} = Ϣ[-1].pop()")
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("Pop(%s) backtracking...", self.v)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
@@ -199,7 +202,7 @@ class BAL(PATTERN): # BAL
                 case ')': nest -= 1
             if nest < 0: break
             elif nest > 0 and Ϣ[-1].pos >= len(Ϣ[-1].subject): break
-            elif nest == 0: yield (pos0, Ϣ[-1].pos)
+            elif nest == 0: yield slice(pos0, Ϣ[-1].pos)
             Ϣ[-1].pos += 1
         Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
@@ -208,13 +211,14 @@ class FENCE(PATTERN): # FENCE and FENCE(P)
     def __repr__(self): return f"FENCE({pformat(self.P)})"
     def __deepcopy__(self, memo): return FENCE(copy.deepcopy(self.P))
     def γ(self):
+        global Ϣ
         if self.P:
             logger.info("FENCE(%s) SUCCESS", pformat(self.P))
             yield from self.P
             logger.warning("FENCE(%s) backtracking...", pformat(self.P))
         else:
             logger.info("FENCE() SUCCESS")
-            yield ""
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
             logger.warning("FENCE() backtracking...")
 #----------------------------------------------------------------------------------------------------------------------
 class POS(PATTERN):
@@ -229,7 +233,7 @@ class POS(PATTERN):
             else: self.pos = self.n = int(self.pos)
         if Ϣ[-1].pos == self.pos:
             logger.info("POS(%d) SUCCESS(%d,%d)=", self.pos, Ϣ[-1].pos, 0)
-            yield ""
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
             logger.warning("POS(%d) backtracking...", self.pos)
 #----------------------------------------------------------------------------------------------------------------------
 class RPOS(PATTERN):
@@ -244,7 +248,7 @@ class RPOS(PATTERN):
             else: self.pos = self.n = int(self.pos)
         if Ϣ[-1].pos == len(Ϣ[-1].subject) - self.pos:
             logger.info("RPOS(%d) SUCCESS(%d,%d)=", self.pos, Ϣ[-1].pos, 0)
-            yield ""
+            yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
             logger.warning("RPOS(%d) backtracking...", self.pos)
 #----------------------------------------------------------------------------------------------------------------------
 class LEN(PATTERN):
@@ -260,7 +264,7 @@ class LEN(PATTERN):
         if Ϣ[-1].pos + self.len <= len(Ϣ[-1].subject):
             logger.info("LEN(%d) SUCCESS(%d,%d)=%s", self.len, Ϣ[-1].pos, self.len, Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + self.len])
             Ϣ[-1].pos += self.len
-            yield (Ϣ[-1].pos - self.len, Ϣ[-1].pos)
+            yield slice(Ϣ[-1].pos - self.len, Ϣ[-1].pos)
             Ϣ[-1].pos -= self.len
             logger.warning("LEN(%d) backtracking(%d)...", self.len, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -278,7 +282,7 @@ class TAB(PATTERN):
             if self.pos >= Ϣ[-1].pos:
                 pos0 = Ϣ[-1].pos
                 Ϣ[-1].pos = self.pos
-                yield (pos0, self.pos)
+                yield slice(pos0, self.pos)
                 Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class RTAB(PATTERN):
@@ -296,7 +300,7 @@ class RTAB(PATTERN):
             if self.pos >= Ϣ[-1].pos:
                 pos0 = Ϣ[-1].pos
                 Ϣ[-1].pos = self.pos
-                yield (pos0, self.pos)
+                yield slice(pos0, self.pos)
                 Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
 class σ(PATTERN): # sigma, σ, sequence of characters, string patttern
@@ -314,7 +318,7 @@ class σ(PATTERN): # sigma, σ, sequence of characters, string patttern
             if self.lit == Ϣ[-1].subject[pos0:pos0 + len(self.lit)]:
                 logger.info("σ(%r) SUCCESS(%d,%d)=", self.lit, Ϣ[-1].pos, len(self.lit))
                 Ϣ[-1].pos += len(self.lit)
-                yield (pos0, Ϣ[-1].pos)
+                yield slice(pos0, Ϣ[-1].pos)
                 Ϣ[-1].pos -= len(self.lit)
                 logger.warning("σ(%r) backtracking(%d)...", self.lit, Ϣ[-1].pos)
         return None
@@ -336,7 +340,7 @@ class ANY(PATTERN):
             if Ϣ[-1].subject[Ϣ[-1].pos] in self.characters:
                 logger.info("ANY(%r) SUCCESS(%d,%d)=%s", self.characters, Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
                 Ϣ[-1].pos += 1
-                yield (Ϣ[-1].pos - 1, Ϣ[-1].pos)
+                yield slice(Ϣ[-1].pos - 1, Ϣ[-1].pos)
                 Ϣ[-1].pos -= 1
                 logger.warning("ANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -357,7 +361,7 @@ class NOTANY(PATTERN):
             if not Ϣ[-1].subject[Ϣ[-1].pos] in self.characters:
                 logger.info("NOTANY(%r) SUCCESS(%d,%d)=%s", self.characters, Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
                 Ϣ[-1].pos += 1
-                yield (Ϣ[-1].pos - 1, Ϣ[-1].pos)
+                yield slice(Ϣ[-1].pos - 1, Ϣ[-1].pos)
                 Ϣ[-1].pos -= 1
                 logger.warning("NOTANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -381,7 +385,7 @@ class SPAN(PATTERN):
             else: break
         if Ϣ[-1].pos > pos0:
             logger.info("SPAN(%r) SUCCESS(%d,%d)=%s", self.characters, pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
-            yield (pos0, Ϣ[-1].pos)
+            yield slice(pos0, Ϣ[-1].pos)
             Ϣ[-1].pos = pos0
             logger.warning("SPAN(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
         return None
@@ -406,7 +410,7 @@ class BREAK(PATTERN):
             else: break
         if Ϣ[-1].pos < len(Ϣ[-1].subject):
             logger.info("BREAK(%r) SUCCESS(%d,%d)=%s", self.characters, pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
-            yield (pos0, Ϣ[-1].pos)
+            yield slice(pos0, Ϣ[-1].pos)
             Ϣ[-1].pos = pos0
             logger.warning("BREAK(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
@@ -428,7 +432,7 @@ class Θ(PATTERN):
             print(Ϣ[-1].pos, end='·');
         logger.info("Θ(%s) SUCCESS", self.N)
         _globals[self.N] = Ϣ[-1].pos
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("Θ(%s) backtracking...", self.N)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional cursor assignment (after successful complete pattern match)
@@ -447,7 +451,7 @@ class θ(PATTERN):
             print(Ϣ[-1].pos, end='·')
         logger.info("θ(%s) SUCCESS", self.N)
         Ϣ[-1].cstack.append(f"{self.N} = {Ϣ[-1].pos}")
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         logger.warning("θ(%s) backtracking...", self.N)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
@@ -460,8 +464,8 @@ class δ(PATTERN): # delta, binary '@', SNOBOL4: P $ N
         global _globals; self.N = str(self.N)
         logger.debug("δ(%s, %s)", pformat(self.P), self.N)
         for _1 in self.P:
-            if _1 == "": v = ""
-            else: v = Ϣ[-1].subject[_1[0]:_1[1]]
+            assert _1 != ""
+            v = Ϣ[-1].subject[_1]
             if self.N == "OUTPUT":
                 Ϣ[-1].nl = True
                 print(v, end='·')
@@ -478,15 +482,11 @@ class Δ(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
         global Ϣ; self.N = str(self.N)
         logger.debug("Δ(%s, %s)", pformat(self.P), self.N)
         for _1 in self.P:
+            assert _1 != ""
             logger.info("%s = Δ(%r) SUCCESS", self.N, _1)
             if self.N == "OUTPUT":
-                if _1 == "":
-                    Ϣ[-1].cstack.append(f"print('')")
-                else: Ϣ[-1].cstack.append(f"print(Ϣ[-1].subject[{_1[0]}:{_1[1]}])")
-            else:
-                if _1 == "":
-                    Ϣ[-1].cstack.append(f"{self.N} = ''")
-                else: Ϣ[-1].cstack.append(f"{self.N} = Ϣ[-1].subject[{_1[0]}:{_1[1]}]")
+                Ϣ[-1].cstack.append(f"print(Ϣ[-1].subject[{_1.start}:{_1.stop}])")
+            else: Ϣ[-1].cstack.append(f"{self.N} = Ϣ[-1].subject[{_1.start}:{_1.stop}]")
             yield _1
             logger.warning("%s = Δ(%r) backtracking...", self.N, _1)
             Ϣ[-1].cstack.pop()
@@ -497,14 +497,14 @@ class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     def __repr__(self): return f"Λ({pformat(self.expression)})"
     def __deepcopy__(self, memo): return Λ(self.expression)
     def γ(self):
-        global _globals
+        global Ϣ, _globals
         match type(self.expression).__name__:
             case 'str':
                 logger.debug("Λ(%r) evaluating...", self.expression)
                 try:
                     if eval(self.expression, _globals):
                         logger.info("Λ(%r) SUCCESS", self.expression)
-                        yield ""
+                        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
                         logger.warning("Λ(%r) backtracking...", self.expression)
                     else: logger.warning("Λ(%r) FAIL!", self.expression)
                 except Exception as e:
@@ -514,7 +514,7 @@ class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
                 try:
                     if self.expression():
                         logger.info("Λ(function) SUCCESS")
-                        yield ""
+                        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
                         logger.warning("Λ(function) backtracking...")
                     else: logger.warning("Λ(function) FAIL!")
                 except Exception as e:
@@ -532,11 +532,11 @@ class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
             if compile(self.command, '<string>', 'exec'): # 'single', 'eval'
                 logger.info("λ(%r) SUCCESS", self.command)
                 Ϣ[-1].cstack.append(self.command)
-                yield ""
+                yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
                 logger.warning("λ(%r) backtracking...", self.command)
                 Ϣ[-1].cstack.pop()
             else: logger.error("λ(%r) Error compiling. FAIL", self.command)
-        else: yield ""
+        else: yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching (with immediate assignments)
 import re
@@ -559,7 +559,7 @@ class Φ(PATTERN):
                 Ϣ[-1].pos = matches.end()
                 for (N, V) in matches.groupdict().items():
                     _globals[N] = V
-                yield (pos0, Ϣ[-1].pos)
+                yield slice(pos0, Ϣ[-1].pos)
                 Ϣ[-1].pos = pos0
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
@@ -587,16 +587,16 @@ class φ(PATTERN):
                     if span != (-1, -1):
                         push_count += 1
                         Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{span[0]}:{span[1]}]")
-                yield (pos0, Ϣ[-1].pos)
+                yield slice(pos0, Ϣ[-1].pos)
                 for i in range(push_count):
                     Ϣ[-1].cstack.pop()
                 Ϣ[-1].pos = pos0
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
-class ξ(PATTERN): # PSI, AND, conjunction
+class ρ(PATTERN): # PSI, AND, conjunction
     def __init__(self, P:PATTERN, Q:PATTERN): super().__init__(); self.P = P; self.Q = Q
-    def __repr__(self): return  "ξ(*{0})".format(len(self.AP))
-    def __deepcopy__(self, memo): return ξ(copy.deepcopy(self.P), copy.deepcopy(self.Q))
+    def __repr__(self): return  "ρ(*{0})".format(len(self.AP))
+    def __deepcopy__(self, memo): return ρ(copy.deepcopy(self.P), copy.deepcopy(self.Q))
     def γ(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
         for _1 in self.P:
@@ -616,9 +616,10 @@ class π(PATTERN): # pi, π, optional, SNOBOL4: P | epsilon
     def __repr__(self): return f"π({pformat(self.P)})"
     def __deepcopy__(self, memo): return π(copy.deepcopy(self.P))
     def γ(self):
+        global Ϣ
         Ϣ[-1].depth += 1
         yield from self.P
-        yield ""
+        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         Ϣ[-1].depth -= 1
 #----------------------------------------------------------------------------------------------------------------------
 class Π(PATTERN): # PI, Π, possibilities, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
@@ -644,7 +645,7 @@ class Σ(PATTERN): # SIGMA, Σ, sequence, subsequents, SNOBOL4: P Q R S T ...
         while cursor >= 0:
             if cursor >= len(self.AP):
                 logger.info("Σ(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
-                yield (pos0, Ϣ[-1].pos)
+                yield slice(pos0, Ϣ[-1].pos)
                 logger.warning("Σ(*) backtracking(%d)...", pos0)
                 cursor -= 1
             if cursor >= highmark:
@@ -671,7 +672,7 @@ class ARBNO(PATTERN):
         while cursor >= 0:
             if cursor >= len(AP):
                 logger.info("ARBNO(%s) SUCCESS(%d,%d)=%s", pformat(self.P), pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
-                yield (pos0, Ϣ[-1].pos)
+                yield slice(pos0, Ϣ[-1].pos)
                 logger.warning("ARBNO(%s) backtracking(%d)...", pformat(self.P), pos0)
             if cursor >= highmark:
                 AP.append((Ϣ[-1].pos, copy.deepcopy(self.P)))
@@ -688,27 +689,6 @@ class ARBNO(PATTERN):
 #----------------------------------------------------------------------------------------------------------------------
 class MARBNO(ARBNO): pass
 #----------------------------------------------------------------------------------------------------------------------
-class ψ(PATTERN):
-    def __init__(self): super().__init__();
-    def __repr__(self): return "ψ()"
-    def γ(self):
-        print("Yikes! ψ()")
-        yield ""
-#----------------------------------------------------------------------------------------------------------------------
-class Ψ(PATTERN):
-    def __init__(self): super().__init__();
-    def __repr__(self): return "Ψ()"
-    def γ(self):
-        print("Yikes! Ψ()")
-        yield ""
-#----------------------------------------------------------------------------------------------------------------------
-class Ϙ(PATTERN):
-    def __init__(self): super().__init__();
-    def __repr__(self): return "Ϙ()"
-    def γ(self):
-        print("Yikes! Ϙ()")
-        yield ""
-#----------------------------------------------------------------------------------------------------------------------
 def _push(lyst): Ϣ[-1].vstack.append(lyst)
 def _pop(): return Ϣ[-1].vstack.pop()
 def _shift(t='', v=None):
@@ -718,7 +698,7 @@ def _shift(t='', v=None):
 def _reduce(t, n):
     if n == 0 and t == 'Σ':
         _push(['ε'])
-    elif n != 1 or t not in ('Σ', 'Π', 'ξ', 'snoExprList', '|', '..'):
+    elif n != 1 or t not in ('Σ', 'Π', 'ρ', 'snoExprList', '|', '..'):
         x = [t]
         for i in range(n):
             x.insert(1, _pop())
@@ -736,10 +716,10 @@ class DEBUG_formatter(logging.Formatter):
             return f"{pformat(pad_left+left)}|{Ϣ[-1].pos:4d}|{pformat(right+pad_right)}"
         else: return " " * (6 + 2 * size)
     def format(self, record):
-        global Ϣ, _window
+        global Ϣ, _window_size
         original_message = super().format(record)
         if len(Ϣ) > 0:
-            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window // 2), '  ' * Ϣ[-1].depth, original_message)
+            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window_size // 2), '  ' * Ϣ[-1].depth, original_message)
         else: formatted_message = original_message
         return formatted_message
 #----------------------------------------------------------------------------------------------------------------------
@@ -751,10 +731,6 @@ handler = logging.StreamHandler()
 handler.setLevel(logging.ERROR)
 handler.setFormatter(DEBUG_formatter("%(message)s"))
 logger.addHandler(handler)
-#----------------------------------------------------------------------------------------------------------------------
-Ϣ = [] # SNOBOL stack
-_window = 24
-_globals = None # global variables
 #----------------------------------------------------------------------------------------------------------------------
 class SNOBOL:
     __slots__ = ['pos', 'subject', 'depth', 'cstack', 'itop', 'istack', 'vstack', 'nl' , 'shift', 'reduce', 'pop']
@@ -772,57 +748,66 @@ class SNOBOL:
         self.reduce         = _reduce
         self.pop            = _pop
 #----------------------------------------------------------------------------------------------------------------------
-def GLOBALS(g:dict): global _globals; _globals = g; _globals['Ϣ'] = Ϣ
+Ϣ = [] # SNOBOL stack
+_globals = None # global variables
+_window_size = 24 # size of sliding window display for tracing
+#----------------------------------------------------------------------------------------------------------------------
+import SNOBOL4functions
+def GLOBALS(g:dict): SNOBOL4functions.GLOBALS(g); global _globals; _globals = g
+#----------------------------------------------------------------------------------------------------------------------
 def TRACE(level:int=None, window:int=None):
-    global _window, logger, handler
+    global _window_size, logger, handler
     if window is not None:
-        _window = window
+        _window_size = window
     if level is not None:
         logger.setLevel(level)
         handler.setLevel(level)
 #----------------------------------------------------------------------------------------------------------------------
-def MATCH     (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P)
-def FULLMATCH (string:str, P:PATTERN) -> bool: return SEARCH(string, POS(0) + P + RPOS(0))
-def SEARCH    (string:str, P:PATTERN) -> bool:
-    global _globals, Ϣ
+def MATCH     (S:str, P:PATTERN) -> slice: return SEARCH(S, POS(0) + P)
+def FULLMATCH (S:str, P:PATTERN) -> slice: return SEARCH(S, POS(0) + P + RPOS(0))
+def SEARCH    (S:str, P:PATTERN) -> slice:
+    global _globals, Ϣ; S = str(S)
     if _globals is None:
         _globals = globals()
+    slyce = None
     command = None
-    result = None
     Ϣ.append(None)
-    for cursor in range(0, 1+len(string)):
+    for cursor in range(0, 1+len(S)):
         TRY = copy.deepcopy(P)
         iter(TRY)
         try:
-            Ϣ[-1] = SNOBOL(cursor, string)
-            m = next(TRY)
+            Ϣ[-1] = SNOBOL(cursor, S)
+            slyce = next(TRY)
             if Ϣ[-1].nl: print()
-            logger.info(f'SEARCH(): "{string}" ? "{m}"')
+            logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
             for command in Ϣ[-1].cstack:
                 logger.debug('SEARCH(): %r', command)
             try:
                 _globals['Ϣ'] = Ϣ
                 for command in Ϣ[-1].cstack:
                     exec(command, _globals)
-                result = True
             except Exception as e:
                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
-                result = False
             break
         except StopIteration:
             if Ϣ[-1].nl: print()
         except Exception as e:
             logger.critical("SEARCH(): Yikes: %r", e)
     Ϣ.pop()
-    return result
-#----------------------------------------------------------------------------------------------------------------------
+    return slyce
+#-----------------------------------------------------------------------------------------------------------------------
+from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
+from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
+#-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     import SNOBOL4functions
-    from SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE
+    GLOBALS(globals())
+    RUN(1)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "001_01C717AB.5C51AFDE ..." in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
-#----------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------

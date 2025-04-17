@@ -1,19 +1,18 @@
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import GLOBALS, TRACE
-from .SNOBOL4patterns import ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
-from .SNOBOL4patterns import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
-from .SNOBOL4patterns import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
-from .SNOBOL4patterns import RTAB, SPAN, SUCCESS, TAB
-from .SNOBOL4functions import ALPHABET, DIGITS, LCASE, UCASE, NULL
-from .SNOBOL4patterns import nPush, nInc, nPop, Shift, Reduce, Pop
+from .SNOBOL4patterns  import GLOBALS, TRACE
+from .SNOBOL4patterns  import ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
+from .SNOBOL4patterns  import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from .SNOBOL4patterns  import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from .SNOBOL4patterns  import RTAB, SPAN, SUCCESS, TAB
+from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
+from .SNOBOL4patterns  import nPush, nInc, nPop, Shift, Reduce, Pop
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns import PATTERN, SEARCH, MATCH, FULLMATCH
-from .SNOBOL4patterns import Σ, Π, ξ, Δ, δ
-from .SNOBOL4patterns import ψ, Ψ, Ϙ # for future enhancement
+from .SNOBOL4patterns  import PATTERN, SEARCH, MATCH, FULLMATCH
+from .SNOBOL4patterns  import Σ, Π, ρ, Δ, δ
 #-------------------------------------------------------------------------------
-from .SNOBOL4functions import CHAR, DEFINE, DIFFER, IDENT, INTEGER, REPLACE
-from .SNOBOL4functions import JSONDecode
-from .SNOBOL4functions import S, F, Ξ, END, RETURN, FRETURN, NRETURN
+from .SNOBOL4functions import CHAR, DIFFER, IDENT, INTEGER
+from .SNOBOL4functions import END, RETURN, FRETURN, NRETURN
 #-------------------------------------------------------------------------------
 # Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ   Τ Υ Φ Χ Ψ Ω
 # α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ ς τ υ φ χ ψ ω
@@ -24,15 +23,14 @@ __all__ = [
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
             "RTAB", "SPAN", "SUCCESS", "TAB",
-            "ALPHABET", "DIGITS", "LCASE", "UCASE", "NULL",
+            "ALPHABET", "DIGITS", "UCASE", "LCASE", "NULL",
+            "DEFINE", "REPLACE", "SUBSTITUTE"
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
 
             "PATTERN", "SEARCH", "MATCH", "FULLMATCH",
-            "Σ", "Π", "ξ", "Δ", "δ",
-            "ψ", "Ψ", "Ϙ",
+            "Σ", "Π", "ρ", "Δ", "δ",
 
-            "CHAR", "DEFINE", "DIFFER", "IDENT", "INTEGER", "REPLACE",
-            "JSONDecode",
-            "S", "F", "Ξ", "END", "RETURN", "FRETURN", "NRETURN",
+            "CHAR", "DIFFER", "IDENT", "INTEGER",
+            "END", "RETURN", "FRETURN", "NRETURN",
 ]
 #-------------------------------------------------------------------------------

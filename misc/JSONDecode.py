@@ -1,6 +1,6 @@
 import SNOBOL4python
 from SNOBOL4python import pattern, MATCH, UCASE, LCASE, _digits
-from SNOBOL4python import ε, σ, Σ, Π, π, ξ, Ω, Δ, δ, λ, Λ, Θ
+from SNOBOL4python import ε, σ, Σ, Π, π, ρ, Ω, Δ, δ, λ, Λ, Θ
 from SNOBOL4python import ANY, ARBNO, BREAK, FENCE, LEN, POS, RPOS, SPAN
 from SNOBOL4python import CHAR, REPLACE, _RETURN, _NRETURN, _END
 from SNOBOL4python import S, F, Ξ

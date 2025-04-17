@@ -3,14 +3,14 @@ import gc
 import re
 import sys
 import time
+import types
 import logging
 import operator
 from pprint import pprint
 from datetime import date
-from functools import wraps
 logger = logging.getLogger(__name__)
 #----------------------------------------------------------------------------------------------------------------------
-_globals = None # WARNING: dummy, global variables
+_globals = None
 _started = time.time_ns() // 1000
 _units = dict() # file name associations and unit numbers
 #----------------------------------------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ def PROTOTYPE(P):
 rex_DEFINE_proto = re.compile(r"^(\w+)\((\w+(?:,\w+)*)\)(\w+(?:,\w+)*)$")
 def DEFINE(proto, n=None):
     global re_DEFINE_proto
-    matching = re.fullmatch(re_DEFINE_proto, proto)
+    matching = re.fullmatch(rex_DEFINE_proto, proto)
     if matching:
         func_name = matching.group(1)
         func_params = matching.group(2)
@@ -239,38 +239,9 @@ def RETURN(): pass
 def FRETURN(): pass
 def NRETURN(): pass
 #======================================================================================================================
-def S(success):
-    def S_decorator(statement):
-        @wraps(statement)
-        def S_wrapper():
-            try:
-                statement()
-                return success
-            except: return None
-        return S_wrapper
-    return S_decorator
+def GLOBALS(g:dict): global _globals; _globals = g
 #----------------------------------------------------------------------------------------------------------------------
-def F(failure):
-    def F_decorator(statement):
-        @wraps(statement)
-        def F_wrapper():
-            try:
-                statement()
-                return None
-            except: return failure
-        return F_wrapper
-    return F_decorator
-#----------------------------------------------------------------------------------------------------------------------
-def Ξ(success=None, failure=None):
-    def Ξ_decorator(statement):
-        @wraps(statement)
-        def Ξ_wrapper():
-            try:
-                statement()
-                return success
-            except: return failure
-        return Ξ_wrapper
-    return Ξ_decorator
-#----------------------------------------------------------------------------------------------------------------------
-def JSONDecode(s) -> str: return s
-#----------------------------------------------------------------------------------------------------------------------
+def SUBSTITUTE(subject, slyce, replacement):
+    subject = str(subject)
+    return f"{subject[:slyce.start]}{replacement}{subject[slyce.stop:]}"
+#======================================================================================================================
