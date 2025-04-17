@@ -15,6 +15,7 @@
 import copy
 from pprint import pprint, pformat
 #----------------------------------------------------------------------------------------------------------------------
+class F(Exception): pass
 class PATTERN(object):
     def __init__(self):             self.generator = self.γ()
     def __iter__(self):             self.generator = self.γ(); return self.generator
@@ -35,8 +36,8 @@ class PATTERN(object):
                                     else: return ρ(self, other)
     def __matmul__(self, other):    return δ(self, other) # delta, binary '@', immediate assignment (permanent)
     def __mod__(self, other):       return Δ(self, other) # DELTA, binary '%', conditional assignment
-    def __rxor__(self, other):      return SEARCH(other, self)
-    def __contains__(self, other):  return SEARCH(other, self)
+    def __rxor__(self, other):      return SEARCH(other, self, exc=True)
+    def __contains__(self, other):  return SEARCH(other, self, exc=False)
 #----------------------------------------------------------------------------------------------------------------------
 class ε(PATTERN): # NULL, epsilon, zero-length string
     def __init__(self): super().__init__()
@@ -51,7 +52,7 @@ class FAIL(PATTERN):
 class ABORT(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "ABORT()"
-    def γ(self): raise Exception() # return?
+    def γ(self): raise F("ABORT()")
 #----------------------------------------------------------------------------------------------------------------------
 class SUCCESS(PATTERN):
     def __init__(self): super().__init__()
@@ -752,7 +753,10 @@ class SNOBOL:
 _globals = None # global variables
 _window_size = 24 # size of sliding window display for tracing
 #----------------------------------------------------------------------------------------------------------------------
-from .SNOBOL4functions import GLOBALS as F_GLOBALS
+if __name__ == "__main__":
+    import SNOBOL4functions
+    from SNOBOL4functions import GLOBALS as F_GLOBALS
+else: from .SNOBOL4functions import GLOBALS as F_GLOBALS
 def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
 #----------------------------------------------------------------------------------------------------------------------
 def TRACE(level:int=None, window:int=None):
@@ -763,9 +767,9 @@ def TRACE(level:int=None, window:int=None):
         logger.setLevel(level)
         handler.setLevel(level)
 #----------------------------------------------------------------------------------------------------------------------
-def MATCH     (S:str, P:PATTERN) -> slice: return SEARCH(S, POS(0) + P)
-def FULLMATCH (S:str, P:PATTERN) -> slice: return SEARCH(S, POS(0) + P + RPOS(0))
-def SEARCH    (S:str, P:PATTERN) -> slice:
+def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
+def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
+def SEARCH    (S, P:PATTERN, exc=False) -> slice:
     global _globals, Ϣ; S = str(S)
     if _globals is None:
         _globals = globals()
@@ -791,18 +795,26 @@ def SEARCH    (S:str, P:PATTERN) -> slice:
             break
         except StopIteration:
             if Ϣ[-1].nl: print()
+        except F as e:
+            if Ϣ[-1].nl: print()
+            logger.error("SEARCH(): FAILURE: %r", e)
+            Ϣ.pop()
+            raise
         except Exception as e:
-            logger.critical("SEARCH(): Yikes: %r", e)
+            if Ϣ[-1].nl: print()
+            logger.critical("SEARCH(): Exception: %r", e)
+            Ϣ.pop()
+            raise
     Ϣ.pop()
+    if exc == True and not slyce: raise F("FAIL")
     return slyce
 #-----------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     import SNOBOL4functions
-    from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
-    from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
-    from .SNOBOL4functions import END, RETURN, FRETURN, NRETURN
+    from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+    from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
+    from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
     GLOBALS(globals())
-    RUN(1)
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
