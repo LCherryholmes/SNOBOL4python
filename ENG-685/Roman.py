@@ -8,36 +8,37 @@ from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
 from SNOBOL4python import ALPHABET, DIGITS, LCASE, UCASE, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import DEFINE, REPLACE, SUBSTITUTE
-from SNOBOL4python import END, RETURN, FRETURN, NRETURN
+from SNOBOL4python import F, END, RETURN, FRETURN, NRETURN
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
 def Ξ1():
                     try:    DEFINE('Roman(n)units')
-                    except: pass
+                    except  F: pass
 def Ξ2():
                     try:
                             global romanXlat; romanXlat = '0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,'
                             return ΞRomanEnd
-                    except: return ΞRomanEnd
+                    except  F: return ΞRomanEnd
 
 def ΞRoman():
                     try:
                             global n; n = SUBSTITUTE(n, n ^ RPOS(1) + LEN(1) % "units", NULL)
-                    except: return RETURN
+                    except  F: return RETURN
 def Ξ4():
                     try:    romanXlat in σ(units) + BREAK(',') % "units"
-                    except: return FRETURN
+                    except  F: return FRETURN
 def Ξ5():
                     try:
                             global Roman; Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
                             return RETURN
-                    except: return FRETURN
+                    except  F: return FRETURN
 def ΞRomanEnd():    pass
 def Ξ7():
                     try:
-                            print('2025 = ', ϘRoman(2025))
+                            print('1961 =', ϘRoman(1961))
+                            print('2025 =', ϘRoman(2025))
                             return END
-                    except: return END
+                    except  F: return END
 #-----------------------------------------------------------------------------------------------------------------------
 ξ = {3: ΞRoman, 6: ΞRomanEnd}
 Ξ = {ΞRoman: 3, ΞRomanEnd: 6}
