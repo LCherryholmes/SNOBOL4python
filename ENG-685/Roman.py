@@ -9,36 +9,36 @@ from SNOBOL4python import ALPHABET, DIGITS, LCASE, UCASE, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from SNOBOL4python import DEFINE, REPLACE, SUBSTITUTE
 from SNOBOL4python import F, END, RETURN, FRETURN, NRETURN
-from SNOBOL4python import PATTERN, STRING
+from SNOBOL4python import PATTERN, Ϩ, STRING
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
 def Ξ1():
-                    try:    DEFINE('Roman(n)units')
-                    except  F: pass
+                    try:      DEFINE('Roman(n)units')
+                    except F: pass
 def Ξ2():
                     try:
-                            global romanXlat; romanXlat = STRING('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
-                            return ΞRomanEnd # S(RomanEnd)
-                    except  F: return ΞRomanEnd # F(RomanEnd)
+                              global romanXlat; romanXlat = Ϩ('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
+                              return ΞRomanEnd # S(RomanEnd)
+                    except F: return ΞRomanEnd # F(RomanEnd)
 
 def ΞRoman():
-                    try:    global n; n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
-                    except  F: return RETURN
+                    try:      global n; n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
+                    except F: return RETURN
 def Ξ4():
-                    try:    romanXlat == units + BREAK(',') % "units"
-                    except  F: return FRETURN
+                    try:      romanXlat == units + BREAK(',') % "units"
+                    except F: return FRETURN
 def Ξ5():
                     try:
-                            global Roman; Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
-                            return RETURN
-                    except  F: return FRETURN
+                              global Roman; Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
+                              return RETURN
+                    except F: return FRETURN
 def ΞRomanEnd():    pass
 def Ξ7():
                     try:
-                            print('1961 =', ϘRoman(1961))
-                            print('2025 =', ϘRoman(2025))
-                            return END
-                    except  F: return END
+                              print('1961 =', ϘRoman(1961))
+                              print('2025 =', ϘRoman(2025))
+                              return END
+                    except F: return END
 #-----------------------------------------------------------------------------------------------------------------------
 ξ = {3: ΞRoman, 6: ΞRomanEnd}
 Ξ = {ΞRoman: 3, ΞRomanEnd: 6}
@@ -50,7 +50,7 @@ def ϘRoman(ϙn):
     _n = n if 'n' in globals() else None
     n = ϙn
     _units = units if 'units' in globals() else None
-    units = NULL
+    units = STRING('')
     ξ = RUN(Ξ[ΞRoman])
     ϙ = Roman
     units = _units

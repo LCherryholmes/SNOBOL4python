@@ -4,11 +4,11 @@ from .SNOBOL4patterns  import ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from .SNOBOL4patterns  import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from .SNOBOL4patterns  import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from .SNOBOL4patterns  import RTAB, SPAN, SUCCESS, TAB
-from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE, NULL
+from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
 from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
 from .SNOBOL4patterns  import nPush, nInc, nPop, Shift, Reduce, Pop
 #-------------------------------------------------------------------------------
-from .SNOBOL4patterns  import PATTERN, STRING
+from .SNOBOL4patterns  import PATTERN, Ϩ, STRING, NULL
 from .SNOBOL4patterns  import F, SEARCH, MATCH, FULLMATCH
 from .SNOBOL4patterns  import Σ, Π, ρ, Δ, δ
 #-------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ __all__ = [
             "DEFINE", "REPLACE", "SUBSTITUTE"
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
 
-            "PATTERN", "STRING",
+            "PATTERN", "Ϩ", "STRING",
             "F", "SEARCH", "MATCH", "FULLMATCH",
             "Σ", "Π", "ρ", "Δ", "δ",
 
