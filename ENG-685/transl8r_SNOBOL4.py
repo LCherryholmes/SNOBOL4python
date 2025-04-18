@@ -238,7 +238,6 @@ Compiland       =   ( POS(0)
                     )
 #----------------------------------------------------------------------------------------------------------------------
 def xl8(t):
-    global display
     match t:
         case [''                 ]: return ""
         case ['comment',       tx]: return tx
@@ -275,11 +274,34 @@ def xl8(t):
         case ['Control',     part]: return xl8(part)
         case ['Stmt', labl, subj,
              patrn, asgn, repl,
-             go1, go2]:             return f"{xl8(labl)} {xl8(subj)}" \
-                                           f"{' ' if patrn != [''] else ''}{xl8(patrn)}" \
-                                           f"{' ' if asgn  != [''] else ''}{xl8(asgn)}" \
-                                           f"{' ' if repl  != [''] else ''}{xl8(repl)}" \
-                                        + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
+             go1, go2]:
+                                    s_goto = None
+                                    f_goto = None
+                                    match go1:
+                                        case ['S()', expr]: s_goto = expr
+                                        case ['F()', expr]: f_goto = expr
+                                        case ['()',  expr]: s_goto = f_goto = expr
+                                    match go2:
+                                        case ['S()', expr]: s_goto = expr
+                                        case ['F()', expr]: f_goto = expr
+                                    stmt = ""
+                                    if labl[1] != "":
+                                        stmt += f"def Ξ{labl[1]}():\n"
+                                    else: stmt +=  f"def Ξ{stmtno}():\n"
+                                    stmt += f"{' ' * 20}try:"
+                                    if s_goto:
+                                        stmt += f"\n{' ' * 30}{xl8(subj)}"
+                                        stmt += f"\n{' ' * 30}return Ξ{xl8(s_goto)}\n"
+                                    else: stmt += f"      {xl8(subj)}\n"
+                                    if f_goto:
+                                        stmt += f"{' ' * 20}except F: return Ξ{xl8(f_goto)}\n"
+                                    else: stmt += f"{' ' * 20}except F: pass\n"
+                                    return stmt
+#                                   return f"{xl8(labl)} {xl8(subj)}"
+#                                          f"{' ' if patrn != [''] else ''}{xl8(patrn)}" \
+#                                          f"{' ' if asgn  != [''] else ''}{xl8(asgn)}" \
+#                                          f"{' ' if repl  != [''] else ''}{xl8(repl)}" \
+#                                       + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
 #       ----------------------------------------------------------------------------------------------------------------
         case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
@@ -289,8 +311,8 @@ Parse =         ( POS(0)
                 + Reduce('Parse', -1)
                 + nPop()
                 + Pop('SNOBOL4_tree')
-                + λ("pprint(SNOBOL4_tree)")
-                + λ("print(xl8(SNOBOL4_tree))")
+#               + λ("pprint(SNOBOL4_tree)")
+#               + λ("print(xl8(SNOBOL4_tree))")
                 + RPOS(0)
                 )
 str_Parse = """\
@@ -306,6 +328,25 @@ str_Parse = """\
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(50)
 GLOBALS(globals())
-print(str_Parse)
-str_Parse in Parse
+#print(str_Parse)
+#str_Parse in Parse
+#-----------------------------------------------------------------------------------------------------------------------
+Space = SPAN(' \t') | ε()
+stmtno = 0
+with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
+    line = beauty.readline(); lineno = 1
+    while line != "":
+        while line != "":
+            if not line in POS(0) + ANY('*-'): break
+            line = beauty.readline(); lineno += 1
+        src = ""
+        while line != "":
+            src += line
+            line = beauty.readline(); lineno += 1
+            if line not in POS(0) + ANY('+.'): break
+        if src in Parse + Space:
+            stmtno += 1
+            pprint([stmtno, SNOBOL4_tree])
+            print(xl8(SNOBOL4_tree))
+        else: pass # print(lineno, src)
 #-----------------------------------------------------------------------------------------------------------------------
