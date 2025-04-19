@@ -29,19 +29,23 @@ def Ξ1():
                     except F: pass
 def Ξ2():
                     try:
-                              global romanXlat; romanXlat = Ϩ('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
+                    global    romanXlat
+                              romanXlat = Ϩ('0,1I,2II,3III,4IV,5V,6VI,7VII,8VIII,9IX,')
                               return ΞRomanEnd
                     except F: return ΞRomanEnd
 
 def ΞRoman():
-                    try:      global n; n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
+                    try:
+                    global    n
+                              n = SUBSTITUTE(n, n == RPOS(1) + LEN(1) % "units", NULL)
                     except F: return RETURN
 def Ξ4():
                     try:      romanXlat == units + BREAK(',') % "units"
                     except F: return FRETURN
 def Ξ5():
                     try:
-                              global Roman; Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
+                    global    Roman
+                              Roman = REPLACE(ϘRoman(n), 'IVXLCDM', 'XLCDM**') + units
                               return RETURN
                     except F: return FRETURN
 def ΞRomanEnd():    pass

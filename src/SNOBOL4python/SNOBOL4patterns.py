@@ -743,7 +743,7 @@ class DEBUG_formatter(logging.Formatter):
         global Ϣ, _window_size
         original_message = super().format(record)
         if len(Ϣ) > 0:
-            formatted_message = "{0:s} {1:s}{2:s}".format(self.window(_window_size // 2), '  ' * Ϣ[-1].depth, original_message)
+            formatted_message = "{0:s} {1:s}".format(self.window(_window_size // 2), original_message) # , '  ' * Ϣ[-1].depth
         else: formatted_message = original_message
         return formatted_message
 #----------------------------------------------------------------------------------------------------------------------

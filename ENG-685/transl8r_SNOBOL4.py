@@ -6,6 +6,7 @@ from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
+from SNOBOL4python import PATTERN, Ϩ, STRING, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
@@ -16,8 +17,8 @@ def set_Brackets(pair): global str_Brackets; str_Brackets = pair; return True
 #-----------------------------------------------------------------------------------------------------------------------
 nl              =   σ('\n')
 Integer         =   SPAN(DIGITS) % "tx"
-DQ              =   σ('"') + BREAK('"\n') + σ('"') % "tx"
-SQ              =   σ("'") + BREAK("'\n") + σ("'") % "tx"
+DQ              =   (σ('"') + BREAK('"\n') + σ('"')) % "tx"
+SQ              =   (σ("'") + BREAK("'\n") + σ("'")) % "tx"
 String          =   SQ | DQ
 Real            =   ( SPAN(DIGITS)
                     + (σ('.') + FENCE(SPAN(DIGITS) | ε()) | ε())
@@ -53,11 +54,11 @@ Functions       =   { 'ANY', 'APPLY', 'ARBNO', 'ARG', 'ARRAY', 'ATAN', 'BACKSPAC
                       'SUBSTR', 'TAB', 'TABLE', 'TAN', 'TIME', 'TRACE', 'TRIM', 'UNLOAD'
                     }
 #-----------------------------------------------------------------------------------------------------------------------
-Function        =   φ(r"\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\b")
-BuiltinVar      =   φ(r"\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\b")
-SpecialNm       =   φ(r"\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\b")
-ProtKwd         =   φ(r"\&(?P<nm>" + "|".join((nm for nm in ProtKwds))    + ")\b")
-UnprotKwd       =   φ(r"\&(?P<nm>" + "|".join((nm for nm in UnprotKwds))  + ")\b")
+Function        =   φ("\\b(?P<nm>" + "|".join((nm for nm in Functions))   + ")\\b")
+BuiltinVar      =   φ("\\b(?P<nm>" + "|".join((nm for nm in BuiltinVars)) + ")\\b")
+SpecialNm       =   φ("\\b(?P<nm>" + "|".join((nm for nm in SpecialNms))  + ")\\b")
+ProtKwd         =   φ("\\&(?P<nm>" + "|".join((nm for nm in ProtKwds))    + ")\\b")
+UnprotKwd       =   φ("\\&(?P<nm>" + "|".join((nm for nm in UnprotKwds))  + ")\\b")
 #-----------------------------------------------------------------------------------------------------------------------
 def τ(op):
     match op:
@@ -85,6 +86,7 @@ def τ(op):
         case ')':   return Gray + σ(')')
         case ']':   return Gray + σ(']')
         case '>':   return Gray + σ('>')
+        case _:     raise Exception("tau error")
 #-----------------------------------------------------------------------------------------------------------------------
 Expr17          =   FENCE(
                       ( nPush()
@@ -245,27 +247,48 @@ def xl8(t):
         case ['Integer',       tx]: return tx
         case ['String',        tx]: return tx
         case ['Real',          tx]: return tx
+        case ['Id',     'epsilon']: return "ε()"
         case ['Id',            nm]: return nm
         case ['Function',      nm]: return nm.upper()
         case ['SpecialNm',     nm]: return nm.upper()
         case ['ProtKwd',       nm]: return f"&{nm.upper()}"
         case ['UnprotKwd',     nm]: return f"&{nm.upper()}"
-        case ['=', lvalue, rvalue]: return f"{xl8(lvalue)} = {xl8(rvalue)}"
+        case ['=', lvalue, rvalue]: return f"{xl8(lvalue)} := {xl8(rvalue)}"
         case ['='                ]: return "="
+        case ['&',     ['Id', nm]]: return nm
         case ['&',         *exprs]: #
                                     if len(exprs) == 1:   return f"&{xl8(exprs[0])}"
                                     elif len(exprs) == 2: return f"{xl8(exprs[0])} & {xl8(exprs[1])}"
         case ['.',         *exprs]: #
-                                    if len(exprs) == 1:   return f".{xl8(exprs[0])}"
-                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} . {xl8(exprs[1])}"
+                                    if len(exprs) == 1:   return f"'{xl8(exprs[0])}'"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} % {xl8(exprs[1])}"
+        case ['~',         *exprs]: #
+                                    if len(exprs) == 1:   return f"~{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} ~ {xl8(exprs[1])}"
+        case ['+',         *exprs]: #
+                                    if len(exprs) == 1:   return f"+{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} + {xl8(exprs[1])}"
+        case ['-',         *exprs]: #
+                                    if len(exprs) == 1:   return f"-{xl8(exprs[0])}"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} - {xl8(exprs[1])}"
+        case ['$',         *exprs]: #
+                                    if len(exprs) == 1:   return f"globals()[{xl8(exprs[0])}]"
+                                    elif len(exprs) == 2: return f"{xl8(exprs[0])} @ {xl8(exprs[1])}"
         case ['*',         *exprs]: #
-                                    if len(exprs) == 1:   return f"*{xl8(exprs[0])}"
+                                    if len(exprs) == 1:   return f"ζ(lambda: {xl8(exprs[0])})"
                                     elif len(exprs) == 2: return f"{xl8(exprs[0])} * {xl8(exprs[1])}"
+        case ['()'|'S()'|'F()', ['Id', nm]]:
+                                    match nm:
+                                        case "END": return "END"
+                                        case "RETURN": return "RETURN"
+                                        case "FRETURN": return "FRETURN"
+                                        case "NRETURN": return "NRETURN"
+                                        case _: return f"Ξ{nm}"
         case ['()',          expr]: return f"({xl8(expr)})"
         case ['S()',         expr]: return f"S({xl8(expr)})"
         case ['F()',         expr]: return f"F({xl8(expr)})"
         case ['Call',   nm, elist]: return f"{xl8(nm)}({xl8(elist)})"
-        case ['..',        *exprs]: return " ".join((xl8(expr) for expr in exprs))
+        case ['..',        *exprs]: return " + ".join((xl8(expr) for expr in exprs))
         case ['|',         *exprs]: return " | ".join((xl8(expr) for expr in exprs))
         case ['ExprList',  *exprs]: return ", ".join((xl8(expr) for expr in exprs))
         case ['Parse',  *commands]: return "\n".join((xl8(command) for command in commands))
@@ -278,34 +301,35 @@ def xl8(t):
                                     s_goto = None
                                     f_goto = None
                                     match go1:
-                                        case ['S()', expr]: s_goto = expr
-                                        case ['F()', expr]: f_goto = expr
-                                        case ['()',  expr]: s_goto = f_goto = expr
+                                        case ['S()', expr]: s_goto = go1
+                                        case ['F()', expr]: f_goto = go1
+                                        case ['()',  expr]: s_goto = f_goto = go1
                                     match go2:
-                                        case ['S()', expr]: s_goto = expr
-                                        case ['F()', expr]: f_goto = expr
+                                        case ['S()', expr]: s_goto = go2
+                                        case ['F()', expr]: f_goto = go2
                                     stmt = ""
                                     if labl[1] != "":
                                         stmt += f"def Ξ{labl[1]}():\n"
                                     else: stmt +=  f"def Ξ{stmtno}():\n"
-                                    stmt += f"{' ' * 20}try:"
-                                    if s_goto:
-                                        stmt += f"\n{' ' * 30}{xl8(subj)}"
-                                        stmt += f"\n{' ' * 30}return Ξ{xl8(s_goto)}\n"
-                                    else: stmt += f"      {xl8(subj)}\n"
-                                    if f_goto:
-                                        stmt += f"{' ' * 20}except F: return Ξ{xl8(f_goto)}\n"
+                                    stmt += f"{' ' * 20}try:\n"
+                                    if asgn != ['']:
+                                        if subj[0] != '$': stmt += f"{' ' * 20}global    {xl8(subj)}\n"
+                                        if patrn != ['']:
+                                            stmt += f"{' ' * 30}{xl8(subj)} = SUBSTITUTE({xl8(subj)}, {xl8(subj)} == {xl8(patrn)}, {xl8(repl)})\n"
+                                        else: stmt += f"{' ' * 30}{xl8(subj)} = {xl8(repl)}\n"
+                                    elif patrn != ['']: stmt += f"{' ' * 30}{xl8(subj)} == {xl8(patrn)}\n"
+                                    else: stmt += f"{' ' * 30}{xl8(subj)}\n"
+                                    if s_goto: stmt += f"{' ' * 30}return {xl8(s_goto)}\n"
+                                    if f_goto: stmt += f"{' ' * 20}except F: return {xl8(f_goto)}\n"
                                     else: stmt += f"{' ' * 20}except F: pass\n"
                                     return stmt
-#                                   return f"{xl8(labl)} {xl8(subj)}"
-#                                          f"{' ' if patrn != [''] else ''}{xl8(patrn)}" \
-#                                          f"{' ' if asgn  != [''] else ''}{xl8(asgn)}" \
-#                                          f"{' ' if repl  != [''] else ''}{xl8(repl)}" \
-#                                       + (f" :{xl8(go1)}{xl8(go2)}" if go1 != [''] or go2 != [''] else "")
 #       ----------------------------------------------------------------------------------------------------------------
+        case STRING(s): print("Yipper!", s)
         case _: print("Yikes!", type(t), t)
 #-----------------------------------------------------------------------------------------------------------------------
+Space =         SPAN(' \t') | ε()
 Parse =         ( POS(0)
+                + ε() @ "SNOBOL4_tree"
                 + nPush()
                 + ARBNO(Command)
                 + Reduce('Parse', -1)
@@ -313,6 +337,7 @@ Parse =         ( POS(0)
                 + Pop('SNOBOL4_tree')
 #               + λ("pprint(SNOBOL4_tree)")
 #               + λ("print(xl8(SNOBOL4_tree))")
+                + Space
                 + RPOS(0)
                 )
 str_Parse = """\
@@ -331,7 +356,8 @@ GLOBALS(globals())
 #print(str_Parse)
 #str_Parse in Parse
 #-----------------------------------------------------------------------------------------------------------------------
-Space = SPAN(' \t') | ε()
+#""" x = *y *z""" in Parse
+#exit(0)
 stmtno = 0
 with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
     line = beauty.readline(); lineno = 1
@@ -344,9 +370,9 @@ with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
             src += line
             line = beauty.readline(); lineno += 1
             if line not in POS(0) + ANY('+.'): break
-        if src in Parse + Space:
-            stmtno += 1
-            pprint([stmtno, SNOBOL4_tree])
+        if src in Parse:
+#           pprint([lineno, stmtno, SNOBOL4_tree])
             print(xl8(SNOBOL4_tree))
-        else: pass # print(lineno, src)
+        else: print("ERROR:", src)
+        stmtno += 1
 #-----------------------------------------------------------------------------------------------------------------------
