@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------------------------------------------------
 # SNOBOL4 string pattern matching
-#> python -m pip install --upgrade pip
 #> python -m pip install build
+#> python -m pip install twine
+#> python -m pip install --upgrade pip
+#> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
 #> python -m pip install ./dist/snobol4python-0.4.3.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.3-py3-none-any.whl
+#> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
+#> python -m twine check ./dist/*
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
@@ -583,7 +588,7 @@ class Φ(PATTERN):
             if pos0 == matches.start():
                 Ϣ[-1].pos = matches.end()
                 for (N, V) in matches.groupdict().items():
-                    _globals[N] = V
+                    _globals[N] = STRING(V)
                 yield slice(pos0, Ϣ[-1].pos)
                 Ϣ[-1].pos = pos0
             else: raise Exception("Yikes! Internal error.")
@@ -611,7 +616,7 @@ class φ(PATTERN):
                     span = matches.span(item[1])
                     if span != (-1, -1):
                         push_count += 1
-                        Ϣ[-1].cstack.append(f"{N} = Ϣ[-1].subject[{span[0]}:{span[1]}]")
+                        Ϣ[-1].cstack.append(f"{N} = STRING(Ϣ[-1].subject[{span[0]}:{span[1]}])")
                 yield slice(pos0, Ϣ[-1].pos)
                 for i in range(push_count):
                     Ϣ[-1].cstack.pop()
