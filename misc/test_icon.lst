@@ -1,0 +1,96 @@
+
+
+
+Macro SPITBOL Version 3.7(ver 1.30.17)
+80386  03/05/25 15:20:43
+
+
+                                                                                                                                                                                                                      Page 1
+
+1       START                                   :(main1)
+        *-------------- ----------------------- ------------------------------
+        * ICON Programming Language: every write(5 > ((1 to 2) * (3 to 4)));
+        * 1st pass, attribute grammar generated
+        *-------------- ----------------------- ------------------------------
+2       x5.start        x5.V = 5                :(x5.succeed)
+3       x5.resume                               :(x5.fail)
+        *-------------- ----------------------- -----------------------------
+4       x1.start        x1.V = 1                :(x1.succeed)
+5       x1.resume                               :(x1.fail)
+        *-------------- ----------------------- ------------------------------
+6       x2.start        x2.V = 2                :(x2.succeed)
+7       x2.resume                               :(x2.fail)
+        *-------------- ----------------------- ------------------------------
+8       to1.start                               :(x1.start)
+9       x1.fail                                 :(to1.fail)
+10      x2.fail                                 :(x1.resume)
+11      to1.code        LE(to1.I, x2.V)         :F(x2.resume)
+12                      to1.V = to1.I           :(to1.succeed)
+13      to1.resume      to1.I = to1.I + 1       :(to1.code)
+14      x1.succeed                              :(x2.start)
+15      x2.succeed      to1.I = x1.V            :(to1.code)
+        *-------------- ----------------------- ------------------------------
+16      x3.start        x3.V = 3                :(x3.succeed)
+17      x3.resume                               :(x3.fail)
+        *-------------- ----------------------- ------------------------------
+18      x4.start        x4.V = 4                :(x4.succeed)
+19      x4.resume                               :(x4.fail)
+        *-------------- ----------------------- ------------------------------
+20      to2.start                               :(x3.start)
+21      x3.fail                                 :(to2.fail)
+22      x4.fail                                 :(x3.resume)
+23      to2.code        LE(to2.I, x4.V)         :F(x4.resume)
+24                      to2.V = to2.I           :(to2.succeed)
+25      to2.resume      to2.I = to2.I + 1       :(to2.code)
+26      x3.succeed                              :(x4.start)
+27      x4.succeed      to2.I = x3.V            :(to2.code)
+        *-------------- ----------------------- ------------------------------
+28      mult.start                              :(to1.start)
+29      to1.fail                                :(mult.fail)
+30      to2.fail                                :(to1.resume)
+31      mult.resume                             :(to2.resume)
+32      to1.succeed                             :(to2.start)
+33      to2.succeed     mult.V = to1.V * to2.V  :S(mult.succeed)F(exception)
+        *-------------- ----------------------- ------------------------------
+34      greater.start                           :(x5.start)
+35      x5.fail                                 :(greater.fail)
+36      mult.fail                               :(x5.resume)
+37      greater.resume                          :(mult.resume)
+38      x5.succeed                              :(mult.start)
+39      mult.succeed    GT(x5.V, mult.V)        :F(mult.resume)
+
+
+
+                                                                                                                                                                                                                      Page 2
+
+40                      greater.V = mult.V      :(greater.succeed)
+        *-------------- ----------------------- ------------------------------
+41      write1.start                            :(greater.start)
+42      write1.resume                           :(greater.resume)
+43      greater.fail                            :(write1.fail)
+44      greater.succeed write.V = greater.V
+45                      OUTPUT = write.V        :(write1.succeed)
+        *-------------- ----------------------- ------------------------------
+        * ICON Programming Language: every write(5 > ((1 to 2) * (3 to 4)));
+        * 2nd pass, optimization
+        *-------------- ----------------------- ------------------------------
+46      write2.start    to3.I = 1               :(to3.code)
+47      to3.resume      to3.I = to3.I + 1
+48      to3.code        LE(to3.I, 2)            :F(write2.fail)
+49                      to4.I = 3               :(to4.code)
+50      write2.resume   to4.I = to4.I + 1
+51      to4.code        LE(to4.I, 4)            :F(to3.resume)
+52                      mult.V = to3.I * to4.I  :F(exception)
+53                      GT(5, mult.V)           :F(write2.resume)
+54                      greater.V = mult.V
+55                      OUTPUT = greater.V      :(write2.succeed)
+        *-------------- ----------------------- ------------------------------
+56      main1           OUTPUT =                :(write1.start)
+57      write1.fail     OUTPUT = "Failure."     :(main2)
+58      write1.succeed  OUTPUT = "Success!"     :(write1.resume)
+59      main2           OUTPUT =                :(write2.start)
+60      write2.fail     OUTPUT = "Failure."     :(END)
+61      write2.succeed  OUTPUT = "Success!"     :(write2.resume)
+        *-------------- ----------------------- ------------------------------
+62      exception       TERMINAL = "Exception!" :(END)
+63      END

@@ -7,10 +7,11 @@
 #> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.3.tar.gz
-#> python -m pip install ./dist/snobol4python-0.4.3-py3-none-any.whl
+#> python -m pip install ./dist/snobol4python-0.4.4.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.4-py3-none-any.whl
 #> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
 #> python -m twine check ./dist/*
+#> python -m twine upload ./dist/*
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
