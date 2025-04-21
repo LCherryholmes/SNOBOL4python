@@ -624,7 +624,7 @@ class φ(PATTERN):
                 Ϣ[-1].pos = pos0
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
-class ρ(PATTERN): # PSI, AND, conjunction
+class ρ(PATTERN): # rho, AND, conjunction
     def __init__(self, P:PATTERN, Q:PATTERN): super().__init__(); self.P = P; self.Q = Q
     def __repr__(self): return  "ρ(*{0})".format(len(self.AP))
     def __deepcopy__(self, memo): return ρ(copy.deepcopy(self.P), copy.deepcopy(self.Q))
