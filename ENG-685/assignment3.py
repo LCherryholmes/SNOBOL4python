@@ -59,7 +59,7 @@ def traverse(t, root=None):
             else: roots[root] += 1
         case _:
             for c in t:
-                if type(c) == tuple:
+                if isinstance(c, tuple):
                     traverse(c, root) 
 #------------------------------------------------------------------------------
 display = ""
@@ -67,7 +67,7 @@ def sentence(t):
     global display
     t, *children = t
     for c in children:
-        if type(c) == str:
+        if isinstance(c, str):
             if display == "":
                 if c == "``":        display += "`"
                 else:                display += c.capitalize()
@@ -77,7 +77,7 @@ def sentence(t):
             elif c in ".;!?,":       display += c
             elif display[-1] == "`": display += c
             else:                    display += ' ' + c
-        if type(c) == tuple: sentence(c) 
+        if isinstance(c, tuple): sentence(c)
 #------------------------------------------------------------------------------
 # Progressive
 # Expresses ongoing action. Always with an auxiliary (e.g., am, is, are).
@@ -128,8 +128,8 @@ def register(ruleno, subtree, vbg, *args):
 #------------------------------------------------------------------------------
 def classify(t, phrase):
     global root
-    if type(t) == str: print([phrase, type(t), t])
-    elif type(t) == tuple:
+    if isinstance(t, str): print([phrase, t])
+    elif isinstance(t, tuple):
         match t:
             case (): return
 #           --------------------------------------------------------------------
@@ -344,15 +344,15 @@ def classify(t, phrase):
                  classify(tuple(rem), phrase)
 #           --------------------------------------------------------------------
             case (tag, w) \
-              if type(tag) == str and type(w) == str:   None
-            case (tag, *rem) if type(tag) == str:       classify(tuple(rem), phrase)
+              if isinstance(tag, str) and isinstance(w, str): None
+            case (tag, *rem) if isinstance(tag, str):   classify(tuple(rem), phrase)
             case (top, *rem):                           classify(top, phrase); \
                                                         classify(tuple(rem), phrase)
-    elif type(t) == list: raise Exception(f"What's going on! {type(t)} {t}")
+    elif isinstance(t, list): raise Exception(f"What's going on! {type(t)} {t}")
     else: raise Exception(f"Yikes! {type(t)} {t}")
 #------------------------------------------------------------------------------
 def list_to_tuple(t):
-    if type(t) == list:
+    if isinstance(t, list):
         return tuple(list_to_tuple(c) for c in t)
     else: return t
 #------------------------------------------------------------------------------

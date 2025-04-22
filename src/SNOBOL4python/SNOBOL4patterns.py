@@ -7,8 +7,8 @@
 #> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.4.tar.gz
-#> python -m pip install ./dist/snobol4python-0.4.4-py3-none-any.whl
+#> python -m pip install ./dist/snobol4python-0.4.5.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.5-py3-none-any.whl
 #> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
 #> python -m twine check ./dist/*
 #> python -m twine upload ./dist/*
@@ -49,6 +49,7 @@ class PATTERN(object):
     def __contains__(self, other):  return SEARCH(other, self, exc=False) # comparison in operator, returns bool
 #----------------------------------------------------------------------------------------------------------------------
 class STRING(str):
+    def __repr__(self):             return str.__repr__(self)
     def __add__(self, other):       # SIGMA
                                     if isinstance(other, Σ):        return Σ(σ(self), *other.AP)
                                     elif isinstance(other, str):    return STRING(super().__add__(other))
