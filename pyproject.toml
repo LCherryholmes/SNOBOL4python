@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "SNOBOL4python"
-version = "0.4.4"
+version = "0.4.5"
 description = "A Python library for SNOBOL4-style pattern matching with support for regular expressions."
 readme = "README.md"
 requires-python = ">=3.10.0"
