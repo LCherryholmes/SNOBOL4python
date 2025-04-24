@@ -8,15 +8,15 @@
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
 #> python -m pip install ./dist/snobol4python-0.4.5.tar.gz
-#> python -m pip install ./dist/snobol4python-0.4.5-py3-none-any.whl
-#> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
-#> python -m twine check ./dist/*
-#> python -m twine upload ./dist/*
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
 #> python ENG-685/transl8r_pop3.py > ENG-685/pop3.py
+#> python -m pip install ./dist/snobol4python-0.4.5-py3-none-any.whl
+#> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
+#> python -m twine check ./dist/*
+#> python -m twine upload ./dist/*
 #----------------------------------------------------------------------------------------------------------------------
 import re
 import copy
@@ -142,7 +142,7 @@ class ζ(PATTERN):
             if callable(self.N): self.P = self.N()
             else: self.P = _globals[str(self.N)]
         else: self.P = _globals[self.N]
-        yield from self.P
+        yield from copy.deepcopy(self.P)
 #----------------------------------------------------------------------------------------------------------------------
 class nPush(PATTERN):
     def __init__(self): super().__init__()
@@ -345,15 +345,15 @@ class σ(PATTERN): # sigma, σ, sequence of characters, string patttern
         self.lit = self.s
         if not isinstance(self.lit, str):
             if callable(self.lit): self.lit = str(self.lit())
-            else: self.lit = str(self.lit) # should possibly be exception
+            else: self.lit = str(self.lit) # might need to raise an exception
         logger.debug("σ(%r) trying(%d)", self.lit, pos0)
         if pos0 + len(self.lit) <= len(Ϣ[-1].subject):
             if self.lit == Ϣ[-1].subject[pos0:pos0 + len(self.lit)]:
                 logger.info("σ(%r) SUCCESS(%d,%d)=", self.lit, Ϣ[-1].pos, len(self.lit))
                 Ϣ[-1].pos += len(self.lit)
                 yield slice(pos0, Ϣ[-1].pos)
-                Ϣ[-1].pos -= len(self.lit)
-                logger.warning("σ(%r) backtracking(%d)...", self.lit, Ϣ[-1].pos)
+                logger.warning("σ(%r) backtracking(%d,%d)...", self.lit, pos0, Ϣ[-1].pos)
+                Ϣ[-1].pos = pos0
         return None
 #----------------------------------------------------------------------------------------------------------------------
 class ANY(PATTERN):
@@ -374,8 +374,8 @@ class ANY(PATTERN):
                 logger.info("ANY(%r) SUCCESS(%d,%d)=%s", self.characters, Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
                 Ϣ[-1].pos += 1
                 yield slice(Ϣ[-1].pos - 1, Ϣ[-1].pos)
+                logger.warning("ANY(%r) backtracking(%d,%d)...", self.characters, Ϣ[-1].pos - 1, Ϣ[-1].pos)
                 Ϣ[-1].pos -= 1
-                logger.warning("ANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class NOTANY(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
@@ -395,8 +395,8 @@ class NOTANY(PATTERN):
                 logger.info("NOTANY(%r) SUCCESS(%d,%d)=%s", self.characters, Ϣ[-1].pos, 1, Ϣ[-1].subject[Ϣ[-1].pos])
                 Ϣ[-1].pos += 1
                 yield slice(Ϣ[-1].pos - 1, Ϣ[-1].pos)
+                logger.warning("NOTANY(%r) backtracking(%d,%d)...", self.characters, Ϣ[-1].pos - 1, Ϣ[-1].pos)
                 Ϣ[-1].pos -= 1
-                logger.warning("NOTANY(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class SPAN(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
@@ -419,8 +419,8 @@ class SPAN(PATTERN):
         if Ϣ[-1].pos > pos0:
             logger.info("SPAN(%r) SUCCESS(%d,%d)=%s", self.characters, pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
             yield slice(pos0, Ϣ[-1].pos)
+            logger.warning("SPAN(%r) backtracking(%d,%d)...", self.characters, pos0, Ϣ[-1].pos)
             Ϣ[-1].pos = pos0
-            logger.warning("SPAN(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
         return None
 #----------------------------------------------------------------------------------------------------------------------
 class BREAK(PATTERN):
@@ -444,8 +444,8 @@ class BREAK(PATTERN):
         if Ϣ[-1].pos < len(Ϣ[-1].subject):
             logger.info("BREAK(%r) SUCCESS(%d,%d)=%s", self.characters, pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
             yield slice(pos0, Ϣ[-1].pos)
+            logger.warning("BREAK(%r) backtracking(%d,%d)...", self.characters, pos0, Ϣ[-1].pos)
             Ϣ[-1].pos = pos0
-            logger.warning("BREAK(%r) backtracking(%d)...", self.characters, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class BREAKX(BREAK): pass
 #----------------------------------------------------------------------------------------------------------------------
@@ -678,7 +678,7 @@ class Σ(PATTERN): # SIGMA, Σ, sequence, subsequents, SNOBOL4: P Q R S T ...
             if cursor >= len(self.AP):
                 logger.info("Σ(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
                 yield slice(pos0, Ϣ[-1].pos)
-                logger.warning("Σ(*) backtracking(%d)...", pos0)
+                logger.warning("Σ(*) backtracking(%d,%d)...", pos0, Ϣ[-1].pos)
                 cursor -= 1
             if cursor >= highmark:
                 iter(self.AP[cursor])
@@ -750,7 +750,7 @@ class DEBUG_formatter(logging.Formatter):
         global Ϣ, _window_size
         original_message = super().format(record)
         if len(Ϣ) > 0:
-            formatted_message = "{0:s} {1:s}".format(self.window(_window_size // 2), original_message) # , '  ' * Ϣ[-1].depth
+            formatted_message = "{0:s} {1:s}".format(self.window(_window_size // 2), original_message) # {2:s} # '  ' * Ϣ[-1].depth,
         else: formatted_message = original_message
         return formatted_message
 #----------------------------------------------------------------------------------------------------------------------
@@ -846,10 +846,14 @@ if __name__ == "__main__":
     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
     GLOBALS(globals())
+    TRACE(50)
+#   --------------------------------------------------------------------------------------------------------------------
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
         print(name)
     if "001_01C717AB.5C51AFDE ..." in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
+#   --------------------------------------------------------------------------------------------------------------------
+    exit(0)
 #-----------------------------------------------------------------------------------------------------------------------
