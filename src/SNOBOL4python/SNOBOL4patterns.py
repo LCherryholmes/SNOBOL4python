@@ -7,13 +7,13 @@
 #> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build
-#> python -m pip install ./dist/snobol4python-0.4.5.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.6.tar.gz
+#> python -m pip install ./dist/snobol4python-0.4.6-py3-none-any.whl
 #> python tests/test_01.py
 #> python tests/test_json.py
 #> python tests/test_arbno.py
 #> python tests/test_re_simple.py
 #> python ENG-685/transl8r_pop3.py > ENG-685/pop3.py
-#> python -m pip install ./dist/snobol4python-0.4.5-py3-none-any.whl
 #> python -m pip install --index-url https://test.pypi.org/simple SNOBOL4python
 #> python -m twine check ./dist/*
 #> python -m twine upload ./dist/*
@@ -531,27 +531,26 @@ class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     def __deepcopy__(self, memo): return Λ(self.expression)
     def γ(self):
         global Ϣ, _globals
-        match type(self.expression).__name__:
-            case 'str':
-                logger.debug("Λ(%r) evaluating...", self.expression)
-                try:
-                    if eval(self.expression, _globals):
-                        logger.info("Λ(%r) SUCCESS", self.expression)
-                        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                        logger.warning("Λ(%r) backtracking...", self.expression)
-                    else: logger.warning("Λ(%r) FAIL!", self.expression)
-                except Exception as e:
-                    logger.error("Λ(%r) EXCEPTION evaluating. (%r) FAIL!", self.expression, e)
-            case 'function':
-                logger.debug("Λ(function) evaluating...")
-                try:
-                    if self.expression():
-                        logger.info("Λ(function) SUCCESS")
-                        yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                        logger.warning("Λ(function) backtracking...")
-                    else: logger.warning("Λ(function) FAIL!")
-                except Exception as e:
-                    logger.error("Λ(function) EXCEPTION evaluating. (%r) FAIL!", e)
+        if isinstance(self.expression, str):
+            logger.debug("Λ(%r) evaluating...", self.expression)
+            try:
+                if eval(self.expression, _globals):
+                    logger.info("Λ(%r) SUCCESS", self.expression)
+                    yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
+                    logger.warning("Λ(%r) backtracking...", self.expression)
+                else: logger.warning("Λ(%r) FAIL!", self.expression)
+            except Exception as e:
+                logger.error("Λ(%r) EXCEPTION evaluating. (%r) FAIL!", self.expression, e)
+        elif callable(self.expression):
+            logger.debug("Λ(function) evaluating...")
+            try:
+                if self.expression():
+                    logger.info("Λ(function) SUCCESS")
+                    yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
+                    logger.warning("Λ(function) backtracking...")
+                else: logger.warning("Λ(function) FAIL!")
+            except Exception as e:
+                logger.error("Λ(function) EXCEPTION evaluating. (%r) FAIL!", e)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
 class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
@@ -562,13 +561,20 @@ class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
         global Ϣ
         logger.debug("λ(%r) compiling...", self.command)
         if self.command:
-            if compile(self.command, '<string>', 'exec'): # 'single', 'eval'
-                logger.info("λ(%r) SUCCESS", self.command)
+            if isinstance(self.command, str):
+                if compile(self.command, '<string>', 'exec'): # 'single', 'eval'
+                    logger.info("λ(%r) SUCCESS", self.command)
+                    Ϣ[-1].cstack.append(self.command)
+                    yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
+                    logger.warning("λ(%r) backtracking...", self.command)
+                    Ϣ[-1].cstack.pop()
+                else: logger.error("λ(%r) Error compiling. FAIL", self.command)
+            elif callable(self.command):
+                logger.info("λ(function) SUCCESS")
                 Ϣ[-1].cstack.append(self.command)
                 yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                logger.warning("λ(%r) backtracking...", self.command)
+                logger.warning("λ(function) backtracking...")
                 Ϣ[-1].cstack.pop()
-            else: logger.error("λ(%r) Error compiling. FAIL", self.command)
         else: yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching (with immediate assignments)
@@ -820,7 +826,8 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
                 _globals['Ϣ'] = Ϣ
                 _globals['STRING'] = STRING
                 for command in Ϣ[-1].cstack:
-                    exec(command, _globals)
+                    if isinstance(command, str): exec(command, _globals)
+                    elif callable(command): command()
             except Exception as e:
                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
             break
@@ -846,7 +853,28 @@ if __name__ == "__main__":
     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
     GLOBALS(globals())
-    TRACE(50)
+    TRACE(40)
+#   --------------------------------------------------------------------------------------------------------------------
+    V = ANY(LCASE) % "N"      + λ(lambda: S.append(int(globals()[N])))
+    I = SPAN(DIGITS) % "N"    + λ(lambda: S.append(int(N)))
+    E = ( V
+        | I
+        | σ('(') + ζ("X") + σ(')')
+        )
+    X = ( E + σ('+') + ζ("X") + λ(lambda: S.append(S.pop() + S.pop()))
+        | E + σ('-') + ζ("X") + λ(lambda: S.append(S.pop() - S.pop()))
+        | E + σ('*') + ζ("X") + λ(lambda: S.append(S.pop() * S.pop()))
+        | E + σ('/') + ζ("X") + λ(lambda: S.append(S.pop() // S.pop()))
+        | σ('+') + ζ("X")
+        | σ('-') + ζ("X")     + λ(lambda: S.append(-S.pop()))
+        | E
+        )
+    C = POS(0) + λ("S = []") + X + λ(lambda: print(S.pop())) + RPOS(0)
+    x = 1; y = 2; z = 3
+    for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
+        if not s in C:
+            print("Boo!")
+    exit(0)
 #   --------------------------------------------------------------------------------------------------------------------
     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
         print(name)
