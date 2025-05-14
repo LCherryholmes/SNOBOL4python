@@ -3007,16 +3007,6 @@ static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *nam
 /* RaiseUnexpectedTypeError.proto */
 static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj);
 
-/* SetItemInt.proto */
-#define __Pyx_SetItemInt(o, i, v, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_SetItemInt_Fast(o, (Py_ssize_t)i, v, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list assignment index out of range"), -1) :\
-               __Pyx_SetItemInt_Generic(o, to_py_func(i), v)))
-static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v);
-static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v,
-                                               int is_list, int wraparound, int boundscheck);
-
 /* PyExec.proto */
 static PyObject* __Pyx_PyExec3(PyObject*, PyObject*, PyObject*);
 static CYTHON_INLINE PyObject* __Pyx_PyExec2(PyObject*, PyObject*);
@@ -3389,6 +3379,7 @@ static const char __pyx_k_pi[] = "pi";
 static const char __pyx_k_re[] = "re";
 static const char __pyx_k_1_2[] = "\2701";
 static const char __pyx_k_1_3[] = "\320\004\"\240'\250\022\320+;\2701";
+static const char __pyx_k_4t5[] = "\200\r\210]\230!\2304\230t\2405\250\001";
 static const char __pyx_k_7_1[] = "\320\004\030\230\010\240\013\2507\260!\2601";
 static const char __pyx_k_ANY[] = "ANY(";
 static const char __pyx_k_ARB[] = "ARB()";
@@ -3411,15 +3402,16 @@ static const char __pyx_k__12[] = "])";
 static const char __pyx_k__13[] = " ";
 static const char __pyx_k__14[] = "|";
 static const char __pyx_k__15[] = "..";
-static const char __pyx_k__16[] = "\" ? \"";
-static const char __pyx_k__17[] = "\"";
-static const char __pyx_k__18[] = ".";
-static const char __pyx_k__19[] = "\316\223";
-static const char __pyx_k__20[] = "+";
-static const char __pyx_k__21[] = "-";
-static const char __pyx_k__22[] = "*";
-static const char __pyx_k__23[] = "/";
-static const char __pyx_k__24[] = "?";
+static const char __pyx_k__16[] = "\317\243";
+static const char __pyx_k__17[] = "\" ? \"";
+static const char __pyx_k__18[] = "\"";
+static const char __pyx_k__19[] = ".";
+static const char __pyx_k__20[] = "\316\223";
+static const char __pyx_k__21[] = "+";
+static const char __pyx_k__22[] = "-";
+static const char __pyx_k__23[] = "*";
+static const char __pyx_k__24[] = "/";
+static const char __pyx_k__25[] = "?";
 static const char __pyx_k_a_2[] = "\320\004\"\240'\250\025\320.>\270a";
 static const char __pyx_k_add[] = "__add__";
 static const char __pyx_k_and[] = "__and__";
@@ -3510,6 +3502,7 @@ static const char __pyx_k_POS_2[] = "POS";
 static const char __pyx_k_Pop_2[] = "Pop";
 static const char __pyx_k_REM_2[] = "REM";
 static const char __pyx_k_SIGMA[] = "SIGMA";
+static const char __pyx_k_S_pop[] = "S_pop";
 static const char __pyx_k_Shift[] = "Shift(";
 static const char __pyx_k_TAB_2[] = "TAB";
 static const char __pyx_k_THETA[] = "THETA(";
@@ -3572,6 +3565,7 @@ static const char __pyx_k_SEARCH[] = "SEARCH";
 static const char __pyx_k_SNOBOL[] = "('SNOBOL', ";
 static const char __pyx_k_SPAN_2[] = "SPAN";
 static const char __pyx_k_STRING[] = "STRING";
+static const char __pyx_k_S_push[] = "S_push";
 static const char __pyx_k_append[] = "append";
 static const char __pyx_k_cstack[] = "cstack";
 static const char __pyx_k_cursor[] = "cursor";
@@ -3749,6 +3743,7 @@ static const char __pyx_k_DELTA_gamma[] = "DELTA.gamma";
 static const char __pyx_k_FAIL___init[] = "FAIL.__init__";
 static const char __pyx_k_FAIL___repr[] = "FAIL.__repr__";
 static const char __pyx_k_FENCE_gamma[] = "FENCE.gamma";
+static const char __pyx_k_F_uCq_q_auA[] = "\200\017\210}\230F\240-\250u\260C\260q\270\007\270q\300\006\300a\300u\310A";
 static const char __pyx_k_RPOS___init[] = "RPOS.__init__";
 static const char __pyx_k_RPOS___repr[] = "RPOS.__repr__";
 static const char __pyx_k_RTAB___init[] = "RTAB.__init__";
@@ -3957,32 +3952,32 @@ static const char __pyx_k_llambda_r_backtracking[] = "llambda(%r) backtracking..
 static const char __pyx_k_s_DELTA_r_backtracking[] = "%s = DELTA(%r) backtracking...";
 static const char __pyx_k_Reduce_r_r_backtracking[] = "Reduce(%r, %r) backtracking...";
 static const char __pyx_k_SPAN_r_backtracking_d_d[] = "SPAN(%r) backtracking(%d,%d)...";
+static const char __pyx_k_A_z_rQSSXX_bbccdHOrQRRYY[] = "\200A\330$'\240z\260\021\260'\270\037\310\007\310r\320QS\320SX\320X]\320]b\320bc\320cd\330HO\310r\320QR\320RY\320Y^\320^_\320_`";
 static const char __pyx_k_BREAK_r_backtracking_d_d[] = "BREAK(%r) backtracking(%d,%d)...";
 static const char __pyx_k_LLAMBDA_function_SUCCESS[] = "LLAMBDA(function) SUCCESS";
 static const char __pyx_k_llambda_function_SUCCESS[] = "llambda(function) SUCCESS";
 static const char __pyx_k_sigma_r_backtracking_d_d[] = "sigma(%r) backtracking(%d,%d)...";
 static const char __pyx_k_NOTANY_r_backtracking_d_d[] = "NOTANY(%r) backtracking(%d,%d)...";
 static const char __pyx_k_ABCDEFGHIJKLMNOPQRSTUVWXYZ[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char __pyx_k_A_z_rQRRWWXX_eefHOrQRRWWXX[] = "\200A\330$'\240z\260\021\260'\270\037\310\007\310r\320QR\320RW\320WX\320X`\320`e\320ef\330HO\310r\320QR\320RW\320WX\320X_\320_`";
 static const char __pyx_k_A_z_uTaabbcHOuTVVccddgghhi[] = "\200A\330$'\240z\260\021\260'\270\037\310\007\310u\320Ta\320ab\320bc\330HO\310u\320TV\320Vc\320cd\320dg\320gh\320hi";
 static const char __pyx_k_LLAMBDA_function_evaluating[] = "LLAMBDA(function) evaluating...";
-static const char __pyx_k_A_z_9I_PRRTTYY_ccddeHOrQRRYY[] = "\200A\330$'\240z\260\021\260'\3209I\310\027\320PR\320RT\320TY\320Y^\320^c\320cd\320de\330HO\310r\320QR\320RY\320Y^\320^_\320_`";
 static const char __pyx_k_SEARCH_Exception_r_command_r[] = "SEARCH(): Exception: %r, command: %r";
 static const char __pyx_k_r_Jd_QdR__ffggkkxx_A_A_E_E_F[] = "\320\004\030\230\007\230r\240\037\260\004\260J\270d\300(\310#\310Q\310d\320R_\320_f\320fg\320gk\320kx\320x\360\000\000@\002A\002\360\000\000A\002E\002\360\000\000E\002F\002";
-static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8J_QTTVVZZ[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208J\310'\320QT\320TV\320VZ\320Z_\320_`\330HO\310s\320RS\320SY\320YZ";
 static const char __pyx_k_LLAMBDA_function_backtracking[] = "LLAMBDA(function) backtracking...";
 static const char __pyx_k_SNOBOL4python_SNOBOL4patterns[] = "SNOBOL4python.SNOBOL4patterns";
 static const char __pyx_k_llambda_function_backtracking[] = "llambda(function) backtracking...";
-static const char __pyx_k_I_1_Cq_y_1_7_A_a_WAQ_q_1AS_RuF[] = "\320\000\024\220I\230^\2501\330\004\030\230\004\230C\230q\240\001\330\004\007\200y\220\003\2201\330\010\023\2207\230!\330\004\014\210A\330\004\016\210a\330\004\005\200W\210A\210Q\330\004\010\210\n\220%\220q\230\003\2301\230A\230S\240\001\240\021\330\010\t\330\014\r\210R\210u\220F\230!\2308\2401\330\014\024\220D\230\001\230\021\230&\240\001\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220%\220q\230\002\230/\250\030\260\021\330\014\020\220\013\2301\230B\230b\240\001\330\020\026\220f\230A\320\035-\250Q\330\014\r\330\020\030\230\001\230\027\240\001\330\020\030\230\001\230\034\240Q\330\020\024\220K\230q\240\002\240\"\240A\330\024\027\220z\240\021\240)\2506\260\024\260Q\260i\270q\330\031!\240\021\240*\250G\2601\330\014\023\220=\240\001\330\020\026\220f\230A\320\035E\300S\310\001\330\014\r\330\017\020\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\010\017\210u\220A\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220&\230\001\320\0312\260!\330\014\r\210T\220\021\330\014\r\330\010\017\210}\230A\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220)\2301\320\0347\260q\330\014\r\210T\220\021\330\014\r\330\004\005\200T\210\021\330\004\007\200t\2103\210e\2204\220t\2307\240&\250\001\250\021\250!\330\004\013\2101";
 static const char __pyx_k_PI___deepcopy___locals_genexpr[] = "PI.__deepcopy__.<locals>.genexpr";
 static const char __pyx_k_P_name_0_9_3___0_9A_F_4___0_9A[] = "(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\\.[0-9A-F]{8})";
 static const char __pyx_k_llambda_r_Error_compiling_FAIL[] = "llambda(%r) Error compiling. FAIL";
 static const char __pyx_k_r_Bd_Cq_Qaq_3b_2XYfG_q_AQ_E_aq[] = "\200\001\330\004\007\200r\210\023\210B\210d\220\"\220C\220q\330\010\r\210Q\210a\210q\330\t\013\2103\210b\220\003\2202\220X\230Y\240f\250G\260?\300%\300q\330\010\014\210A\210Q\330\010\014\210E\220\025\220a\220q\330\014\r\210W\220A\220S\230\004\230A\330\010\r\210Q\210a";
-static const char __pyx_k_A_z_9I_PRRSSXXYYaaffgHOrQRRWWXX[] = "\200A\330$'\240z\260\021\260'\3209I\310\027\320PR\320RS\320SX\320XY\320Ya\320af\320fg\330HO\310r\320QR\320RW\320WX\320X_\320_`";
-static const char __pyx_k_A_z_9LGSXXYY___ggllm_31G_uTUUZZ[] = "\200A\330$'\240z\260\021\260'\3209L\310G\320SX\320XY\320Y^\320^_\320_g\320gl\320lm\330)3\2601\260G\270=\310\007\310u\320TU\320UZ\320Z[\320[b\320bc\330HO\310v\320UV\320V[\320[]\320]e\320ef\320fi\320ij\320jk";
+static const char __pyx_k_I_1_Cq_y_1_7_A_a_q_1AS_81_D_q_E[] = "\320\000\024\220I\230^\2501\330\004\030\230\004\230C\230q\240\001\330\004\007\200y\220\003\2201\330\010\023\2207\230!\330\004\014\210A\330\004\016\210a\330\004\010\210\n\220%\220q\230\003\2301\230A\230S\240\001\240\021\330\010\t\330\014\022\220!\2208\2301\330\014\024\220D\230\001\230\021\230&\240\001\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220%\220q\230\002\230/\250\030\260\021\330\014\020\220\013\2301\230B\230b\240\001\330\020\026\220f\230A\320\035-\250Q\330\014\r\330\020\030\230\001\230\027\240\001\330\020\030\230\001\230\034\240Q\330\020\024\220K\230q\240\002\240\"\240A\330\024\027\220z\240\021\240)\2506\260\024\260Q\260i\270q\330\031!\240\021\240*\250G\2601\330\014\023\220=\240\001\330\020\026\220f\230A\320\035E\300S\310\001\330\014\r\330\017\020\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\010\017\210u\220A\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220&\230\001\320\0312\260!\330\014\021\220\021\330\014\r\330\010\017\210}\230A\330\014\017\210q\220\002\220\"\220E\230\025\230a\330\014\022\220)\2301\320\0347\260q\330\014\021\220\021\330\014\r\330\004\t\210\021\330\004\007\200t\2103\210e\2204\220t\2307\240&\250\001\250\021\250!\330\004\013\2101";
 static const char __pyx_k_A_3as_A_ARr_c_Be2XQb_ARr_2R_2RuB[] = "\200A\330\010\t\330\010\013\2103\210a\210s\220\"\220A\330\014\024\220A\220R\220r\230\030\240\025\240c\250\021\250\"\250B\250e\2602\260X\270Q\270b\300\002\300!\330\014\024\220A\220R\220r\230\030\240\021\240!\2402\240R\240{\260!\2602\260R\260u\270B\270f\300C\300q\310\001\310\022\3102\310Q\330\014\030\230\004\230F\240#\240U\250\"\250C\250q\260\001\330\014\030\230\004\230F\240#\240U\250\"\250C\250q\260\001\330\014\023\2202\220T\230\027\240\001\240\030\250\021\250(\260!\2602\260R\260z\300\027\310\001\310\025\310a\310q\330\016\025\220T\230\023\230B\230b\240\002\240\"\240A";
-static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8I_PRRTTXX_HO[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208I\310\027\320PR\320RT\320TX\320X]\320]^\330HO\310r\320QR\320RX\320XY";
-static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8LGSXXZZ_ccdH[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208L\310G\320SX\320XZ\320Z^\320^c\320cd\330HO\310u\320TU\320U[\320[\\";
-static const char __pyx_k_A_z_9LGSXXZZ__ddiijjk_31G_uTUU_a[] = "\200A\330$'\240z\260\021\260'\3209L\310G\320SX\320XZ\320Z_\320_d\320di\320ij\320jk\330)3\2601\260G\270=\310\007\310u\320TU\320U\\\320\\a\320ab\320bc\330HO\310v\320UV\320VY\320YZ\320Z`\320`h\320hi\320ij";
+static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_rQSSWW_HOr[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208H\310\007\310r\320QS\320SW\320W\\\320\\]\330HO\310r\320QR\320RX\320XY";
+static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_sRTTXX_HOs[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208H\310\007\310s\320RT\320TX\320X]\320]^\330HO\310s\320RS\320SY\320YZ";
+static const char __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_uTVVZZ___H[] = "\200A\330$'\240t\250:\260Q\260g\270[\310\010\320PU\320UV\320VY\320YZ\320Z[\330$'\240z\260\021\260&\3208H\310\007\310u\320TV\320VZ\320Z_\320_`\330HO\310u\320TU\320U[\320[\\";
+static const char __pyx_k_A_z_uTUUZZ_cchhi_31G_uTUUZZ_bbcH[] = "\200A\330$'\240z\260\021\260'\270\037\310\007\310u\320TU\320UZ\320Z[\320[c\320ch\320hi\330)3\2601\260G\270=\310\007\310u\320TU\320UZ\320Z[\320[b\320bc\330HO\310v\320UV\320V[\320[]\320]e\320ef\320fi\320ij\320jk";
+static const char __pyx_k_A_z_uTVV_eeffg_31G_uTUU_aabbcHOv[] = "\200A\330$'\240z\260\021\260'\270\037\310\007\310u\320TV\320V[\320[`\320`e\320ef\320fg\330)3\2601\260G\270=\310\007\310u\320TU\320U\\\320\\a\320ab\320bc\330HO\310v\320UV\320VY\320YZ\320Z`\320`h\320hi\320ij";
 static const char __pyx_k_LLAMBDA_function_EXCEPTION_evalu[] = "LLAMBDA(function) EXCEPTION evaluating. (%r) FAIL!";
 static const char __pyx_k_LLAMBDA_r_EXCEPTION_evaluating_r[] = "LLAMBDA(%r) EXCEPTION evaluating. (%r) FAIL!";
 static const char __pyx_k_Note_that_Cython_is_deliberately[] = "Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.";
@@ -4172,11 +4167,13 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_wi
 static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_2format(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_record); /* proto */
 static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL___repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_2__init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_pos, PyObject *__pyx_v_subject); /* proto */
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_g); /* proto */
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_level, PyObject *__pyx_v_window); /* proto */
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10S_push(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pos, PyObject *__pyx_v_subject); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12S_pop(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14GLOBALS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_g); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16TRACE(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_level, PyObject *__pyx_v_window); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18MATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_20FULLMATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_22SEARCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc); /* proto */
 static PyObject *__pyx_tp_new_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct__gamma(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_1_gamma(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_2_gamma(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -4338,8 +4335,8 @@ typedef struct {
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_pop;
   __Pyx_CachedCFunction __pyx_umethod_PyList_Type_pop;
   PyObject *__pyx_tuple[9];
-  PyObject *__pyx_codeobj_tab[188];
-  PyObject *__pyx_string_tab[573];
+  PyObject *__pyx_codeobj_tab[190];
+  PyObject *__pyx_string_tab[576];
   PyObject *__pyx_int_0;
   PyObject *__pyx_int_1;
   PyObject *__pyx_int_2;
@@ -4857,310 +4854,313 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_SUCCESS___repr __pyx_string_tab[266]
 #define __pyx_n_u_SUCCESS_gamma __pyx_string_tab[267]
 #define __pyx_kp_u_S_2 __pyx_string_tab[268]
-#define __pyx_kp_u_Shift __pyx_string_tab[269]
-#define __pyx_n_u_Shift_2 __pyx_string_tab[270]
-#define __pyx_n_u_Shift___deepcopy __pyx_string_tab[271]
-#define __pyx_n_u_Shift___init __pyx_string_tab[272]
-#define __pyx_n_u_Shift___repr __pyx_string_tab[273]
-#define __pyx_n_u_Shift_gamma __pyx_string_tab[274]
-#define __pyx_kp_u_Shift_r_r_SUCCESS __pyx_string_tab[275]
-#define __pyx_kp_u_Shift_r_r_backtracking __pyx_string_tab[276]
-#define __pyx_n_u_StopIteration __pyx_string_tab[277]
-#define __pyx_n_u_StreamHandler __pyx_string_tab[278]
-#define __pyx_kp_u_TAB __pyx_string_tab[279]
-#define __pyx_n_u_TAB_2 __pyx_string_tab[280]
-#define __pyx_n_u_TAB___deepcopy __pyx_string_tab[281]
-#define __pyx_n_u_TAB___init __pyx_string_tab[282]
-#define __pyx_n_u_TAB___repr __pyx_string_tab[283]
-#define __pyx_n_u_TAB_gamma __pyx_string_tab[284]
-#define __pyx_kp_u_THETA __pyx_string_tab[285]
-#define __pyx_n_u_THETA_2 __pyx_string_tab[286]
-#define __pyx_n_u_THETA___deepcopy __pyx_string_tab[287]
-#define __pyx_n_u_THETA___init __pyx_string_tab[288]
-#define __pyx_n_u_THETA___repr __pyx_string_tab[289]
-#define __pyx_n_u_THETA_gamma __pyx_string_tab[290]
-#define __pyx_kp_u_THETA_s_SUCCESS __pyx_string_tab[291]
-#define __pyx_kp_u_THETA_s_backtracking __pyx_string_tab[292]
-#define __pyx_n_u_TRACE __pyx_string_tab[293]
-#define __pyx_n_u_UCASE __pyx_string_tab[294]
-#define __pyx_n_u_V __pyx_string_tab[295]
-#define __pyx_n_u_X __pyx_string_tab[296]
-#define __pyx_kp_u_Yikes_Internal_error __pyx_string_tab[297]
-#define __pyx_kp_u__10 __pyx_string_tab[298]
-#define __pyx_kp_u__11 __pyx_string_tab[299]
-#define __pyx_kp_u__12 __pyx_string_tab[300]
-#define __pyx_kp_u__13 __pyx_string_tab[301]
-#define __pyx_kp_u__14 __pyx_string_tab[302]
-#define __pyx_kp_u__15 __pyx_string_tab[303]
-#define __pyx_kp_u__16 __pyx_string_tab[304]
-#define __pyx_kp_u__17 __pyx_string_tab[305]
-#define __pyx_kp_u__18 __pyx_string_tab[306]
-#define __pyx_n_u__19 __pyx_string_tab[307]
-#define __pyx_kp_u__2 __pyx_string_tab[308]
-#define __pyx_kp_u__20 __pyx_string_tab[309]
-#define __pyx_kp_u__21 __pyx_string_tab[310]
-#define __pyx_kp_u__22 __pyx_string_tab[311]
-#define __pyx_kp_u__23 __pyx_string_tab[312]
-#define __pyx_kp_u__24 __pyx_string_tab[313]
-#define __pyx_kp_u__3 __pyx_string_tab[314]
-#define __pyx_kp_u__4 __pyx_string_tab[315]
-#define __pyx_kp_u__5 __pyx_string_tab[316]
-#define __pyx_kp_u__6 __pyx_string_tab[317]
-#define __pyx_kp_u__7 __pyx_string_tab[318]
-#define __pyx_kp_u__8 __pyx_string_tab[319]
-#define __pyx_kp_u__9 __pyx_string_tab[320]
-#define __pyx_n_u_add __pyx_string_tab[321]
-#define __pyx_n_u_addHandler __pyx_string_tab[322]
-#define __pyx_kp_u_add_note __pyx_string_tab[323]
-#define __pyx_kp_u_alpha __pyx_string_tab[324]
-#define __pyx_n_u_alpha_2 __pyx_string_tab[325]
-#define __pyx_n_u_alpha___init __pyx_string_tab[326]
-#define __pyx_n_u_alpha___repr __pyx_string_tab[327]
-#define __pyx_n_u_alpha_gamma __pyx_string_tab[328]
-#define __pyx_n_u_and __pyx_string_tab[329]
-#define __pyx_n_u_append __pyx_string_tab[330]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[331]
-#define __pyx_n_u_builtins __pyx_string_tab[332]
-#define __pyx_n_u_ch __pyx_string_tab[333]
-#define __pyx_n_u_chars __pyx_string_tab[334]
-#define __pyx_n_u_class_getitem __pyx_string_tab[335]
-#define __pyx_n_u_clear __pyx_string_tab[336]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[337]
-#define __pyx_n_u_close __pyx_string_tab[338]
-#define __pyx_n_u_command __pyx_string_tab[339]
-#define __pyx_n_u_compile __pyx_string_tab[340]
-#define __pyx_n_u_contains __pyx_string_tab[341]
-#define __pyx_n_u_copy __pyx_string_tab[342]
-#define __pyx_n_u_critical __pyx_string_tab[343]
-#define __pyx_n_u_cstack __pyx_string_tab[344]
-#define __pyx_n_u_cursor __pyx_string_tab[345]
-#define __pyx_n_u_debug __pyx_string_tab[346]
-#define __pyx_n_u_deepcopy __pyx_string_tab[347]
-#define __pyx_n_u_deepcopy_2 __pyx_string_tab[348]
-#define __pyx_n_u_delta __pyx_string_tab[349]
-#define __pyx_kp_u_delta_2 __pyx_string_tab[350]
-#define __pyx_n_u_delta___deepcopy __pyx_string_tab[351]
-#define __pyx_n_u_delta___init __pyx_string_tab[352]
-#define __pyx_n_u_delta___repr __pyx_string_tab[353]
-#define __pyx_n_u_delta_gamma __pyx_string_tab[354]
-#define __pyx_kp_u_delta_s_s __pyx_string_tab[355]
-#define __pyx_n_u_depth __pyx_string_tab[356]
-#define __pyx_n_u_dict __pyx_string_tab[357]
-#define __pyx_kp_u_disable __pyx_string_tab[358]
-#define __pyx_n_u_doc __pyx_string_tab[359]
-#define __pyx_n_u_e __pyx_string_tab[360]
-#define __pyx_kp_u_enable __pyx_string_tab[361]
-#define __pyx_n_u_end __pyx_string_tab[362]
-#define __pyx_n_u_endpos __pyx_string_tab[363]
-#define __pyx_kp_u_epsilon __pyx_string_tab[364]
-#define __pyx_n_u_epsilon_2 __pyx_string_tab[365]
-#define __pyx_n_u_epsilon___init __pyx_string_tab[366]
-#define __pyx_n_u_epsilon___repr __pyx_string_tab[367]
-#define __pyx_n_u_epsilon_gamma __pyx_string_tab[368]
-#define __pyx_n_u_eq __pyx_string_tab[369]
-#define __pyx_n_u_error __pyx_string_tab[370]
-#define __pyx_n_u_eval __pyx_string_tab[371]
-#define __pyx_n_u_exc __pyx_string_tab[372]
-#define __pyx_n_u_exec __pyx_string_tab[373]
-#define __pyx_n_u_exit __pyx_string_tab[374]
-#define __pyx_n_u_expression __pyx_string_tab[375]
-#define __pyx_n_u_format __pyx_string_tab[376]
-#define __pyx_n_u_formatted_message __pyx_string_tab[377]
-#define __pyx_n_u_func __pyx_string_tab[378]
-#define __pyx_n_u_g __pyx_string_tab[379]
-#define __pyx_n_u_gamma __pyx_string_tab[380]
-#define __pyx_kp_u_gc __pyx_string_tab[381]
-#define __pyx_n_u_genexpr __pyx_string_tab[382]
-#define __pyx_n_u_getLogger __pyx_string_tab[383]
-#define __pyx_n_u_globals __pyx_string_tab[384]
-#define __pyx_n_u_groupdict __pyx_string_tab[385]
-#define __pyx_n_u_groupindex __pyx_string_tab[386]
-#define __pyx_n_u_handler __pyx_string_tab[387]
-#define __pyx_n_u_handlers __pyx_string_tab[388]
-#define __pyx_n_u_i __pyx_string_tab[389]
-#define __pyx_n_u_info __pyx_string_tab[390]
-#define __pyx_n_u_init __pyx_string_tab[391]
-#define __pyx_n_u_initializing __pyx_string_tab[392]
-#define __pyx_n_u_int __pyx_string_tab[393]
-#define __pyx_n_u_invert __pyx_string_tab[394]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[395]
-#define __pyx_kp_u_isenabled __pyx_string_tab[396]
-#define __pyx_n_u_istack __pyx_string_tab[397]
-#define __pyx_n_u_item __pyx_string_tab[398]
-#define __pyx_n_u_items __pyx_string_tab[399]
-#define __pyx_n_u_itop __pyx_string_tab[400]
-#define __pyx_n_u_lambda __pyx_string_tab[401]
-#define __pyx_n_u_left __pyx_string_tab[402]
-#define __pyx_n_u_level __pyx_string_tab[403]
-#define __pyx_kp_u_llambda __pyx_string_tab[404]
-#define __pyx_n_u_llambda_2 __pyx_string_tab[405]
-#define __pyx_n_u_llambda___deepcopy __pyx_string_tab[406]
-#define __pyx_n_u_llambda___init __pyx_string_tab[407]
-#define __pyx_n_u_llambda___repr __pyx_string_tab[408]
-#define __pyx_kp_u_llambda_function_SUCCESS __pyx_string_tab[409]
-#define __pyx_kp_u_llambda_function_backtracking __pyx_string_tab[410]
-#define __pyx_n_u_llambda_gamma __pyx_string_tab[411]
-#define __pyx_kp_u_llambda_r_Error_compiling_FAIL __pyx_string_tab[412]
-#define __pyx_kp_u_llambda_r_SUCCESS __pyx_string_tab[413]
-#define __pyx_kp_u_llambda_r_backtracking __pyx_string_tab[414]
-#define __pyx_kp_u_llambda_r_compiling __pyx_string_tab[415]
-#define __pyx_n_u_logger __pyx_string_tab[416]
-#define __pyx_n_u_logging __pyx_string_tab[417]
-#define __pyx_n_u_lyst __pyx_string_tab[418]
-#define __pyx_n_u_main __pyx_string_tab[419]
-#define __pyx_n_u_match __pyx_string_tab[420]
-#define __pyx_n_u_matches __pyx_string_tab[421]
-#define __pyx_n_u_matmul __pyx_string_tab[422]
-#define __pyx_n_u_memo __pyx_string_tab[423]
-#define __pyx_kp_u_message_s __pyx_string_tab[424]
-#define __pyx_n_u_metaclass __pyx_string_tab[425]
-#define __pyx_n_u_mod __pyx_string_tab[426]
-#define __pyx_n_u_module __pyx_string_tab[427]
-#define __pyx_n_u_mro_entries __pyx_string_tab[428]
-#define __pyx_n_u_n __pyx_string_tab[429]
-#define __pyx_kp_u_nInc __pyx_string_tab[430]
-#define __pyx_n_u_nInc_2 __pyx_string_tab[431]
-#define __pyx_kp_u_nInc_SUCCESS __pyx_string_tab[432]
-#define __pyx_n_u_nInc___init __pyx_string_tab[433]
-#define __pyx_n_u_nInc___repr __pyx_string_tab[434]
-#define __pyx_kp_u_nInc_backtracking __pyx_string_tab[435]
-#define __pyx_n_u_nInc_gamma __pyx_string_tab[436]
-#define __pyx_kp_u_nPop __pyx_string_tab[437]
-#define __pyx_n_u_nPop_2 __pyx_string_tab[438]
-#define __pyx_kp_u_nPop_SUCCESS __pyx_string_tab[439]
-#define __pyx_n_u_nPop___init __pyx_string_tab[440]
-#define __pyx_n_u_nPop___repr __pyx_string_tab[441]
-#define __pyx_kp_u_nPop_backtracking __pyx_string_tab[442]
-#define __pyx_n_u_nPop_gamma __pyx_string_tab[443]
-#define __pyx_kp_u_nPush __pyx_string_tab[444]
-#define __pyx_n_u_nPush_2 __pyx_string_tab[445]
-#define __pyx_kp_u_nPush_SUCCESS __pyx_string_tab[446]
-#define __pyx_n_u_nPush___init __pyx_string_tab[447]
-#define __pyx_n_u_nPush___repr __pyx_string_tab[448]
-#define __pyx_kp_u_nPush_backtracking __pyx_string_tab[449]
-#define __pyx_n_u_nPush_gamma __pyx_string_tab[450]
-#define __pyx_n_u_name __pyx_string_tab[451]
-#define __pyx_n_u_name_2 __pyx_string_tab[452]
-#define __pyx_n_u_nest __pyx_string_tab[453]
-#define __pyx_n_u_next __pyx_string_tab[454]
-#define __pyx_n_u_nl __pyx_string_tab[455]
-#define __pyx_n_u_object __pyx_string_tab[456]
-#define __pyx_kp_u_omega __pyx_string_tab[457]
-#define __pyx_n_u_omega_2 __pyx_string_tab[458]
-#define __pyx_n_u_omega___init __pyx_string_tab[459]
-#define __pyx_n_u_omega___repr __pyx_string_tab[460]
-#define __pyx_n_u_omega_gamma __pyx_string_tab[461]
-#define __pyx_n_u_or __pyx_string_tab[462]
-#define __pyx_n_u_original_message __pyx_string_tab[463]
-#define __pyx_n_u_other __pyx_string_tab[464]
-#define __pyx_n_u_pad_left __pyx_string_tab[465]
-#define __pyx_n_u_pad_right __pyx_string_tab[466]
-#define __pyx_n_u_pformat __pyx_string_tab[467]
-#define __pyx_kp_u_phi __pyx_string_tab[468]
-#define __pyx_n_u_phi_2 __pyx_string_tab[469]
-#define __pyx_n_u_phi___deepcopy __pyx_string_tab[470]
-#define __pyx_n_u_phi___init __pyx_string_tab[471]
-#define __pyx_n_u_phi___repr __pyx_string_tab[472]
-#define __pyx_n_u_phi_gamma __pyx_string_tab[473]
-#define __pyx_n_u_pi __pyx_string_tab[474]
-#define __pyx_kp_u_pi_2 __pyx_string_tab[475]
-#define __pyx_n_u_pi___deepcopy __pyx_string_tab[476]
-#define __pyx_n_u_pi___init __pyx_string_tab[477]
-#define __pyx_n_u_pi___repr __pyx_string_tab[478]
-#define __pyx_n_u_pi_gamma __pyx_string_tab[479]
-#define __pyx_n_u_pop __pyx_string_tab[480]
-#define __pyx_n_u_pop_2 __pyx_string_tab[481]
-#define __pyx_n_u_pos __pyx_string_tab[482]
-#define __pyx_n_u_pos0 __pyx_string_tab[483]
-#define __pyx_n_u_pos1 __pyx_string_tab[484]
-#define __pyx_n_u_pprint __pyx_string_tab[485]
-#define __pyx_n_u_prepare __pyx_string_tab[486]
-#define __pyx_n_u_print __pyx_string_tab[487]
-#define __pyx_kp_u_print_1_subject __pyx_string_tab[488]
-#define __pyx_n_u_propagate __pyx_string_tab[489]
-#define __pyx_n_u_push __pyx_string_tab[490]
-#define __pyx_n_u_push_count __pyx_string_tab[491]
-#define __pyx_n_u_qualname __pyx_string_tab[492]
-#define __pyx_n_u_radd __pyx_string_tab[493]
-#define __pyx_n_u_range __pyx_string_tab[494]
-#define __pyx_n_u_re __pyx_string_tab[495]
-#define __pyx_n_u_record __pyx_string_tab[496]
-#define __pyx_n_u_reduce __pyx_string_tab[497]
-#define __pyx_n_u_reduce_2 __pyx_string_tab[498]
-#define __pyx_n_u_repr __pyx_string_tab[499]
-#define __pyx_n_u_return __pyx_string_tab[500]
-#define __pyx_n_u_rex __pyx_string_tab[501]
-#define __pyx_n_u_rexs __pyx_string_tab[502]
-#define __pyx_n_u_rho __pyx_string_tab[503]
-#define __pyx_kp_u_rho_0 __pyx_string_tab[504]
-#define __pyx_n_u_rho___deepcopy __pyx_string_tab[505]
-#define __pyx_n_u_rho___init __pyx_string_tab[506]
-#define __pyx_n_u_rho___repr __pyx_string_tab[507]
-#define __pyx_n_u_rho_gamma __pyx_string_tab[508]
-#define __pyx_n_u_right __pyx_string_tab[509]
-#define __pyx_n_u_s __pyx_string_tab[510]
-#define __pyx_kp_u_s_DELTA_r_SUCCESS __pyx_string_tab[511]
-#define __pyx_kp_u_s_DELTA_r_backtracking __pyx_string_tab[512]
-#define __pyx_kp_u_s_delta_r __pyx_string_tab[513]
-#define __pyx_n_u_self __pyx_string_tab[514]
-#define __pyx_n_u_send __pyx_string_tab[515]
-#define __pyx_n_u_setFormatter __pyx_string_tab[516]
-#define __pyx_n_u_setLevel __pyx_string_tab[517]
-#define __pyx_n_u_shift __pyx_string_tab[518]
-#define __pyx_n_u_shift_2 __pyx_string_tab[519]
-#define __pyx_n_u_sigma __pyx_string_tab[520]
-#define __pyx_kp_u_sigma_2 __pyx_string_tab[521]
-#define __pyx_n_u_sigma___deepcopy __pyx_string_tab[522]
-#define __pyx_n_u_sigma___init __pyx_string_tab[523]
-#define __pyx_n_u_sigma___repr __pyx_string_tab[524]
-#define __pyx_n_u_sigma_gamma __pyx_string_tab[525]
-#define __pyx_kp_u_sigma_r_SUCCESS_d_d __pyx_string_tab[526]
-#define __pyx_kp_u_sigma_r_backtracking_d_d __pyx_string_tab[527]
-#define __pyx_kp_u_sigma_r_trying_d __pyx_string_tab[528]
-#define __pyx_n_u_size __pyx_string_tab[529]
-#define __pyx_n_u_slice __pyx_string_tab[530]
-#define __pyx_n_u_slots __pyx_string_tab[531]
-#define __pyx_n_u_slyce __pyx_string_tab[532]
-#define __pyx_n_u_snoExprList __pyx_string_tab[533]
-#define __pyx_n_u_span __pyx_string_tab[534]
-#define __pyx_n_u_spec __pyx_string_tab[535]
-#define __pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern __pyx_string_tab[536]
-#define __pyx_n_u_start __pyx_string_tab[537]
-#define __pyx_n_u_stop __pyx_string_tab[538]
-#define __pyx_n_u_str __pyx_string_tab[539]
-#define __pyx_kp_u_string __pyx_string_tab[540]
-#define __pyx_n_u_subject __pyx_string_tab[541]
-#define __pyx_n_u_super __pyx_string_tab[542]
-#define __pyx_n_u_t __pyx_string_tab[543]
-#define __pyx_n_u_test __pyx_string_tab[544]
-#define __pyx_kp_u_theta __pyx_string_tab[545]
-#define __pyx_n_u_theta_2 __pyx_string_tab[546]
-#define __pyx_n_u_theta___deepcopy __pyx_string_tab[547]
-#define __pyx_n_u_theta___init __pyx_string_tab[548]
-#define __pyx_n_u_theta___repr __pyx_string_tab[549]
-#define __pyx_n_u_theta_gamma __pyx_string_tab[550]
-#define __pyx_kp_u_theta_s_SUCCESS __pyx_string_tab[551]
-#define __pyx_kp_u_theta_s_backtracking __pyx_string_tab[552]
-#define __pyx_n_u_throw __pyx_string_tab[553]
-#define __pyx_n_u_v __pyx_string_tab[554]
-#define __pyx_n_u_value __pyx_string_tab[555]
-#define __pyx_n_u_vstack __pyx_string_tab[556]
-#define __pyx_n_u_warning __pyx_string_tab[557]
-#define __pyx_n_u_window __pyx_string_tab[558]
-#define __pyx_n_u_window_size __pyx_string_tab[559]
-#define __pyx_n_u_x __pyx_string_tab[560]
-#define __pyx_kp_u_x_y_z __pyx_string_tab[561]
-#define __pyx_kp_u_x_y_z_2 __pyx_string_tab[562]
-#define __pyx_kp_u_x_y_z_3 __pyx_string_tab[563]
-#define __pyx_n_u_xor __pyx_string_tab[564]
-#define __pyx_n_u_y __pyx_string_tab[565]
-#define __pyx_n_u_z __pyx_string_tab[566]
-#define __pyx_kp_u_zeta __pyx_string_tab[567]
-#define __pyx_n_u_zeta_2 __pyx_string_tab[568]
-#define __pyx_n_u_zeta___deepcopy __pyx_string_tab[569]
-#define __pyx_n_u_zeta___init __pyx_string_tab[570]
-#define __pyx_n_u_zeta___repr __pyx_string_tab[571]
-#define __pyx_n_u_zeta_gamma __pyx_string_tab[572]
+#define __pyx_n_u_S_pop __pyx_string_tab[269]
+#define __pyx_n_u_S_push __pyx_string_tab[270]
+#define __pyx_kp_u_Shift __pyx_string_tab[271]
+#define __pyx_n_u_Shift_2 __pyx_string_tab[272]
+#define __pyx_n_u_Shift___deepcopy __pyx_string_tab[273]
+#define __pyx_n_u_Shift___init __pyx_string_tab[274]
+#define __pyx_n_u_Shift___repr __pyx_string_tab[275]
+#define __pyx_n_u_Shift_gamma __pyx_string_tab[276]
+#define __pyx_kp_u_Shift_r_r_SUCCESS __pyx_string_tab[277]
+#define __pyx_kp_u_Shift_r_r_backtracking __pyx_string_tab[278]
+#define __pyx_n_u_StopIteration __pyx_string_tab[279]
+#define __pyx_n_u_StreamHandler __pyx_string_tab[280]
+#define __pyx_kp_u_TAB __pyx_string_tab[281]
+#define __pyx_n_u_TAB_2 __pyx_string_tab[282]
+#define __pyx_n_u_TAB___deepcopy __pyx_string_tab[283]
+#define __pyx_n_u_TAB___init __pyx_string_tab[284]
+#define __pyx_n_u_TAB___repr __pyx_string_tab[285]
+#define __pyx_n_u_TAB_gamma __pyx_string_tab[286]
+#define __pyx_kp_u_THETA __pyx_string_tab[287]
+#define __pyx_n_u_THETA_2 __pyx_string_tab[288]
+#define __pyx_n_u_THETA___deepcopy __pyx_string_tab[289]
+#define __pyx_n_u_THETA___init __pyx_string_tab[290]
+#define __pyx_n_u_THETA___repr __pyx_string_tab[291]
+#define __pyx_n_u_THETA_gamma __pyx_string_tab[292]
+#define __pyx_kp_u_THETA_s_SUCCESS __pyx_string_tab[293]
+#define __pyx_kp_u_THETA_s_backtracking __pyx_string_tab[294]
+#define __pyx_n_u_TRACE __pyx_string_tab[295]
+#define __pyx_n_u_UCASE __pyx_string_tab[296]
+#define __pyx_n_u_V __pyx_string_tab[297]
+#define __pyx_n_u_X __pyx_string_tab[298]
+#define __pyx_kp_u_Yikes_Internal_error __pyx_string_tab[299]
+#define __pyx_kp_u__10 __pyx_string_tab[300]
+#define __pyx_kp_u__11 __pyx_string_tab[301]
+#define __pyx_kp_u__12 __pyx_string_tab[302]
+#define __pyx_kp_u__13 __pyx_string_tab[303]
+#define __pyx_kp_u__14 __pyx_string_tab[304]
+#define __pyx_kp_u__15 __pyx_string_tab[305]
+#define __pyx_n_u__16 __pyx_string_tab[306]
+#define __pyx_kp_u__17 __pyx_string_tab[307]
+#define __pyx_kp_u__18 __pyx_string_tab[308]
+#define __pyx_kp_u__19 __pyx_string_tab[309]
+#define __pyx_kp_u__2 __pyx_string_tab[310]
+#define __pyx_n_u__20 __pyx_string_tab[311]
+#define __pyx_kp_u__21 __pyx_string_tab[312]
+#define __pyx_kp_u__22 __pyx_string_tab[313]
+#define __pyx_kp_u__23 __pyx_string_tab[314]
+#define __pyx_kp_u__24 __pyx_string_tab[315]
+#define __pyx_kp_u__25 __pyx_string_tab[316]
+#define __pyx_kp_u__3 __pyx_string_tab[317]
+#define __pyx_kp_u__4 __pyx_string_tab[318]
+#define __pyx_kp_u__5 __pyx_string_tab[319]
+#define __pyx_kp_u__6 __pyx_string_tab[320]
+#define __pyx_kp_u__7 __pyx_string_tab[321]
+#define __pyx_kp_u__8 __pyx_string_tab[322]
+#define __pyx_kp_u__9 __pyx_string_tab[323]
+#define __pyx_n_u_add __pyx_string_tab[324]
+#define __pyx_n_u_addHandler __pyx_string_tab[325]
+#define __pyx_kp_u_add_note __pyx_string_tab[326]
+#define __pyx_kp_u_alpha __pyx_string_tab[327]
+#define __pyx_n_u_alpha_2 __pyx_string_tab[328]
+#define __pyx_n_u_alpha___init __pyx_string_tab[329]
+#define __pyx_n_u_alpha___repr __pyx_string_tab[330]
+#define __pyx_n_u_alpha_gamma __pyx_string_tab[331]
+#define __pyx_n_u_and __pyx_string_tab[332]
+#define __pyx_n_u_append __pyx_string_tab[333]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[334]
+#define __pyx_n_u_builtins __pyx_string_tab[335]
+#define __pyx_n_u_ch __pyx_string_tab[336]
+#define __pyx_n_u_chars __pyx_string_tab[337]
+#define __pyx_n_u_class_getitem __pyx_string_tab[338]
+#define __pyx_n_u_clear __pyx_string_tab[339]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[340]
+#define __pyx_n_u_close __pyx_string_tab[341]
+#define __pyx_n_u_command __pyx_string_tab[342]
+#define __pyx_n_u_compile __pyx_string_tab[343]
+#define __pyx_n_u_contains __pyx_string_tab[344]
+#define __pyx_n_u_copy __pyx_string_tab[345]
+#define __pyx_n_u_critical __pyx_string_tab[346]
+#define __pyx_n_u_cstack __pyx_string_tab[347]
+#define __pyx_n_u_cursor __pyx_string_tab[348]
+#define __pyx_n_u_debug __pyx_string_tab[349]
+#define __pyx_n_u_deepcopy __pyx_string_tab[350]
+#define __pyx_n_u_deepcopy_2 __pyx_string_tab[351]
+#define __pyx_n_u_delta __pyx_string_tab[352]
+#define __pyx_kp_u_delta_2 __pyx_string_tab[353]
+#define __pyx_n_u_delta___deepcopy __pyx_string_tab[354]
+#define __pyx_n_u_delta___init __pyx_string_tab[355]
+#define __pyx_n_u_delta___repr __pyx_string_tab[356]
+#define __pyx_n_u_delta_gamma __pyx_string_tab[357]
+#define __pyx_kp_u_delta_s_s __pyx_string_tab[358]
+#define __pyx_n_u_depth __pyx_string_tab[359]
+#define __pyx_n_u_dict __pyx_string_tab[360]
+#define __pyx_kp_u_disable __pyx_string_tab[361]
+#define __pyx_n_u_doc __pyx_string_tab[362]
+#define __pyx_n_u_e __pyx_string_tab[363]
+#define __pyx_kp_u_enable __pyx_string_tab[364]
+#define __pyx_n_u_end __pyx_string_tab[365]
+#define __pyx_n_u_endpos __pyx_string_tab[366]
+#define __pyx_kp_u_epsilon __pyx_string_tab[367]
+#define __pyx_n_u_epsilon_2 __pyx_string_tab[368]
+#define __pyx_n_u_epsilon___init __pyx_string_tab[369]
+#define __pyx_n_u_epsilon___repr __pyx_string_tab[370]
+#define __pyx_n_u_epsilon_gamma __pyx_string_tab[371]
+#define __pyx_n_u_eq __pyx_string_tab[372]
+#define __pyx_n_u_error __pyx_string_tab[373]
+#define __pyx_n_u_eval __pyx_string_tab[374]
+#define __pyx_n_u_exc __pyx_string_tab[375]
+#define __pyx_n_u_exec __pyx_string_tab[376]
+#define __pyx_n_u_exit __pyx_string_tab[377]
+#define __pyx_n_u_expression __pyx_string_tab[378]
+#define __pyx_n_u_format __pyx_string_tab[379]
+#define __pyx_n_u_formatted_message __pyx_string_tab[380]
+#define __pyx_n_u_func __pyx_string_tab[381]
+#define __pyx_n_u_g __pyx_string_tab[382]
+#define __pyx_n_u_gamma __pyx_string_tab[383]
+#define __pyx_kp_u_gc __pyx_string_tab[384]
+#define __pyx_n_u_genexpr __pyx_string_tab[385]
+#define __pyx_n_u_getLogger __pyx_string_tab[386]
+#define __pyx_n_u_globals __pyx_string_tab[387]
+#define __pyx_n_u_groupdict __pyx_string_tab[388]
+#define __pyx_n_u_groupindex __pyx_string_tab[389]
+#define __pyx_n_u_handler __pyx_string_tab[390]
+#define __pyx_n_u_handlers __pyx_string_tab[391]
+#define __pyx_n_u_i __pyx_string_tab[392]
+#define __pyx_n_u_info __pyx_string_tab[393]
+#define __pyx_n_u_init __pyx_string_tab[394]
+#define __pyx_n_u_initializing __pyx_string_tab[395]
+#define __pyx_n_u_int __pyx_string_tab[396]
+#define __pyx_n_u_invert __pyx_string_tab[397]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[398]
+#define __pyx_kp_u_isenabled __pyx_string_tab[399]
+#define __pyx_n_u_istack __pyx_string_tab[400]
+#define __pyx_n_u_item __pyx_string_tab[401]
+#define __pyx_n_u_items __pyx_string_tab[402]
+#define __pyx_n_u_itop __pyx_string_tab[403]
+#define __pyx_n_u_lambda __pyx_string_tab[404]
+#define __pyx_n_u_left __pyx_string_tab[405]
+#define __pyx_n_u_level __pyx_string_tab[406]
+#define __pyx_kp_u_llambda __pyx_string_tab[407]
+#define __pyx_n_u_llambda_2 __pyx_string_tab[408]
+#define __pyx_n_u_llambda___deepcopy __pyx_string_tab[409]
+#define __pyx_n_u_llambda___init __pyx_string_tab[410]
+#define __pyx_n_u_llambda___repr __pyx_string_tab[411]
+#define __pyx_kp_u_llambda_function_SUCCESS __pyx_string_tab[412]
+#define __pyx_kp_u_llambda_function_backtracking __pyx_string_tab[413]
+#define __pyx_n_u_llambda_gamma __pyx_string_tab[414]
+#define __pyx_kp_u_llambda_r_Error_compiling_FAIL __pyx_string_tab[415]
+#define __pyx_kp_u_llambda_r_SUCCESS __pyx_string_tab[416]
+#define __pyx_kp_u_llambda_r_backtracking __pyx_string_tab[417]
+#define __pyx_kp_u_llambda_r_compiling __pyx_string_tab[418]
+#define __pyx_n_u_logger __pyx_string_tab[419]
+#define __pyx_n_u_logging __pyx_string_tab[420]
+#define __pyx_n_u_lyst __pyx_string_tab[421]
+#define __pyx_n_u_main __pyx_string_tab[422]
+#define __pyx_n_u_match __pyx_string_tab[423]
+#define __pyx_n_u_matches __pyx_string_tab[424]
+#define __pyx_n_u_matmul __pyx_string_tab[425]
+#define __pyx_n_u_memo __pyx_string_tab[426]
+#define __pyx_kp_u_message_s __pyx_string_tab[427]
+#define __pyx_n_u_metaclass __pyx_string_tab[428]
+#define __pyx_n_u_mod __pyx_string_tab[429]
+#define __pyx_n_u_module __pyx_string_tab[430]
+#define __pyx_n_u_mro_entries __pyx_string_tab[431]
+#define __pyx_n_u_n __pyx_string_tab[432]
+#define __pyx_kp_u_nInc __pyx_string_tab[433]
+#define __pyx_n_u_nInc_2 __pyx_string_tab[434]
+#define __pyx_kp_u_nInc_SUCCESS __pyx_string_tab[435]
+#define __pyx_n_u_nInc___init __pyx_string_tab[436]
+#define __pyx_n_u_nInc___repr __pyx_string_tab[437]
+#define __pyx_kp_u_nInc_backtracking __pyx_string_tab[438]
+#define __pyx_n_u_nInc_gamma __pyx_string_tab[439]
+#define __pyx_kp_u_nPop __pyx_string_tab[440]
+#define __pyx_n_u_nPop_2 __pyx_string_tab[441]
+#define __pyx_kp_u_nPop_SUCCESS __pyx_string_tab[442]
+#define __pyx_n_u_nPop___init __pyx_string_tab[443]
+#define __pyx_n_u_nPop___repr __pyx_string_tab[444]
+#define __pyx_kp_u_nPop_backtracking __pyx_string_tab[445]
+#define __pyx_n_u_nPop_gamma __pyx_string_tab[446]
+#define __pyx_kp_u_nPush __pyx_string_tab[447]
+#define __pyx_n_u_nPush_2 __pyx_string_tab[448]
+#define __pyx_kp_u_nPush_SUCCESS __pyx_string_tab[449]
+#define __pyx_n_u_nPush___init __pyx_string_tab[450]
+#define __pyx_n_u_nPush___repr __pyx_string_tab[451]
+#define __pyx_kp_u_nPush_backtracking __pyx_string_tab[452]
+#define __pyx_n_u_nPush_gamma __pyx_string_tab[453]
+#define __pyx_n_u_name __pyx_string_tab[454]
+#define __pyx_n_u_name_2 __pyx_string_tab[455]
+#define __pyx_n_u_nest __pyx_string_tab[456]
+#define __pyx_n_u_next __pyx_string_tab[457]
+#define __pyx_n_u_nl __pyx_string_tab[458]
+#define __pyx_n_u_object __pyx_string_tab[459]
+#define __pyx_kp_u_omega __pyx_string_tab[460]
+#define __pyx_n_u_omega_2 __pyx_string_tab[461]
+#define __pyx_n_u_omega___init __pyx_string_tab[462]
+#define __pyx_n_u_omega___repr __pyx_string_tab[463]
+#define __pyx_n_u_omega_gamma __pyx_string_tab[464]
+#define __pyx_n_u_or __pyx_string_tab[465]
+#define __pyx_n_u_original_message __pyx_string_tab[466]
+#define __pyx_n_u_other __pyx_string_tab[467]
+#define __pyx_n_u_pad_left __pyx_string_tab[468]
+#define __pyx_n_u_pad_right __pyx_string_tab[469]
+#define __pyx_n_u_pformat __pyx_string_tab[470]
+#define __pyx_kp_u_phi __pyx_string_tab[471]
+#define __pyx_n_u_phi_2 __pyx_string_tab[472]
+#define __pyx_n_u_phi___deepcopy __pyx_string_tab[473]
+#define __pyx_n_u_phi___init __pyx_string_tab[474]
+#define __pyx_n_u_phi___repr __pyx_string_tab[475]
+#define __pyx_n_u_phi_gamma __pyx_string_tab[476]
+#define __pyx_n_u_pi __pyx_string_tab[477]
+#define __pyx_kp_u_pi_2 __pyx_string_tab[478]
+#define __pyx_n_u_pi___deepcopy __pyx_string_tab[479]
+#define __pyx_n_u_pi___init __pyx_string_tab[480]
+#define __pyx_n_u_pi___repr __pyx_string_tab[481]
+#define __pyx_n_u_pi_gamma __pyx_string_tab[482]
+#define __pyx_n_u_pop __pyx_string_tab[483]
+#define __pyx_n_u_pop_2 __pyx_string_tab[484]
+#define __pyx_n_u_pos __pyx_string_tab[485]
+#define __pyx_n_u_pos0 __pyx_string_tab[486]
+#define __pyx_n_u_pos1 __pyx_string_tab[487]
+#define __pyx_n_u_pprint __pyx_string_tab[488]
+#define __pyx_n_u_prepare __pyx_string_tab[489]
+#define __pyx_n_u_print __pyx_string_tab[490]
+#define __pyx_kp_u_print_1_subject __pyx_string_tab[491]
+#define __pyx_n_u_propagate __pyx_string_tab[492]
+#define __pyx_n_u_push __pyx_string_tab[493]
+#define __pyx_n_u_push_count __pyx_string_tab[494]
+#define __pyx_n_u_qualname __pyx_string_tab[495]
+#define __pyx_n_u_radd __pyx_string_tab[496]
+#define __pyx_n_u_range __pyx_string_tab[497]
+#define __pyx_n_u_re __pyx_string_tab[498]
+#define __pyx_n_u_record __pyx_string_tab[499]
+#define __pyx_n_u_reduce __pyx_string_tab[500]
+#define __pyx_n_u_reduce_2 __pyx_string_tab[501]
+#define __pyx_n_u_repr __pyx_string_tab[502]
+#define __pyx_n_u_return __pyx_string_tab[503]
+#define __pyx_n_u_rex __pyx_string_tab[504]
+#define __pyx_n_u_rexs __pyx_string_tab[505]
+#define __pyx_n_u_rho __pyx_string_tab[506]
+#define __pyx_kp_u_rho_0 __pyx_string_tab[507]
+#define __pyx_n_u_rho___deepcopy __pyx_string_tab[508]
+#define __pyx_n_u_rho___init __pyx_string_tab[509]
+#define __pyx_n_u_rho___repr __pyx_string_tab[510]
+#define __pyx_n_u_rho_gamma __pyx_string_tab[511]
+#define __pyx_n_u_right __pyx_string_tab[512]
+#define __pyx_n_u_s __pyx_string_tab[513]
+#define __pyx_kp_u_s_DELTA_r_SUCCESS __pyx_string_tab[514]
+#define __pyx_kp_u_s_DELTA_r_backtracking __pyx_string_tab[515]
+#define __pyx_kp_u_s_delta_r __pyx_string_tab[516]
+#define __pyx_n_u_self __pyx_string_tab[517]
+#define __pyx_n_u_send __pyx_string_tab[518]
+#define __pyx_n_u_setFormatter __pyx_string_tab[519]
+#define __pyx_n_u_setLevel __pyx_string_tab[520]
+#define __pyx_n_u_shift __pyx_string_tab[521]
+#define __pyx_n_u_shift_2 __pyx_string_tab[522]
+#define __pyx_n_u_sigma __pyx_string_tab[523]
+#define __pyx_kp_u_sigma_2 __pyx_string_tab[524]
+#define __pyx_n_u_sigma___deepcopy __pyx_string_tab[525]
+#define __pyx_n_u_sigma___init __pyx_string_tab[526]
+#define __pyx_n_u_sigma___repr __pyx_string_tab[527]
+#define __pyx_n_u_sigma_gamma __pyx_string_tab[528]
+#define __pyx_kp_u_sigma_r_SUCCESS_d_d __pyx_string_tab[529]
+#define __pyx_kp_u_sigma_r_backtracking_d_d __pyx_string_tab[530]
+#define __pyx_kp_u_sigma_r_trying_d __pyx_string_tab[531]
+#define __pyx_n_u_size __pyx_string_tab[532]
+#define __pyx_n_u_slice __pyx_string_tab[533]
+#define __pyx_n_u_slots __pyx_string_tab[534]
+#define __pyx_n_u_slyce __pyx_string_tab[535]
+#define __pyx_n_u_snoExprList __pyx_string_tab[536]
+#define __pyx_n_u_span __pyx_string_tab[537]
+#define __pyx_n_u_spec __pyx_string_tab[538]
+#define __pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern __pyx_string_tab[539]
+#define __pyx_n_u_start __pyx_string_tab[540]
+#define __pyx_n_u_stop __pyx_string_tab[541]
+#define __pyx_n_u_str __pyx_string_tab[542]
+#define __pyx_kp_u_string __pyx_string_tab[543]
+#define __pyx_n_u_subject __pyx_string_tab[544]
+#define __pyx_n_u_super __pyx_string_tab[545]
+#define __pyx_n_u_t __pyx_string_tab[546]
+#define __pyx_n_u_test __pyx_string_tab[547]
+#define __pyx_kp_u_theta __pyx_string_tab[548]
+#define __pyx_n_u_theta_2 __pyx_string_tab[549]
+#define __pyx_n_u_theta___deepcopy __pyx_string_tab[550]
+#define __pyx_n_u_theta___init __pyx_string_tab[551]
+#define __pyx_n_u_theta___repr __pyx_string_tab[552]
+#define __pyx_n_u_theta_gamma __pyx_string_tab[553]
+#define __pyx_kp_u_theta_s_SUCCESS __pyx_string_tab[554]
+#define __pyx_kp_u_theta_s_backtracking __pyx_string_tab[555]
+#define __pyx_n_u_throw __pyx_string_tab[556]
+#define __pyx_n_u_v __pyx_string_tab[557]
+#define __pyx_n_u_value __pyx_string_tab[558]
+#define __pyx_n_u_vstack __pyx_string_tab[559]
+#define __pyx_n_u_warning __pyx_string_tab[560]
+#define __pyx_n_u_window __pyx_string_tab[561]
+#define __pyx_n_u_window_size __pyx_string_tab[562]
+#define __pyx_n_u_x __pyx_string_tab[563]
+#define __pyx_kp_u_x_y_z __pyx_string_tab[564]
+#define __pyx_kp_u_x_y_z_2 __pyx_string_tab[565]
+#define __pyx_kp_u_x_y_z_3 __pyx_string_tab[566]
+#define __pyx_n_u_xor __pyx_string_tab[567]
+#define __pyx_n_u_y __pyx_string_tab[568]
+#define __pyx_n_u_z __pyx_string_tab[569]
+#define __pyx_kp_u_zeta __pyx_string_tab[570]
+#define __pyx_n_u_zeta_2 __pyx_string_tab[571]
+#define __pyx_n_u_zeta___deepcopy __pyx_string_tab[572]
+#define __pyx_n_u_zeta___init __pyx_string_tab[573]
+#define __pyx_n_u_zeta___repr __pyx_string_tab[574]
+#define __pyx_n_u_zeta_gamma __pyx_string_tab[575]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
 static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
@@ -5262,8 +5262,8 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_39_gamma);
   Py_CLEAR(clear_module_state->__pyx_type_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_39_gamma);
   for (int i=0; i<9; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<188; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<573; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<190; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<576; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_int_1);
   Py_CLEAR(clear_module_state->__pyx_int_2);
@@ -5374,8 +5374,8 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_39_gamma);
   Py_VISIT(traverse_module_state->__pyx_type_13SNOBOL4python_15SNOBOL4patterns___pyx_scope_struct_39_gamma);
   for (int i=0; i<9; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<188; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<573; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<190; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<576; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_0);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_1);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_2);
@@ -5390,7 +5390,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
 #endif
 /* #### Code section: module_code ### */
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":848
+/* "SNOBOL4python/SNOBOL4patterns.pyx":851
  *     S = None
  *     N = None
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))             # <<<<<<<<<<<<<<
@@ -5399,9 +5399,9 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_20lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_20lambda2 = {"lambda2", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_20lambda2, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_20lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_24lambda2 = {"lambda2", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda2, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5430,20 +5430,20 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda2(
   __Pyx_RefNannySetupContext("lambda2", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_Globals(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Globals(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyNumber_Int(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyNumber_Int(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_7 = 1;
@@ -5464,7 +5464,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda2(
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
@@ -5487,7 +5487,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda2(
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":849
+/* "SNOBOL4python/SNOBOL4patterns.pyx":852
  *     N = None
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))             # <<<<<<<<<<<<<<
@@ -5496,9 +5496,9 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda2(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21lambda3(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_21lambda3 = {"lambda3", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21lambda3, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21lambda3(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda3(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_25lambda3 = {"lambda3", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda3, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda3(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5526,14 +5526,14 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda3(
   __Pyx_RefNannySetupContext("lambda3", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 849, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 849, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 849, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyNumber_Int(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 849, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyNumber_Int(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 852, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_6 = 1;
@@ -5554,7 +5554,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda3(
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 849, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 852, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
@@ -5576,7 +5576,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda3(
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":851
+/* "SNOBOL4python/SNOBOL4patterns.pyx":854
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))             # <<<<<<<<<<<<<<
@@ -5585,9 +5585,9 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda3(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_22lambda4(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_22lambda4 = {"lambda4", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_22lambda4, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_22lambda4(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda4(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_26lambda4 = {"lambda4", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda4, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda4(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -5616,306 +5616,6 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda4(
   __Pyx_RefNannySetupContext("lambda4", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 851, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    assert(__pyx_t_2);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-    __pyx_t_7 = 0;
-  }
-  #endif
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 851, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "SNOBOL4python/SNOBOL4patterns.pyx":852
- *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
- *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
- *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))             # <<<<<<<<<<<<<<
- *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
- *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
-*/
-
-/* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23lambda5(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_23lambda5 = {"lambda5", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23lambda5, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23lambda5(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
-  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
-  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
-  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda5(__pyx_self);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda5(CYTHON_UNUSED PyObject *__pyx_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  size_t __pyx_t_7;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda5", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    assert(__pyx_t_2);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-    __pyx_t_7 = 0;
-  }
-  #endif
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 852, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "SNOBOL4python/SNOBOL4patterns.pyx":853
- *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
- *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
- *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))             # <<<<<<<<<<<<<<
- *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
- *         | sigma('+') + zeta("X")
-*/
-
-/* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda6(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_24lambda6 = {"lambda6", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda6, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_24lambda6(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
-  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda6 (wrapper)", 0);
-  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
-  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda6(__pyx_self);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda6(CYTHON_UNUSED PyObject *__pyx_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  size_t __pyx_t_7;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda6", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Multiply(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    assert(__pyx_t_2);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-    __pyx_t_7 = 0;
-  }
-  #endif
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 853, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-  }
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "SNOBOL4python/SNOBOL4patterns.pyx":854
- *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
- *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
- *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))             # <<<<<<<<<<<<<<
- *         | sigma('+') + zeta("X")
- *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
-*/
-
-/* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda7(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_25lambda7 = {"lambda7", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda7, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_25lambda7(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
-  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda7 (wrapper)", 0);
-  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
-  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(__pyx_self);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(CYTHON_UNUSED PyObject *__pyx_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  size_t __pyx_t_7;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda7", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = NULL;
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 854, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 854, __pyx_L1_error)
@@ -5931,7 +5631,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(
   __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_FloorDivide(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 854, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 854, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -5968,7 +5668,107 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "SNOBOL4python/SNOBOL4patterns.pyx":855
+ *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
+ *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
+ *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))             # <<<<<<<<<<<<<<
+ *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
+ *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda5(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_27lambda5 = {"lambda5", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda5, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda5(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda5(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda5(CYTHON_UNUSED PyObject *__pyx_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  size_t __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("lambda5", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_7 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_7 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5977,6 +5777,206 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":856
+ *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
+ *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
+ *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))             # <<<<<<<<<<<<<<
+ *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
+ *         | sigma('+') + zeta("X")
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_28lambda6(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_28lambda6 = {"lambda6", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_28lambda6, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_28lambda6(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda6 (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda6(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda6(CYTHON_UNUSED PyObject *__pyx_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  size_t __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("lambda6", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyNumber_Multiply(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_7 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_7 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "SNOBOL4python/SNOBOL4patterns.pyx":857
+ *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
+ *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
+ *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))             # <<<<<<<<<<<<<<
+ *         | sigma('+') + zeta("X")
+ *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_29lambda7(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_29lambda7 = {"lambda7", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_29lambda7, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_29lambda7(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda7 (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(CYTHON_UNUSED PyObject *__pyx_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  size_t __pyx_t_7;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("lambda7", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyNumber_FloorDivide(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 857, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_7 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_7 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_3};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "SNOBOL4python/SNOBOL4patterns.pyx":859
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
  *         | sigma('+') + zeta("X")
  *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))             # <<<<<<<<<<<<<<
@@ -5985,9 +5985,9 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda7(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda8(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_26lambda8 = {"lambda8", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda8, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_26lambda8(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_30lambda8(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_30lambda8 = {"lambda8", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_30lambda8, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_30lambda8(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6015,17 +6015,17 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda8(
   __Pyx_RefNannySetupContext("lambda8", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 859, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_append); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 859, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 859, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Negative(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Negative(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 859, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_6 = 1;
@@ -6046,7 +6046,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda8(
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 856, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 859, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
@@ -6068,7 +6068,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda8(
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":859
+/* "SNOBOL4python/SNOBOL4patterns.pyx":862
  *         | E
  *         )
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)             # <<<<<<<<<<<<<<
@@ -6077,9 +6077,9 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda8(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda9(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_27lambda9 = {"lambda9", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda9, METH_NOARGS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_27lambda9(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_31lambda9(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_31lambda9 = {"lambda9", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_31lambda9, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_31lambda9(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6108,10 +6108,10 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda9(
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
   __Pyx_INCREF(__pyx_builtin_print);
-  __pyx_t_3 = __pyx_builtin_print;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 859, __pyx_L1_error)
+  __pyx_t_3 = __pyx_builtin_print; 
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_S); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 862, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Pop(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_6 = 1;
@@ -6121,7 +6121,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda9(
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 859, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_r = __pyx_t_1;
@@ -6152,7 +6152,7 @@ static PyObject *__pyx_lambda_funcdef_13SNOBOL4python_15SNOBOL4patterns_lambda9(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_Upw_13SNOBOL4python_15SNOBOL4patterns_1_e72a(PyObject *__pyx_self,
+static PyObject *__pyx_Upw_13SNOBOL4python_15SNOBOL4patterns_1_e72a(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6160,7 +6160,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_Umdef_13SNOBOL4python_15SNOBOL4patterns_1_fi4a = {"\316\223", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_Upw_13SNOBOL4python_15SNOBOL4patterns_1_e72a, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_Upw_13SNOBOL4python_15SNOBOL4patterns_1_e72a(PyObject *__pyx_self,
+static PyObject *__pyx_Upw_13SNOBOL4python_15SNOBOL4patterns_1_e72a(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6302,7 +6302,7 @@ static PyObject *__pyx_Upf_13SNOBOL4python_15SNOBOL4patterns__vk2a(CYTHON_UNUSED
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6310,7 +6310,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6407,7 +6407,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN___init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6415,7 +6415,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__ = {"__invert__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_3__invert__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6548,11 +6548,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_2__invert__
  *     def __invert__(self):           return pi(self) # pi, unary '~', optional, zero or one
  *     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6560,7 +6560,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__ = {"__add__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6664,7 +6664,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_4__add__(CY
  *     def __invert__(self):           return pi(self) # pi, unary '~', optional, zero or one
  *     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))             # <<<<<<<<<<<<<<
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
  *                                     else:                               return SIGMA(self, other)
 */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_PATTERN); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
@@ -6706,7 +6706,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_4__add__(CY
   /* "SNOBOL4python/SNOBOL4patterns.pyx":36
  *     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)             # <<<<<<<<<<<<<<
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)             # <<<<<<<<<<<<<<
  *                                     else:                               return SIGMA(self, other)
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
 */
@@ -6743,7 +6743,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_4__add__(CY
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":37
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
  *                                     else:                               return SIGMA(self, other)             # <<<<<<<<<<<<<<
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
@@ -6783,7 +6783,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_4__add__(CY
  *     def __invert__(self):           return pi(self) # pi, unary '~', optional, zero or one
  *     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
 */
 
   /* function exit code */
@@ -6802,15 +6802,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_4__add__(CY
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":38
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
  *                                     else:                               return SIGMA(self, other)
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6818,7 +6818,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__ = {"__or__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -6922,7 +6922,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_6__or__(CYT
  *                                     else:                               return SIGMA(self, other)
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))             # <<<<<<<<<<<<<<
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
  *                                     else:                               return PI(self, other)
 */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_PATTERN); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
@@ -6964,7 +6964,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_6__or__(CYT
   /* "SNOBOL4python/SNOBOL4patterns.pyx":40
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)             # <<<<<<<<<<<<<<
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)             # <<<<<<<<<<<<<<
  *                                     else:                               return PI(self, other)
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
 */
@@ -7001,7 +7001,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_6__or__(CYT
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":41
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
  *                                     else:                               return PI(self, other)             # <<<<<<<<<<<<<<
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
@@ -7037,11 +7037,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_6__or__(CYT
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":38
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
  *                                     else:                               return SIGMA(self, other)
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
 */
 
   /* function exit code */
@@ -7060,15 +7060,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_6__or__(CYT
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":42
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
  *                                     else:                               return PI(self, other)
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7076,7 +7076,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__ = {"__and__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7180,7 +7180,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
  *                                     else:                               return PI(self, other)
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))             # <<<<<<<<<<<<<<
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
  *                                     else:                               return rho(self, other)
 */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_PATTERN); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
@@ -7222,7 +7222,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
   /* "SNOBOL4python/SNOBOL4patterns.pyx":44
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)             # <<<<<<<<<<<<<<
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)             # <<<<<<<<<<<<<<
  *                                     else:                               return rho(self, other)
  *     def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------
 */
@@ -7259,7 +7259,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":45
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
  *                                     else:                               return rho(self, other)             # <<<<<<<<<<<<<<
  *     def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------
  *     def __matmul__(self, other):    return delta(self, other) # delta, binary @, immediate assignment
@@ -7295,11 +7295,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":42
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
  *                                     else:                               return PI(self, other)
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
 */
 
   /* function exit code */
@@ -7318,7 +7318,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":46
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
  *                                     else:                               return rho(self, other)
  *     def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------             # <<<<<<<<<<<<<<
  *     def __matmul__(self, other):    return delta(self, other) # delta, binary @, immediate assignment
@@ -7326,7 +7326,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_8__and__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7334,7 +7334,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_11__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7432,7 +7432,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_10__deepcop
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
   __Pyx_INCREF(((PyObject *)Py_TYPE(__pyx_v_self)));
-  __pyx_t_3 = ((PyObject *)Py_TYPE(__pyx_v_self));
+  __pyx_t_3 = ((PyObject *)Py_TYPE(__pyx_v_self)); 
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
   if (unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -7479,7 +7479,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_10__deepcop
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7487,7 +7487,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__ = {"__matmul__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_13__matmul__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7632,7 +7632,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_12__matmul_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7640,7 +7640,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__ = {"__mod__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_15__mod__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7785,7 +7785,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_14__mod__(C
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7793,7 +7793,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__ = {"__eq__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_17__eq__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7944,7 +7944,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_16__eq__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -7952,7 +7952,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__ = {"__contains__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_19__contains__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8099,11 +8099,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_18__contain
  * class STRING(str):
  *     def __repr__(self):             return str.__repr__(self)             # <<<<<<<<<<<<<<
  *     def __add__(self, other):       # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8111,7 +8111,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8228,12 +8228,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING___repr__(CYT
  * class STRING(str):
  *     def __repr__(self):             return str.__repr__(self)
  *     def __add__(self, other):       # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8241,7 +8241,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__ = {"__add__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8347,7 +8347,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
   /* "SNOBOL4python/SNOBOL4patterns.pyx":55
  *     def __repr__(self):             return str.__repr__(self)
  *     def __add__(self, other):       # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)             # <<<<<<<<<<<<<<
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)             # <<<<<<<<<<<<<<
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
  *                                     else:                               return STRING(super().__add__(str(other)))
 */
@@ -8407,7 +8407,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":56
  *     def __add__(self, other):       # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)             # <<<<<<<<<<<<<<
  *                                     else:                               return STRING(super().__add__(str(other)))
  *     def __radd__(self, other):      # SIGMA
@@ -8471,11 +8471,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":57
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
  *                                     else:                               return STRING(super().__add__(str(other)))             # <<<<<<<<<<<<<<
  *     def __radd__(self, other):      # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
 */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -8484,7 +8484,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_9 = NULL;
     __Pyx_INCREF(__pyx_builtin_super);
-    __pyx_t_10 = __pyx_builtin_super;
+    __pyx_t_10 = __pyx_builtin_super; 
     __pyx_t_11 = __Pyx_CyFunction_GetClassObj(__pyx_self);
     if (!__pyx_t_11) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 57, __pyx_L1_error) }
     __Pyx_INCREF(__pyx_t_11);
@@ -8542,7 +8542,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
  * class STRING(str):
  *     def __repr__(self):             return str.__repr__(self)
  *     def __add__(self, other):       # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
 */
 
@@ -8569,12 +8569,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_2__add__(CYT
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
  *                                     else:                               return STRING(super().__add__(str(other)))
  *     def __radd__(self, other):      # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8582,7 +8582,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__ = {"__radd__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8685,7 +8685,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_4__radd__(CY
   /* "SNOBOL4python/SNOBOL4patterns.pyx":59
  *                                     else:                               return STRING(super().__add__(str(other)))
  *     def __radd__(self, other):      # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))             # <<<<<<<<<<<<<<
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))             # <<<<<<<<<<<<<<
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
  *                                     else:                               return STRING(str(other).__add__(self))
 */
@@ -8745,7 +8745,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_4__radd__(CY
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":60
  *     def __radd__(self, other):      # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))             # <<<<<<<<<<<<<<
  *                                     else:                               return STRING(str(other).__add__(self))
  *     def __or__(self, other):        # PI
@@ -8809,11 +8809,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_4__radd__(CY
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":61
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
  *                                     else:                               return STRING(str(other).__add__(self))             # <<<<<<<<<<<<<<
  *     def __or__(self, other):        # PI
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
 */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -8863,7 +8863,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_4__radd__(CY
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
  *                                     else:                               return STRING(super().__add__(str(other)))
  *     def __radd__(self, other):      # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
 */
 
@@ -8887,12 +8887,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_4__radd__(CY
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
  *                                     else:                               return STRING(str(other).__add__(self))
  *     def __or__(self, other):        # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -8900,7 +8900,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__ = {"__or__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9003,7 +9003,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_6__or__(CYTH
   /* "SNOBOL4python/SNOBOL4patterns.pyx":63
  *                                     else:                               return STRING(str(other).__add__(self))
  *     def __or__(self, other):        # PI
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)             # <<<<<<<<<<<<<<
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)             # <<<<<<<<<<<<<<
  *                                     else:                               return PI(sigma(self), other)
  *     def __xor__(self, other):       # PI
 */
@@ -9063,10 +9063,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_6__or__(CYTH
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":64
  *     def __or__(self, other):        # PI
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)             # <<<<<<<<<<<<<<
  *     def __xor__(self, other):       # PI
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
 */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -9126,7 +9126,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_6__or__(CYTH
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
  *                                     else:                               return STRING(str(other).__add__(self))
  *     def __or__(self, other):        # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
 */
 
@@ -9147,15 +9147,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_6__or__(CYTH
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":65
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
  *     def __xor__(self, other):       # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9163,7 +9163,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__ = {"__xor__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9266,7 +9266,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_8__xor__(CYT
   /* "SNOBOL4python/SNOBOL4patterns.pyx":66
  *                                     else:                               return PI(sigma(self), other)
  *     def __xor__(self, other):       # PI
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))             # <<<<<<<<<<<<<<
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))             # <<<<<<<<<<<<<<
  *                                     else:                               return PI(other, sigma(self))
  *     def __contains__(self, other):  # in operator
 */
@@ -9326,7 +9326,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_8__xor__(CYT
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":67
  *     def __xor__(self, other):       # PI
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))             # <<<<<<<<<<<<<<
  *     def __contains__(self, other):  # in operator
  *                                     if isinstance(other, PATTERN):      return other.__contains__(self)
@@ -9386,10 +9386,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_8__xor__(CYT
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":65
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
  *     def __xor__(self, other):       # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
 */
 
@@ -9410,7 +9410,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_8__xor__(CYT
 }
 
 /* "SNOBOL4python/SNOBOL4patterns.pyx":68
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
  *     def __contains__(self, other):  # in operator             # <<<<<<<<<<<<<<
  *                                     if isinstance(other, PATTERN):      return other.__contains__(self)
@@ -9418,7 +9418,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_8__xor__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9426,7 +9426,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__ = {"__contains__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6STRING_11__contains__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9565,7 +9565,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_10__contains
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_6 = NULL;
     __Pyx_INCREF(__pyx_builtin_super);
-    __pyx_t_7 = __pyx_builtin_super;
+    __pyx_t_7 = __pyx_builtin_super; 
     __pyx_t_8 = __Pyx_CyFunction_GetClassObj(__pyx_self);
     if (!__pyx_t_8) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 70, __pyx_L1_error) }
     __Pyx_INCREF(__pyx_t_8);
@@ -9599,7 +9599,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_10__contains
   }
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":68
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
  *     def __contains__(self, other):  # in operator             # <<<<<<<<<<<<<<
  *                                     if isinstance(other, PATTERN):      return other.__contains__(self)
@@ -9631,7 +9631,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6STRING_10__contains
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9639,7 +9639,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9731,7 +9731,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7epsilon___init__(CY
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 75, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -9785,7 +9785,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7epsilon___init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9793,7 +9793,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9895,7 +9895,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7epsilon_6generator(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -9903,7 +9903,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7epsilon_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10102,7 +10102,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7epsilon_6generator(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10110,7 +10110,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10202,7 +10202,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4FAIL___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 80, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -10256,7 +10256,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4FAIL___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10264,7 +10264,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10365,7 +10365,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4FAIL_2__repr__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10373,7 +10373,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4FAIL_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10473,7 +10473,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4FAIL_4gamma(CYTHON_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10481,7 +10481,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10573,7 +10573,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ABORT___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 85, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -10627,7 +10627,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ABORT___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10635,7 +10635,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10736,7 +10736,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ABORT_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10744,7 +10744,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ABORT_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10879,7 +10879,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ABORT_4gamma(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10887,7 +10887,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -10979,7 +10979,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS___init__(CY
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 90, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -11033,7 +11033,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS___init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11041,7 +11041,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11143,7 +11143,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_6generator1
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11151,7 +11151,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11376,7 +11376,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7SUCCESS_6generator1
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11384,7 +11384,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11476,7 +11476,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5alpha___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 98, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -11530,7 +11530,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5alpha___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11538,7 +11538,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11640,7 +11640,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5alpha_6generator2(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11648,7 +11648,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5alpha_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11969,7 +11969,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5alpha_6generator2(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -11977,7 +11977,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12069,7 +12069,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5omega___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 107, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -12123,7 +12123,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5omega___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12131,7 +12131,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12233,7 +12233,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5omega_6generator3(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12241,7 +12241,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5omega_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12591,7 +12591,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5omega_6generator3(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12599,7 +12599,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12691,7 +12691,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3REM___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 116, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -12745,7 +12745,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3REM___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12753,7 +12753,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12855,7 +12855,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3REM_6generator4(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -12863,7 +12863,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3REM_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13132,7 +13132,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3REM_6generator4(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13140,7 +13140,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13232,7 +13232,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3ARB___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 125, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -13286,7 +13286,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3ARB___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13294,7 +13294,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13396,7 +13396,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ARB_6generator5(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13404,7 +13404,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ARB_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13710,7 +13710,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ARB_6generator5(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13718,7 +13718,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13818,7 +13818,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4zeta___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 137, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -13873,7 +13873,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4zeta___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -13881,7 +13881,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14013,7 +14013,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4zeta_2__repr__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14021,7 +14021,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14172,7 +14172,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4zeta_8generator6(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14180,7 +14180,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4zeta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14341,7 +14341,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4zeta_8generator6(__
  *             if callable(P): P = P()
  *             else: P = _globals[str(P)]
 */
-  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_P);
+  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_P); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -14356,7 +14356,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4zeta_8generator6(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_P);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_P;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_P; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -14514,7 +14514,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4zeta_8generator6(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14522,7 +14522,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14614,7 +14614,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5nPush___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 149, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -14668,7 +14668,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5nPush___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14676,7 +14676,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14778,7 +14778,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5nPush_6generator7(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -14786,7 +14786,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5nPush_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15151,7 +15151,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5nPush_6generator7(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15159,7 +15159,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15251,7 +15251,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4nInc___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 162, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -15305,7 +15305,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4nInc___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15313,7 +15313,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15415,7 +15415,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4nInc_6generator8(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15423,7 +15423,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nInc_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15750,7 +15750,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4nInc_6generator8(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15758,7 +15758,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15850,7 +15850,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4nPop___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 173, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -15904,7 +15904,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4nPop___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -15912,7 +15912,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16014,7 +16014,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4nPop_6generator9(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16022,7 +16022,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4nPop_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16387,7 +16387,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4nPop_6generator9(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16395,7 +16395,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16514,7 +16514,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5Shift___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 186, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -16570,7 +16570,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5Shift___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16578,7 +16578,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16726,7 +16726,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5Shift_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16734,7 +16734,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16890,7 +16890,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5Shift_8generator10(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -16898,7 +16898,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5Shift_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17329,7 +17329,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5Shift_8generator10(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17337,7 +17337,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17452,7 +17452,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6Reduce___init__(CYT
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 200, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -17508,7 +17508,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6Reduce___init__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17516,7 +17516,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17664,7 +17664,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6Reduce_2__repr__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17672,7 +17672,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17828,7 +17828,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6Reduce_8generator11
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -17836,7 +17836,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6Reduce_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18007,7 +18007,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6Reduce_8generator11
   if (__pyx_t_2) {
     __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_cur_scope->__pyx_v_t);
-    __pyx_t_4 = __pyx_cur_scope->__pyx_v_t;
+    __pyx_t_4 = __pyx_cur_scope->__pyx_v_t; 
     __pyx_t_5 = 1;
     #if CYTHON_UNPACK_METHODS
     if (likely(PyMethod_Check(__pyx_t_4))) {
@@ -18284,7 +18284,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6Reduce_8generator11
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18292,7 +18292,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18392,7 +18392,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3Pop___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 216, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -18447,7 +18447,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3Pop___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18455,7 +18455,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18587,7 +18587,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3Pop_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18595,7 +18595,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18746,7 +18746,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3Pop_8generator12(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -18754,7 +18754,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3Pop_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19096,7 +19096,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3Pop_8generator12(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19104,7 +19104,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19196,7 +19196,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3BAL___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 228, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -19250,7 +19250,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3BAL___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19258,7 +19258,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19360,7 +19360,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3BAL_6generator13(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19368,7 +19368,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3BAL_5gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19852,7 +19852,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3BAL_6generator13(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19860,7 +19860,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19967,7 +19967,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5FENCE___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 244, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -20022,7 +20022,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5FENCE___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20030,7 +20030,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20162,7 +20162,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5FENCE_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20170,7 +20170,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20354,7 +20354,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5FENCE_8generator14(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20362,7 +20362,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5FENCE_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20849,7 +20849,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5FENCE_8generator14(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20857,7 +20857,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20957,7 +20957,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3POS___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 259, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -21012,7 +21012,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3POS___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21020,7 +21020,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21152,7 +21152,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3POS_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21160,7 +21160,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21311,7 +21311,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3POS_8generator15(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21319,7 +21319,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3POS_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21481,7 +21481,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3POS_8generator15(__
  *             if callable(n): n = int(n())
  *             else: n = int(n)
 */
-  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n);
+  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -21496,7 +21496,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3POS_8generator15(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_n);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -21742,7 +21742,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3POS_8generator15(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21750,7 +21750,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21850,7 +21850,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RPOS___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 274, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -21905,7 +21905,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RPOS___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -21913,7 +21913,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22045,7 +22045,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RPOS_2__repr__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22053,7 +22053,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22204,7 +22204,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RPOS_8generator16(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22212,7 +22212,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RPOS_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22375,7 +22375,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RPOS_8generator16(_
  *             if callable(n): n = int(n())
  *             else: n = int(n)
 */
-  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n);
+  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -22390,7 +22390,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RPOS_8generator16(_
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_n);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -22652,7 +22652,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RPOS_8generator16(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22660,7 +22660,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22760,7 +22760,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3LEN___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 289, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -22815,7 +22815,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3LEN___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22823,7 +22823,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22955,7 +22955,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3LEN_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -22963,7 +22963,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23114,7 +23114,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3LEN_8generator17(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23122,7 +23122,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3LEN_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23288,7 +23288,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3LEN_8generator17(__
  *             if callable(n): n = int(n())
  *             else: n = int(n)
 */
-  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n);
+  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -23303,7 +23303,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3LEN_8generator17(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_n);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -23669,7 +23669,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3LEN_8generator17(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23677,7 +23677,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23777,7 +23777,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3TAB___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 306, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -23832,7 +23832,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3TAB___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23840,7 +23840,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23972,7 +23972,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3TAB_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -23980,7 +23980,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24131,7 +24131,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3TAB_8generator18(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24139,7 +24139,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3TAB_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24300,7 +24300,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3TAB_8generator18(__
  *             if callable(n): n = int(n())
  *             else: n = int(n)
 */
-  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n);
+  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -24315,7 +24315,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3TAB_8generator18(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_n);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -24545,7 +24545,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3TAB_8generator18(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24553,7 +24553,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24653,7 +24653,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RTAB___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 323, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -24708,7 +24708,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RTAB___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24716,7 +24716,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24848,7 +24848,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4RTAB_2__repr__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24856,7 +24856,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25007,7 +25007,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RTAB_8generator19(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25015,7 +25015,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4RTAB_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25176,7 +25176,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RTAB_8generator19(_
  *             if callable(n): n = int(n())
  *             else: n = int(n)
 */
-  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n);
+  __pyx_t_2 = PyLong_Check(__pyx_cur_scope->__pyx_v_n); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -25191,7 +25191,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RTAB_8generator19(_
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_n);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_n; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -25448,7 +25448,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4RTAB_8generator19(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25456,7 +25456,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25556,7 +25556,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5sigma___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 341, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -25611,7 +25611,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5sigma___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25619,7 +25619,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25751,7 +25751,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5sigma_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25759,7 +25759,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25910,7 +25910,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5sigma_8generator20(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25918,7 +25918,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5sigma_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26101,7 +26101,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5sigma_8generator20(
  *             if callable(s): s = str(s())
  *             else: s = str(s) # might need to raise an exception
 */
-  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_s);
+  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_s); 
   __pyx_t_4 = (!__pyx_t_3);
   if (__pyx_t_4) {
 
@@ -26116,7 +26116,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5sigma_8generator20(
     if (__pyx_t_4) {
       __pyx_t_2 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_s);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_s;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_s; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -26508,7 +26508,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5sigma_8generator20(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26516,7 +26516,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26616,7 +26616,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3ANY___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 361, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -26671,7 +26671,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3ANY___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26679,7 +26679,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26811,7 +26811,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3ANY_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26819,7 +26819,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26970,7 +26970,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ANY_8generator21(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26978,7 +26978,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3ANY_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27143,7 +27143,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ANY_8generator21(__
  *             if not isinstance(chars, set):
  *                 if callable(chars):
 */
-  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars);
+  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -27154,7 +27154,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ANY_8generator21(__
  *                 if callable(chars):
  *                     chars = chars()
 */
-    __pyx_t_3 = PySet_Check(__pyx_cur_scope->__pyx_v_chars);
+    __pyx_t_3 = PySet_Check(__pyx_cur_scope->__pyx_v_chars); 
     __pyx_t_2 = (!__pyx_t_3);
     if (__pyx_t_2) {
 
@@ -27177,7 +27177,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ANY_8generator21(__
 */
         __pyx_t_4 = NULL;
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_chars);
-        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars;
+        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars; 
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
         if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -27637,7 +27637,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3ANY_8generator21(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27645,7 +27645,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27745,7 +27745,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6NOTANY___init__(CYT
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 382, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -27800,7 +27800,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6NOTANY___init__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27808,7 +27808,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27940,7 +27940,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_2__repr__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27948,7 +27948,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28099,7 +28099,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_8generator22
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28107,7 +28107,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28272,7 +28272,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_8generator22
  *             if not isinstance(chars, set):
  *                 if callable(chars):
 */
-  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars);
+  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -28283,7 +28283,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_8generator22
  *                 if callable(chars):
  *                     chars = chars()
 */
-    __pyx_t_3 = PySet_Check(__pyx_cur_scope->__pyx_v_chars);
+    __pyx_t_3 = PySet_Check(__pyx_cur_scope->__pyx_v_chars); 
     __pyx_t_2 = (!__pyx_t_3);
     if (__pyx_t_2) {
 
@@ -28306,7 +28306,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_8generator22
 */
         __pyx_t_4 = NULL;
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_chars);
-        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars;
+        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars; 
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
         if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -28766,7 +28766,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_6NOTANY_8generator22
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28774,7 +28774,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28874,7 +28874,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4SPAN___init__(CYTHO
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 403, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -28929,7 +28929,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4SPAN___init__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28937,7 +28937,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29069,7 +29069,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4SPAN_2__repr__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29077,7 +29077,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29228,7 +29228,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4SPAN_8generator23(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29236,7 +29236,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_4SPAN_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29420,7 +29420,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4SPAN_8generator23(_
  *             if not isinstance(chars, set):
  *                 if callable(chars):
 */
-  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars);
+  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars); 
   __pyx_t_4 = (!__pyx_t_3);
   if (__pyx_t_4) {
 
@@ -29431,7 +29431,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4SPAN_8generator23(_
  *                 if callable(chars):
  *                     chars = chars()
 */
-    __pyx_t_4 = PySet_Check(__pyx_cur_scope->__pyx_v_chars);
+    __pyx_t_4 = PySet_Check(__pyx_cur_scope->__pyx_v_chars); 
     __pyx_t_3 = (!__pyx_t_4);
     if (__pyx_t_3) {
 
@@ -29454,7 +29454,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4SPAN_8generator23(_
 */
         __pyx_t_2 = NULL;
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_chars);
-        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars;
+        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars; 
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
         if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -29927,7 +29927,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_4SPAN_8generator23(_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29935,7 +29935,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30035,7 +30035,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5BREAK___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 428, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -30090,7 +30090,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5BREAK___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30098,7 +30098,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30230,7 +30230,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5BREAK_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30238,7 +30238,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30389,7 +30389,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5BREAK_8generator24(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30397,7 +30397,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5BREAK_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30581,7 +30581,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5BREAK_8generator24(
  *             if not isinstance(chars, set):
  *                 if callable(chars):
 */
-  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars);
+  __pyx_t_3 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_chars); 
   __pyx_t_4 = (!__pyx_t_3);
   if (__pyx_t_4) {
 
@@ -30592,7 +30592,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5BREAK_8generator24(
  *                 if callable(chars):
  *                     chars = chars()
 */
-    __pyx_t_4 = PySet_Check(__pyx_cur_scope->__pyx_v_chars);
+    __pyx_t_4 = PySet_Check(__pyx_cur_scope->__pyx_v_chars); 
     __pyx_t_3 = (!__pyx_t_4);
     if (__pyx_t_3) {
 
@@ -30615,7 +30615,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5BREAK_8generator24(
 */
         __pyx_t_2 = NULL;
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_chars);
-        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars;
+        __pyx_t_5 = __pyx_cur_scope->__pyx_v_chars; 
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
         if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -31092,7 +31092,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5BREAK_8generator24(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31100,7 +31100,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31200,7 +31200,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5THETA___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 455, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -31255,7 +31255,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5THETA___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31263,7 +31263,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31395,7 +31395,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5THETA_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31403,7 +31403,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31554,7 +31554,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5THETA_8generator25(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31562,7 +31562,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5THETA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31753,7 +31753,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5THETA_8generator25(
 */
     __pyx_t_2 = NULL;
     __Pyx_INCREF(__pyx_builtin_print);
-    __pyx_t_4 = __pyx_builtin_print;
+    __pyx_t_4 = __pyx_builtin_print; 
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 463, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = __Pyx_GetItemInt(__pyx_t_5, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 463, __pyx_L1_error)
@@ -31958,7 +31958,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5THETA_8generator25(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31966,7 +31966,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32066,7 +32066,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5theta___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 471, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -32121,7 +32121,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5theta___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32129,7 +32129,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32261,7 +32261,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5theta_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32269,7 +32269,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32420,7 +32420,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5theta_8generator26(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32428,7 +32428,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5theta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32621,7 +32621,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5theta_8generator26(
 */
     __pyx_t_2 = NULL;
     __Pyx_INCREF(__pyx_builtin_print);
-    __pyx_t_4 = __pyx_builtin_print;
+    __pyx_t_4 = __pyx_builtin_print; 
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 479, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = __Pyx_GetItemInt(__pyx_t_5, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 479, __pyx_L1_error)
@@ -32862,7 +32862,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5theta_8generator26(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32870,7 +32870,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32978,7 +32978,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5delta___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 488, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -33034,7 +33034,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5delta___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33042,7 +33042,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33190,7 +33190,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5delta_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33198,7 +33198,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33385,7 +33385,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5delta_8generator27(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33393,7 +33393,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5delta_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33767,7 +33767,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5delta_8generator27(
 */
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_builtin_print);
-      __pyx_t_1 = __pyx_builtin_print;
+      __pyx_t_1 = __pyx_builtin_print; 
       __pyx_t_8 = 1;
       {
         PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_v};
@@ -33944,7 +33944,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5delta_8generator27(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33952,7 +33952,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34060,7 +34060,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5DELTA___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 506, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -34116,7 +34116,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5DELTA___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34124,7 +34124,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34272,7 +34272,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5DELTA_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34280,7 +34280,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34467,7 +34467,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5DELTA_8generator28(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -34475,7 +34475,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5DELTA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35068,7 +35068,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5DELTA_8generator28(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35076,7 +35076,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35176,7 +35176,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA___init__(CY
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 524, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -35231,7 +35231,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA___init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35239,7 +35239,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35371,7 +35371,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_2__repr__(C
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35379,7 +35379,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35530,7 +35530,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_8generator2
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35538,7 +35538,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -35704,7 +35704,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_8generator2
 */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_expression); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyUnicode_Check(__pyx_t_1);
+  __pyx_t_2 = PyUnicode_Check(__pyx_t_1); 
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
@@ -35769,7 +35769,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_8generator2
 */
         __pyx_t_5 = NULL;
         __Pyx_INCREF(__pyx_builtin_eval);
-        __pyx_t_4 = __pyx_builtin_eval;
+        __pyx_t_4 = __pyx_builtin_eval; 
         __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_expression); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 532, __pyx_L5_error)
@@ -36592,7 +36592,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7LLAMBDA_8generator2
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -36600,7 +36600,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -36700,7 +36700,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7llambda___init__(CY
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 552, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -36755,7 +36755,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7llambda___init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -36763,7 +36763,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -36895,7 +36895,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_7llambda_2__repr__(C
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -36903,7 +36903,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37054,7 +37054,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7llambda_8generator3
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37062,7 +37062,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7llambda_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37265,7 +37265,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7llambda_8generator3
 */
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_command); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 559, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyUnicode_Check(__pyx_t_1);
+    __pyx_t_6 = PyUnicode_Check(__pyx_t_1); 
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_6) {
 
@@ -37278,7 +37278,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7llambda_8generator3
 */
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_builtin_compile);
-      __pyx_t_3 = __pyx_builtin_compile;
+      __pyx_t_3 = __pyx_builtin_compile; 
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_mstate_global->__pyx_n_u_command); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 560, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = 1;
@@ -37775,7 +37775,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_7llambda_8generator3
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37783,7 +37783,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37883,7 +37883,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3PHI___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 578, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -37938,7 +37938,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3PHI___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -37946,7 +37946,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38078,7 +38078,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3PHI_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38086,7 +38086,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38237,7 +38237,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3PHI_8generator31(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38245,7 +38245,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3PHI_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38413,7 +38413,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3PHI_8generator31(__
  *             if callable(rex): rex = str(rex())
  *             else: rex = str(rex) # should possibly be exception
 */
-  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_rex);
+  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_rex); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -38428,7 +38428,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3PHI_8generator31(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_rex);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_rex;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_rex; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -38831,7 +38831,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3PHI_8generator31(__
     /*else*/ {
       __pyx_t_1 = NULL;
       __Pyx_INCREF((PyObject *)(((PyTypeObject*)PyExc_Exception)));
-      __pyx_t_9 = ((PyObject *)(((PyTypeObject*)PyExc_Exception)));
+      __pyx_t_9 = ((PyObject *)(((PyTypeObject*)PyExc_Exception))); 
       __pyx_t_6 = 1;
       {
         PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u_Yikes_Internal_error};
@@ -38900,7 +38900,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3PHI_8generator31(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -38908,7 +38908,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39008,7 +39008,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3phi___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 601, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -39063,7 +39063,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3phi___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39071,7 +39071,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39203,7 +39203,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3phi_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39211,7 +39211,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39362,7 +39362,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39370,7 +39370,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3phi_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -39541,7 +39541,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
  *             if callable(rex): rex = str(rex())
  *             else: rex = str(rex) # should possibly be exception
 */
-  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_rex);
+  __pyx_t_2 = PyUnicode_Check(__pyx_cur_scope->__pyx_v_rex); 
   __pyx_t_3 = (!__pyx_t_2);
   if (__pyx_t_3) {
 
@@ -39556,7 +39556,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
     if (__pyx_t_3) {
       __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_rex);
-      __pyx_t_5 = __pyx_cur_scope->__pyx_v_rex;
+      __pyx_t_5 = __pyx_cur_scope->__pyx_v_rex; 
       __pyx_t_6 = 1;
       #if CYTHON_UNPACK_METHODS
       if (likely(PyMethod_Check(__pyx_t_5))) {
@@ -40015,7 +40015,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
 */
       __pyx_t_10 = NULL;
       __Pyx_INCREF(__pyx_builtin_range);
-      __pyx_t_1 = __pyx_builtin_range;
+      __pyx_t_1 = __pyx_builtin_range; 
       __pyx_t_6 = 1;
       {
         PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_cur_scope->__pyx_v_push_count};
@@ -40145,7 +40145,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
     /*else*/ {
       __pyx_t_1 = NULL;
       __Pyx_INCREF((PyObject *)(((PyTypeObject*)PyExc_Exception)));
-      __pyx_t_5 = ((PyObject *)(((PyTypeObject*)PyExc_Exception)));
+      __pyx_t_5 = ((PyObject *)(((PyTypeObject*)PyExc_Exception))); 
       __pyx_t_6 = 1;
       {
         PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u_Yikes_Internal_error};
@@ -40214,7 +40214,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3phi_8generator32(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40222,7 +40222,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40330,7 +40330,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3rho___init__(CYTHON
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 630, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -40386,7 +40386,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3rho___init__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40394,7 +40394,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40516,7 +40516,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_3rho_2__repr__(CYTHO
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40524,7 +40524,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40740,7 +40740,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3rho_8generator33(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -40748,7 +40748,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3rho_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41326,7 +41326,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_3rho_8generator33(__
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41334,7 +41334,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41434,7 +41434,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2pi___init__(CYTHON_
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 648, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -41489,7 +41489,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2pi___init__(CYTHON_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41497,7 +41497,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41629,7 +41629,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2pi_2__repr__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41637,7 +41637,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41821,7 +41821,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_2pi_8generator34(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -41829,7 +41829,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2pi_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42144,7 +42144,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_2pi_8generator34(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42152,7 +42152,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42254,7 +42254,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2PI___init__(CYTHON_
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 659, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -42309,7 +42309,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2PI___init__(CYTHON_
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42317,7 +42317,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42449,7 +42449,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_2PI_2__repr__(CYTHON
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42457,7 +42457,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42788,7 +42788,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_2PI_8generator35(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -42796,7 +42796,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_2PI_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43282,7 +43282,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_2PI_8generator35(__p
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43290,7 +43290,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43392,7 +43392,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5SIGMA___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 670, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -43447,7 +43447,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5SIGMA___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43455,7 +43455,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43587,7 +43587,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43595,7 +43595,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43926,7 +43926,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_8generator36(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -43934,7 +43934,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -44731,7 +44731,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5SIGMA_8generator36(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -44739,7 +44739,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_1__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -44839,7 +44839,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ARBNO___init__(CYTH
   __Pyx_RefNannySetupContext("__init__", 0);
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 695, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -44894,7 +44894,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ARBNO___init__(CYTH
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -44902,7 +44902,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_3__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -45059,7 +45059,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_2__repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -45067,7 +45067,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__ = {"__deepcopy__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_5__deepcopy__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -45251,7 +45251,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_8generator37(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -45259,7 +45259,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma = {"gamma", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_7gamma(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46011,7 +46011,7 @@ static PyObject *__pyx_gb_13SNOBOL4python_15SNOBOL4patterns_5ARBNO_8generator37(
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3_push(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3_push(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46019,7 +46019,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_3_push = {"_push", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3_push, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3_push(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_3_push(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46200,7 +46200,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_4_pop(CYTHON_UNUSED 
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7_shift(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7_shift(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46208,7 +46208,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7_shift = {"_shift", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7_shift, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7_shift(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_7_shift(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46448,7 +46448,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6_shift(CYTHON_UNUSE
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_9_reduce(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_9_reduce(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46456,7 +46456,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_9_reduce = {"_reduce", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_9_reduce, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_9_reduce(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_9_reduce(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46705,7 +46705,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_8_reduce(CYTHON_UNUS
 */
     __pyx_t_5 = NULL;
     __Pyx_INCREF(__pyx_builtin_range);
-    __pyx_t_6 = __pyx_builtin_range;
+    __pyx_t_6 = __pyx_builtin_range; 
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_n};
@@ -46888,7 +46888,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_8_reduce(CYTHON_UNUS
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -46896,7 +46896,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window = {"window", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_1window(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47339,7 +47339,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_wi
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47347,7 +47347,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format = {"format", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_3format(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47459,7 +47459,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_2f
 */
   __pyx_t_4 = NULL;
   __Pyx_INCREF(__pyx_builtin_super);
-  __pyx_t_5 = __pyx_builtin_super;
+  __pyx_t_5 = __pyx_builtin_super; 
   __pyx_t_6 = __Pyx_CyFunction_GetClassObj(__pyx_self);
   if (!__pyx_t_6) { PyErr_SetString(PyExc_RuntimeError, "super(): empty __class__ cell"); __PYX_ERR(0, 747, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_t_6);
@@ -47608,7 +47608,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_15DEBUG_formatter_2f
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47616,7 +47616,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__ = {"__repr__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_1__repr__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47796,7 +47796,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL___repr__(CYT
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -47804,7 +47804,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__ = {"__init__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_3__init__(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48054,7 +48054,245 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_2__init__(CY
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":786
+/* "SNOBOL4python/SNOBOL4patterns.pyx":780
+ *  = [] # SNOBOL stack
+ *  = -1
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))             # <<<<<<<<<<<<<<
+ * def S_pop(): global , ; .pop();  -= 1
+ * #----------------------------------------------------------------------------------------------------------------------
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11S_push(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_11S_push = {"S_push", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11S_push, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11S_push(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_pos = 0;
+  PyObject *__pyx_v_subject = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[2] = {0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("S_push (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_pos,&__pyx_mstate_global->__pyx_n_u_subject,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 780, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 780, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 780, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "S_push", 0) < 0) __PYX_ERR(0, 780, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("S_push", 1, 2, 2, i); __PYX_ERR(0, 780, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 2)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 780, __pyx_L3_error)
+      values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 780, __pyx_L3_error)
+    }
+    __pyx_v_pos = ((PyObject*)values[0]);
+    __pyx_v_subject = ((PyObject*)values[1]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("S_push", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 780, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.S_push", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pos), (&PyLong_Type), 0, "pos", 2))) __PYX_ERR(0, 780, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_subject), (&PyUnicode_Type), 0, "subject", 2))) __PYX_ERR(0, 780, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10S_push(__pyx_self, __pyx_v_pos, __pyx_v_subject);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  goto __pyx_L7_cleaned_up;
+  __pyx_L0:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __pyx_L7_cleaned_up:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10S_push(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pos, PyObject *__pyx_v_subject) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  size_t __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("S_push", 0);
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u__16); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyLong_AddObjC(__pyx_t_1, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u__16, __pyx_t_2) < 0) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_SNOBOL_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_5 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_v_pos, __pyx_v_subject};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_5, (3-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 780, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_t_6 = __Pyx_PyObject_Append(__pyx_t_2, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.S_push", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "SNOBOL4python/SNOBOL4patterns.pyx":781
+ *  = -1
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))
+ * def S_pop(): global , ; .pop();  -= 1             # <<<<<<<<<<<<<<
+ * #----------------------------------------------------------------------------------------------------------------------
+ * _globals = None # global variables
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13S_pop(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_13S_pop = {"S_pop", (PyCFunction)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13S_pop, METH_NOARGS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13S_pop(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("S_pop (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12S_pop(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12S_pop(CYTHON_UNUSED PyObject *__pyx_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("S_pop", 0);
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Pop(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u__16); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyLong_SubtractObjC(__pyx_t_2, __pyx_mstate_global->__pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u__16, __pyx_t_1) < 0) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.S_pop", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "SNOBOL4python/SNOBOL4patterns.pyx":790
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS
  * else: from .SNOBOL4functions import GLOBALS as F_GLOBALS
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g             # <<<<<<<<<<<<<<
@@ -48063,15 +48301,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_6SNOBOL_2__init__(CY
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11GLOBALS(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15GLOBALS(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_11GLOBALS = {"GLOBALS", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11GLOBALS, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_11GLOBALS(PyObject *__pyx_self,
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15GLOBALS = {"GLOBALS", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15GLOBALS, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15GLOBALS(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48101,32 +48339,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_g,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 786, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 790, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 786, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 790, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "GLOBALS", 0) < 0) __PYX_ERR(0, 786, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "GLOBALS", 0) < 0) __PYX_ERR(0, 790, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("GLOBALS", 1, 1, 1, i); __PYX_ERR(0, 786, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("GLOBALS", 1, 1, 1, i); __PYX_ERR(0, 790, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 786, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 790, __pyx_L3_error)
     }
     __pyx_v_g = ((PyObject*)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("GLOBALS", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 786, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("GLOBALS", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 790, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -48137,8 +48375,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_g), (&PyDict_Type), 0, "g", 2))) __PYX_ERR(0, 786, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(__pyx_self, __pyx_v_g);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_g), (&PyDict_Type), 0, "g", 2))) __PYX_ERR(0, 790, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14GLOBALS(__pyx_self, __pyx_v_g);
 
   /* function exit code */
   goto __pyx_L0;
@@ -48157,7 +48395,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_g) {
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14GLOBALS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_g) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -48169,7 +48407,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNU
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("GLOBALS", 0);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_F_GLOBALS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 786, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_F_GLOBALS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 790, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -48188,11 +48426,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNU
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 786, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 790, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, __pyx_v_g) < 0) __PYX_ERR(0, 786, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, __pyx_v_g) < 0) __PYX_ERR(0, 790, __pyx_L1_error)
 
   /* function exit code */
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
@@ -48209,7 +48447,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":788
+/* "SNOBOL4python/SNOBOL4patterns.pyx":792
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
  * #----------------------------------------------------------------------------------------------------------------------
  * def TRACE(level:int=None, window:int=None):             # <<<<<<<<<<<<<<
@@ -48218,15 +48456,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_10GLOBALS(CYTHON_UNU
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13TRACE(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17TRACE(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_13TRACE = {"TRACE", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13TRACE, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_13TRACE(PyObject *__pyx_self,
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_17TRACE = {"TRACE", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17TRACE, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17TRACE(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48257,33 +48495,33 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_level,&__pyx_mstate_global->__pyx_n_u_window,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 788, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 792, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 788, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 792, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 788, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 792, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "TRACE", 0) < 0) __PYX_ERR(0, 788, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "TRACE", 0) < 0) __PYX_ERR(0, 792, __pyx_L3_error)
       if (!values[0]) values[0] = __Pyx_NewRef(((PyObject*)Py_None));
       if (!values[1]) values[1] = __Pyx_NewRef(((PyObject*)Py_None));
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 788, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 792, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 788, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 792, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
@@ -48296,7 +48534,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("TRACE", 0, 0, 2, __pyx_nargs); __PYX_ERR(0, 788, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("TRACE", 0, 0, 2, __pyx_nargs); __PYX_ERR(0, 792, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -48307,9 +48545,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_level), (&PyLong_Type), 1, "level", 2))) __PYX_ERR(0, 788, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_window), (&PyLong_Type), 1, "window", 2))) __PYX_ERR(0, 788, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(__pyx_self, __pyx_v_level, __pyx_v_window);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_level), (&PyLong_Type), 1, "level", 2))) __PYX_ERR(0, 792, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_window), (&PyLong_Type), 1, "window", 2))) __PYX_ERR(0, 792, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16TRACE(__pyx_self, __pyx_v_level, __pyx_v_window);
 
   /* function exit code */
   goto __pyx_L0;
@@ -48328,7 +48566,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_level, PyObject *__pyx_v_window) {
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16TRACE(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_level, PyObject *__pyx_v_window) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -48342,7 +48580,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("TRACE", 0);
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":790
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":794
  * def TRACE(level:int=None, window:int=None):
  *     global _window_size, logger, handler
  *     if window is not None:             # <<<<<<<<<<<<<<
@@ -48352,16 +48590,16 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
   __pyx_t_1 = (__pyx_v_window != ((PyObject*)Py_None));
   if (__pyx_t_1) {
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":791
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":795
  *     global _window_size, logger, handler
  *     if window is not None:
  *         _window_size = window             # <<<<<<<<<<<<<<
  *     if level is not None:
  *         logger.setLevel(level)
 */
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_window_size, __pyx_v_window) < 0) __PYX_ERR(0, 791, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_window_size, __pyx_v_window) < 0) __PYX_ERR(0, 795, __pyx_L1_error)
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":790
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":794
  * def TRACE(level:int=None, window:int=None):
  *     global _window_size, logger, handler
  *     if window is not None:             # <<<<<<<<<<<<<<
@@ -48370,7 +48608,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
 */
   }
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":792
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":796
  *     if window is not None:
  *         _window_size = window
  *     if level is not None:             # <<<<<<<<<<<<<<
@@ -48380,7 +48618,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
   __pyx_t_1 = (__pyx_v_level != ((PyObject*)Py_None));
   if (__pyx_t_1) {
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":793
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":797
  *         _window_size = window
  *     if level is not None:
  *         logger.setLevel(level)             # <<<<<<<<<<<<<<
@@ -48388,9 +48626,9 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
  * #----------------------------------------------------------------------------------------------------------------------
 */
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 793, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 797, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_setLevel); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 793, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_setLevel); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 797, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_6 = 1;
@@ -48410,12 +48648,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
       __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 793, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 797, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":794
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":798
  *     if level is not None:
  *         logger.setLevel(level)
  *         handler.setLevel(level)             # <<<<<<<<<<<<<<
@@ -48423,9 +48661,9 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
 */
     __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 794, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_handler); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 798, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_setLevel); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 794, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_setLevel); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 798, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = 1;
@@ -48445,12 +48683,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
       __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 794, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 798, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":792
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":796
  *     if window is not None:
  *         _window_size = window
  *     if level is not None:             # <<<<<<<<<<<<<<
@@ -48459,7 +48697,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
 */
   }
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":788
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":792
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
  * #----------------------------------------------------------------------------------------------------------------------
  * def TRACE(level:int=None, window:int=None):             # <<<<<<<<<<<<<<
@@ -48483,7 +48721,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":796
+/* "SNOBOL4python/SNOBOL4patterns.pyx":800
  *         handler.setLevel(level)
  * #----------------------------------------------------------------------------------------------------------------------
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)             # <<<<<<<<<<<<<<
@@ -48492,15 +48730,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_12TRACE(CYTHON_UNUSE
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15MATCH(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19MATCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15MATCH = {"MATCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15MATCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_15MATCH(PyObject *__pyx_self,
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_19MATCH = {"MATCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19MATCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19MATCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48532,41 +48770,41 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_P,&__pyx_mstate_global->__pyx_n_u_exc,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 796, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 800, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 800, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 800, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 800, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "MATCH", 0) < 0) __PYX_ERR(0, 796, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "MATCH", 0) < 0) __PYX_ERR(0, 800, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)((PyObject *)Py_False)));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("MATCH", 0, 2, 3, i); __PYX_ERR(0, 796, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("MATCH", 0, 2, 3, i); __PYX_ERR(0, 800, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 800, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 800, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 796, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 800, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -48578,7 +48816,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("MATCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 796, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("MATCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 800, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -48589,7 +48827,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18MATCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -48599,7 +48837,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18MATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -48615,10 +48853,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSE
   __Pyx_RefNannySetupContext("MATCH", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_SEARCH); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_SEARCH); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -48637,10 +48875,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSE
     __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 796, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 800, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_v_P); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_v_P); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_7 = 1;
@@ -48661,10 +48899,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSE
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 796, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(PySlice_Check(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_t_1))) __PYX_ERR(0, 796, __pyx_L1_error)
+  if (!(likely(PySlice_Check(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_t_1))) __PYX_ERR(0, 800, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
@@ -48685,7 +48923,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":797
+/* "SNOBOL4python/SNOBOL4patterns.pyx":801
  * #----------------------------------------------------------------------------------------------------------------------
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)             # <<<<<<<<<<<<<<
@@ -48694,15 +48932,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_14MATCH(CYTHON_UNUSE
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17FULLMATCH(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21FULLMATCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_17FULLMATCH = {"FULLMATCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17FULLMATCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_17FULLMATCH(PyObject *__pyx_self,
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_21FULLMATCH = {"FULLMATCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21FULLMATCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_21FULLMATCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48734,41 +48972,41 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_P,&__pyx_mstate_global->__pyx_n_u_exc,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 797, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 801, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 801, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 801, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 801, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "FULLMATCH", 0) < 0) __PYX_ERR(0, 797, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "FULLMATCH", 0) < 0) __PYX_ERR(0, 801, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)((PyObject *)Py_False)));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("FULLMATCH", 0, 2, 3, i); __PYX_ERR(0, 797, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("FULLMATCH", 0, 2, 3, i); __PYX_ERR(0, 801, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 801, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 801, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 801, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -48780,7 +49018,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("FULLMATCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 797, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("FULLMATCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 801, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -48791,7 +49029,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_20FULLMATCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -48801,7 +49039,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_20FULLMATCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -48818,10 +49056,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
   __Pyx_RefNannySetupContext("FULLMATCH", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_SEARCH); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_SEARCH); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -48840,14 +49078,14 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
     __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 797, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 801, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_v_P); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_v_P); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -48866,10 +49104,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
     __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 797, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 801, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_8 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_t_8 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -48891,10 +49129,10 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 797, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 801, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(PySlice_Check(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_t_1))) __PYX_ERR(0, 797, __pyx_L1_error)
+  if (!(likely(PySlice_Check(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_t_1))) __PYX_ERR(0, 801, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
   goto __pyx_L0;
@@ -48916,7 +49154,7 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
   return __pyx_r;
 }
 
-/* "SNOBOL4python/SNOBOL4patterns.pyx":798
+/* "SNOBOL4python/SNOBOL4patterns.pyx":802
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:             # <<<<<<<<<<<<<<
@@ -48925,15 +49163,15 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_16FULLMATCH(CYTHON_U
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19SEARCH(PyObject *__pyx_self,
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23SEARCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_19SEARCH = {"SEARCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19SEARCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_19SEARCH(PyObject *__pyx_self,
+static PyMethodDef __pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_23SEARCH = {"SEARCH", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23SEARCH, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_13SNOBOL4python_15SNOBOL4patterns_23SEARCH(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -48965,41 +49203,41 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_P,&__pyx_mstate_global->__pyx_n_u_exc,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 798, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 802, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 802, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 802, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 802, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "SEARCH", 0) < 0) __PYX_ERR(0, 798, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "SEARCH", 0) < 0) __PYX_ERR(0, 802, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject *)((PyObject *)Py_False)));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("SEARCH", 0, 2, 3, i); __PYX_ERR(0, 798, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("SEARCH", 0, 2, 3, i); __PYX_ERR(0, 802, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 802, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 802, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 798, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 802, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -49011,7 +49249,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("SEARCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 798, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("SEARCH", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 802, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -49022,7 +49260,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
+  __pyx_r = __pyx_pf_13SNOBOL4python_15SNOBOL4patterns_22SEARCH(__pyx_self, __pyx_v_S, __pyx_v_P, __pyx_v_exc);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -49032,7 +49270,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
+static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_22SEARCH(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_S, PyObject *__pyx_v_P, PyObject *__pyx_v_exc) {
   PyObject *__pyx_v_slyce = NULL;
   PyObject *__pyx_v_command = NULL;
   Py_ssize_t __pyx_v_cursor;
@@ -49041,83 +49279,82 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
-  int __pyx_t_3;
+  Py_ssize_t __pyx_t_3;
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  size_t __pyx_t_13;
-  PyObject *__pyx_t_14 = NULL;
-  PyObject *__pyx_t_15[5];
-  PyObject *__pyx_t_16 = NULL;
-  Py_ssize_t __pyx_t_17;
-  PyObject *(*__pyx_t_18)(PyObject *);
+  size_t __pyx_t_12;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14[5];
+  PyObject *__pyx_t_15 = NULL;
+  Py_ssize_t __pyx_t_16;
+  PyObject *(*__pyx_t_17)(PyObject *);
+  PyObject *__pyx_t_18 = NULL;
   PyObject *__pyx_t_19 = NULL;
   PyObject *__pyx_t_20 = NULL;
-  PyObject *__pyx_t_21 = NULL;
-  int __pyx_t_22;
-  PyObject *__pyx_t_23 = NULL;
-  int __pyx_t_24;
-  char const *__pyx_t_25;
+  int __pyx_t_21;
+  PyObject *__pyx_t_22 = NULL;
+  int __pyx_t_23;
+  char const *__pyx_t_24;
+  PyObject *__pyx_t_25 = NULL;
   PyObject *__pyx_t_26 = NULL;
   PyObject *__pyx_t_27 = NULL;
   PyObject *__pyx_t_28 = NULL;
   PyObject *__pyx_t_29 = NULL;
   PyObject *__pyx_t_30 = NULL;
-  PyObject *__pyx_t_31 = NULL;
+  char const *__pyx_t_31;
   char const *__pyx_t_32;
-  char const *__pyx_t_33;
+  int __pyx_t_33;
   int __pyx_t_34;
-  int __pyx_t_35;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("SEARCH", 0);
   __Pyx_INCREF(__pyx_v_S);
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":799
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":803
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
  *     global _globals, ; S = str(S)             # <<<<<<<<<<<<<<
  *     if _globals is None:
  *         _globals = globals()
 */
-  __pyx_t_1 = __Pyx_PyObject_Unicode(__pyx_v_S); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 799, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Unicode(__pyx_v_S); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 803, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF_SET(__pyx_v_S, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":800
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":804
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
  *     global _globals, ; S = str(S)
  *     if _globals is None:             # <<<<<<<<<<<<<<
  *         _globals = globals()
  *     slyce = None
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 804, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = (__pyx_t_1 == Py_None);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":801
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":805
  *     global _globals, ; S = str(S)
  *     if _globals is None:
  *         _globals = globals()             # <<<<<<<<<<<<<<
  *     slyce = None
  *     command = None
 */
-    __pyx_t_1 = __Pyx_Globals(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 801, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Globals(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 805, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, __pyx_t_1) < 0) __PYX_ERR(0, 801, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, __pyx_t_1) < 0) __PYX_ERR(0, 805, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":800
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":804
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
  *     global _globals, ; S = str(S)
  *     if _globals is None:             # <<<<<<<<<<<<<<
@@ -49126,316 +49363,300 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
 */
   }
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":802
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":806
  *     if _globals is None:
  *         _globals = globals()
  *     slyce = None             # <<<<<<<<<<<<<<
  *     command = None
- *     .append(None)
+ *     for cursor in range(0, 1+len(S)):
 */
   __Pyx_INCREF(Py_None);
   __pyx_v_slyce = Py_None;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":803
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":807
  *         _globals = globals()
  *     slyce = None
  *     command = None             # <<<<<<<<<<<<<<
- *     .append(None)
  *     for cursor in range(0, 1+len(S)):
+ *         try:
 */
   __Pyx_INCREF(Py_None);
   __pyx_v_command = Py_None;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":804
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":808
  *     slyce = None
  *     command = None
- *     .append(None)             # <<<<<<<<<<<<<<
- *     for cursor in range(0, 1+len(S)):
- *         try:
-*/
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 804, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_Append(__pyx_t_1, Py_None); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 804, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":805
- *     command = None
- *     .append(None)
  *     for cursor in range(0, 1+len(S)):             # <<<<<<<<<<<<<<
  *         try:
- *             [-1] = SNOBOL(cursor, S)
+ *             S_push(cursor, S)
 */
-  __pyx_t_4 = PyObject_Length(__pyx_v_S); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 805, __pyx_L1_error)
-  __pyx_t_5 = (1 + __pyx_t_4);
-  __pyx_t_4 = __pyx_t_5;
-  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_4; __pyx_t_6+=1) {
-    __pyx_v_cursor = __pyx_t_6;
+  __pyx_t_3 = PyObject_Length(__pyx_v_S); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 808, __pyx_L1_error)
+  __pyx_t_4 = (1 + __pyx_t_3);
+  __pyx_t_3 = __pyx_t_4;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_3; __pyx_t_5+=1) {
+    __pyx_v_cursor = __pyx_t_5;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":806
- *     .append(None)
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":809
+ *     command = None
  *     for cursor in range(0, 1+len(S)):
  *         try:             # <<<<<<<<<<<<<<
- *             [-1] = SNOBOL(cursor, S)
+ *             S_push(cursor, S)
  *             slyce = next(P.gamma())
 */
     {
       __Pyx_PyThreadState_declare
       __Pyx_PyThreadState_assign
-      __Pyx_ExceptionSave(&__pyx_t_7, &__pyx_t_8, &__pyx_t_9);
+      __Pyx_ExceptionSave(&__pyx_t_6, &__pyx_t_7, &__pyx_t_8);
+      __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_7);
       __Pyx_XGOTREF(__pyx_t_8);
-      __Pyx_XGOTREF(__pyx_t_9);
       /*try:*/ {
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":807
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":810
  *     for cursor in range(0, 1+len(S)):
  *         try:
- *             [-1] = SNOBOL(cursor, S)             # <<<<<<<<<<<<<<
+ *             S_push(cursor, S)             # <<<<<<<<<<<<<<
  *             slyce = next(P.gamma())
  *             if [-1].nl: print()
 */
-        __pyx_t_10 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_SNOBOL_2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 807, __pyx_L6_error)
+        __pyx_t_9 = NULL;
+        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_S_push); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 810, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_11 = PyLong_FromSsize_t(__pyx_v_cursor); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 810, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = PyLong_FromSsize_t(__pyx_v_cursor); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 807, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_13 = 1;
+        __pyx_t_12 = 1;
         #if CYTHON_UNPACK_METHODS
-        if (unlikely(PyMethod_Check(__pyx_t_11))) {
-          __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_11);
-          assert(__pyx_t_10);
-          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_11);
-          __Pyx_INCREF(__pyx_t_10);
+        if (unlikely(PyMethod_Check(__pyx_t_10))) {
+          __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_10);
+          assert(__pyx_t_9);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
+          __Pyx_INCREF(__pyx_t_9);
           __Pyx_INCREF(__pyx__function);
-          __Pyx_DECREF_SET(__pyx_t_11, __pyx__function);
-          __pyx_t_13 = 0;
+          __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
+          __pyx_t_12 = 0;
         }
         #endif
         {
-          PyObject *__pyx_callargs[3] = {__pyx_t_10, __pyx_t_12, __pyx_v_S};
-          __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_11, __pyx_callargs+__pyx_t_13, (3-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-          __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          PyObject *__pyx_callargs[3] = {__pyx_t_9, __pyx_t_11, __pyx_v_S};
+          __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 807, __pyx_L6_error)
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 810, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_1);
         }
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 807, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        if (unlikely((__Pyx_SetItemInt(__pyx_t_11, -1L, __pyx_t_1, long, 1, __Pyx_PyLong_From_long, 0, 1, 1) < 0))) __PYX_ERR(0, 807, __pyx_L6_error)
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":808
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":811
  *         try:
- *             [-1] = SNOBOL(cursor, S)
+ *             S_push(cursor, S)
  *             slyce = next(P.gamma())             # <<<<<<<<<<<<<<
  *             if [-1].nl: print()
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
 */
-        __pyx_t_11 = __pyx_v_P;
-        __Pyx_INCREF(__pyx_t_11);
-        __pyx_t_13 = 0;
+        __pyx_t_10 = __pyx_v_P;
+        __Pyx_INCREF(__pyx_t_10);
+        __pyx_t_12 = 0;
         {
-          PyObject *__pyx_callargs[2] = {__pyx_t_11, NULL};
-          __pyx_t_1 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_gamma, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-          __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 808, __pyx_L6_error)
+          PyObject *__pyx_callargs[2] = {__pyx_t_10, NULL};
+          __pyx_t_1 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_gamma, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 811, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_1);
         }
-        __pyx_t_11 = __Pyx_PyIter_Next(__pyx_t_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 808, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_10 = __Pyx_PyIter_Next(__pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 811, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_DECREF_SET(__pyx_v_slyce, __pyx_t_11);
-        __pyx_t_11 = 0;
+        __Pyx_DECREF_SET(__pyx_v_slyce, __pyx_t_10);
+        __pyx_t_10 = 0;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":809
- *             [-1] = SNOBOL(cursor, S)
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":812
+ *             S_push(cursor, S)
  *             slyce = next(P.gamma())
  *             if [-1].nl: print()             # <<<<<<<<<<<<<<
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
  *             for command in [-1].cstack:
 */
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 809, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_11, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 809, __pyx_L6_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 812, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_10, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 812, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 809, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 812, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 809, __pyx_L6_error)
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 812, __pyx_L6_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         if (__pyx_t_2) {
           __pyx_t_1 = NULL;
           __Pyx_INCREF(__pyx_builtin_print);
-          __pyx_t_12 = __pyx_builtin_print;
-          __pyx_t_13 = 1;
+          __pyx_t_11 = __pyx_builtin_print; 
+          __pyx_t_12 = 1;
           {
             PyObject *__pyx_callargs[2] = {__pyx_t_1, NULL};
-            __pyx_t_11 = __Pyx_PyObject_FastCall(__pyx_t_12, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_11, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 809, __pyx_L6_error)
-            __Pyx_GOTREF(__pyx_t_11);
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 812, __pyx_L6_error)
+            __Pyx_GOTREF(__pyx_t_10);
           }
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         }
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":810
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":813
  *             slyce = next(P.gamma())
  *             if [-1].nl: print()
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')             # <<<<<<<<<<<<<<
  *             for command in [-1].cstack:
  *                 logger.debug('SEARCH(): %r', command)
 */
-        __pyx_t_12 = NULL;
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 810, __pyx_L6_error)
+        __pyx_t_11 = NULL;
+        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 813, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 810, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_info); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 813, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_S, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 810, __pyx_L6_error)
+        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_S, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 813, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_v_slyce, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 810, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_14);
-        __pyx_t_15[0] = __pyx_mstate_global->__pyx_kp_u_SEARCH_2;
-        __pyx_t_15[1] = __pyx_t_1;
-        __pyx_t_15[2] = __pyx_mstate_global->__pyx_kp_u__16;
-        __pyx_t_15[3] = __pyx_t_14;
-        __pyx_t_15[4] = __pyx_mstate_global->__pyx_kp_u__17;
-        __pyx_t_16 = __Pyx_PyUnicode_Join(__pyx_t_15, 5, 11 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1) + 5 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_14) + 1, 127 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14));
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 810, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_16);
+        __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_v_slyce, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 813, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_13);
+        __pyx_t_14[0] = __pyx_mstate_global->__pyx_kp_u_SEARCH_2;
+        __pyx_t_14[1] = __pyx_t_1;
+        __pyx_t_14[2] = __pyx_mstate_global->__pyx_kp_u__17;
+        __pyx_t_14[3] = __pyx_t_13;
+        __pyx_t_14[4] = __pyx_mstate_global->__pyx_kp_u__18;
+        __pyx_t_15 = __Pyx_PyUnicode_Join(__pyx_t_14, 5, 11 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1) + 5 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_13) + 1, 127 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13));
+        if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 813, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_15);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-        __pyx_t_13 = 1;
+        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        __pyx_t_12 = 1;
         #if CYTHON_UNPACK_METHODS
-        if (unlikely(PyMethod_Check(__pyx_t_10))) {
-          __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_10);
-          assert(__pyx_t_12);
-          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
-          __Pyx_INCREF(__pyx_t_12);
+        if (unlikely(PyMethod_Check(__pyx_t_9))) {
+          __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_9);
+          assert(__pyx_t_11);
+          PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_9);
+          __Pyx_INCREF(__pyx_t_11);
           __Pyx_INCREF(__pyx__function);
-          __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
-          __pyx_t_13 = 0;
+          __Pyx_DECREF_SET(__pyx_t_9, __pyx__function);
+          __pyx_t_12 = 0;
         }
         #endif
         {
-          PyObject *__pyx_callargs[2] = {__pyx_t_12, __pyx_t_16};
-          __pyx_t_11 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 810, __pyx_L6_error)
-          __Pyx_GOTREF(__pyx_t_11);
+          PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_t_15};
+          __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+__pyx_t_12, (2-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+          __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+          if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 813, __pyx_L6_error)
+          __Pyx_GOTREF(__pyx_t_10);
         }
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":811
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":814
  *             if [-1].nl: print()
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
  *             for command in [-1].cstack:             # <<<<<<<<<<<<<<
  *                 logger.debug('SEARCH(): %r', command)
  *             try:
 */
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 811, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_10 = __Pyx_GetItemInt(__pyx_t_11, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 811, __pyx_L6_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 814, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_10);
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_cstack); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 811, __pyx_L6_error)
-        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_10, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 814, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (likely(PyList_CheckExact(__pyx_t_11)) || PyTuple_CheckExact(__pyx_t_11)) {
-          __pyx_t_10 = __pyx_t_11; __Pyx_INCREF(__pyx_t_10);
-          __pyx_t_17 = 0;
-          __pyx_t_18 = NULL;
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_cstack); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 814, __pyx_L6_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        if (likely(PyList_CheckExact(__pyx_t_10)) || PyTuple_CheckExact(__pyx_t_10)) {
+          __pyx_t_9 = __pyx_t_10; __Pyx_INCREF(__pyx_t_9);
+          __pyx_t_16 = 0;
+          __pyx_t_17 = NULL;
         } else {
-          __pyx_t_17 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 811, __pyx_L6_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_18 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_10); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 811, __pyx_L6_error)
+          __pyx_t_16 = -1; __pyx_t_9 = PyObject_GetIter(__pyx_t_10); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 814, __pyx_L6_error)
+          __Pyx_GOTREF(__pyx_t_9);
+          __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_9); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 814, __pyx_L6_error)
         }
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         for (;;) {
-          if (likely(!__pyx_t_18)) {
-            if (likely(PyList_CheckExact(__pyx_t_10))) {
+          if (likely(!__pyx_t_17)) {
+            if (likely(PyList_CheckExact(__pyx_t_9))) {
               {
-                Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_10);
+                Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_9);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 811, __pyx_L6_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 814, __pyx_L6_error)
                 #endif
-                if (__pyx_t_17 >= __pyx_temp) break;
+                if (__pyx_t_16 >= __pyx_temp) break;
               }
-              __pyx_t_11 = __Pyx_PyList_GetItemRef(__pyx_t_10, __pyx_t_17);
-              ++__pyx_t_17;
+              __pyx_t_10 = __Pyx_PyList_GetItemRef(__pyx_t_9, __pyx_t_16);
+              ++__pyx_t_16;
             } else {
               {
-                Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_10);
+                Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_9);
                 #if !CYTHON_ASSUME_SAFE_SIZE
-                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 811, __pyx_L6_error)
+                if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 814, __pyx_L6_error)
                 #endif
-                if (__pyx_t_17 >= __pyx_temp) break;
+                if (__pyx_t_16 >= __pyx_temp) break;
               }
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_11 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_17));
+              __pyx_t_10 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_9, __pyx_t_16));
               #else
-              __pyx_t_11 = __Pyx_PySequence_ITEM(__pyx_t_10, __pyx_t_17);
+              __pyx_t_10 = __Pyx_PySequence_ITEM(__pyx_t_9, __pyx_t_16);
               #endif
-              ++__pyx_t_17;
+              ++__pyx_t_16;
             }
-            if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 811, __pyx_L6_error)
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 814, __pyx_L6_error)
           } else {
-            __pyx_t_11 = __pyx_t_18(__pyx_t_10);
-            if (unlikely(!__pyx_t_11)) {
+            __pyx_t_10 = __pyx_t_17(__pyx_t_9);
+            if (unlikely(!__pyx_t_10)) {
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
-                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 811, __pyx_L6_error)
+                if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 814, __pyx_L6_error)
                 PyErr_Clear();
               }
               break;
             }
           }
-          __Pyx_GOTREF(__pyx_t_11);
-          __Pyx_DECREF_SET(__pyx_v_command, __pyx_t_11);
-          __pyx_t_11 = 0;
+          __Pyx_GOTREF(__pyx_t_10);
+          __Pyx_DECREF_SET(__pyx_v_command, __pyx_t_10);
+          __pyx_t_10 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":812
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":815
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
  *             for command in [-1].cstack:
  *                 logger.debug('SEARCH(): %r', command)             # <<<<<<<<<<<<<<
  *             try:
  *                 _globals[''] =
 */
-          __pyx_t_16 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 812, __pyx_L6_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_debug); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 812, __pyx_L6_error)
-          __Pyx_GOTREF(__pyx_t_14);
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_13 = 1;
+          __pyx_t_15 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 815, __pyx_L6_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_debug); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 815, __pyx_L6_error)
+          __Pyx_GOTREF(__pyx_t_13);
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __pyx_t_12 = 1;
           #if CYTHON_UNPACK_METHODS
-          if (unlikely(PyMethod_Check(__pyx_t_14))) {
-            __pyx_t_16 = PyMethod_GET_SELF(__pyx_t_14);
-            assert(__pyx_t_16);
-            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_14);
-            __Pyx_INCREF(__pyx_t_16);
+          if (unlikely(PyMethod_Check(__pyx_t_13))) {
+            __pyx_t_15 = PyMethod_GET_SELF(__pyx_t_13);
+            assert(__pyx_t_15);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
+            __Pyx_INCREF(__pyx_t_15);
             __Pyx_INCREF(__pyx__function);
-            __Pyx_DECREF_SET(__pyx_t_14, __pyx__function);
-            __pyx_t_13 = 0;
+            __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
+            __pyx_t_12 = 0;
           }
           #endif
           {
-            PyObject *__pyx_callargs[3] = {__pyx_t_16, __pyx_mstate_global->__pyx_kp_u_SEARCH_r, __pyx_v_command};
-            __pyx_t_11 = __Pyx_PyObject_FastCall(__pyx_t_14, __pyx_callargs+__pyx_t_13, (3-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-            __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-            if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 812, __pyx_L6_error)
-            __Pyx_GOTREF(__pyx_t_11);
+            PyObject *__pyx_callargs[3] = {__pyx_t_15, __pyx_mstate_global->__pyx_kp_u_SEARCH_r, __pyx_v_command};
+            __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_13, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
+            __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 815, __pyx_L6_error)
+            __Pyx_GOTREF(__pyx_t_10);
           }
-          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":811
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":814
  *             if [-1].nl: print()
  *             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
  *             for command in [-1].cstack:             # <<<<<<<<<<<<<<
@@ -49443,9 +49664,9 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
  *             try:
 */
         }
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":813
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":816
  *             for command in [-1].cstack:
  *                 logger.debug('SEARCH(): %r', command)
  *             try:             # <<<<<<<<<<<<<<
@@ -49455,165 +49676,165 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
         {
           __Pyx_PyThreadState_declare
           __Pyx_PyThreadState_assign
-          __Pyx_ExceptionSave(&__pyx_t_19, &__pyx_t_20, &__pyx_t_21);
+          __Pyx_ExceptionSave(&__pyx_t_18, &__pyx_t_19, &__pyx_t_20);
+          __Pyx_XGOTREF(__pyx_t_18);
           __Pyx_XGOTREF(__pyx_t_19);
           __Pyx_XGOTREF(__pyx_t_20);
-          __Pyx_XGOTREF(__pyx_t_21);
           /*try:*/ {
 
-            /* "SNOBOL4python/SNOBOL4patterns.pyx":814
+            /* "SNOBOL4python/SNOBOL4patterns.pyx":817
  *                 logger.debug('SEARCH(): %r', command)
  *             try:
  *                 _globals[''] =             # <<<<<<<<<<<<<<
  *                 _globals['STRING'] = STRING
  *                 for command in [-1].cstack:
 */
-            __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 814, __pyx_L18_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 817, __pyx_L18_error)
+            __Pyx_GOTREF(__pyx_t_9);
+            __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 817, __pyx_L18_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 814, __pyx_L18_error)
-            __Pyx_GOTREF(__pyx_t_11);
-            if (unlikely((PyObject_SetItem(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_, __pyx_t_10) < 0))) __PYX_ERR(0, 814, __pyx_L18_error)
-            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            if (unlikely((PyObject_SetItem(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_, __pyx_t_9) < 0))) __PYX_ERR(0, 817, __pyx_L18_error)
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-            /* "SNOBOL4python/SNOBOL4patterns.pyx":815
+            /* "SNOBOL4python/SNOBOL4patterns.pyx":818
  *             try:
  *                 _globals[''] =
  *                 _globals['STRING'] = STRING             # <<<<<<<<<<<<<<
  *                 for command in [-1].cstack:
  *                     if isinstance(command, str): exec(command, _globals)
 */
-            __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_STRING); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 815, __pyx_L18_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_STRING); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 818, __pyx_L18_error)
+            __Pyx_GOTREF(__pyx_t_9);
+            __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 818, __pyx_L18_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 815, __pyx_L18_error)
-            __Pyx_GOTREF(__pyx_t_11);
-            if (unlikely((PyObject_SetItem(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_STRING, __pyx_t_10) < 0))) __PYX_ERR(0, 815, __pyx_L18_error)
-            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            if (unlikely((PyObject_SetItem(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_STRING, __pyx_t_9) < 0))) __PYX_ERR(0, 818, __pyx_L18_error)
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-            /* "SNOBOL4python/SNOBOL4patterns.pyx":816
+            /* "SNOBOL4python/SNOBOL4patterns.pyx":819
  *                 _globals[''] =
  *                 _globals['STRING'] = STRING
  *                 for command in [-1].cstack:             # <<<<<<<<<<<<<<
  *                     if isinstance(command, str): exec(command, _globals)
  *                     elif callable(command): command()
 */
-            __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 816, __pyx_L18_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 819, __pyx_L18_error)
+            __Pyx_GOTREF(__pyx_t_9);
+            __pyx_t_10 = __Pyx_GetItemInt(__pyx_t_9, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 819, __pyx_L18_error)
             __Pyx_GOTREF(__pyx_t_10);
-            __pyx_t_11 = __Pyx_GetItemInt(__pyx_t_10, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 816, __pyx_L18_error)
-            __Pyx_GOTREF(__pyx_t_11);
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+            __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_cstack); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 819, __pyx_L18_error)
+            __Pyx_GOTREF(__pyx_t_9);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_cstack); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 816, __pyx_L18_error)
-            __Pyx_GOTREF(__pyx_t_10);
-            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-            if (likely(PyList_CheckExact(__pyx_t_10)) || PyTuple_CheckExact(__pyx_t_10)) {
-              __pyx_t_11 = __pyx_t_10; __Pyx_INCREF(__pyx_t_11);
-              __pyx_t_17 = 0;
-              __pyx_t_18 = NULL;
+            if (likely(PyList_CheckExact(__pyx_t_9)) || PyTuple_CheckExact(__pyx_t_9)) {
+              __pyx_t_10 = __pyx_t_9; __Pyx_INCREF(__pyx_t_10);
+              __pyx_t_16 = 0;
+              __pyx_t_17 = NULL;
             } else {
-              __pyx_t_17 = -1; __pyx_t_11 = PyObject_GetIter(__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 816, __pyx_L18_error)
-              __Pyx_GOTREF(__pyx_t_11);
-              __pyx_t_18 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_11); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 816, __pyx_L18_error)
+              __pyx_t_16 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 819, __pyx_L18_error)
+              __Pyx_GOTREF(__pyx_t_10);
+              __pyx_t_17 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_10); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 819, __pyx_L18_error)
             }
-            __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
             for (;;) {
-              if (likely(!__pyx_t_18)) {
-                if (likely(PyList_CheckExact(__pyx_t_11))) {
+              if (likely(!__pyx_t_17)) {
+                if (likely(PyList_CheckExact(__pyx_t_10))) {
                   {
-                    Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_11);
+                    Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_10);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 816, __pyx_L18_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 819, __pyx_L18_error)
                     #endif
-                    if (__pyx_t_17 >= __pyx_temp) break;
+                    if (__pyx_t_16 >= __pyx_temp) break;
                   }
-                  __pyx_t_10 = __Pyx_PyList_GetItemRef(__pyx_t_11, __pyx_t_17);
-                  ++__pyx_t_17;
+                  __pyx_t_9 = __Pyx_PyList_GetItemRef(__pyx_t_10, __pyx_t_16);
+                  ++__pyx_t_16;
                 } else {
                   {
-                    Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_11);
+                    Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_10);
                     #if !CYTHON_ASSUME_SAFE_SIZE
-                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 816, __pyx_L18_error)
+                    if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 819, __pyx_L18_error)
                     #endif
-                    if (__pyx_t_17 >= __pyx_temp) break;
+                    if (__pyx_t_16 >= __pyx_temp) break;
                   }
                   #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                  __pyx_t_10 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_11, __pyx_t_17));
+                  __pyx_t_9 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_16));
                   #else
-                  __pyx_t_10 = __Pyx_PySequence_ITEM(__pyx_t_11, __pyx_t_17);
+                  __pyx_t_9 = __Pyx_PySequence_ITEM(__pyx_t_10, __pyx_t_16);
                   #endif
-                  ++__pyx_t_17;
+                  ++__pyx_t_16;
                 }
-                if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 816, __pyx_L18_error)
+                if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 819, __pyx_L18_error)
               } else {
-                __pyx_t_10 = __pyx_t_18(__pyx_t_11);
-                if (unlikely(!__pyx_t_10)) {
+                __pyx_t_9 = __pyx_t_17(__pyx_t_10);
+                if (unlikely(!__pyx_t_9)) {
                   PyObject* exc_type = PyErr_Occurred();
                   if (exc_type) {
-                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 816, __pyx_L18_error)
+                    if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 819, __pyx_L18_error)
                     PyErr_Clear();
                   }
                   break;
                 }
               }
-              __Pyx_GOTREF(__pyx_t_10);
-              __Pyx_DECREF_SET(__pyx_v_command, __pyx_t_10);
-              __pyx_t_10 = 0;
+              __Pyx_GOTREF(__pyx_t_9);
+              __Pyx_DECREF_SET(__pyx_v_command, __pyx_t_9);
+              __pyx_t_9 = 0;
 
-              /* "SNOBOL4python/SNOBOL4patterns.pyx":817
+              /* "SNOBOL4python/SNOBOL4patterns.pyx":820
  *                 _globals['STRING'] = STRING
  *                 for command in [-1].cstack:
  *                     if isinstance(command, str): exec(command, _globals)             # <<<<<<<<<<<<<<
  *                     elif callable(command): command()
  *             except Exception as e:
 */
-              __pyx_t_2 = PyUnicode_Check(__pyx_v_command);
+              __pyx_t_2 = PyUnicode_Check(__pyx_v_command); 
               if (__pyx_t_2) {
-                __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 817, __pyx_L18_error)
-                __Pyx_GOTREF(__pyx_t_10);
-                __pyx_t_14 = __Pyx_PyExec2(__pyx_v_command, __pyx_t_10); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 817, __pyx_L18_error)
-                __Pyx_GOTREF(__pyx_t_14);
-                __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-                __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+                __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_globals); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 820, __pyx_L18_error)
+                __Pyx_GOTREF(__pyx_t_9);
+                __pyx_t_13 = __Pyx_PyExec2(__pyx_v_command, __pyx_t_9); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 820, __pyx_L18_error)
+                __Pyx_GOTREF(__pyx_t_13);
+                __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
                 goto __pyx_L28;
               }
 
-              /* "SNOBOL4python/SNOBOL4patterns.pyx":818
+              /* "SNOBOL4python/SNOBOL4patterns.pyx":821
  *                 for command in [-1].cstack:
  *                     if isinstance(command, str): exec(command, _globals)
  *                     elif callable(command): command()             # <<<<<<<<<<<<<<
  *             except Exception as e:
  *                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
 */
-              __pyx_t_2 = __Pyx_PyCallable_Check(__pyx_v_command); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 818, __pyx_L18_error)
+              __pyx_t_2 = __Pyx_PyCallable_Check(__pyx_v_command); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 821, __pyx_L18_error)
               if (__pyx_t_2) {
-                __pyx_t_10 = NULL;
+                __pyx_t_9 = NULL;
                 __Pyx_INCREF(__pyx_v_command);
-                __pyx_t_16 = __pyx_v_command;
-                __pyx_t_13 = 1;
+                __pyx_t_15 = __pyx_v_command; 
+                __pyx_t_12 = 1;
                 #if CYTHON_UNPACK_METHODS
-                if (unlikely(PyMethod_Check(__pyx_t_16))) {
-                  __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_16);
-                  assert(__pyx_t_10);
-                  PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_16);
-                  __Pyx_INCREF(__pyx_t_10);
+                if (unlikely(PyMethod_Check(__pyx_t_15))) {
+                  __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_15);
+                  assert(__pyx_t_9);
+                  PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_15);
+                  __Pyx_INCREF(__pyx_t_9);
                   __Pyx_INCREF(__pyx__function);
-                  __Pyx_DECREF_SET(__pyx_t_16, __pyx__function);
-                  __pyx_t_13 = 0;
+                  __Pyx_DECREF_SET(__pyx_t_15, __pyx__function);
+                  __pyx_t_12 = 0;
                 }
                 #endif
                 {
-                  PyObject *__pyx_callargs[2] = {__pyx_t_10, NULL};
-                  __pyx_t_14 = __Pyx_PyObject_FastCall(__pyx_t_16, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-                  __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-                  __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-                  if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 818, __pyx_L18_error)
-                  __Pyx_GOTREF(__pyx_t_14);
+                  PyObject *__pyx_callargs[2] = {__pyx_t_9, NULL};
+                  __pyx_t_13 = __Pyx_PyObject_FastCall(__pyx_t_15, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+                  __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+                  __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+                  if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 821, __pyx_L18_error)
+                  __Pyx_GOTREF(__pyx_t_13);
                 }
-                __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
               }
               __pyx_L28:;
 
-              /* "SNOBOL4python/SNOBOL4patterns.pyx":816
+              /* "SNOBOL4python/SNOBOL4patterns.pyx":819
  *                 _globals[''] =
  *                 _globals['STRING'] = STRING
  *                 for command in [-1].cstack:             # <<<<<<<<<<<<<<
@@ -49621,9 +49842,9 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
  *                     elif callable(command): command()
 */
             }
-            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-            /* "SNOBOL4python/SNOBOL4patterns.pyx":813
+            /* "SNOBOL4python/SNOBOL4patterns.pyx":816
  *             for command in [-1].cstack:
  *                 logger.debug('SEARCH(): %r', command)
  *             try:             # <<<<<<<<<<<<<<
@@ -49631,73 +49852,73 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
  *                 _globals['STRING'] = STRING
 */
           }
+          __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
           __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
           __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
-          __Pyx_XDECREF(__pyx_t_21); __pyx_t_21 = 0;
           goto __pyx_L25_try_end;
           __pyx_L18_error:;
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-          __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-          __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
+          __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+          __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
+          __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":819
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":822
  *                     if isinstance(command, str): exec(command, _globals)
  *                     elif callable(command): command()
  *             except Exception as e:             # <<<<<<<<<<<<<<
  *                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
  *             break
 */
-          __pyx_t_22 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
-          if (__pyx_t_22) {
+          __pyx_t_21 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
+          if (__pyx_t_21) {
             __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.SEARCH", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_14, &__pyx_t_16) < 0) __PYX_ERR(0, 819, __pyx_L20_except_error)
-            __Pyx_XGOTREF(__pyx_t_11);
-            __Pyx_XGOTREF(__pyx_t_14);
-            __Pyx_XGOTREF(__pyx_t_16);
-            __Pyx_INCREF(__pyx_t_14);
-            __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_14);
+            if (__Pyx_GetException(&__pyx_t_10, &__pyx_t_13, &__pyx_t_15) < 0) __PYX_ERR(0, 822, __pyx_L20_except_error)
+            __Pyx_XGOTREF(__pyx_t_10);
+            __Pyx_XGOTREF(__pyx_t_13);
+            __Pyx_XGOTREF(__pyx_t_15);
+            __Pyx_INCREF(__pyx_t_13);
+            __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_13);
             /*try:*/ {
 
-              /* "SNOBOL4python/SNOBOL4patterns.pyx":820
+              /* "SNOBOL4python/SNOBOL4patterns.pyx":823
  *                     elif callable(command): command()
  *             except Exception as e:
  *                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)             # <<<<<<<<<<<<<<
  *             break
  *         except StopIteration:
 */
-              __pyx_t_12 = NULL;
-              __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 820, __pyx_L35_error)
+              __pyx_t_11 = NULL;
+              __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 823, __pyx_L35_error)
               __Pyx_GOTREF(__pyx_t_1);
-              __pyx_t_23 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_error); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 820, __pyx_L35_error)
-              __Pyx_GOTREF(__pyx_t_23);
+              __pyx_t_22 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_error); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 823, __pyx_L35_error)
+              __Pyx_GOTREF(__pyx_t_22);
               __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-              __pyx_t_13 = 1;
+              __pyx_t_12 = 1;
               #if CYTHON_UNPACK_METHODS
-              if (unlikely(PyMethod_Check(__pyx_t_23))) {
-                __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_23);
-                assert(__pyx_t_12);
-                PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_23);
-                __Pyx_INCREF(__pyx_t_12);
+              if (unlikely(PyMethod_Check(__pyx_t_22))) {
+                __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_22);
+                assert(__pyx_t_11);
+                PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_22);
+                __Pyx_INCREF(__pyx_t_11);
                 __Pyx_INCREF(__pyx__function);
-                __Pyx_DECREF_SET(__pyx_t_23, __pyx__function);
-                __pyx_t_13 = 0;
+                __Pyx_DECREF_SET(__pyx_t_22, __pyx__function);
+                __pyx_t_12 = 0;
               }
               #endif
               {
-                PyObject *__pyx_callargs[4] = {__pyx_t_12, __pyx_mstate_global->__pyx_kp_u_SEARCH_Exception_r_command_r, __pyx_v_e, __pyx_v_command};
-                __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_23, __pyx_callargs+__pyx_t_13, (4-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-                __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-                __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-                if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 820, __pyx_L35_error)
-                __Pyx_GOTREF(__pyx_t_10);
+                PyObject *__pyx_callargs[4] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u_SEARCH_Exception_r_command_r, __pyx_v_e, __pyx_v_command};
+                __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_22, __pyx_callargs+__pyx_t_12, (4-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+                __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+                __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+                if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 823, __pyx_L35_error)
+                __Pyx_GOTREF(__pyx_t_9);
               }
-              __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+              __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
             }
 
-            /* "SNOBOL4python/SNOBOL4patterns.pyx":819
+            /* "SNOBOL4python/SNOBOL4patterns.pyx":822
  *                     if isinstance(command, str): exec(command, _globals)
  *                     elif callable(command): command()
  *             except Exception as e:             # <<<<<<<<<<<<<<
@@ -49713,45 +49934,45 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
               /*exception exit:*/{
                 __Pyx_PyThreadState_declare
                 __Pyx_PyThreadState_assign
-                __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_31 = 0;
+                __pyx_t_25 = 0; __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0;
                 __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-                __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-                __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-                __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-                 __Pyx_ExceptionSwap(&__pyx_t_29, &__pyx_t_30, &__pyx_t_31);
-                if ( unlikely(__Pyx_GetException(&__pyx_t_26, &__pyx_t_27, &__pyx_t_28) < 0)) __Pyx_ErrFetch(&__pyx_t_26, &__pyx_t_27, &__pyx_t_28);
+                __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+                __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+                __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+                 __Pyx_ExceptionSwap(&__pyx_t_28, &__pyx_t_29, &__pyx_t_30);
+                if ( unlikely(__Pyx_GetException(&__pyx_t_25, &__pyx_t_26, &__pyx_t_27) < 0)) __Pyx_ErrFetch(&__pyx_t_25, &__pyx_t_26, &__pyx_t_27);
+                __Pyx_XGOTREF(__pyx_t_25);
                 __Pyx_XGOTREF(__pyx_t_26);
                 __Pyx_XGOTREF(__pyx_t_27);
                 __Pyx_XGOTREF(__pyx_t_28);
                 __Pyx_XGOTREF(__pyx_t_29);
                 __Pyx_XGOTREF(__pyx_t_30);
-                __Pyx_XGOTREF(__pyx_t_31);
-                __pyx_t_22 = __pyx_lineno; __pyx_t_24 = __pyx_clineno; __pyx_t_25 = __pyx_filename;
+                __pyx_t_21 = __pyx_lineno; __pyx_t_23 = __pyx_clineno; __pyx_t_24 = __pyx_filename;
                 {
                   __Pyx_DECREF(__pyx_v_e); __pyx_v_e = 0;
                 }
+                __Pyx_XGIVEREF(__pyx_t_28);
                 __Pyx_XGIVEREF(__pyx_t_29);
                 __Pyx_XGIVEREF(__pyx_t_30);
-                __Pyx_XGIVEREF(__pyx_t_31);
-                __Pyx_ExceptionReset(__pyx_t_29, __pyx_t_30, __pyx_t_31);
+                __Pyx_ExceptionReset(__pyx_t_28, __pyx_t_29, __pyx_t_30);
+                __Pyx_XGIVEREF(__pyx_t_25);
                 __Pyx_XGIVEREF(__pyx_t_26);
                 __Pyx_XGIVEREF(__pyx_t_27);
-                __Pyx_XGIVEREF(__pyx_t_28);
-                __Pyx_ErrRestore(__pyx_t_26, __pyx_t_27, __pyx_t_28);
-                __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_31 = 0;
-                __pyx_lineno = __pyx_t_22; __pyx_clineno = __pyx_t_24; __pyx_filename = __pyx_t_25;
+                __Pyx_ErrRestore(__pyx_t_25, __pyx_t_26, __pyx_t_27);
+                __pyx_t_25 = 0; __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0;
+                __pyx_lineno = __pyx_t_21; __pyx_clineno = __pyx_t_23; __pyx_filename = __pyx_t_24;
                 goto __pyx_L20_except_error;
               }
               __pyx_L36:;
             }
-            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-            __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-            __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
+            __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+            __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+            __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
             goto __pyx_L19_exception_handled;
           }
           goto __pyx_L20_except_error;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":813
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":816
  *             for command in [-1].cstack:
  *                 logger.debug('SEARCH(): %r', command)
  *             try:             # <<<<<<<<<<<<<<
@@ -49759,20 +49980,20 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
  *                 _globals['STRING'] = STRING
 */
           __pyx_L20_except_error:;
+          __Pyx_XGIVEREF(__pyx_t_18);
           __Pyx_XGIVEREF(__pyx_t_19);
           __Pyx_XGIVEREF(__pyx_t_20);
-          __Pyx_XGIVEREF(__pyx_t_21);
-          __Pyx_ExceptionReset(__pyx_t_19, __pyx_t_20, __pyx_t_21);
+          __Pyx_ExceptionReset(__pyx_t_18, __pyx_t_19, __pyx_t_20);
           goto __pyx_L6_error;
           __pyx_L19_exception_handled:;
+          __Pyx_XGIVEREF(__pyx_t_18);
           __Pyx_XGIVEREF(__pyx_t_19);
           __Pyx_XGIVEREF(__pyx_t_20);
-          __Pyx_XGIVEREF(__pyx_t_21);
-          __Pyx_ExceptionReset(__pyx_t_19, __pyx_t_20, __pyx_t_21);
+          __Pyx_ExceptionReset(__pyx_t_18, __pyx_t_19, __pyx_t_20);
           __pyx_L25_try_end:;
         }
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":821
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":824
  *             except Exception as e:
  *                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
  *             break             # <<<<<<<<<<<<<<
@@ -49781,11 +50002,11 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
 */
         goto __pyx_L11_try_break;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":806
- *     .append(None)
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":809
+ *     command = None
  *     for cursor in range(0, 1+len(S)):
  *         try:             # <<<<<<<<<<<<<<
- *             [-1] = SNOBOL(cursor, S)
+ *             S_push(cursor, S)
  *             slyce = next(P.gamma())
 */
       }
@@ -49793,186 +50014,204 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-      __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-      __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-      __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
+      __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+      __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
+      __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":822
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":825
  *                 logger.error("SEARCH(): Exception: %r, command: %r", e, command)
  *             break
  *         except StopIteration:             # <<<<<<<<<<<<<<
  *             if [-1].nl: print()
  *         except F as e:
 */
-      __pyx_t_24 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_StopIteration);
-      if (__pyx_t_24) {
+      __pyx_t_23 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_StopIteration);
+      if (__pyx_t_23) {
         __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.SEARCH", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_16, &__pyx_t_14, &__pyx_t_11) < 0) __PYX_ERR(0, 822, __pyx_L8_except_error)
-        __Pyx_XGOTREF(__pyx_t_16);
-        __Pyx_XGOTREF(__pyx_t_14);
-        __Pyx_XGOTREF(__pyx_t_11);
+        if (__Pyx_GetException(&__pyx_t_15, &__pyx_t_13, &__pyx_t_10) < 0) __PYX_ERR(0, 825, __pyx_L8_except_error)
+        __Pyx_XGOTREF(__pyx_t_15);
+        __Pyx_XGOTREF(__pyx_t_13);
+        __Pyx_XGOTREF(__pyx_t_10);
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":823
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":826
  *             break
  *         except StopIteration:
  *             if [-1].nl: print()             # <<<<<<<<<<<<<<
  *         except F as e:
  *             if [-1].nl: print()
 */
-        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 823, __pyx_L8_except_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_23 = __Pyx_GetItemInt(__pyx_t_10, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 823, __pyx_L8_except_error)
-        __Pyx_GOTREF(__pyx_t_23);
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_23, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 823, __pyx_L8_except_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 823, __pyx_L8_except_error)
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 826, __pyx_L8_except_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_22 = __Pyx_GetItemInt(__pyx_t_9, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 826, __pyx_L8_except_error)
+        __Pyx_GOTREF(__pyx_t_22);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 826, __pyx_L8_except_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 826, __pyx_L8_except_error)
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         if (__pyx_t_2) {
-          __pyx_t_23 = NULL;
+          __pyx_t_22 = NULL;
           __Pyx_INCREF(__pyx_builtin_print);
-          __pyx_t_12 = __pyx_builtin_print;
-          __pyx_t_13 = 1;
+          __pyx_t_11 = __pyx_builtin_print; 
+          __pyx_t_12 = 1;
           {
-            PyObject *__pyx_callargs[2] = {__pyx_t_23, NULL};
-            __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_12, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-            __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 823, __pyx_L8_except_error)
-            __Pyx_GOTREF(__pyx_t_10);
+            PyObject *__pyx_callargs[2] = {__pyx_t_22, NULL};
+            __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_11, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 826, __pyx_L8_except_error)
+            __Pyx_GOTREF(__pyx_t_9);
           }
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
-        __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-        __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-        __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
+        __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
         goto __pyx_L7_exception_handled;
       }
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":824
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":827
  *         except StopIteration:
  *             if [-1].nl: print()
  *         except F as e:             # <<<<<<<<<<<<<<
  *             if [-1].nl: print()
  *             logger.error("SEARCH(): FAILURE: %r", e)
 */
-      __Pyx_ErrFetch(&__pyx_t_11, &__pyx_t_14, &__pyx_t_16);
-      __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_F); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 824, __pyx_L8_except_error)
-      __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_24 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_11, __pyx_t_10);
-      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_ErrRestore(__pyx_t_11, __pyx_t_14, __pyx_t_16);
-      __pyx_t_11 = 0; __pyx_t_14 = 0; __pyx_t_16 = 0;
-      if (__pyx_t_24) {
+      __Pyx_ErrFetch(&__pyx_t_10, &__pyx_t_13, &__pyx_t_15);
+      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_F); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 827, __pyx_L8_except_error)
+      __Pyx_GOTREF(__pyx_t_9);
+      __pyx_t_23 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_10, __pyx_t_9);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_ErrRestore(__pyx_t_10, __pyx_t_13, __pyx_t_15);
+      __pyx_t_10 = 0; __pyx_t_13 = 0; __pyx_t_15 = 0;
+      if (__pyx_t_23) {
         __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.SEARCH", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_16, &__pyx_t_14, &__pyx_t_11) < 0) __PYX_ERR(0, 824, __pyx_L8_except_error)
-        __Pyx_XGOTREF(__pyx_t_16);
-        __Pyx_XGOTREF(__pyx_t_14);
-        __Pyx_XGOTREF(__pyx_t_11);
-        __Pyx_INCREF(__pyx_t_14);
-        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_14);
+        if (__Pyx_GetException(&__pyx_t_15, &__pyx_t_13, &__pyx_t_10) < 0) __PYX_ERR(0, 827, __pyx_L8_except_error)
+        __Pyx_XGOTREF(__pyx_t_15);
+        __Pyx_XGOTREF(__pyx_t_13);
+        __Pyx_XGOTREF(__pyx_t_10);
+        __Pyx_INCREF(__pyx_t_13);
+        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_13);
         /*try:*/ {
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":825
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":828
  *             if [-1].nl: print()
  *         except F as e:
  *             if [-1].nl: print()             # <<<<<<<<<<<<<<
  *             logger.error("SEARCH(): FAILURE: %r", e)
- *             .pop()
+ *             S_pop()
 */
-          __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 825, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_12 = __Pyx_GetItemInt(__pyx_t_10, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 825, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 825, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 825, __pyx_L49_error)
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 828, __pyx_L49_error)
+          __Pyx_GOTREF(__pyx_t_9);
+          __pyx_t_11 = __Pyx_GetItemInt(__pyx_t_9, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 828, __pyx_L49_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+          __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 828, __pyx_L49_error)
+          __Pyx_GOTREF(__pyx_t_9);
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 828, __pyx_L49_error)
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           if (__pyx_t_2) {
-            __pyx_t_12 = NULL;
+            __pyx_t_11 = NULL;
             __Pyx_INCREF(__pyx_builtin_print);
-            __pyx_t_23 = __pyx_builtin_print;
-            __pyx_t_13 = 1;
+            __pyx_t_22 = __pyx_builtin_print; 
+            __pyx_t_12 = 1;
             {
-              PyObject *__pyx_callargs[2] = {__pyx_t_12, NULL};
-              __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_23, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-              __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-              if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 825, __pyx_L49_error)
-              __Pyx_GOTREF(__pyx_t_10);
+              PyObject *__pyx_callargs[2] = {__pyx_t_11, NULL};
+              __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_22, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+              __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+              if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 828, __pyx_L49_error)
+              __Pyx_GOTREF(__pyx_t_9);
             }
-            __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           }
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":826
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":829
  *         except F as e:
  *             if [-1].nl: print()
  *             logger.error("SEARCH(): FAILURE: %r", e)             # <<<<<<<<<<<<<<
- *             .pop()
+ *             S_pop()
  *             raise
 */
-          __pyx_t_23 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 826, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_mstate_global->__pyx_n_u_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 826, __pyx_L49_error)
+          __pyx_t_22 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 829, __pyx_L49_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_error); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 829, __pyx_L49_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_13 = 1;
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+          __pyx_t_12 = 1;
           #if CYTHON_UNPACK_METHODS
           if (unlikely(PyMethod_Check(__pyx_t_1))) {
-            __pyx_t_23 = PyMethod_GET_SELF(__pyx_t_1);
-            assert(__pyx_t_23);
+            __pyx_t_22 = PyMethod_GET_SELF(__pyx_t_1);
+            assert(__pyx_t_22);
             PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_1);
-            __Pyx_INCREF(__pyx_t_23);
+            __Pyx_INCREF(__pyx_t_22);
             __Pyx_INCREF(__pyx__function);
             __Pyx_DECREF_SET(__pyx_t_1, __pyx__function);
-            __pyx_t_13 = 0;
+            __pyx_t_12 = 0;
           }
           #endif
           {
-            PyObject *__pyx_callargs[3] = {__pyx_t_23, __pyx_mstate_global->__pyx_kp_u_SEARCH_FAILURE_r, __pyx_v_e};
-            __pyx_t_10 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+__pyx_t_13, (3-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
+            PyObject *__pyx_callargs[3] = {__pyx_t_22, __pyx_mstate_global->__pyx_kp_u_SEARCH_FAILURE_r, __pyx_v_e};
+            __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
             __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 826, __pyx_L49_error)
-            __Pyx_GOTREF(__pyx_t_10);
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 829, __pyx_L49_error)
+            __Pyx_GOTREF(__pyx_t_9);
           }
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":827
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":830
  *             if [-1].nl: print()
  *             logger.error("SEARCH(): FAILURE: %r", e)
- *             .pop()             # <<<<<<<<<<<<<<
+ *             S_pop()             # <<<<<<<<<<<<<<
  *             raise
  *         except Exception as e:
 */
-          __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 827, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_1 = __Pyx_PyObject_Pop(__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 827, __pyx_L49_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __pyx_t_1 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_S_pop); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 830, __pyx_L49_error)
+          __Pyx_GOTREF(__pyx_t_22);
+          __pyx_t_12 = 1;
+          #if CYTHON_UNPACK_METHODS
+          if (unlikely(PyMethod_Check(__pyx_t_22))) {
+            __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_22);
+            assert(__pyx_t_1);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_22);
+            __Pyx_INCREF(__pyx_t_1);
+            __Pyx_INCREF(__pyx__function);
+            __Pyx_DECREF_SET(__pyx_t_22, __pyx__function);
+            __pyx_t_12 = 0;
+          }
+          #endif
+          {
+            PyObject *__pyx_callargs[2] = {__pyx_t_1, NULL};
+            __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_22, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 830, __pyx_L49_error)
+            __Pyx_GOTREF(__pyx_t_9);
+          }
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":828
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":831
  *             logger.error("SEARCH(): FAILURE: %r", e)
- *             .pop()
+ *             S_pop()
  *             raise             # <<<<<<<<<<<<<<
  *         except Exception as e:
  *             if [-1].nl: print()
 */
-          __Pyx_GIVEREF(__pyx_t_16);
-          __Pyx_GIVEREF(__pyx_t_14);
-          __Pyx_XGIVEREF(__pyx_t_11);
-          __Pyx_ErrRestoreWithState(__pyx_t_16, __pyx_t_14, __pyx_t_11);
-          __pyx_t_16 = 0;  __pyx_t_14 = 0;  __pyx_t_11 = 0;
-          __PYX_ERR(0, 828, __pyx_L49_error)
+          __Pyx_GIVEREF(__pyx_t_15);
+          __Pyx_GIVEREF(__pyx_t_13);
+          __Pyx_XGIVEREF(__pyx_t_10);
+          __Pyx_ErrRestoreWithState(__pyx_t_15, __pyx_t_13, __pyx_t_10);
+          __pyx_t_15 = 0;  __pyx_t_13 = 0;  __pyx_t_10 = 0; 
+          __PYX_ERR(0, 831, __pyx_L49_error)
         }
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":824
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":827
  *         except StopIteration:
  *             if [-1].nl: print()
  *         except F as e:             # <<<<<<<<<<<<<<
@@ -49984,155 +50223,173 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
           /*exception exit:*/{
             __Pyx_PyThreadState_declare
             __Pyx_PyThreadState_assign
-            __pyx_t_21 = 0; __pyx_t_20 = 0; __pyx_t_19 = 0; __pyx_t_31 = 0; __pyx_t_30 = 0; __pyx_t_29 = 0;
+            __pyx_t_20 = 0; __pyx_t_19 = 0; __pyx_t_18 = 0; __pyx_t_30 = 0; __pyx_t_29 = 0; __pyx_t_28 = 0;
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-            __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-             __Pyx_ExceptionSwap(&__pyx_t_31, &__pyx_t_30, &__pyx_t_29);
-            if ( unlikely(__Pyx_GetException(&__pyx_t_21, &__pyx_t_20, &__pyx_t_19) < 0)) __Pyx_ErrFetch(&__pyx_t_21, &__pyx_t_20, &__pyx_t_19);
-            __Pyx_XGOTREF(__pyx_t_21);
+            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+            __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+             __Pyx_ExceptionSwap(&__pyx_t_30, &__pyx_t_29, &__pyx_t_28);
+            if ( unlikely(__Pyx_GetException(&__pyx_t_20, &__pyx_t_19, &__pyx_t_18) < 0)) __Pyx_ErrFetch(&__pyx_t_20, &__pyx_t_19, &__pyx_t_18);
             __Pyx_XGOTREF(__pyx_t_20);
             __Pyx_XGOTREF(__pyx_t_19);
-            __Pyx_XGOTREF(__pyx_t_31);
+            __Pyx_XGOTREF(__pyx_t_18);
             __Pyx_XGOTREF(__pyx_t_30);
             __Pyx_XGOTREF(__pyx_t_29);
-            __pyx_t_24 = __pyx_lineno; __pyx_t_22 = __pyx_clineno; __pyx_t_32 = __pyx_filename;
+            __Pyx_XGOTREF(__pyx_t_28);
+            __pyx_t_23 = __pyx_lineno; __pyx_t_21 = __pyx_clineno; __pyx_t_31 = __pyx_filename;
             {
               __Pyx_DECREF(__pyx_v_e); __pyx_v_e = 0;
             }
-            __Pyx_XGIVEREF(__pyx_t_31);
             __Pyx_XGIVEREF(__pyx_t_30);
             __Pyx_XGIVEREF(__pyx_t_29);
-            __Pyx_ExceptionReset(__pyx_t_31, __pyx_t_30, __pyx_t_29);
-            __Pyx_XGIVEREF(__pyx_t_21);
+            __Pyx_XGIVEREF(__pyx_t_28);
+            __Pyx_ExceptionReset(__pyx_t_30, __pyx_t_29, __pyx_t_28);
             __Pyx_XGIVEREF(__pyx_t_20);
             __Pyx_XGIVEREF(__pyx_t_19);
-            __Pyx_ErrRestore(__pyx_t_21, __pyx_t_20, __pyx_t_19);
-            __pyx_t_21 = 0; __pyx_t_20 = 0; __pyx_t_19 = 0; __pyx_t_31 = 0; __pyx_t_30 = 0; __pyx_t_29 = 0;
-            __pyx_lineno = __pyx_t_24; __pyx_clineno = __pyx_t_22; __pyx_filename = __pyx_t_32;
+            __Pyx_XGIVEREF(__pyx_t_18);
+            __Pyx_ErrRestore(__pyx_t_20, __pyx_t_19, __pyx_t_18);
+            __pyx_t_20 = 0; __pyx_t_19 = 0; __pyx_t_18 = 0; __pyx_t_30 = 0; __pyx_t_29 = 0; __pyx_t_28 = 0;
+            __pyx_lineno = __pyx_t_23; __pyx_clineno = __pyx_t_21; __pyx_filename = __pyx_t_31;
             goto __pyx_L8_except_error;
           }
         }
       }
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":829
- *             .pop()
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":832
+ *             S_pop()
  *             raise
  *         except Exception as e:             # <<<<<<<<<<<<<<
  *             if [-1].nl: print()
  *             logger.critical("SEARCH(): Exception: %r", e)
 */
-      __pyx_t_22 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
-      if (__pyx_t_22) {
+      __pyx_t_21 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(((PyTypeObject*)PyExc_Exception))));
+      if (__pyx_t_21) {
         __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.SEARCH", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_14, &__pyx_t_16) < 0) __PYX_ERR(0, 829, __pyx_L8_except_error)
-        __Pyx_XGOTREF(__pyx_t_11);
-        __Pyx_XGOTREF(__pyx_t_14);
-        __Pyx_XGOTREF(__pyx_t_16);
-        __Pyx_INCREF(__pyx_t_14);
-        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_14);
+        if (__Pyx_GetException(&__pyx_t_10, &__pyx_t_13, &__pyx_t_15) < 0) __PYX_ERR(0, 832, __pyx_L8_except_error)
+        __Pyx_XGOTREF(__pyx_t_10);
+        __Pyx_XGOTREF(__pyx_t_13);
+        __Pyx_XGOTREF(__pyx_t_15);
+        __Pyx_INCREF(__pyx_t_13);
+        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_13);
         /*try:*/ {
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":830
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":833
  *             raise
  *         except Exception as e:
  *             if [-1].nl: print()             # <<<<<<<<<<<<<<
  *             logger.critical("SEARCH(): Exception: %r", e)
- *             .pop()
+ *             S_pop()
 */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_10 = __Pyx_GetItemInt(__pyx_t_1, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 830, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 830, __pyx_L61_error)
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 833, __pyx_L61_error)
+          __Pyx_GOTREF(__pyx_t_9);
+          __pyx_t_22 = __Pyx_GetItemInt(__pyx_t_9, -1L, long, 1, __Pyx_PyLong_From_long, 0, 1, 1); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 833, __pyx_L61_error)
+          __Pyx_GOTREF(__pyx_t_22);
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+          __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_nl); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 833, __pyx_L61_error)
+          __Pyx_GOTREF(__pyx_t_9);
+          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 833, __pyx_L61_error)
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           if (__pyx_t_2) {
-            __pyx_t_10 = NULL;
+            __pyx_t_22 = NULL;
             __Pyx_INCREF(__pyx_builtin_print);
-            __pyx_t_23 = __pyx_builtin_print;
-            __pyx_t_13 = 1;
+            __pyx_t_1 = __pyx_builtin_print; 
+            __pyx_t_12 = 1;
             {
-              PyObject *__pyx_callargs[2] = {__pyx_t_10, NULL};
-              __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_23, __pyx_callargs+__pyx_t_13, (1-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-              __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-              __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
-              if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L61_error)
-              __Pyx_GOTREF(__pyx_t_1);
+              PyObject *__pyx_callargs[2] = {__pyx_t_22, NULL};
+              __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+              __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+              __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+              if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 833, __pyx_L61_error)
+              __Pyx_GOTREF(__pyx_t_9);
             }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           }
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":831
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":834
  *         except Exception as e:
  *             if [-1].nl: print()
  *             logger.critical("SEARCH(): Exception: %r", e)             # <<<<<<<<<<<<<<
- *             .pop()
+ *             S_pop()
  *             raise
 */
-          __pyx_t_23 = NULL;
-          __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 831, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_10);
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_critical); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 831, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-          __pyx_t_13 = 1;
+          __pyx_t_1 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_logger); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 834, __pyx_L61_error)
+          __Pyx_GOTREF(__pyx_t_22);
+          __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_22, __pyx_mstate_global->__pyx_n_u_critical); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 834, __pyx_L61_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __Pyx_DECREF(__pyx_t_22); __pyx_t_22 = 0;
+          __pyx_t_12 = 1;
           #if CYTHON_UNPACK_METHODS
-          if (unlikely(PyMethod_Check(__pyx_t_12))) {
-            __pyx_t_23 = PyMethod_GET_SELF(__pyx_t_12);
-            assert(__pyx_t_23);
-            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_12);
-            __Pyx_INCREF(__pyx_t_23);
+          if (unlikely(PyMethod_Check(__pyx_t_11))) {
+            __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_11);
+            assert(__pyx_t_1);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_11);
+            __Pyx_INCREF(__pyx_t_1);
             __Pyx_INCREF(__pyx__function);
-            __Pyx_DECREF_SET(__pyx_t_12, __pyx__function);
-            __pyx_t_13 = 0;
+            __Pyx_DECREF_SET(__pyx_t_11, __pyx__function);
+            __pyx_t_12 = 0;
           }
           #endif
           {
-            PyObject *__pyx_callargs[3] = {__pyx_t_23, __pyx_mstate_global->__pyx_kp_u_SEARCH_Exception_r, __pyx_v_e};
-            __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_12, __pyx_callargs+__pyx_t_13, (3-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-            __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 831, __pyx_L61_error)
-            __Pyx_GOTREF(__pyx_t_1);
+            PyObject *__pyx_callargs[3] = {__pyx_t_1, __pyx_mstate_global->__pyx_kp_u_SEARCH_Exception_r, __pyx_v_e};
+            __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_11, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+            __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 834, __pyx_L61_error)
+            __Pyx_GOTREF(__pyx_t_9);
           }
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":832
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":835
  *             if [-1].nl: print()
  *             logger.critical("SEARCH(): Exception: %r", e)
- *             .pop()             # <<<<<<<<<<<<<<
+ *             S_pop()             # <<<<<<<<<<<<<<
  *             raise
- *     .pop()
+ *     S_pop()
 */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 832, __pyx_L61_error)
+          __pyx_t_11 = NULL;
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_mstate_global->__pyx_n_u_S_pop); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 835, __pyx_L61_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_12 = __Pyx_PyObject_Pop(__pyx_t_1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 832, __pyx_L61_error)
-          __Pyx_GOTREF(__pyx_t_12);
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+          __pyx_t_12 = 1;
+          #if CYTHON_UNPACK_METHODS
+          if (unlikely(PyMethod_Check(__pyx_t_1))) {
+            __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_1);
+            assert(__pyx_t_11);
+            PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_1);
+            __Pyx_INCREF(__pyx_t_11);
+            __Pyx_INCREF(__pyx__function);
+            __Pyx_DECREF_SET(__pyx_t_1, __pyx__function);
+            __pyx_t_12 = 0;
+          }
+          #endif
+          {
+            PyObject *__pyx_callargs[2] = {__pyx_t_11, NULL};
+            __pyx_t_9 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 835, __pyx_L61_error)
+            __Pyx_GOTREF(__pyx_t_9);
+          }
+          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-          /* "SNOBOL4python/SNOBOL4patterns.pyx":833
+          /* "SNOBOL4python/SNOBOL4patterns.pyx":836
  *             logger.critical("SEARCH(): Exception: %r", e)
- *             .pop()
+ *             S_pop()
  *             raise             # <<<<<<<<<<<<<<
- *     .pop()
+ *     S_pop()
  *     if exc == True and not slyce: raise F("FAIL")
 */
-          __Pyx_GIVEREF(__pyx_t_11);
-          __Pyx_GIVEREF(__pyx_t_14);
-          __Pyx_XGIVEREF(__pyx_t_16);
-          __Pyx_ErrRestoreWithState(__pyx_t_11, __pyx_t_14, __pyx_t_16);
-          __pyx_t_11 = 0;  __pyx_t_14 = 0;  __pyx_t_16 = 0;
-          __PYX_ERR(0, 833, __pyx_L61_error)
+          __Pyx_GIVEREF(__pyx_t_10);
+          __Pyx_GIVEREF(__pyx_t_13);
+          __Pyx_XGIVEREF(__pyx_t_15);
+          __Pyx_ErrRestoreWithState(__pyx_t_10, __pyx_t_13, __pyx_t_15);
+          __pyx_t_10 = 0;  __pyx_t_13 = 0;  __pyx_t_15 = 0; 
+          __PYX_ERR(0, 836, __pyx_L61_error)
         }
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":829
- *             .pop()
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":832
+ *             S_pop()
  *             raise
  *         except Exception as e:             # <<<<<<<<<<<<<<
  *             if [-1].nl: print()
@@ -50143,143 +50400,161 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
           /*exception exit:*/{
             __Pyx_PyThreadState_declare
             __Pyx_PyThreadState_assign
-            __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_31 = 0; __pyx_t_19 = 0; __pyx_t_20 = 0; __pyx_t_21 = 0;
+            __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_18 = 0; __pyx_t_19 = 0; __pyx_t_20 = 0;
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-            __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-            __Pyx_XDECREF(__pyx_t_23); __pyx_t_23 = 0;
-             __Pyx_ExceptionSwap(&__pyx_t_19, &__pyx_t_20, &__pyx_t_21);
-            if ( unlikely(__Pyx_GetException(&__pyx_t_29, &__pyx_t_30, &__pyx_t_31) < 0)) __Pyx_ErrFetch(&__pyx_t_29, &__pyx_t_30, &__pyx_t_31);
+            __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+            __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
+            __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+             __Pyx_ExceptionSwap(&__pyx_t_18, &__pyx_t_19, &__pyx_t_20);
+            if ( unlikely(__Pyx_GetException(&__pyx_t_28, &__pyx_t_29, &__pyx_t_30) < 0)) __Pyx_ErrFetch(&__pyx_t_28, &__pyx_t_29, &__pyx_t_30);
+            __Pyx_XGOTREF(__pyx_t_28);
             __Pyx_XGOTREF(__pyx_t_29);
             __Pyx_XGOTREF(__pyx_t_30);
-            __Pyx_XGOTREF(__pyx_t_31);
+            __Pyx_XGOTREF(__pyx_t_18);
             __Pyx_XGOTREF(__pyx_t_19);
             __Pyx_XGOTREF(__pyx_t_20);
-            __Pyx_XGOTREF(__pyx_t_21);
-            __pyx_t_22 = __pyx_lineno; __pyx_t_24 = __pyx_clineno; __pyx_t_33 = __pyx_filename;
+            __pyx_t_21 = __pyx_lineno; __pyx_t_23 = __pyx_clineno; __pyx_t_32 = __pyx_filename;
             {
               __Pyx_DECREF(__pyx_v_e); __pyx_v_e = 0;
             }
+            __Pyx_XGIVEREF(__pyx_t_18);
             __Pyx_XGIVEREF(__pyx_t_19);
             __Pyx_XGIVEREF(__pyx_t_20);
-            __Pyx_XGIVEREF(__pyx_t_21);
-            __Pyx_ExceptionReset(__pyx_t_19, __pyx_t_20, __pyx_t_21);
+            __Pyx_ExceptionReset(__pyx_t_18, __pyx_t_19, __pyx_t_20);
+            __Pyx_XGIVEREF(__pyx_t_28);
             __Pyx_XGIVEREF(__pyx_t_29);
             __Pyx_XGIVEREF(__pyx_t_30);
-            __Pyx_XGIVEREF(__pyx_t_31);
-            __Pyx_ErrRestore(__pyx_t_29, __pyx_t_30, __pyx_t_31);
-            __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_31 = 0; __pyx_t_19 = 0; __pyx_t_20 = 0; __pyx_t_21 = 0;
-            __pyx_lineno = __pyx_t_22; __pyx_clineno = __pyx_t_24; __pyx_filename = __pyx_t_33;
+            __Pyx_ErrRestore(__pyx_t_28, __pyx_t_29, __pyx_t_30);
+            __pyx_t_28 = 0; __pyx_t_29 = 0; __pyx_t_30 = 0; __pyx_t_18 = 0; __pyx_t_19 = 0; __pyx_t_20 = 0;
+            __pyx_lineno = __pyx_t_21; __pyx_clineno = __pyx_t_23; __pyx_filename = __pyx_t_32;
             goto __pyx_L8_except_error;
           }
         }
       }
       goto __pyx_L8_except_error;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":806
- *     .append(None)
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":809
+ *     command = None
  *     for cursor in range(0, 1+len(S)):
  *         try:             # <<<<<<<<<<<<<<
- *             [-1] = SNOBOL(cursor, S)
+ *             S_push(cursor, S)
  *             slyce = next(P.gamma())
 */
       __pyx_L8_except_error:;
+      __Pyx_XGIVEREF(__pyx_t_6);
       __Pyx_XGIVEREF(__pyx_t_7);
       __Pyx_XGIVEREF(__pyx_t_8);
-      __Pyx_XGIVEREF(__pyx_t_9);
-      __Pyx_ExceptionReset(__pyx_t_7, __pyx_t_8, __pyx_t_9);
+      __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
       goto __pyx_L1_error;
       __pyx_L11_try_break:;
+      __Pyx_XGIVEREF(__pyx_t_6);
       __Pyx_XGIVEREF(__pyx_t_7);
       __Pyx_XGIVEREF(__pyx_t_8);
-      __Pyx_XGIVEREF(__pyx_t_9);
-      __Pyx_ExceptionReset(__pyx_t_7, __pyx_t_8, __pyx_t_9);
+      __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
       goto __pyx_L5_break;
       __pyx_L7_exception_handled:;
+      __Pyx_XGIVEREF(__pyx_t_6);
       __Pyx_XGIVEREF(__pyx_t_7);
       __Pyx_XGIVEREF(__pyx_t_8);
-      __Pyx_XGIVEREF(__pyx_t_9);
-      __Pyx_ExceptionReset(__pyx_t_7, __pyx_t_8, __pyx_t_9);
+      __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
     }
   }
   __pyx_L5_break:;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":834
- *             .pop()
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":837
+ *             S_pop()
  *             raise
- *     .pop()             # <<<<<<<<<<<<<<
+ *     S_pop()             # <<<<<<<<<<<<<<
  *     if exc == True and not slyce: raise F("FAIL")
  *     return slyce
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 834, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_16);
-  __pyx_t_14 = __Pyx_PyObject_Pop(__pyx_t_16); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 834, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+  __pyx_t_13 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_S_pop); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 837, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_12 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_10))) {
+    __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_10);
+    assert(__pyx_t_13);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
+    __Pyx_INCREF(__pyx_t_13);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
+    __pyx_t_12 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_13, NULL};
+    __pyx_t_15 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+__pyx_t_12, (1-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 837, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_15);
+  }
+  __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":835
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":838
  *             raise
- *     .pop()
+ *     S_pop()
  *     if exc == True and not slyce: raise F("FAIL")             # <<<<<<<<<<<<<<
  *     return slyce
  * #-----------------------------------------------------------------------------------------------------------------------
 */
-  __pyx_t_14 = PyObject_RichCompare(__pyx_v_exc, Py_True, Py_EQ); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 835, __pyx_L1_error)
-  __pyx_t_34 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely((__pyx_t_34 < 0))) __PYX_ERR(0, 835, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-  if (__pyx_t_34) {
+  __pyx_t_15 = PyObject_RichCompare(__pyx_v_exc, Py_True, Py_EQ); __Pyx_XGOTREF(__pyx_t_15); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 838, __pyx_L1_error)
+  __pyx_t_33 = __Pyx_PyObject_IsTrue(__pyx_t_15); if (unlikely((__pyx_t_33 < 0))) __PYX_ERR(0, 838, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+  if (__pyx_t_33) {
   } else {
-    __pyx_t_2 = __pyx_t_34;
+    __pyx_t_2 = __pyx_t_33;
     goto __pyx_L69_bool_binop_done;
   }
-  __pyx_t_34 = __Pyx_PyObject_IsTrue(__pyx_v_slyce); if (unlikely((__pyx_t_34 < 0))) __PYX_ERR(0, 835, __pyx_L1_error)
-  __pyx_t_35 = (!__pyx_t_34);
-  __pyx_t_2 = __pyx_t_35;
+  __pyx_t_33 = __Pyx_PyObject_IsTrue(__pyx_v_slyce); if (unlikely((__pyx_t_33 < 0))) __PYX_ERR(0, 838, __pyx_L1_error)
+  __pyx_t_34 = (!__pyx_t_33);
+  __pyx_t_2 = __pyx_t_34;
   __pyx_L69_bool_binop_done:;
   if (unlikely(__pyx_t_2)) {
-    __pyx_t_16 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_F); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 835, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_13 = 1;
+    __pyx_t_10 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_F); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 838, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __pyx_t_12 = 1;
     #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_11))) {
-      __pyx_t_16 = PyMethod_GET_SELF(__pyx_t_11);
-      assert(__pyx_t_16);
-      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_11);
-      __Pyx_INCREF(__pyx_t_16);
+    if (unlikely(PyMethod_Check(__pyx_t_13))) {
+      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_13);
+      assert(__pyx_t_10);
+      PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
+      __Pyx_INCREF(__pyx_t_10);
       __Pyx_INCREF(__pyx__function);
-      __Pyx_DECREF_SET(__pyx_t_11, __pyx__function);
-      __pyx_t_13 = 0;
+      __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
+      __pyx_t_12 = 0;
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_16, __pyx_mstate_global->__pyx_n_u_FAIL_2};
-      __pyx_t_14 = __Pyx_PyObject_FastCall(__pyx_t_11, __pyx_callargs+__pyx_t_13, (2-__pyx_t_13) | (__pyx_t_13*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 835, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_14);
+      PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_mstate_global->__pyx_n_u_FAIL_2};
+      __pyx_t_15 = __Pyx_PyObject_FastCall(__pyx_t_13, __pyx_callargs+__pyx_t_12, (2-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+      if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 838, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_15);
     }
-    __Pyx_Raise(__pyx_t_14, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __PYX_ERR(0, 835, __pyx_L1_error)
+    __Pyx_Raise(__pyx_t_15, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+    __PYX_ERR(0, 838, __pyx_L1_error)
   }
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":836
- *     .pop()
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":839
+ *     S_pop()
  *     if exc == True and not slyce: raise F("FAIL")
  *     return slyce             # <<<<<<<<<<<<<<
  * #-----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":
 */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PySlice_Check(__pyx_v_slyce))||((__pyx_v_slyce) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_v_slyce))) __PYX_ERR(0, 836, __pyx_L1_error)
+  if (!(likely(PySlice_Check(__pyx_v_slyce))||((__pyx_v_slyce) == Py_None) || __Pyx_RaiseUnexpectedTypeError("slice", __pyx_v_slyce))) __PYX_ERR(0, 839, __pyx_L1_error)
   __Pyx_INCREF(__pyx_v_slyce);
   __pyx_r = ((PyObject*)__pyx_v_slyce);
   goto __pyx_L0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":798
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":802
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:             # <<<<<<<<<<<<<<
@@ -50290,12 +50565,12 @@ static PyObject *__pyx_pf_13SNOBOL4python_15SNOBOL4patterns_18SEARCH(CYTHON_UNUS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_XDECREF(__pyx_t_23);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_XDECREF(__pyx_t_22);
   __Pyx_AddTraceback("SNOBOL4python.SNOBOL4patterns.SEARCH", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -57923,9 +58198,9 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  * #----------------------------------------------------------------------------------------------------------------------
  * class PATTERN(object):
 */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_Umdef_13SNOBOL4python_15SNOBOL4patterns_1_fi4a, 0, __pyx_mstate_global->__pyx_n_u__19, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[40])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_Umdef_13SNOBOL4python_15SNOBOL4patterns_1_fi4a, 0, __pyx_mstate_global->__pyx_n_u__20, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[40])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u__19, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u__20, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":31
@@ -57974,7 +58249,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *     def __invert__(self):           return pi(self) # pi, unary '~', optional, zero or one
  *     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
 */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_5__add__, 0, __pyx_mstate_global->__pyx_n_u_PATTERN___add, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[43])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -57982,11 +58257,11 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":38
- *                                     if isinstance(self, SIGMA):             return SIGMA(*self.AP, other)
+ *                                     if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
  *                                     else:                               return SIGMA(self, other)
  *     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
 */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_7__or__, 0, __pyx_mstate_global->__pyx_n_u_PATTERN___or, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[44])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -57994,11 +58269,11 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":42
- *                                     if isinstance(self, PI):             return PI(*self.AP, other)
+ *                                     if isinstance(self, PI):            return PI(*self.AP, other)
  *                                     else:                               return PI(self, other)
  *     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------             # <<<<<<<<<<<<<<
  *                                     if not isinstance(other, PATTERN):  other = sigma(str(other))
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
 */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_7PATTERN_9__and__, 0, __pyx_mstate_global->__pyx_n_u_PATTERN___and, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[45])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -58006,7 +58281,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":46
- *                                     if isinstance(self, rho):             return rho(*self.AP, other)
+ *                                     if isinstance(self, rho):           return rho(*self.AP, other)
  *                                     else:                               return rho(self, other)
  *     def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------             # <<<<<<<<<<<<<<
  *     def __matmul__(self, other):    return delta(self, other) # delta, binary @, immediate assignment
@@ -58107,7 +58382,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  * class STRING(str):
  *     def __repr__(self):             return str.__repr__(self)             # <<<<<<<<<<<<<<
  *     def __add__(self, other):       # SIGMA
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
 */
   __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_1__repr__, 0, __pyx_mstate_global->__pyx_n_u_STRING___repr, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[51])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
@@ -58118,7 +58393,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  * class STRING(str):
  *     def __repr__(self):             return str.__repr__(self)
  *     def __add__(self, other):       # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(sigma(self), *other.AP)
+ *                                     if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
 */
   __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_3__add__, 0, __pyx_mstate_global->__pyx_n_u_STRING___add, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[52])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 54, __pyx_L1_error)
@@ -58131,7 +58406,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *                                     elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
  *                                     else:                               return STRING(super().__add__(str(other)))
  *     def __radd__(self, other):      # SIGMA             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, SIGMA):            return SIGMA(*other.AP, sigma(self))
+ *                                     if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
 */
   __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_5__radd__, 0, __pyx_mstate_global->__pyx_n_u_STRING___radd, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[53])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L1_error)
@@ -58143,7 +58418,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *                                     elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
  *                                     else:                               return STRING(str(other).__add__(self))
  *     def __or__(self, other):        # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
 */
   __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_7__or__, 0, __pyx_mstate_global->__pyx_n_u_STRING___or, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[54])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 62, __pyx_L1_error)
@@ -58152,10 +58427,10 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":65
- *                                     if isinstance(other, PI):            return PI(sigma(self), *other.AP)
+ *                                     if isinstance(other, PI):           return PI(sigma(self), *other.AP)
  *                                     else:                               return PI(sigma(self), other)
  *     def __xor__(self, other):       # PI             # <<<<<<<<<<<<<<
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
 */
   __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_6STRING_9__xor__, 0, __pyx_mstate_global->__pyx_n_u_STRING___xor, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[55])); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
@@ -58164,7 +58439,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
   /* "SNOBOL4python/SNOBOL4patterns.pyx":68
- *                                     if isinstance(other, PI):            return PI(*other.AP, sigma(self))
+ *                                     if isinstance(other, PI):           return PI(*other.AP, sigma(self))
  *                                     else:                               return PI(other, sigma(self))
  *     def __contains__(self, other):  # in operator             # <<<<<<<<<<<<<<
  *                                     if isinstance(other, PATTERN):      return other.__contains__(self)
@@ -62262,8 +62537,8 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *         self.pop            = _pop
  * #----------------------------------------------------------------------------------------------------------------------
  *  = [] # SNOBOL stack             # <<<<<<<<<<<<<<
- * _globals = None # global variables
- * _window_size = 24 # size of sliding window display for tracing
+ *  = -1
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))
 */
   __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 778, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -62273,65 +62548,104 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
   /* "SNOBOL4python/SNOBOL4patterns.pyx":779
  * #----------------------------------------------------------------------------------------------------------------------
  *  = [] # SNOBOL stack
+ *  = -1             # <<<<<<<<<<<<<<
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))
+ * def S_pop(): global , ; .pop();  -= 1
+*/
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u__16, __pyx_mstate_global->__pyx_int_neg_1) < 0) __PYX_ERR(0, 779, __pyx_L1_error)
+
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":780
+ *  = [] # SNOBOL stack
+ *  = -1
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))             # <<<<<<<<<<<<<<
+ * def S_pop(): global , ; .pop();  -= 1
+ * #----------------------------------------------------------------------------------------------------------------------
+*/
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_pos, __pyx_mstate_global->__pyx_n_u_int) < 0) __PYX_ERR(0, 780, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_subject, __pyx_mstate_global->__pyx_n_u_str) < 0) __PYX_ERR(0, 780, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_11S_push, 0, __pyx_mstate_global->__pyx_n_u_S_push, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[175])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_S_push, __pyx_t_5) < 0) __PYX_ERR(0, 780, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":781
+ *  = -1
+ * def S_push(pos:int, subject:str): global , ;  += 1; .append(SNOBOL(pos, subject))
+ * def S_pop(): global , ; .pop();  -= 1             # <<<<<<<<<<<<<<
+ * #----------------------------------------------------------------------------------------------------------------------
+ * _globals = None # global variables
+*/
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_13S_pop, 0, __pyx_mstate_global->__pyx_n_u_S_pop, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[176])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_S_pop, __pyx_t_5) < 0) __PYX_ERR(0, 781, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":783
+ * def S_pop(): global , ; .pop();  -= 1
+ * #----------------------------------------------------------------------------------------------------------------------
  * _globals = None # global variables             # <<<<<<<<<<<<<<
  * _window_size = 24 # size of sliding window display for tracing
  * #----------------------------------------------------------------------------------------------------------------------
 */
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, Py_None) < 0) __PYX_ERR(0, 779, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_globals, Py_None) < 0) __PYX_ERR(0, 783, __pyx_L1_error)
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":780
- *  = [] # SNOBOL stack
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":784
+ * #----------------------------------------------------------------------------------------------------------------------
  * _globals = None # global variables
  * _window_size = 24 # size of sliding window display for tracing             # <<<<<<<<<<<<<<
  * #----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":
 */
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_window_size, __pyx_mstate_global->__pyx_int_24) < 0) __PYX_ERR(0, 780, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_window_size, __pyx_mstate_global->__pyx_int_24) < 0) __PYX_ERR(0, 784, __pyx_L1_error)
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":782
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":786
  * _window_size = 24 # size of sliding window display for tracing
  * #----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
  *     import SNOBOL4functions
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 782, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_main, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 782, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 786, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_main, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 786, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_9) {
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":783
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":787
  * #----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":
  *     import SNOBOL4functions             # <<<<<<<<<<<<<<
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS
  * else: from .SNOBOL4functions import GLOBALS as F_GLOBALS
 */
-    __pyx_t_2 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 783, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2) < 0) __PYX_ERR(0, 783, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_5 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 787, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5) < 0) __PYX_ERR(0, 787, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":784
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":788
  * if __name__ == "__main__":
  *     import SNOBOL4functions
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS             # <<<<<<<<<<<<<<
  * else: from .SNOBOL4functions import GLOBALS as F_GLOBALS
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
 */
-    __pyx_t_2 = __Pyx_PyList_Pack(1, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 784, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 784, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyList_Pack(1, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 784, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_F_GLOBALS, __pyx_t_2) < 0) __PYX_ERR(0, 784, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 788, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_F_GLOBALS, __pyx_t_5) < 0) __PYX_ERR(0, 788, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":782
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":786
  * _window_size = 24 # size of sliding window display for tracing
  * #----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
@@ -62341,7 +62655,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
     goto __pyx_L2;
   }
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":785
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":789
  *     import SNOBOL4functions
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS
  * else: from .SNOBOL4functions import GLOBALS as F_GLOBALS             # <<<<<<<<<<<<<<
@@ -62349,248 +62663,248 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  * #----------------------------------------------------------------------------------------------------------------------
 */
   /*else*/ {
-    __pyx_t_5 = __Pyx_PyList_Pack(1, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyList_Pack(1, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 789, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 789, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_F_GLOBALS, __pyx_t_5) < 0) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 789, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_F_GLOBALS, __pyx_t_2) < 0) __PYX_ERR(0, 789, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __pyx_L2:;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":786
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":790
  *     from SNOBOL4functions import GLOBALS as F_GLOBALS
  * else: from .SNOBOL4functions import GLOBALS as F_GLOBALS
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g             # <<<<<<<<<<<<<<
  * #----------------------------------------------------------------------------------------------------------------------
  * def TRACE(level:int=None, window:int=None):
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 786, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_g, __pyx_mstate_global->__pyx_n_u_dict) < 0) __PYX_ERR(0, 786, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_11GLOBALS, 0, __pyx_mstate_global->__pyx_n_u_GLOBALS, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[175])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 786, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 790, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_GLOBALS, __pyx_t_5) < 0) __PYX_ERR(0, 786, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_g, __pyx_mstate_global->__pyx_n_u_dict) < 0) __PYX_ERR(0, 790, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15GLOBALS, 0, __pyx_mstate_global->__pyx_n_u_GLOBALS, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[177])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 790, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_GLOBALS, __pyx_t_2) < 0) __PYX_ERR(0, 790, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":788
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":792
  * def GLOBALS(g:dict): F_GLOBALS(g); global _globals; _globals = g
  * #----------------------------------------------------------------------------------------------------------------------
  * def TRACE(level:int=None, window:int=None):             # <<<<<<<<<<<<<<
  *     global _window_size, logger, handler
  *     if window is not None:
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 788, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_level, __pyx_mstate_global->__pyx_n_u_int) < 0) __PYX_ERR(0, 788, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_window, __pyx_mstate_global->__pyx_n_u_int) < 0) __PYX_ERR(0, 788, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_13TRACE, 0, __pyx_mstate_global->__pyx_n_u_TRACE, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[176])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 788, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 792, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[3]);
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_5);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_TRACE, __pyx_t_2) < 0) __PYX_ERR(0, 788, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_level, __pyx_mstate_global->__pyx_n_u_int) < 0) __PYX_ERR(0, 792, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_window, __pyx_mstate_global->__pyx_n_u_int) < 0) __PYX_ERR(0, 792, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_17TRACE, 0, __pyx_mstate_global->__pyx_n_u_TRACE, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[178])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 792, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_mstate_global->__pyx_tuple[3]);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_TRACE, __pyx_t_5) < 0) __PYX_ERR(0, 792, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":796
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":800
  *         handler.setLevel(level)
  * #----------------------------------------------------------------------------------------------------------------------
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)             # <<<<<<<<<<<<<<
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 796, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 796, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 796, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_15MATCH, 0, __pyx_mstate_global->__pyx_n_u_MATCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[177])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_mstate_global->__pyx_tuple[7]);
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_MATCH, __pyx_t_5) < 0) __PYX_ERR(0, 796, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 800, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 800, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_19MATCH, 0, __pyx_mstate_global->__pyx_n_u_MATCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[179])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 800, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[7]);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_MATCH, __pyx_t_2) < 0) __PYX_ERR(0, 800, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":797
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":801
  * #----------------------------------------------------------------------------------------------------------------------
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)             # <<<<<<<<<<<<<<
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
  *     global _globals, ; S = str(S)
 */
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 797, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 797, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 797, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_17FULLMATCH, 0, __pyx_mstate_global->__pyx_n_u_FULLMATCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[178])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 801, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[7]);
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_5);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_FULLMATCH, __pyx_t_2) < 0) __PYX_ERR(0, 797, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 801, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 801, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_21FULLMATCH, 0, __pyx_mstate_global->__pyx_n_u_FULLMATCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[180])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 801, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_mstate_global->__pyx_tuple[7]);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_FULLMATCH, __pyx_t_5) < 0) __PYX_ERR(0, 801, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":798
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":802
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:             # <<<<<<<<<<<<<<
  *     global _globals, ; S = str(S)
  *     if _globals is None:
 */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 798, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 798, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 798, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_19SEARCH, 0, __pyx_mstate_global->__pyx_n_u_SEARCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[179])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 798, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 802, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_mstate_global->__pyx_tuple[7]);
-  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_5, __pyx_t_2);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SEARCH, __pyx_t_5) < 0) __PYX_ERR(0, 798, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_P, __pyx_mstate_global->__pyx_n_u_PATTERN) < 0) __PYX_ERR(0, 802, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_return, __pyx_mstate_global->__pyx_n_u_slice) < 0) __PYX_ERR(0, 802, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_23SEARCH, 0, __pyx_mstate_global->__pyx_n_u_SEARCH, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[181])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 802, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_mstate_global->__pyx_tuple[7]);
+  __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_2, __pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SEARCH, __pyx_t_2) < 0) __PYX_ERR(0, 802, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":838
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":841
  *     return slyce
  * #-----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
  *     import SNOBOL4functions
  *     from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
 */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 838, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_main, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 838, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_main, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 841, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_9) {
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":839
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":842
  * #-----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":
  *     import SNOBOL4functions             # <<<<<<<<<<<<<<
  *     from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
  *     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
 */
-    __pyx_t_5 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 839, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5) < 0) __PYX_ERR(0, 839, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_2 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 842, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2) < 0) __PYX_ERR(0, 842, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":840
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":843
  * if __name__ == "__main__":
  *     import SNOBOL4functions
  *     from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE             # <<<<<<<<<<<<<<
  *     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
  *     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
 */
-    __pyx_t_5 = __Pyx_PyList_Pack(4, __pyx_mstate_global->__pyx_n_u_ALPHABET, __pyx_mstate_global->__pyx_n_u_DIGITS, __pyx_mstate_global->__pyx_n_u_UCASE, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 840, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyList_Pack(4, __pyx_mstate_global->__pyx_n_u_ALPHABET, __pyx_mstate_global->__pyx_n_u_DIGITS, __pyx_mstate_global->__pyx_n_u_UCASE, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_ALPHABET); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 840, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 843, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_ALPHABET, __pyx_t_5) < 0) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_DIGITS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_DIGITS, __pyx_t_5) < 0) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_UCASE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_UCASE, __pyx_t_5) < 0) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_LCASE, __pyx_t_5) < 0) __PYX_ERR(0, 840, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_ALPHABET); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_ALPHABET, __pyx_t_2) < 0) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_DIGITS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_DIGITS, __pyx_t_2) < 0) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_UCASE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_UCASE, __pyx_t_2) < 0) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_LCASE, __pyx_t_2) < 0) __PYX_ERR(0, 843, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":841
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":844
  *     import SNOBOL4functions
  *     from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
  *     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE             # <<<<<<<<<<<<<<
  *     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
  *     GLOBALS(globals())
 */
-    __pyx_t_2 = __Pyx_PyList_Pack(3, __pyx_mstate_global->__pyx_n_u_DEFINE, __pyx_mstate_global->__pyx_n_u_REPLACE, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 841, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyList_Pack(3, __pyx_mstate_global->__pyx_n_u_DEFINE, __pyx_mstate_global->__pyx_n_u_REPLACE, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 844, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_DEFINE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 844, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_DEFINE, __pyx_t_2) < 0) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_REPLACE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_REPLACE, __pyx_t_2) < 0) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE, __pyx_t_2) < 0) __PYX_ERR(0, 841, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_DEFINE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_DEFINE, __pyx_t_5) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_REPLACE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_REPLACE, __pyx_t_5) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_SUBSTITUTE, __pyx_t_5) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":842
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":845
  *     from SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
  *     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
  *     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN             # <<<<<<<<<<<<<<
  *     GLOBALS(globals())
  *     TRACE(40)
 */
-    __pyx_t_5 = __Pyx_PyList_Pack(4, __pyx_mstate_global->__pyx_n_u_END, __pyx_mstate_global->__pyx_n_u_RETURN, __pyx_mstate_global->__pyx_n_u_FRETURN, __pyx_mstate_global->__pyx_n_u_NRETURN); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_5, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 842, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyList_Pack(4, __pyx_mstate_global->__pyx_n_u_END, __pyx_mstate_global->__pyx_n_u_RETURN, __pyx_mstate_global->__pyx_n_u_FRETURN, __pyx_mstate_global->__pyx_n_u_NRETURN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_END); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 842, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_SNOBOL4functions, __pyx_t_2, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 845, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_END, __pyx_t_5) < 0) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_RETURN); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_RETURN, __pyx_t_5) < 0) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_FRETURN); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_FRETURN, __pyx_t_5) < 0) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_ImportFrom(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_NRETURN); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_NRETURN, __pyx_t_5) < 0) __PYX_ERR(0, 842, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_END); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_END, __pyx_t_2) < 0) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_RETURN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_RETURN, __pyx_t_2) < 0) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_FRETURN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_FRETURN, __pyx_t_2) < 0) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_NRETURN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_NRETURN, __pyx_t_2) < 0) __PYX_ERR(0, 845, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":843
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":846
  *     from SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
  *     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
  *     GLOBALS(globals())             # <<<<<<<<<<<<<<
  *     TRACE(40)
  * #   --------------------------------------------------------------------------------------------------------------------
 */
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_GLOBALS); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 846, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_4 = __Pyx_Globals(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_Globals(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 846, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_4};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_4};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 843, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 846, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":844
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":847
  *     from SNOBOL4functions import END, RETURN, FRETURN, NRETURN
  *     GLOBALS(globals())
  *     TRACE(40)             # <<<<<<<<<<<<<<
@@ -62598,38 +62912,38 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *     S = None
 */
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TRACE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 844, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_TRACE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 847, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_int_40};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 844, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 847, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":846
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":849
  *     TRACE(40)
  * #   --------------------------------------------------------------------------------------------------------------------
  *     S = None             # <<<<<<<<<<<<<<
  *     N = None
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
 */
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_S, Py_None) < 0) __PYX_ERR(0, 846, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_S, Py_None) < 0) __PYX_ERR(0, 849, __pyx_L1_error)
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":847
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":850
  * #   --------------------------------------------------------------------------------------------------------------------
  *     S = None
  *     N = None             # <<<<<<<<<<<<<<
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))
 */
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_N, Py_None) < 0) __PYX_ERR(0, 847, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_N, Py_None) < 0) __PYX_ERR(0, 850, __pyx_L1_error)
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":848
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":851
  *     S = None
  *     N = None
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))             # <<<<<<<<<<<<<<
@@ -62637,455 +62951,455 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
 */
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ANY_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_ANY_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 848, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_LCASE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_t_5};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_t_2};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 848, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_6 = PyNumber_Remainder(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Remainder(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_20lambda2, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[180])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_24lambda2, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[182])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_8};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_8};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 848, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_V, __pyx_t_4) < 0) __PYX_ERR(0, 848, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_V, __pyx_t_4) < 0) __PYX_ERR(0, 851, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":849
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":852
  *     N = None
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))             # <<<<<<<<<<<<<<
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
 */
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_SPAN_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 849, __pyx_L1_error)
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_SPAN_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_DIGITS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 849, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_DIGITS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 852, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_8};
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_8};
       __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 849, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_6 = PyNumber_Remainder(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 849, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Remainder(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_N); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_8 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 849, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_21lambda3, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[181])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 849, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 852, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_25lambda3, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[183])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_t_5};
-      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_t_2};
+      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 849, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_2 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 849, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = PyNumber_Add(__pyx_t_6, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_I, __pyx_t_2) < 0) __PYX_ERR(0, 849, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_I, __pyx_t_5) < 0) __PYX_ERR(0, 852, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":850
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":853
  *     V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))             # <<<<<<<<<<<<<<
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
  *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_V); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_I); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = PyNumber_Or(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 850, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 850, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_V); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_I); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_6 = PyNumber_Or(__pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__7};
-      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L1_error)
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u__7};
+      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 853, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 850, __pyx_L1_error)
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 853, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 850, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 850, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 853, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__3};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 850, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_2 = PyNumber_Add(__pyx_t_8, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Or(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 850, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_E, __pyx_t_5) < 0) __PYX_ERR(0, 850, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_Or(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_E, __pyx_t_2) < 0) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":851
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":854
  *     I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))             # <<<<<<<<<<<<<<
  *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
  *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u__20};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u__21};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 854, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 854, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_6 = PyNumber_Add(__pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Add(__pyx_t_8, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_8 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_22lambda4, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[182])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 851, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_26lambda4, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[184])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_t_4};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 854, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_5 = PyNumber_Add(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":852
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":855
  *     E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
  *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))             # <<<<<<<<<<<<<<
  *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__21};
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__22};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 855, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 855, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_8 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_23lambda5, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[183])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_27lambda5, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[185])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_t_3};
-      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 855, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_2 = PyNumber_Add(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = PyNumber_Add(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyNumber_Or(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 852, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Or(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":853
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":856
  *     X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
  *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
  *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))             # <<<<<<<<<<<<<<
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
  *         | sigma('+') + zeta("X")
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__22};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__23};
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_24lambda6, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[184])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_28lambda6, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[186])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_t_8};
-      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_2 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Or(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Add(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyNumber_Or(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":854
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":857
  *         | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
  *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))             # <<<<<<<<<<<<<<
  *         | sigma('+') + zeta("X")
  *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__23};
+      PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u__24};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_2 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __pyx_t_5 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_8 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_25lambda7, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[185])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_29lambda7, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[187])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_t_3};
-      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_2 = PyNumber_Add(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_5 = PyNumber_Add(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyNumber_Or(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 854, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Or(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":855
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":858
  *         | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
  *         | sigma('+') + zeta("X")             # <<<<<<<<<<<<<<
  *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
  *         | E
 */
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 858, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u__20};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__21};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 855, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 858, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 858, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X};
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X};
       __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 858, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 858, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Or(__pyx_t_6, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 855, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Or(__pyx_t_6, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 858, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":856
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":859
  *         | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
  *         | sigma('+') + zeta("X")
  *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))             # <<<<<<<<<<<<<<
@@ -63093,74 +63407,74 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *         )
 */
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u__21};
-      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u__22};
+      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 856, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 859, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_zeta_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_n_u_X};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 856, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_3 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 859, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_26lambda8, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[186])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_30lambda8, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[188])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 859, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_t_8};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_6 = PyNumber_Add(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 856, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Add(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 859, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Or(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 856, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyNumber_Or(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":857
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":860
  *         | sigma('+') + zeta("X")
  *         | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
  *         | E             # <<<<<<<<<<<<<<
  *         )
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
 */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_E); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 860, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_4 = PyNumber_Or(__pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 857, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Or(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 860, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_X, __pyx_t_4) < 0) __PYX_ERR(0, 851, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_X, __pyx_t_4) < 0) __PYX_ERR(0, 854, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":859
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":862
  *         | E
  *         )
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)             # <<<<<<<<<<<<<<
@@ -63168,89 +63482,89 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
 */
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_int_0};
-      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 859, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 862, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     }
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_kp_u_S_2};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_5 = PyNumber_Add(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 859, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_X); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyNumber_Add(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 859, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_X); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_4 = PyNumber_Add(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 862, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_llambda_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_27lambda9, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[187])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_13SNOBOL4python_15SNOBOL4patterns_31lambda9, 0, __pyx_mstate_global->__pyx_n_u_lambda, NULL, __pyx_mstate_global->__pyx_n_u_SNOBOL4python_SNOBOL4patterns, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[189])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_8};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_8};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_int_0};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 862, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 859, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_C, __pyx_t_8) < 0) __PYX_ERR(0, 859, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_C, __pyx_t_8) < 0) __PYX_ERR(0, 862, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":860
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":863
  *         )
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
  *     x = 1; y = 2; z = 3             # <<<<<<<<<<<<<<
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
  *         if not s in C:
 */
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_x, __pyx_mstate_global->__pyx_int_1) < 0) __PYX_ERR(0, 860, __pyx_L1_error)
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_y, __pyx_mstate_global->__pyx_int_2) < 0) __PYX_ERR(0, 860, __pyx_L1_error)
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_z, __pyx_mstate_global->__pyx_int_3) < 0) __PYX_ERR(0, 860, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_x, __pyx_mstate_global->__pyx_int_1) < 0) __PYX_ERR(0, 863, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_y, __pyx_mstate_global->__pyx_int_2) < 0) __PYX_ERR(0, 863, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_z, __pyx_mstate_global->__pyx_int_3) < 0) __PYX_ERR(0, 863, __pyx_L1_error)
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":861
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":864
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
  *     x = 1; y = 2; z = 3
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:             # <<<<<<<<<<<<<<
@@ -63262,54 +63576,54 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
     for (;;) {
       if (__pyx_t_10 >= 3) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_2 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_10));
+      __pyx_t_5 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_10));
       #else
-      __pyx_t_2 = __Pyx_PySequence_ITEM(__pyx_t_8, __pyx_t_10);
+      __pyx_t_5 = __Pyx_PySequence_ITEM(__pyx_t_8, __pyx_t_10);
       #endif
       ++__pyx_t_10;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 861, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_s, __pyx_t_2) < 0) __PYX_ERR(0, 861, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 864, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_s, __pyx_t_5) < 0) __PYX_ERR(0, 864, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":862
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":865
  *     x = 1; y = 2; z = 3
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
  *         if not s in C:             # <<<<<<<<<<<<<<
  *             print("Boo!")
  *     exit(0)
 */
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_s); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_C); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 862, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_s); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 865, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_C); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 865, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_t_2, __pyx_t_6, Py_NE)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 862, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_t_5, __pyx_t_6, Py_NE)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 865, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (__pyx_t_9) {
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":863
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":866
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
  *         if not s in C:
  *             print("Boo!")             # <<<<<<<<<<<<<<
  *     exit(0)
  * #   --------------------------------------------------------------------------------------------------------------------
 */
-        __pyx_t_2 = NULL;
+        __pyx_t_5 = NULL;
         __Pyx_INCREF(__pyx_builtin_print);
-        __pyx_t_4 = __pyx_builtin_print;
+        __pyx_t_4 = __pyx_builtin_print; 
         __pyx_t_7 = 1;
         {
-          PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_Boo};
+          PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_Boo};
           __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-          __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+          __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 863, __pyx_L1_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 866, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "SNOBOL4python/SNOBOL4patterns.pyx":862
+        /* "SNOBOL4python/SNOBOL4patterns.pyx":865
  *     x = 1; y = 2; z = 3
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
  *         if not s in C:             # <<<<<<<<<<<<<<
@@ -63318,7 +63632,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
       }
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":861
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":864
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
  *     x = 1; y = 2; z = 3
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:             # <<<<<<<<<<<<<<
@@ -63328,7 +63642,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":864
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":867
  *         if not s in C:
  *             print("Boo!")
  *     exit(0)             # <<<<<<<<<<<<<<
@@ -63337,28 +63651,28 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
     __pyx_t_6 = NULL;
     __Pyx_INCREF(__pyx_builtin_exit);
-    __pyx_t_4 = __pyx_builtin_exit;
+    __pyx_t_4 = __pyx_builtin_exit; 
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_int_0};
       __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 864, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 867, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":866
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":869
  *     exit(0)
  * #   --------------------------------------------------------------------------------------------------------------------
  *     name = None             # <<<<<<<<<<<<<<
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
 */
-    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_name_2, Py_None) < 0) __PYX_ERR(0, 866, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_name_2, Py_None) < 0) __PYX_ERR(0, 869, __pyx_L1_error)
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":867
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":870
  * #   --------------------------------------------------------------------------------------------------------------------
  *     name = None
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):             # <<<<<<<<<<<<<<
@@ -63366,7 +63680,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
 */
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 867, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = 1;
     {
@@ -63374,89 +63688,89 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
       __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 867, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 870, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_SPAN_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 867, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_SPAN_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 870, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ABCDEFGHIJKLMNOPQRSTUVWXYZ};
-      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 867, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 870, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 867, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 870, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_kp_u_4};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 867, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 870, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_5 = PyNumber_Add(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 867, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Remainder(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 867, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 867, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Remainder(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyNumber_Add(__pyx_t_8, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 870, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_8 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 867, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_8, __pyx_mstate_global->__pyx_int_0};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 867, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 870, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_6 = PyNumber_Add(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 867, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Add(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u_SNOBOL4, __pyx_t_6, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 867, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u_SNOBOL4, __pyx_t_6, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 870, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_9) {
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":868
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":871
  *     name = None
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):
  *         print(name)             # <<<<<<<<<<<<<<
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
 */
-      __pyx_t_2 = NULL;
+      __pyx_t_5 = NULL;
       __Pyx_INCREF(__pyx_builtin_print);
-      __pyx_t_5 = __pyx_builtin_print;
-      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 868, __pyx_L1_error)
+      __pyx_t_2 = __pyx_builtin_print; 
+      __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 871, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __pyx_t_7 = 1;
       {
-        PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_8};
-        __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+        PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_8};
+        __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 868, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 871, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":867
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":870
  * #   --------------------------------------------------------------------------------------------------------------------
  *     name = None
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):             # <<<<<<<<<<<<<<
@@ -63465,105 +63779,105 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
     }
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":869
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":872
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):             # <<<<<<<<<<<<<<
  *         print(name)
  *     if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
 */
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_POS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_int_0};
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_int_0};
       __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 869, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 872, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_BREAK_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_BREAK_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 872, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_0123456789};
-      __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 869, __pyx_L1_error)
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_0123456789};
+      __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 872, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
-    __pyx_t_5 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_2 = NULL;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_sigma); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = 1;
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_mstate_global->__pyx_kp_u_4};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_4};
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 872, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_8, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Remainder(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyNumber_Remainder(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 872, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_RPOS_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_mstate_global->__pyx_int_0};
-      __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 872, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_8 = PyNumber_Add(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u_SNOBOL4, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 869, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_n_u_SNOBOL4, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 872, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_9) {
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":870
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":873
  *         print(name)
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
  *         print(name)             # <<<<<<<<<<<<<<
  *     if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
  *         print(name)
 */
-      __pyx_t_2 = NULL;
+      __pyx_t_5 = NULL;
       __Pyx_INCREF(__pyx_builtin_print);
-      __pyx_t_4 = __pyx_builtin_print;
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 870, __pyx_L1_error)
+      __pyx_t_4 = __pyx_builtin_print; 
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 873, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_7 = 1;
       {
-        PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_t_6};
+        PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_t_6};
         __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 870, __pyx_L1_error)
+        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 873, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
       }
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":869
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":872
  *     if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):             # <<<<<<<<<<<<<<
@@ -63572,7 +63886,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
     }
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":871
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":874
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
  *     if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):             # <<<<<<<<<<<<<<
@@ -63580,7 +63894,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
  * #   --------------------------------------------------------------------------------------------------------------------
 */
     __pyx_t_4 = NULL;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_phi_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 871, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_phi_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 874, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = 1;
     {
@@ -63588,14 +63902,14 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
       __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 871, __pyx_L1_error)
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 874, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
-    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_001_01C717AB_5C51AFDE, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 871, __pyx_L1_error)
+    __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_mstate_global->__pyx_kp_u_001_01C717AB_5C51AFDE, __pyx_t_8, Py_EQ)); if (unlikely((__pyx_t_9 < 0))) __PYX_ERR(0, 874, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_9) {
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":872
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":875
  *         print(name)
  *     if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
  *         print(name)             # <<<<<<<<<<<<<<
@@ -63604,22 +63918,22 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
       __pyx_t_6 = NULL;
       __Pyx_INCREF(__pyx_builtin_print);
-      __pyx_t_4 = __pyx_builtin_print;
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 872, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = __pyx_builtin_print; 
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_name_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 875, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_7 = 1;
       {
-        PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_t_2};
+        PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_t_5};
         __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 872, __pyx_L1_error)
+        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 875, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
       }
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "SNOBOL4python/SNOBOL4patterns.pyx":871
+      /* "SNOBOL4python/SNOBOL4patterns.pyx":874
  *     if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
  *         print(name)
  *     if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):             # <<<<<<<<<<<<<<
@@ -63628,7 +63942,7 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
     }
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":874
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":877
  *         print(name)
  * #   --------------------------------------------------------------------------------------------------------------------
  *     exit(0)             # <<<<<<<<<<<<<<
@@ -63636,19 +63950,19 @@ __Pyx_RefNannySetupContext("PyInit_SNOBOL4patterns", 0);
 */
     __pyx_t_4 = NULL;
     __Pyx_INCREF(__pyx_builtin_exit);
-    __pyx_t_2 = __pyx_builtin_exit;
+    __pyx_t_5 = __pyx_builtin_exit; 
     __pyx_t_7 = 1;
     {
       PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_mstate_global->__pyx_int_0};
-      __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_2, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+      __pyx_t_8 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 874, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 877, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "SNOBOL4python/SNOBOL4patterns.pyx":838
+    /* "SNOBOL4python/SNOBOL4patterns.pyx":841
  *     return slyce
  * #-----------------------------------------------------------------------------------------------------------------------
  * if __name__ == "__main__":             # <<<<<<<<<<<<<<
@@ -63999,6 +64313,8 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_SUCCESS___repr, sizeof(__pyx_k_SUCCESS___repr), 0, 1, 1}, /* PyObject cname: __pyx_n_u_SUCCESS___repr */
   {__pyx_k_SUCCESS_gamma, sizeof(__pyx_k_SUCCESS_gamma), 0, 1, 1}, /* PyObject cname: __pyx_n_u_SUCCESS_gamma */
   {__pyx_k_S_2, sizeof(__pyx_k_S_2), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_S_2 */
+  {__pyx_k_S_pop, sizeof(__pyx_k_S_pop), 0, 1, 1}, /* PyObject cname: __pyx_n_u_S_pop */
+  {__pyx_k_S_push, sizeof(__pyx_k_S_push), 0, 1, 1}, /* PyObject cname: __pyx_n_u_S_push */
   {__pyx_k_Shift, sizeof(__pyx_k_Shift), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Shift */
   {__pyx_k_Shift_2, sizeof(__pyx_k_Shift_2), 0, 1, 1}, /* PyObject cname: __pyx_n_u_Shift_2 */
   {__pyx_k_Shift___deepcopy, sizeof(__pyx_k_Shift___deepcopy), 0, 1, 1}, /* PyObject cname: __pyx_n_u_Shift___deepcopy */
@@ -64034,16 +64350,17 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__13 */
   {__pyx_k__14, sizeof(__pyx_k__14), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__14 */
   {__pyx_k__15, sizeof(__pyx_k__15), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__15 */
-  {__pyx_k__16, sizeof(__pyx_k__16), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__16 */
+  {__pyx_k__16, sizeof(__pyx_k__16), 0, 1, 1}, /* PyObject cname: __pyx_n_u__16 */
   {__pyx_k__17, sizeof(__pyx_k__17), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__17 */
   {__pyx_k__18, sizeof(__pyx_k__18), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__18 */
-  {__pyx_k__19, sizeof(__pyx_k__19), 0, 1, 1}, /* PyObject cname: __pyx_n_u__19 */
+  {__pyx_k__19, sizeof(__pyx_k__19), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__19 */
   {__pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__2 */
-  {__pyx_k__20, sizeof(__pyx_k__20), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__20 */
+  {__pyx_k__20, sizeof(__pyx_k__20), 0, 1, 1}, /* PyObject cname: __pyx_n_u__20 */
   {__pyx_k__21, sizeof(__pyx_k__21), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__21 */
   {__pyx_k__22, sizeof(__pyx_k__22), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__22 */
   {__pyx_k__23, sizeof(__pyx_k__23), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__23 */
   {__pyx_k__24, sizeof(__pyx_k__24), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__24 */
+  {__pyx_k__25, sizeof(__pyx_k__25), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__25 */
   {__pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__3 */
   {__pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__4 */
   {__pyx_k__5, sizeof(__pyx_k__5), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__5 */
@@ -64313,8 +64630,8 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry const *t, PyObject **target, c
 static int __Pyx_InitCachedBuiltins(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_object); if (!__pyx_builtin_object) __PYX_ERR(0, 31, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_print); if (!__pyx_builtin_print) __PYX_ERR(0, 863, __pyx_L1_error)
-  __pyx_builtin_exit = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_exit); if (!__pyx_builtin_exit) __PYX_ERR(0, 864, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_print); if (!__pyx_builtin_print) __PYX_ERR(0, 866, __pyx_L1_error)
+  __pyx_builtin_exit = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_exit); if (!__pyx_builtin_exit) __PYX_ERR(0, 867, __pyx_L1_error)
   __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_super); if (!__pyx_builtin_super) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_builtin_AssertionError = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_AssertionError); if (!__pyx_builtin_AssertionError) __PYX_ERR(0, 495, __pyx_L1_error)
   __pyx_builtin_eval = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_eval); if (!__pyx_builtin_eval) __PYX_ERR(0, 532, __pyx_L1_error)
@@ -64401,25 +64718,25 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[6]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[6]);
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":796
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":800
  *         handler.setLevel(level)
  * #----------------------------------------------------------------------------------------------------------------------
  * def MATCH     (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P, exc)             # <<<<<<<<<<<<<<
  * def FULLMATCH (S, P:PATTERN, exc=False) -> slice: return SEARCH(S, POS(0) + P + RPOS(0), exc)
  * def SEARCH    (S, P:PATTERN, exc=False) -> slice:
 */
-  __pyx_mstate_global->__pyx_tuple[7] = PyTuple_Pack(1, ((PyObject *)Py_False)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[7] = PyTuple_Pack(1, ((PyObject *)Py_False)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[7]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[7]);
 
-  /* "SNOBOL4python/SNOBOL4patterns.pyx":861
+  /* "SNOBOL4python/SNOBOL4patterns.pyx":864
  *     C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
  *     x = 1; y = 2; z = 3
  *     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:             # <<<<<<<<<<<<<<
  *         if not s in C:
  *             print("Boo!")
 */
-  __pyx_mstate_global->__pyx_tuple[8] = PyTuple_Pack(3, __pyx_mstate_global->__pyx_kp_u_x_y_z, __pyx_mstate_global->__pyx_kp_u_x_y_z_2, __pyx_mstate_global->__pyx_kp_u_x_y_z_3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 861, __pyx_L1_error)
+  __pyx_mstate_global->__pyx_tuple[8] = PyTuple_Pack(3, __pyx_mstate_global->__pyx_kp_u_x_y_z, __pyx_mstate_global->__pyx_kp_u_x_y_z_2, __pyx_mstate_global->__pyx_kp_u_x_y_z_3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 864, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[8]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[8]);
   __Pyx_RefNannyFinishContext();
@@ -64678,7 +64995,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   {
     __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 29, 12};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_P};
-    __pyx_mstate_global->__pyx_codeobj_tab[40] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u__19, __pyx_k_Yaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[40])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[40] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u__20, __pyx_k_Yaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[40])) goto bad;
   }
   {
     __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 32, 2};
@@ -64691,19 +65008,19 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[42] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_invert, __pyx_k_G2Qa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[42])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 34, 75};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 34, 74};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[43] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_add, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8LGSXXZZ_ccdH, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[43])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[43] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_add, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_uTVVZZ___H, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[43])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 38, 75};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 38, 74};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[44] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_or, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8I_PRRTTXX_HO, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[44])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[44] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_or, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_rQSSWW_HOr, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[44])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 42, 75};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 42, 74};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[45] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_and, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8J_QTTVVZZ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[45])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[45] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_and, __pyx_k_A_t_Qg_PUUVVYYZZ_z_8H_sRTTXX_HOs, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[45])) goto bad;
   }
   {
     __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 46, 13};
@@ -64736,24 +65053,24 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[51] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_repr, __pyx_k_G3iq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[51])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 54, 94};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 54, 92};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[52] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_add, __pyx_k_A_z_9LGSXXYY___ggllm_31G_uTUUZZ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[52])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[52] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_add, __pyx_k_A_z_uTUUZZ_cchhi_31G_uTUUZZ_bbcH, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[52])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 58, 91};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 58, 89};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[53] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_radd, __pyx_k_A_z_9LGSXXZZ__ddiijjk_31G_uTUU_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[53])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[53] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_radd, __pyx_k_A_z_uTVV_eeffg_31G_uTUU_aabbcHOv, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[53])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 62, 57};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 62, 55};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[54] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_or, __pyx_k_A_z_9I_PRRSSXXYYaaffgHOrQRRWWXX, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[54])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[54] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_or, __pyx_k_A_z_rQRRWWXX_eefHOrQRRWWXX, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[54])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 65, 57};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 65, 55};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_other};
-    __pyx_mstate_global->__pyx_codeobj_tab[55] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_xor, __pyx_k_A_z_9I_PRRTTYY_ccddeHOrQRRYY, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[55])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[55] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_xor, __pyx_k_A_z_rQSSXX_bbccdHOrQRRYY, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[55])) goto bad;
   }
   {
     __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 68, 49};
@@ -65351,69 +65668,79 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[174] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_init, __pyx_k_a_a_a_a_q_a_a_a_a_a_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[174])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 786, 17};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 780, 26};
+    PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_pos, __pyx_mstate->__pyx_n_u_subject};
+    __pyx_mstate_global->__pyx_codeobj_tab[175] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_S_push, __pyx_k_F_uCq_q_auA, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[175])) goto bad;
+  }
+  {
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 781, 14};
+    PyObject* varnames[] = {0};
+    __pyx_mstate_global->__pyx_codeobj_tab[176] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_S_pop, __pyx_k_4t5, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[176])) goto bad;
+  }
+  {
+    __Pyx_PyCode_New_function_description descr = {1, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 790, 17};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_g};
-    __pyx_mstate_global->__pyx_codeobj_tab[175] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_GLOBALS, __pyx_k_gYat_4Kq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[175])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[177] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_GLOBALS, __pyx_k_gYat_4Kq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[177])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 788, 54};
+    __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 792, 54};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_level, __pyx_mstate->__pyx_n_u_window};
-    __pyx_mstate_global->__pyx_codeobj_tab[176] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_TRACE, __pyx_k_wgQ_q_vWA_iq_y, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[176])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[178] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_TRACE, __pyx_k_wgQ_q_vWA_iq_y, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[178])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 796, 29};
+    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 800, 29};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_P, __pyx_mstate->__pyx_n_u_exc};
-    __pyx_mstate_global->__pyx_codeobj_tab[177] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_MATCH, __pyx_k_I_7_q_3as_Cq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[177])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[179] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_MATCH, __pyx_k_I_7_q_3as_Cq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[179])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 797, 41};
+    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 801, 41};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_P, __pyx_mstate->__pyx_n_u_exc};
-    __pyx_mstate_global->__pyx_codeobj_tab[178] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_FULLMATCH, __pyx_k_I_7_q_3as_BbPTTUUYYZ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[178])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[180] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_FULLMATCH, __pyx_k_I_7_q_3as_BbPTTUUYYZ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[180])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 798, 391};
+    __Pyx_PyCode_New_function_description descr = {3, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 802, 370};
     PyObject* varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_P, __pyx_mstate->__pyx_n_u_exc, __pyx_mstate->__pyx_n_u_slyce, __pyx_mstate->__pyx_n_u_command, __pyx_mstate->__pyx_n_u_cursor, __pyx_mstate->__pyx_n_u_e};
-    __pyx_mstate_global->__pyx_codeobj_tab[179] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_SEARCH, __pyx_k_I_1_Cq_y_1_7_A_a_WAQ_q_1AS_RuF, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[179])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[181] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_SEARCH, __pyx_k_I_1_Cq_y_1_7_A_a_q_1AS_81_D_q_E, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[181])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 848, 20};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 851, 20};
     PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[180] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_AWBaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[180])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[182] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_AWBaq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[182])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 849, 14};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 852, 14};
     PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[181] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[181])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[183] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_AQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[183])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 851, 22};
-    PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[182] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_4q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[182])) goto bad;
-  }
-  {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 852, 22};
-    PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[183] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_4q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[183])) goto bad;
-  }
-  {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 853, 22};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 854, 22};
     PyObject* varnames[] = {0};
     __pyx_mstate_global->__pyx_codeobj_tab[184] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_4q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[184])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 854, 23};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 855, 22};
     PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[185] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_1DPQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[185])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[185] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_4q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[185])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 856, 16};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 856, 22};
     PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[186] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[186])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[186] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_4q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[186])) goto bad;
   }
   {
-    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 859, 12};
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 857, 23};
     PyObject* varnames[] = {0};
-    __pyx_mstate_global->__pyx_codeobj_tab[187] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_aq_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[187])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[187] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_S_1DPQ, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[187])) goto bad;
+  }
+  {
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 859, 16};
+    PyObject* varnames[] = {0};
+    __pyx_mstate_global->__pyx_codeobj_tab[188] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_xq_q_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[188])) goto bad;
+  }
+  {
+    __Pyx_PyCode_New_function_description descr = {0, 0, 0, 0, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 862, 12};
+    PyObject* varnames[] = {0};
+    __pyx_mstate_global->__pyx_codeobj_tab[189] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_SNOBOL4python_SNOBOL4pattern, __pyx_mstate->__pyx_n_u_lambda, __pyx_k_aq_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[189])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
@@ -67501,8 +67828,8 @@ static PyObject* __Pyx_Unpacked___Pyx_PyLong_SubtractObjC(PyObject *op1, PyObjec
         return PyLong_FromLongLong(llx);
 #endif
     return __Pyx_Fallback___Pyx_PyLong_SubtractObjC(op1, op2, inplace);
-
-
+    
+    
 }
 #endif
 static PyObject* __Pyx_Float___Pyx_PyLong_SubtractObjC(PyObject *float_val, long intval, int zerodivision_check) {
@@ -67510,7 +67837,7 @@ static PyObject* __Pyx_Float___Pyx_PyLong_SubtractObjC(PyObject *float_val, long
     const long b = intval;
     double a = __Pyx_PyFloat_AS_DOUBLE(float_val);
         double result;
-
+        
         result = ((double)a) - (double)b;
         return PyFloat_FromDouble(result);
 }
@@ -67692,8 +68019,8 @@ static PyObject* __Pyx_Unpacked___Pyx_PyLong_AddObjC(PyObject *op1, PyObject *op
         return PyLong_FromLongLong(llx);
 #endif
     return __Pyx_Fallback___Pyx_PyLong_AddObjC(op1, op2, inplace);
-
-
+    
+    
 }
 #endif
 static PyObject* __Pyx_Float___Pyx_PyLong_AddObjC(PyObject *float_val, long intval, int zerodivision_check) {
@@ -67701,7 +68028,7 @@ static PyObject* __Pyx_Float___Pyx_PyLong_AddObjC(PyObject *float_val, long intv
     const long b = intval;
     double a = __Pyx_PyFloat_AS_DOUBLE(float_val);
         double result;
-
+        
         result = ((double)a) + (double)b;
         return PyFloat_FromDouble(result);
 }
@@ -70020,8 +70347,8 @@ static PyObject* __Pyx_Unpacked___Pyx_PyLong_AddCObj(PyObject *op1, PyObject *op
         return PyLong_FromLongLong(llx);
 #endif
     return __Pyx_Fallback___Pyx_PyLong_AddCObj(op1, op2, inplace);
-
-
+    
+    
 }
 #endif
 static PyObject* __Pyx_Float___Pyx_PyLong_AddCObj(PyObject *float_val, long intval, int zerodivision_check) {
@@ -70029,7 +70356,7 @@ static PyObject* __Pyx_Float___Pyx_PyLong_AddCObj(PyObject *float_val, long intv
     const long a = intval;
     double b = __Pyx_PyFloat_AS_DOUBLE(float_val);
         double result;
-
+        
         result = ((double)a) + (double)b;
         return PyFloat_FromDouble(result);
 }
@@ -70156,8 +70483,8 @@ static PyObject* __Pyx_Unpacked___Pyx_PyLong_MultiplyCObj(PyObject *op1, PyObjec
         return PyLong_FromLongLong(llx);
 #endif
     return __Pyx_Fallback___Pyx_PyLong_MultiplyCObj(op1, op2, inplace);
-
-
+    
+    
 }
 #endif
 static PyObject* __Pyx_Float___Pyx_PyLong_MultiplyCObj(PyObject *float_val, long intval, int zerodivision_check) {
@@ -70165,7 +70492,7 @@ static PyObject* __Pyx_Float___Pyx_PyLong_MultiplyCObj(PyObject *float_val, long
     const long a = intval;
     double b = __Pyx_PyFloat_AS_DOUBLE(float_val);
         double result;
-
+        
         result = ((double)a) * (double)b;
         return PyFloat_FromDouble(result);
 }
@@ -70297,8 +70624,8 @@ static PyObject* __Pyx_Unpacked___Pyx_PyLong_FloorDivideObjC(PyObject *op1, PyOb
         return PyLong_FromLongLong(llx);
 #endif
     return __Pyx_Fallback___Pyx_PyLong_FloorDivideObjC(op1, op2, inplace);
-
-
+    
+    
 }
 #endif
 static CYTHON_INLINE PyObject* __Pyx_PyLong_FloorDivideObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check) {
@@ -70604,64 +70931,6 @@ __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
                  expected, obj_type_name);
     __Pyx_DECREF_TypeName(obj_type_name);
     return 0;
-}
-
-/* SetItemInt */
-static int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v) {
-    int r;
-    if (unlikely(!j)) return -1;
-    r = PyObject_SetItem(o, j, v);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v, int is_list,
-                                               CYTHON_NCP_UNUSED int wraparound, CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && CYTHON_ASSUME_SAFE_SIZE && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = (!wraparound) ? i : ((likely(i >= 0)) ? i : i + PyList_GET_SIZE(o));
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o)))) {
-            Py_INCREF(v);
-#if CYTHON_AVOID_THREAD_UNSAFE_BORROWED_REFS
-            PyList_SetItem(o, n, v);
-#else
-            PyObject* old = PyList_GET_ITEM(o, n);
-            PyList_SET_ITEM(o, n, v);
-            Py_DECREF(old);
-#endif
-            return 1;
-        }
-    } else {
-        PyMappingMethods *mm = Py_TYPE(o)->tp_as_mapping;
-        PySequenceMethods *sm = Py_TYPE(o)->tp_as_sequence;
-        if (mm && mm->mp_ass_subscript) {
-            int r;
-            PyObject *key = PyLong_FromSsize_t(i);
-            if (unlikely(!key)) return -1;
-            r = mm->mp_ass_subscript(o, key, v);
-            Py_DECREF(key);
-            return r;
-        }
-        if (likely(sm && sm->sq_ass_item)) {
-            if (wraparound && unlikely(i < 0) && likely(sm->sq_length)) {
-                Py_ssize_t l = sm->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return -1;
-                    PyErr_Clear();
-                }
-            }
-            return sm->sq_ass_item(o, i, v);
-        }
-    }
-#else
-    if (is_list || !PyMapping_Check(o))
-    {
-        return PySequence_SetItem(o, i, v);
-    }
-#endif
-    return __Pyx_SetItemInt_Generic(o, PyLong_FromSsize_t(i), v);
 }
 
 /* PyExec */
@@ -71188,7 +71457,7 @@ static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
         if (unlikely(!module_name_str)) { goto modbad; }
         module_name = PyUnicode_FromString(module_name_str);
         if (unlikely(!module_name)) { goto modbad; }
-        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u__18);
+        module_dot = PyUnicode_Concat(module_name, __pyx_mstate_global->__pyx_kp_u__19);
         if (unlikely(!module_dot)) { goto modbad; }
         full_name = PyUnicode_Concat(module_dot, name);
         if (unlikely(!full_name)) { goto modbad; }
@@ -73003,7 +73272,7 @@ __Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp)
         result = name;
         name = NULL;
     } else {
-        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__24);
+        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__25);
     }
     goto done;
 }

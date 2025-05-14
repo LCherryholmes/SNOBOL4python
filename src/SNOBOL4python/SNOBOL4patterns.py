@@ -776,6 +776,10 @@ class SNOBOL:
         self.pop            = _pop
 #----------------------------------------------------------------------------------------------------------------------
 Ϣ = [] # SNOBOL stack
+ϣ = -1
+def S_push(pos:int, subject:str): global Ϣ, ϣ; ϣ += 1; Ϣ.append(SNOBOL(pos, subject))
+def S_pop(): global Ϣ, ϣ; Ϣ.pop(); ϣ -= 1
+#----------------------------------------------------------------------------------------------------------------------
 _globals = None # global variables
 _window_size = 24 # size of sliding window display for tracing
 #----------------------------------------------------------------------------------------------------------------------
@@ -801,10 +805,9 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
         _globals = globals()
     slyce = None
     command = None
-    Ϣ.append(None)
     for cursor in range(0, 1+len(S)):
         try:
-            Ϣ[-1] = SNOBOL(cursor, S)
+            S_push(cursor, S)
             slyce = next(P.gamma())
             if Ϣ[-1].nl: print()
             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
@@ -824,14 +827,14 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
         except F as e:
             if Ϣ[-1].nl: print()
             logger.error("SEARCH(): FAILURE: %r", e)
-            Ϣ.pop()
+            S_pop()
             raise
         except Exception as e:
             if Ϣ[-1].nl: print()
             logger.critical("SEARCH(): Exception: %r", e)
-            Ϣ.pop()
+            S_pop()
             raise
-    Ϣ.pop()
+    S_pop()
     if exc == True and not slyce: raise F("FAIL")
     return slyce
 #-----------------------------------------------------------------------------------------------------------------------
