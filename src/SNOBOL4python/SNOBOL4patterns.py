@@ -6,6 +6,8 @@
 #> python -m pip install --upgrade pip
 #> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
+#> cythonize src/SNOBOL4python/SNOBOL4patterns.pyx
+#> python setup.py build_ext --inplace
 #> python -m build
 #> python -m pip install ./dist/snobol4python-0.4.6.tar.gz
 #> python -m pip install ./dist/snobol4python-0.4.6-py3-none-any.whl
@@ -28,84 +30,83 @@ def Γ(P): return copy.deepcopy(P)
 #----------------------------------------------------------------------------------------------------------------------
 class PATTERN(object):
     def __init__(self):             pass
-    def __invert__(self):           return π(self) # pi, unary '~', optional, zero or one
+    def __invert__(self):           return pi(self) # pi, unary '~', optional, zero or one
     def __add__(self, other):       # SIGMA, binary +, subsequent -----------------------------------------------------
-                                    if not isinstance(other, PATTERN):  other = σ(str(other))
-                                    if isinstance(self, Σ):             return Σ(*self.AP, other)
-                                    else:                               return Σ(self, other)
+                                    if not isinstance(other, PATTERN):  other = sigma(str(other))
+                                    if isinstance(self, SIGMA):         return SIGMA(*self.AP, other)
+                                    else:                               return SIGMA(self, other)
     def __or__(self, other):        # PI, binary |, alternate ---------------------------------------------------------
-                                    if not isinstance(other, PATTERN):  other = σ(str(other))
-                                    if isinstance(self, Π):             return Π(*self.AP, other)
-                                    else:                               return Π(self, other)
+                                    if not isinstance(other, PATTERN):  other = sigma(str(other))
+                                    if isinstance(self, PI):            return PI(*self.AP, other)
+                                    else:                               return PI(self, other)
     def __and__(self, other):       # rho, binary &, conjunction ------------------------------------------------------
-                                    if not isinstance(other, PATTERN):  other = σ(str(other))
-                                    if isinstance(self, ρ):             return ρ(*self.AP, other)
-                                    else:                               return ρ(self, other)
+                                    if not isinstance(other, PATTERN):  other = sigma(str(other))
+                                    if isinstance(self, rho):           return rho(*self.AP, other)
+                                    else:                               return rho(self, other)
     def __deepcopy__(self, memo):   return type(self)() # -------------------------------------------------------------
-    def __matmul__(self, other):    return δ(self, other) # delta, binary @, immediate assignment
-    def __mod__(self, other):       return Δ(self, other) # DELTA, binary %, conditional assignment
+    def __matmul__(self, other):    return delta(self, other) # delta, binary @, immediate assignment
+    def __mod__(self, other):       return DELTA(self, other) # DELTA, binary %, conditional assignment
     def __eq__(self, other):        return SEARCH(other, self, exc=True) # equal == operator, returns slice
     def __contains__(self, other):  return SEARCH(other, self, exc=False) # comparison in operator, returns bool
 #----------------------------------------------------------------------------------------------------------------------
 class STRING(str):
     def __repr__(self):             return str.__repr__(self)
     def __add__(self, other):       # SIGMA
-                                    if isinstance(other, Σ):            return Σ(σ(self), *other.AP)
-                                    elif isinstance(other, PATTERN):    return Σ(σ(self), other)
+                                    if isinstance(other, SIGMA):        return SIGMA(sigma(self), *other.AP)
+                                    elif isinstance(other, PATTERN):    return SIGMA(sigma(self), other)
                                     else:                               return STRING(super().__add__(str(other)))
     def __radd__(self, other):      # SIGMA
-                                    if isinstance(other, Σ):            return Σ(*other.AP, σ(self))
-                                    elif isinstance(other, PATTERN):    return Σ(other, σ(self))
+                                    if isinstance(other, SIGMA):        return SIGMA(*other.AP, sigma(self))
+                                    elif isinstance(other, PATTERN):    return SIGMA(other, sigma(self))
                                     else:                               return STRING(str(other).__add__(self))
     def __or__(self, other):        # PI
-                                    if isinstance(other, Π):            return Π(σ(self), *other.AP)
-                                    else:                               return Π(σ(self), other)
+                                    if isinstance(other, PI):           return PI(sigma(self), *other.AP)
+                                    else:                               return PI(sigma(self), other)
     def __xor__(self, other):       # PI
-                                    if isinstance(other, Π):            return Π(*other.AP, σ(self))
-                                    else:                               return Π(other, σ(self))
+                                    if isinstance(other, PI):           return PI(*other.AP, sigma(self))
+                                    else:                               return PI(other, sigma(self))
     def __contains__(self, other):  # in operator
                                     if isinstance(other, PATTERN):      return other.__contains__(self)
                                     else:                               return super().__contains__(str(other))
 #----------------------------------------------------------------------------------------------------------------------
-class Ϩ(STRING): pass
 globals()['NULL'] = STRING('')
 #----------------------------------------------------------------------------------------------------------------------
-class ε(PATTERN): # epsilon, null string, zero-length string
+class epsilon(PATTERN): # epsilon, null string, zero-length string
     def __init__(self): super().__init__()
-    def __repr__(self): return "ε()"
-    def γ(self): global Ϣ; yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
+    def __repr__(self): return "epsilon()"
+    def gamma(self): global Ϣ; yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 class FAIL(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "FAIL()"
-    def γ(self): return
+    def gamma(self): return
 #----------------------------------------------------------------------------------------------------------------------
 class ABORT(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "ABORT()"
-    def γ(self): raise F("ABORT()")
+    def gamma(self): raise F("ABORT()")
 #----------------------------------------------------------------------------------------------------------------------
 class SUCCESS(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "SUCCESS()"
-    def γ(self):
+    def gamma(self):
         global Ϣ
         while True:
             yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
-class α(PATTERN):
+class alpha(PATTERN):
     def __init__(self): super().__init__();
-    def __repr__(self): return "α()"
-    def γ(self):
+    def __repr__(self): return "alpha()"
+    def gamma(self):
         global Ϣ
         if  (Ϣ[-1].pos == 0) or \
             (Ϣ[-1].pos > 0 and Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos] == '\n'):
             yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
-class ω(PATTERN):
+class omega(PATTERN):
     def __init__(self): super().__init__();
-    def __repr__(self): return "ω()"
-    def γ(self):
+    def __repr__(self): return "omega()"
+    def gamma(self):
         global Ϣ
         if  (Ϣ[-1].pos == len(Ϣ[-1].subject)) or \
             (Ϣ[-1].pos < len(Ϣ[-1].subject) and Ϣ[-1].subject[Ϣ[-1].pos:Ϣ[-1].pos + 1] == '\n'):
@@ -114,7 +115,7 @@ class ω(PATTERN):
 class REM(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "REM()"
-    def γ(self):
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         Ϣ[-1].pos = len(Ϣ[-1].subject)
         yield slice(pos0, Ϣ[-1].pos)
@@ -123,7 +124,7 @@ class REM(PATTERN):
 class ARB(PATTERN): # ARB
     def __init__(self): super().__init__()
     def __repr__(self): return "ARB()"
-    def γ(self):
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         while Ϣ[-1].pos <= len(Ϣ[-1].subject):
             yield slice(pos0, Ϣ[-1].pos)
@@ -132,22 +133,22 @@ class ARB(PATTERN): # ARB
 #----------------------------------------------------------------------------------------------------------------------
 class MARB(ARB): pass
 #----------------------------------------------------------------------------------------------------------------------
-class ζ(PATTERN):
+class zeta(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
-    def __repr__(self): return f"ζ({pformat(self.N)})"
-    def __deepcopy__(self, memo): return ζ(self.N)
-    def γ(self):
+    def __repr__(self): return f"zeta({pformat(self.N)})"
+    def __deepcopy__(self, memo): return zeta(self.N)
+    def gamma(self):
         P = self.N
         if not isinstance(P, str):
             if callable(P): P = P()
             else: P = _globals[str(P)]
         else: P = _globals[P]
-        yield from P.γ()
+        yield from P.gamma()
 #----------------------------------------------------------------------------------------------------------------------
 class nPush(PATTERN):
     def __init__(self): super().__init__()
     def __repr__(self): return "nPush()"
-    def γ(self):
+    def gamma(self):
         global Ϣ
         logger.info("nPush() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].itop += 1")
@@ -160,7 +161,7 @@ class nPush(PATTERN):
 class nInc(PATTERN):
     def __init__(self): super().__init__();
     def __repr__(self): return "nInc()"
-    def γ(self):
+    def gamma(self):
         global Ϣ
         logger.info("nInc() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].istack[Ϣ[-1].itop] += 1")
@@ -171,7 +172,7 @@ class nInc(PATTERN):
 class nPop(PATTERN):
     def __init__(self): super().__init__();
     def __repr__(self): return "nPop()"
-    def γ(self):
+    def gamma(self):
         global Ϣ
         logger.info("nPop() SUCCESS")
         Ϣ[-1].cstack.append(f"Ϣ[-1].istack.pop()")
@@ -185,7 +186,7 @@ class Shift(PATTERN):
     def __init__(self, t=None, v=None): super().__init__(); self.t = t; self.v = v
     def __repr__(self): return f"Shift({pformat(self.t)}, {pformat(self.v)})"
     def __deepcopy__(self, memo): return Shift(self.t, self.v)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         logger.info("Shift(%r, %r) SUCCESS", self.t, self.v)
         if self.t is None:   Ϣ[-1].cstack.append(f"Ϣ[-1].shift()")
@@ -199,7 +200,7 @@ class Reduce(PATTERN):
     def __init__(self, t, n=-1): super().__init__(); self.t = t; self.n = n
     def __repr__(self): return f"Reduce({pformat(self.t)}, {pformat(self.n)})"
     def __deepcopy__(self, memo): return Reduce(self.t, self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ; n = self.n; t = self.t
         if callable(t): t = t()
         else: t = t
@@ -215,7 +216,7 @@ class Pop(PATTERN):
     def __init__(self, v): super().__init__(); self.v = v
     def __repr__(self): return f"Pop({pformat(self.v)})"
     def __deepcopy__(self, memo): return Pop(self.v)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         logger.info("Pop(%s) SUCCESS", self.v)
         Ϣ[-1].cstack.append(f"{self.v} = Ϣ[-1].pop()")
@@ -226,14 +227,13 @@ class Pop(PATTERN):
 class BAL(PATTERN): # BAL
     def __init__(self): super().__init__()
     def __repr__(self): return "BAL()"
-    def γ(self):
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos; nest = 0
         Ϣ[-1].pos += 1
         while Ϣ[-1].pos <= len(Ϣ[-1].subject):
             ch = Ϣ[-1].subject[Ϣ[-1].pos-1:Ϣ[-1].pos]
-            match ch:
-                case '(': nest += 1
-                case ')': nest -= 1
+            if ch == '(': nest += 1
+            elif ch == ')': nest -= 1
             if nest < 0: break
             elif nest > 0 and Ϣ[-1].pos >= len(Ϣ[-1].subject): break
             elif nest == 0: yield slice(pos0, Ϣ[-1].pos)
@@ -244,11 +244,11 @@ class FENCE(PATTERN): # FENCE and FENCE(P)
     def __init__(self, P:PATTERN=None): super().__init__(); self.P:PATTERN = P
     def __repr__(self): return f"FENCE({pformat(self.P)})"
     def __deepcopy__(self, memo): return FENCE(copy.deepcopy(self.P))
-    def γ(self):
+    def gamma(self):
         global Ϣ
         if self.P:
             logger.info("FENCE(%s) SUCCESS", pformat(self.P))
-            yield from self.P.γ()
+            yield from self.P.gamma()
             logger.warning("FENCE(%s) backtracking...", pformat(self.P))
         else:
             logger.info("FENCE() SUCCESS")
@@ -259,7 +259,7 @@ class POS(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
     def __repr__(self): return f"POS({pformat(self.n)})"
     def __deepcopy__(self, memo): return POS(self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         n = self.n
         if not isinstance(n, int):
@@ -274,7 +274,7 @@ class RPOS(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
     def __repr__(self): return f"RPOS({pformat(self.n)})"
     def __deepcopy__(self, memo): return RPOS(self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         n = self.n
         if not isinstance(n, int):
@@ -289,7 +289,7 @@ class LEN(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
     def __repr__(self): return f"LEN({pformat(self.n)})"
     def __deepcopy__(self, memo): return LEN(self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         n = self.n
         if not isinstance(n, int):
@@ -306,7 +306,7 @@ class TAB(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
     def __repr__(self): return f"TAB({pformat(self.n)})"
     def __deepcopy__(self, memo): return TAB(self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         n = self.n
         if not isinstance(n, int):
@@ -323,7 +323,7 @@ class RTAB(PATTERN):
     def __init__(self, n): super().__init__(); self.n = n
     def __repr__(self): return f"RTAB({pformat(self.n)})"
     def __deepcopy__(self, memo): return RTAB(self.n)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         n = self.n
         if not isinstance(n, int):
@@ -337,23 +337,23 @@ class RTAB(PATTERN):
                 yield slice(pos0, n)
                 Ϣ[-1].pos = pos0
 #----------------------------------------------------------------------------------------------------------------------
-class σ(PATTERN): # sigma, σ, sequence of characters, string patttern
+class sigma(PATTERN): # sigma, sigma, sequence of characters, string patttern
     def __init__(self, s): super().__init__(); self.s = s
-    def __repr__(self): return f"σ({pformat(self.s)})"
-    def __deepcopy__(self, memo): return σ(self.s)
-    def γ(self):
+    def __repr__(self): return f"sigma({pformat(self.s)})"
+    def __deepcopy__(self, memo): return sigma(self.s)
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         s = self.s
         if not isinstance(s, str):
             if callable(s): s = str(s())
             else: s = str(s) # might need to raise an exception
-        logger.debug("σ(%r) trying(%d)", s, pos0)
+        logger.debug("sigma(%r) trying(%d)", s, pos0)
         if pos0 + len(s) <= len(Ϣ[-1].subject):
             if s == Ϣ[-1].subject[pos0:pos0 + len(s)]:
-                logger.info("σ(%r) SUCCESS(%d,%d)=", s, Ϣ[-1].pos, len(s))
+                logger.info("sigma(%r) SUCCESS(%d,%d)=", s, Ϣ[-1].pos, len(s))
                 Ϣ[-1].pos += len(s)
                 yield slice(pos0, Ϣ[-1].pos)
-                logger.warning("σ(%r) backtracking(%d,%d)...", s, pos0, Ϣ[-1].pos)
+                logger.warning("sigma(%r) backtracking(%d,%d)...", s, pos0, Ϣ[-1].pos)
                 Ϣ[-1].pos = pos0
         return None
 #----------------------------------------------------------------------------------------------------------------------
@@ -361,7 +361,7 @@ class ANY(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
     def __repr__(self): return f"ANY({pformat(self.chars)})"
     def __deepcopy__(self, memo): return ANY(self.chars)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         chars = self.chars
         if not isinstance(chars, str):
@@ -382,7 +382,7 @@ class NOTANY(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
     def __repr__(self): return f"NOTANY({pformat(self.chars)})"
     def __deepcopy__(self, memo): return NOTANY(self.chars)
-    def γ(self):
+    def gamma(self):
         global Ϣ
         chars = self.chars
         if not isinstance(chars, str):
@@ -403,7 +403,7 @@ class SPAN(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
     def __repr__(self): return f"SPAN({pformat(self.chars)})"
     def __deepcopy__(self, memo): return SPAN(self.chars)
-    def γ(self):
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         chars = self.chars
         if not isinstance(chars, str):
@@ -428,7 +428,7 @@ class BREAK(PATTERN):
     def __init__(self, chars): super().__init__(); self.chars = chars
     def __repr__(self): return f"BREAK({pformat(self.chars)})"
     def __deepcopy__(self, memo): return BREAK(self.chars)
-    def γ(self):
+    def gamma(self):
         global Ϣ; pos0 = Ϣ[-1].pos
         chars = self.chars
         if not isinstance(chars, str):
@@ -451,134 +451,134 @@ class BREAK(PATTERN):
 class BREAKX(BREAK): pass
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate cursor assignment during pattern matching
-class Θ(PATTERN):
+class THETA(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
-    def __repr__(self): return f"Θ({pformat(self.N)})"
-    def __deepcopy__(self, memo): return Θ(self.N)
-    def γ(self):
+    def __repr__(self): return f"THETA({pformat(self.N)})"
+    def __deepcopy__(self, memo): return THETA(self.N)
+    def gamma(self):
         global Ϣ, _globals
         N = str(self.N)
         if N == "OUTPUT":
             Ϣ[-1].nl = True
             print(Ϣ[-1].pos, end='·');
-        logger.info("Θ(%s) SUCCESS", N)
+        logger.info("THETA(%s) SUCCESS", N)
         _globals[N] = Ϣ[-1].pos
         yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-        logger.warning("Θ(%s) backtracking...", N)
+        logger.warning("THETA(%s) backtracking...", N)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional cursor assignment (after successful complete pattern match)
-class θ(PATTERN):
+class theta(PATTERN):
     def __init__(self, N): super().__init__(); self.N = N
-    def __repr__(self): return f"θ({pformat(self.N)})"
-    def __deepcopy__(self, memo): return θ(self.N)
-    def γ(self):
+    def __repr__(self): return f"theta({pformat(self.N)})"
+    def __deepcopy__(self, memo): return theta(self.N)
+    def gamma(self):
         global Ϣ
         N = str(self.N)
         if N == "OUTPUT":
             Ϣ[-1].nl = True
             print(Ϣ[-1].pos, end='·')
-        logger.info("θ(%s) SUCCESS", N)
+        logger.info("theta(%s) SUCCESS", N)
         Ϣ[-1].cstack.append(f"{N} = {Ϣ[-1].pos}")
         yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-        logger.warning("θ(%s) backtracking...", N)
+        logger.warning("theta(%s) backtracking...", N)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate match assignment during pattern matching (permanent)
-class δ(PATTERN): # delta, binary '@', SNOBOL4: P $ N
+class delta(PATTERN): # delta, binary '@', SNOBOL4: P $ N
     def __init__(self, P:PATTERN, N): super().__init__(); self.P:PATTERN = P; self.N = N
-    def __repr__(self): return f"δ({pformat(self.P)}, {pformat(self.N)})"
-    def __deepcopy__(self, memo): return δ(copy.deepcopy(self.P), self.N)
-    def γ(self):
+    def __repr__(self): return f"delta({pformat(self.P)}, {pformat(self.N)})"
+    def __deepcopy__(self, memo): return delta(copy.deepcopy(self.P), self.N)
+    def gamma(self):
         global _globals; N = str(self.N)
-        logger.debug("δ(%s, %s)", pformat(self.P), N)
-        for _1 in self.P.γ():
+        logger.debug("delta(%s, %s)", pformat(self.P), N)
+        for _1 in self.P.gamma():
             assert _1 != ""
             v = Ϣ[-1].subject[_1]
             if N == "OUTPUT":
                 Ϣ[-1].nl = True
                 print(v, end='·')
-            logger.debug("%s = δ(%r)", N, v)
+            logger.debug("%s = delta(%r)", N, v)
             _globals[N] = STRING(v)
             yield _1
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match assignment (after successful complete pattern match)
-class Δ(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
+class DELTA(PATTERN): # DELTA, binary '%', SNOBOL4: P . N
     def __init__(self, P:PATTERN, N): super().__init__(); self.P:PATTERN = P; self.N = N
-    def __repr__(self): return f"Δ({pformat(self.P)}, {pformat(self.N)})"
-    def __deepcopy__(self, memo): return Δ(copy.deepcopy(self.P), self.N)
-    def γ(self):
+    def __repr__(self): return f"DELTA({pformat(self.P)}, {pformat(self.N)})"
+    def __deepcopy__(self, memo): return DELTA(copy.deepcopy(self.P), self.N)
+    def gamma(self):
         global Ϣ; N = str(self.N)
-        logger.debug("Δ(%s, %s)", pformat(self.P), N)
-        for _1 in self.P.γ():
+        logger.debug("DELTA(%s, %s)", pformat(self.P), N)
+        for _1 in self.P.gamma():
             assert _1 != ""
-            logger.info("%s = Δ(%r) SUCCESS", N, _1)
+            logger.info("%s = DELTA(%r) SUCCESS", N, _1)
             if N == "OUTPUT":
                 Ϣ[-1].cstack.append(f"print(Ϣ[-1].subject[{_1.start}:{_1.stop}])")
             else: Ϣ[-1].cstack.append(f"{N} = STRING(Ϣ[-1].subject[{_1.start}:{_1.stop}])")
             yield _1
-            logger.warning("%s = Δ(%r) backtracking...", N, _1)
+            logger.warning("%s = DELTA(%r) backtracking...", N, _1)
             Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 # Immediate evaluation as test during pattern matching
-class Λ(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
+class LLAMBDA(PATTERN): # lambda, P *eval(), *EQ(), *IDENT(), P $ tx $ *func(tx)
     def __init__(self, expression): super().__init__(); self.expression = expression
-    def __repr__(self): return f"Λ({pformat(self.expression)})"
-    def __deepcopy__(self, memo): return Λ(self.expression)
-    def γ(self):
+    def __repr__(self): return f"LLAMBDA({pformat(self.expression)})"
+    def __deepcopy__(self, memo): return LLAMBDA(self.expression)
+    def gamma(self):
         global Ϣ, _globals
         if isinstance(self.expression, str):
-            logger.debug("Λ(%r) evaluating...", self.expression)
+            logger.debug("LLAMBDA(%r) evaluating...", self.expression)
             try:
                 if eval(self.expression, _globals):
-                    logger.info("Λ(%r) SUCCESS", self.expression)
+                    logger.info("LLAMBDA(%r) SUCCESS", self.expression)
                     yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                    logger.warning("Λ(%r) backtracking...", self.expression)
-                else: logger.warning("Λ(%r) FAIL!", self.expression)
+                    logger.warning("LLAMBDA(%r) backtracking...", self.expression)
+                else: logger.warning("LLAMBDA(%r) FAIL!", self.expression)
             except Exception as e:
-                logger.error("Λ(%r) EXCEPTION evaluating. (%r) FAIL!", self.expression, e)
+                logger.error("LLAMBDA(%r) EXCEPTION evaluating. (%r) FAIL!", self.expression, e)
         elif callable(self.expression):
-            logger.debug("Λ(function) evaluating...")
+            logger.debug("LLAMBDA(function) evaluating...")
             try:
                 if self.expression():
-                    logger.info("Λ(function) SUCCESS")
+                    logger.info("LLAMBDA(function) SUCCESS")
                     yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                    logger.warning("Λ(function) backtracking...")
-                else: logger.warning("Λ(function) FAIL!")
+                    logger.warning("LLAMBDA(function) backtracking...")
+                else: logger.warning("LLAMBDA(function) FAIL!")
             except Exception as e:
-                logger.error("Λ(function) EXCEPTION evaluating. (%r) FAIL!", e)
+                logger.error("LLAMBDA(function) EXCEPTION evaluating. (%r) FAIL!", e)
 #----------------------------------------------------------------------------------------------------------------------
 # Conditional match execution (after successful complete pattern match)
-class λ(PATTERN): # LAMBDA, P . *exec(), P . tx . *func(tx)
+class llambda(PATTERN): # LLAMBDA, P . *exec(), P . tx . *func(tx)
     def __init__(self, command): super().__init__(); self.command = command
-    def __repr__(self): return f"λ({pformat(self.command)})"
-    def __deepcopy__(self, memo): return λ(self.command)
-    def γ(self):
+    def __repr__(self): return f"llambda({pformat(self.command)})"
+    def __deepcopy__(self, memo): return llambda(self.command)
+    def gamma(self):
         global Ϣ
-        logger.debug("λ(%r) compiling...", self.command)
+        logger.debug("llambda(%r) compiling...", self.command)
         if self.command:
             if isinstance(self.command, str):
                 if compile(self.command, '<string>', 'exec'): # 'single', 'eval'
-                    logger.info("λ(%r) SUCCESS", self.command)
+                    logger.info("llambda(%r) SUCCESS", self.command)
                     Ϣ[-1].cstack.append(self.command)
                     yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                    logger.warning("λ(%r) backtracking...", self.command)
+                    logger.warning("llambda(%r) backtracking...", self.command)
                     Ϣ[-1].cstack.pop()
-                else: logger.error("λ(%r) Error compiling. FAIL", self.command)
+                else: logger.error("llambda(%r) Error compiling. FAIL", self.command)
             elif callable(self.command):
-                logger.info("λ(function) SUCCESS")
+                logger.info("llambda(function) SUCCESS")
                 Ϣ[-1].cstack.append(self.command)
                 yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-                logger.warning("λ(function) backtracking...")
+                logger.warning("llambda(function) backtracking...")
                 Ϣ[-1].cstack.pop()
         else: yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching (with immediate assignments)
 _rexs = dict()
-class Φ(PATTERN):
+class PHI(PATTERN):
     def __init__(self, rex): super().__init__(); self.rex = rex
-    def __repr__(self): return f"Φ({pformat(self.rex)})"
-    def __deepcopy__(self, memo): return Φ(self.rex)
-    def γ(self):
+    def __repr__(self): return f"PHI({pformat(self.rex)})"
+    def __deepcopy__(self, memo): return PHI(self.rex)
+    def gamma(self):
         global Ϣ, _rexs
         rex = self.rex
         if not isinstance(rex, str):
@@ -597,11 +597,11 @@ class Φ(PATTERN):
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
 # Regular Expression pattern matching (with conditional assignments)
-class φ(PATTERN):
+class phi(PATTERN):
     def __init__(self, rex): super().__init__(); self.rex = rex
-    def __repr__(self): return f"φ({pformat(self.rex)})"
-    def __deepcopy__(self, memo): return φ(self.rex)
-    def γ(self):
+    def __repr__(self): return f"phi({pformat(self.rex)})"
+    def __deepcopy__(self, memo): return phi(self.rex)
+    def gamma(self):
         global Ϣ, _rexs
         rex = self.rex
         if not isinstance(rex, str):
@@ -626,17 +626,17 @@ class φ(PATTERN):
                 Ϣ[-1].pos = pos0
             else: raise Exception("Yikes! Internal error.")
 #----------------------------------------------------------------------------------------------------------------------
-class ρ(PATTERN): # rho, AND, conjunction
+class rho(PATTERN): # rho, AND, conjunction
     def __init__(self, P:PATTERN, Q:PATTERN): super().__init__(); self.P = P; self.Q = Q
-    def __repr__(self): return  "ρ(*{0})".format(2)
-    def __deepcopy__(self, memo): return ρ(copy.deepcopy(self.P), copy.deepcopy(self.Q))
-    def γ(self):
+    def __repr__(self): return  "rho(*{0})".format(2)
+    def __deepcopy__(self, memo): return rho(copy.deepcopy(self.P), copy.deepcopy(self.Q))
+    def gamma(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
-        for _1 in self.P.γ():
+        for _1 in self.P.gamma():
             pos1 = Ϣ[-1].pos
             try:
                 Ϣ[-1].pos = pos0
-                next(self.Q.γ())
+                next(self.Q.gamma())
                 if (Ϣ[-1].pos == pos1):
                     yield _1
                     Ϣ[-1].pos = pos0
@@ -644,45 +644,45 @@ class ρ(PATTERN): # rho, AND, conjunction
                 Ϣ[-1].pos = pos0
         Ϣ[-1].depth -= 1
 #----------------------------------------------------------------------------------------------------------------------
-class π(PATTERN): # pi, π, optional, SNOBOL4: P | epsilon
+class pi(PATTERN): # pi, pi, optional, SNOBOL4: P | epsilon
     def __init__(self, P:PATTERN): super().__init__(); self.P = P
-    def __repr__(self): return f"π({pformat(self.P)})"
-    def __deepcopy__(self, memo): return π(copy.deepcopy(self.P))
-    def γ(self):
+    def __repr__(self): return f"pi({pformat(self.P)})"
+    def __deepcopy__(self, memo): return pi(copy.deepcopy(self.P))
+    def gamma(self):
         global Ϣ
         Ϣ[-1].depth += 1
-        yield from self.P.γ()
+        yield from self.P.gamma()
         yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
         Ϣ[-1].depth -= 1
 #----------------------------------------------------------------------------------------------------------------------
-class Π(PATTERN): # PI, Π, possibilities, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
+class PI(PATTERN): # PI, PI, possibilities, alternates, alternatives, SNOBOL4: P | Q | R | S | ...
     def __init__(self, *AP:PATTERN): super().__init__(); self.AP = AP
-    def __repr__(self): return  "Π(*{0})".format(len(self.AP))
-    def __deepcopy__(self, memo): return Π(*(copy.deepcopy(P) for P in self.AP))
-    def γ(self):
+    def __repr__(self): return  "PI(*{0})".format(len(self.AP))
+    def __deepcopy__(self, memo): return PI(*(copy.deepcopy(P) for P in self.AP))
+    def gamma(self):
         global Ϣ
-        logger.debug("Π(%s) trying(%d)...", " ".join([pformat(P) for P in self.AP]), Ϣ[-1].pos)
+        logger.debug("PI(%s) trying(%d)...", " ".join([pformat(P) for P in self.AP]), Ϣ[-1].pos)
         Ϣ[-1].depth += 1
-        for P in self.AP: yield from P.γ()
+        for P in self.AP: yield from P.gamma()
         Ϣ[-1].depth -= 1
 #----------------------------------------------------------------------------------------------------------------------
-class Σ(PATTERN): # SIGMA, Σ, sequence, subsequents, SNOBOL4: P Q R S T ...
+class SIGMA(PATTERN): # SIGMA, SIGMA, sequence, subsequents, SNOBOL4: P Q R S T ...
     def __init__(self, *AP:PATTERN): super().__init__(); self.AP = AP
-    def __repr__(self): return "Σ(*{0})".format(len(self.AP))
-    def __deepcopy__(self, memo): return Σ(*(copy.deepcopy(P) for P in self.AP))
-    def γ(self):
+    def __repr__(self): return "SIGMA(*{0})".format(len(self.AP))
+    def __deepcopy__(self, memo): return SIGMA(*(copy.deepcopy(P) for P in self.AP))
+    def gamma(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
         Ag = [None] * len(self.AP)
-        logger.debug("Σ(%s) trying(%d)...", " ".join([pformat(P) for P in self.AP]), pos0)
+        logger.debug("SIGMA(%s) trying(%d)...", " ".join([pformat(P) for P in self.AP]), pos0)
         cursor = 0
         while cursor >= 0:
             if cursor >= len(self.AP):
-                logger.info("Σ(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
+                logger.info("SIGMA(*) SUCCESS(%d,%d)=%s", pos0, Ϣ[-1].pos - pos0, Ϣ[-1].subject[pos0:Ϣ[-1].pos])
                 yield slice(pos0, Ϣ[-1].pos)
-                logger.warning("Σ(*) backtracking(%d,%d)...", pos0, Ϣ[-1].pos)
+                logger.warning("SIGMA(*) backtracking(%d,%d)...", pos0, Ϣ[-1].pos)
                 cursor -= 1
             if Ag[cursor] is None:
-                Ag[cursor] = self.AP[cursor].γ()
+                Ag[cursor] = self.AP[cursor].gamma()
             try:
                 next(Ag[cursor])
                 cursor += 1
@@ -695,7 +695,7 @@ class ARBNO(PATTERN):
     def __init__(self, P:PATTERN): super().__init__(); self.P = P
     def __repr__(self): return "ARBNO({0})".format(pformat(self.P))
     def __deepcopy__(self, memo): return ARBNO(copy.deepcopy(self.P))
-    def γ(self):
+    def gamma(self):
         global Ϣ; Ϣ[-1].depth += 1; pos0 = Ϣ[-1].pos
         logger.debug("ARBNO(%s) trying(%d)...", pformat(self.P), pos0)
         cursor = 0
@@ -706,7 +706,7 @@ class ARBNO(PATTERN):
                 yield slice(pos0, Ϣ[-1].pos)
                 logger.warning("ARBNO(%s) backtracking(%d)...", pformat(self.P), pos0)
             if cursor >= len(Ag):
-                Ag.append(self.P.γ())
+                Ag.append(self.P.gamma())
             try:
                 next(Ag[cursor])
                 cursor += 1
@@ -724,9 +724,9 @@ def _shift(t='', v=None):
         _push([t])
     else: _push([t, v])
 def _reduce(t, n):
-    if n == 0 and t == 'Σ':
-        _push(['ε'])
-    elif n != 1 or t not in ('Σ', 'Π', 'ρ', 'snoExprList', '|', '..'):
+    if n == 0 and t == 'SIGMA':
+        _push(['epsilon'])
+    elif n != 1 or t not in ('SIGMA', 'PI', 'rho', 'snoExprList', '|', '..'):
         x = [t]
         for i in range(n):
             x.insert(1, _pop())
@@ -805,7 +805,7 @@ def SEARCH    (S, P:PATTERN, exc=False) -> slice:
     for cursor in range(0, 1+len(S)):
         try:
             Ϣ[-1] = SNOBOL(cursor, S)
-            slyce = next(P.γ())
+            slyce = next(P.gamma())
             if Ϣ[-1].nl: print()
             logger.info(f'SEARCH(): "{S}" ? "{slyce}"')
             for command in Ϣ[-1].cstack:
@@ -843,29 +843,32 @@ if __name__ == "__main__":
     GLOBALS(globals())
     TRACE(40)
 #   --------------------------------------------------------------------------------------------------------------------
-    V = ANY(LCASE) % "N"      + λ(lambda: S.append(int(globals()[N])))
-    I = SPAN(DIGITS) % "N"    + λ(lambda: S.append(int(N)))
-    E = ( V | I | σ('(') + ζ("X") + σ(')'))
-    X = ( E + σ('+') + ζ("X") + λ(lambda: S.append(S.pop() + S.pop()))
-        | E + σ('-') + ζ("X") + λ(lambda: S.append(S.pop() - S.pop()))
-        | E + σ('*') + ζ("X") + λ(lambda: S.append(S.pop() * S.pop()))
-        | E + σ('/') + ζ("X") + λ(lambda: S.append(S.pop() // S.pop()))
-        | σ('+') + ζ("X")
-        | σ('-') + ζ("X")     + λ(lambda: S.append(-S.pop()))
+    S = None
+    N = None
+    V = ANY(LCASE) % "N"      + llambda(lambda: S.append(int(globals()[N])))
+    I = SPAN(DIGITS) % "N"    + llambda(lambda: S.append(int(N)))
+    E = ( V | I | sigma('(') + zeta("X") + sigma(')'))
+    X = ( E + sigma('+') + zeta("X") + llambda(lambda: S.append(S.pop() + S.pop()))
+        | E + sigma('-') + zeta("X") + llambda(lambda: S.append(S.pop() - S.pop()))
+        | E + sigma('*') + zeta("X") + llambda(lambda: S.append(S.pop() * S.pop()))
+        | E + sigma('/') + zeta("X") + llambda(lambda: S.append(S.pop() // S.pop()))
+        | sigma('+') + zeta("X")
+        | sigma('-') + zeta("X")     + llambda(lambda: S.append(-S.pop()))
         | E
         )
-    C = POS(0) + λ("S = []") + X + λ(lambda: print(S.pop())) + RPOS(0)
+    C = POS(0) + llambda("S = []") + X + llambda(lambda: print(S.pop())) + RPOS(0)
     x = 1; y = 2; z = 3
     for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
         if not s in C:
             print("Boo!")
     exit(0)
 #   --------------------------------------------------------------------------------------------------------------------
-    if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + σ('4')) % "name" + RPOS(0):
+    name = None
+    if "SNOBOL4" in POS(0) + (SPAN("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + sigma('4')) % "name" + RPOS(0):
         print(name)
-    if "SNOBOL4" in POS(0) + (BREAK("0123456789") + σ('4')) % "name" + RPOS(0):
+    if "SNOBOL4" in POS(0) + (BREAK("0123456789") + sigma('4')) % "name" + RPOS(0):
         print(name)
-    if "001_01C717AB.5C51AFDE ..." in φ(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
+    if "001_01C717AB.5C51AFDE ..." in phi(r"(?P<name>[0-9]{3}(_[0-9A-F]{4})?_[0-9A-F]{8}\.[0-9A-F]{8})"):
         print(name)
 #   --------------------------------------------------------------------------------------------------------------------
     exit(0)
