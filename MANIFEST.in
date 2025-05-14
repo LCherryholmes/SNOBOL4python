@@ -1,7 +1,7 @@
 include README.md
 include LICENSE
+include src/SNOBOL4python/SNOBOL4patterns.py
 include src/SNOBOL4python/SNOBOL4functions.py
-include src/SNOBOL4python/SNOBOL4patterns.c
 include src/SNOBOL4python/__init__.py
 recursive-include src/SNOBOL4python *.py
 recursive-include tests test_*.py
