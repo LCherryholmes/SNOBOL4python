@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------------------------------------------------
 # SNOBOL4 string pattern matching
+#> sudo dnf update -y
+#> sudo dnf install python3 python3-pip -y
+#> python -m pip install --upgrade pip
 #> python -m pip install build
 #> python -m pip install twine
-#> python -m pip install --upgrade pip
 #> python -m pip install --upgrade setuptools wheel build
 #> python src/SNOBOL4python/SNOBOL4patterns.py
 #> python -m build

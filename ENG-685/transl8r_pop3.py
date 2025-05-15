@@ -378,7 +378,7 @@ total_size = None
 ITERATIONS = 32
 def main():
     global inbox, total_size
-    inbox_nm = "C:/Users/lcher/AppData/Local/Packages/" \
+    inbox_nm = "/mnt/c/Users/lcher/AppData/Local/Packages/" \
         "MozillaThunderbird.MZLA_h5892qc0xkpca/LocalCache/Roaming/" \
         "Thunderbird/Profiles/nsn6odxd.default-esr/" \
         "Mail/pop.mail.yahoo.com/Inbox"
