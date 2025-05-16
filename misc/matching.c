@@ -127,29 +127,20 @@ static PATTERN P92 = {λ, .command="print(S.pop())"};
 static PATTERN P93 = {RPOS, .n=0};
 static PATTERN P0 = {Σ, NULL, {&P1, &P2, &P3, &P92, &P93}};
 //----------------------------------------------------------------------------------------------------------------------
-typedef enum {
-    START,
-    SUCCESS,
-    RESUME,
-    FAILURE
-} action_t;
+typedef enum _entry {START=0, RESUME=1} entry_t;
+typedef enum _result {SUCCESS=0, FAILURE=1} result_t;
 //----------------------------------------------------------------------------------------------------------------------
-typedef struct {
-    action_t action;
-    PATTERN * pattern;
-    int pos;
-    int ctx;
-} state_t;
+typedef struct _state {entry_t entry; PATTERN * pattern; int pos; int ctx;} state_t;
+typedef struct _action {result_t action; PATTERN * pattern; int pos; int ctx;} action_t;
 //----------------------------------------------------------------------------------------------------------------------
 static int iStates = 0;
 static state_t * aStates = NULL;
-//----------------------------------------------------------------------------------------------------------------------
 static void init_states() {
     iStates = 0;
     aStates = NULL;
 }
-static void push_state(action_t action, PATTERN * pattern, int pos) {
-    state_t state = {action, pattern, pos, 0};
+static void push_state(entry_t entry, PATTERN * pattern, int pos) {
+    state_t state = {entry, pattern, pos, 0};
     aStates = realloc(aStates, ++iStates * sizeof(state_t));
     aStates[iStates - 1] = state;
 }
@@ -166,29 +157,54 @@ static state_t pop_state() {
     }
     return state;
 }
+//-----------------------------------------------------------------------------------------------------------------------
+static int iActions = 0;
+static action_t * aActions = NULL;
+static void init_actions() {
+    iActions = 0;
+    aActions = NULL;
+}
+static void push_action(result_t result, PATTERN * pattern, int pos) {
+    action_t action = {result, pattern, pos, 0};
+    aActions = realloc(aActions, ++iActions * sizeof(action_t));
+    aActions[iActions - 1] = action;
+}
+static action_t * top_action() {
+    if (iActions > 0)
+        return &aActions[iActions - 1];
+    else return NULL;
+}
+static action_t pop_action() {
+    action_t action = {START, NULL, 0, 0};
+    if (iActions > 0) {
+        action = aActions[iActions - 1];
+        aActions = realloc(aActions, --iActions * sizeof(action_t));
+    }
+    return action;
+}
 //----------------------------------------------------------------------------------------------------------------------
 void MATCH(PATTERN * pattern, const char * subject) {
     init_states();
     push_state(START, pattern, 0);
     while (iStates > 0) {
         state_t * pState = top_state();
-        action_t action = pState->action;
+        entry_t entry = pState->entry;
         const char * type = pState->pattern->type;
-        if (type == ε)          {   switch (action) {
-                                    case START:     { pState->action = RESUME; }
-                                    case RESUME:    { pState->action = FAILURE; }
+        if (type == ε)          {   switch (entry) {
+                                    case START:     { push_action(SUCCESS); }
+                                    case RESUME:    { push_action(FAILURE); }
                                 }}
-        if (type == σ)          {   switch (action) {
+        if (type == σ)          {   switch (entry) {
                                     case START:
                                     case RESUME:
                                 }}
-        if (type == Σ)          {   switch (action) {
+        if (type == Σ)          {   switch (entry) {
                                     case START:     {   pState->action = RESUME;
                                                         push_state(START, pattern->AP[pState->ctx], pState->pos);
                                                     }
                                     case RESUME:
                                 }}
-        if (type == Π)          {   switch (action) {
+        if (type == Π)          {   switch (entry) {
                                     case START:     {   pState->action = RESUME;
                                                         push_state(START, pattern->AP[pState->ctx], pState->pos);
                                                     }
