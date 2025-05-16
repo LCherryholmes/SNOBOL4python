@@ -10,8 +10,8 @@ from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint, pformat
 #-----------------------------------------------------------------------------------------------------------------------
 import ctypes
-print(ctypes.CDLL("./_bootstrap.so"))
-from _bootstrap import _bootstrap  # import the C extension function
+print(ctypes.CDLL("/mnt/c/SNOBOL4python/misc/_bootstrap.so"))
+from _bootstrap import _bootstrap # import the C extension function
 #-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
 TRACE(40)

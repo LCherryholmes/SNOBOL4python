@@ -1,106 +1,78 @@
-/* gcc -shared -o _bootstrap.so -fPIC $(python-config --cflags --ldflags) _bootstrap.c */
+/* gcc -g -shared -o _bootstrap.so -fPIC $(python-config --cflags --ldflags) _bootstrap.c */
 #include <Python.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
-static PyObject* _bootstrap(PyObject* self, PyObject* args) {
-    PyObject *py_subject = NULL;
-    PyObject *py_pattern = NULL;
-
-    if (!PyArg_ParseTuple(args, "OO", &py_subject, &py_pattern))
-        return NULL;
-
-    if (!PyUnicode_Check(py_subject)) {
-        PyErr_SetString(PyExc_TypeError, "subject must be a string");
-        return NULL;
-    }
-
-    const char* subject_c = PyUnicode_AsUTF8(py_subject);
-    if (!subject_c)
-        return NULL;
-
-    size_t subject_len = strlen(subject_c);
-    char* subject_buffer = (char*) malloc(subject_len + 1);
-    if (!subject_buffer) {
-        PyErr_NoMemory();
-        return NULL;
-    }
-    strcpy(subject_buffer, subject_c);
-
-    PyObject* py_N = PyObject_GetAttrString(py_pattern, "N");
-    if (!py_N || !PyUnicode_Check(py_N)) {
-        free(subject_buffer);
-        Py_XDECREF(py_N);
-        PyErr_SetString(PyExc_AttributeError, "pattern must have a Unicode attribute 'N'");
-        return NULL;
-    }
-    const char* pattern_N = PyUnicode_AsUTF8(py_N);
-    if (!pattern_N) {
-        free(subject_buffer);
-        Py_DECREF(py_N);
-        return NULL;
-    }
-
-    PyObject* py_n = PyObject_GetAttrString(py_pattern, "n");
-    if (!py_n) {
-        free(subject_buffer);
-        Py_DECREF(py_N);
-        PyErr_SetString(PyExc_AttributeError, "pattern must have an attribute 'n'");
-        return NULL;
-    }
-    long pattern_n = PyLong_AsLong(py_n);
-
-    PyObject* py_AP = PyObject_GetAttrString(py_pattern, "AP");
-    if (!py_AP || !PyList_Check(py_AP)) {
-        free(subject_buffer);
-        Py_DECREF(py_N);
-        Py_DECREF(py_n);
-        Py_XDECREF(py_AP);
-        PyErr_SetString(PyExc_AttributeError, "pattern must have a list attribute 'AP'");
-        return NULL;
-    }
-    Py_ssize_t ap_len = PyList_Size(py_AP);
-
-    PySys_WriteStdout("Subject: %s\n", subject_buffer);
-    PySys_WriteStdout("Pattern.N: %s\n", pattern_N);
-    PySys_WriteStdout("Pattern.n: %ld\n", pattern_n);
-    PySys_WriteStdout("Pattern.AP contents:\n");
-
-    for (Py_ssize_t i = 0; i < ap_len; i++) {
-        PyObject *item = PyList_GetItem(py_AP, i); // Borrowed reference.
-        if (!item) continue;
-        PyObject *item_N = PyObject_GetAttrString(item, "N");
-        if (item_N && PyUnicode_Check(item_N)) {
-            const char* item_N_str = PyUnicode_AsUTF8(item_N);
-            if (item_N_str) PySys_WriteStdout("  AP[%zd].N: %s\n", i, item_N_str);
-            Py_DECREF(item_N);
-        } else {
-            Py_XDECREF(item_N);
-            PySys_WriteStdout("  AP[%zd].N: <not found or not a string>\n", i);
+static void dump_pattern(PyObject * pattern, int depth) {
+    const char * type_name = Py_TYPE(pattern)->tp_name;
+    PySys_WriteStdout("%*s%s", depth * 2, "", type_name);
+    const char * attrs[] = {
+        "N", "n", "chars", "rex", "s", "t", "v", "expression", "command", NULL
+    };
+//  ----------------------------------------------------------------------------
+    for (int i = 0; attrs[i]; i++) {
+        if (PyObject_HasAttrString(pattern, attrs[i])) {
+            PyObject * attr = PyObject_GetAttrString(pattern, attrs[i]);
+            if (PyLong_Check(attr)) {
+                long value = PyLong_AsLong(attr);
+                PySys_WriteStdout(" %ld", value);
+            } else if (PyUnicode_Check(attr)) {
+                PySys_WriteStdout(" %s", PyUnicode_AsUTF8(attr));
+            } else if (PyObject * repr = PyObject_Repr(attr)) {
+                PySys_WriteStdout(" %s", PyUnicode_AsUTF8(repr));
+                Py_DECREF(repr);
+            }
+            Py_DECREF(attr);
         }
     }
-
-    free(subject_buffer);
-    Py_DECREF(py_N);
-    Py_DECREF(py_n);
-    Py_DECREF(py_AP);
-
+    PySys_WriteStdout("\n");
+//  ----------------------------------------------------------------------------
+    if (PyObject_HasAttrString(pattern, "P")) {
+        PyObject * attr = PyObject_GetAttrString(pattern, "P");
+        dump_pattern(attr, depth + 2);
+        Py_DECREF(attr);
+    }
+    if (PyObject_HasAttrString(pattern, "Q")) {
+        PyObject * attr = PyObject_GetAttrString(pattern, "Q");
+        dump_pattern(attr, depth + 2);
+        Py_DECREF(attr);
+    }
+    if (PyObject_HasAttrString(pattern, "AP")) {
+        PyObject * attr = PyObject_GetAttrString(pattern, "AP");
+        if (PyTuple_Check(attr)) {
+            Py_ssize_t list_size = PyTuple_Size(attr);
+            for (Py_ssize_t j = 0; j < list_size; j++)
+                dump_pattern(PyTuple_GetItem(attr, j), depth + 2);
+        }
+        Py_DECREF(attr);
+    }
+//  ----------------------------------------------------------------------------
+}
+//------------------------------------------------------------------------------
+static PyObject* bootstrap(PyObject *self, PyObject *args) {
+    const char * subject;
+    PyObject * pattern;
+    if (!PyArg_ParseTuple(args, "sO", &subject, &pattern))
+        return NULL;
+    PySys_WriteStdout("Subject: %s\n", subject);
+    dump_pattern(pattern, 0);
     Py_RETURN_NONE;
 }
-
-static PyMethodDef SearchMethods[] = {
-    {"_bootstrap", (PyCFunction)_bootstrap, METH_VARARGS, "C function to display subject and pattern parameters."},
-    {NULL, NULL, 0, NULL}
+//------------------------------------------------------------------------------
+static PyMethodDef BootstrapMethods[] = {
+    {"_bootstrap", bootstrap, METH_VARARGS, "Dump the hierarchical PATTERN structure recursively."},
+    {NULL, NULL, 0, NULL}   // Sentinel
 };
-
-static struct PyModuleDef _bootstrap_module = {
+//------------------------------------------------------------------------------
+static struct PyModuleDef bootstrap_module = {
     PyModuleDef_HEAD_INIT,
     "_bootstrap",
-    "Module that implements the _bootstrap function using CPython API with passed arguments.",
+    "Module for dumping hierarchical PATTERN structure.",
     -1,
-    SearchMethods
+    BootstrapMethods
 };
-
+//------------------------------------------------------------------------------
 PyMODINIT_FUNC PyInit__bootstrap(void) {
-    return PyModule_Create(&_bootstrap_module);
+    return PyModule_Create(&bootstrap_module);
 }
+//------------------------------------------------------------------------------
