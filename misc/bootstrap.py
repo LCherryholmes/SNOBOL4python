@@ -16,18 +16,18 @@ from _bootstrap import _bootstrap # import the C extension function
 GLOBALS(globals())
 TRACE(40)
 #   --------------------------------------------------------------------------------------------------------------------
-V = ANY(LCASE) % "N"      + λ(lambda: S.append(int(globals()[N])))
-I = SPAN(DIGITS) % "N"    + λ(lambda: S.append(int(N)))
+V = ANY(LCASE) % "N"      + λ("S.append(int(globals()[N]))")
+I = SPAN(DIGITS) % "N"    + λ("S.append(int(N))")
 E = ( V | I | σ('(') + ζ("X") + σ(')'))
-X = ( E + σ('+') + ζ("X") + λ(lambda: S.append(S.pop() + S.pop()))
-    | E + σ('-') + ζ("X") + λ(lambda: S.append(S.pop() - S.pop()))
-    | E + σ('*') + ζ("X") + λ(lambda: S.append(S.pop() * S.pop()))
-    | E + σ('/') + ζ("X") + λ(lambda: S.append(S.pop() // S.pop()))
+X = ( E + σ('+') + ζ("X") + λ("S.append(S.pop() + S.pop())")
+    | E + σ('-') + ζ("X") + λ("S.append(S.pop() - S.pop())")
+    | E + σ('*') + ζ("X") + λ("S.append(S.pop() * S.pop())")
+    | E + σ('/') + ζ("X") + λ("S.append(S.pop() // S.pop())")
     | σ('+') + ζ("X")
-    | σ('-') + ζ("X")     + λ(lambda: S.append(-S.pop()))
+    | σ('-') + ζ("X")     + λ("S.append(-S.pop())")
     | E
     )
-C = POS(0) + λ("S = []") + X + λ(lambda: print(S.pop())) + RPOS(0)
+C = POS(0) + λ("S = []") + X + λ("print(S.pop())") + RPOS(0)
 
 x = 1; y = 2; z = 3
 for s in ["x+y*z", "x+(y*z)", "(x+y)*z"]:
