@@ -1,0 +1,12 @@
+static const PATTERN BEAD_1 = {POS, .n=0};
+static const PATTERN BEAD_3 = {σ, .s="B"};
+static const PATTERN BEAD_4 = {σ, .s="R"};
+static const PATTERN BEAD_2 = {Π, 2, {&BEAD_3, &BEAD_4}};
+static const PATTERN BEAD_6 = {σ, .s="E"};
+static const PATTERN BEAD_7 = {σ, .s="EA"};
+static const PATTERN BEAD_5 = {Π, 2, {&BEAD_6, &BEAD_7}};
+static const PATTERN BEAD_9 = {σ, .s="D"};
+static const PATTERN BEAD_10 = {σ, .s="DS"};
+static const PATTERN BEAD_8 = {Π, 2, {&BEAD_9, &BEAD_10}};
+static const PATTERN BEAD_11 = {RPOS, .n=0};
+static const PATTERN BEAD_0 = {Σ, 5, {&BEAD_1, &BEAD_2, &BEAD_5, &BEAD_8, &BEAD_11}};

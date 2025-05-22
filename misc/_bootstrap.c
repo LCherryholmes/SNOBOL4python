@@ -5,8 +5,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 static int pos = 0;
 static char * subject = NULL;
-static int counter = 0;
 const char * attrs[] = {"N", "n", "chars", "rex", "s", "t", "v", "expression", "command", NULL};
+static char name[128];
+static int counter = 0;
 //----------------------------------------------------------------------------------------------------------------------
 static int dump_pattern(PyObject * pattern, int depth) {
     const char * type = Py_TYPE(pattern)->tp_name;
@@ -25,12 +26,12 @@ static int dump_pattern(PyObject * pattern, int depth) {
                 for (Py_ssize_t j = 0; j < list_size; j++)
                     refs[j] = dump_pattern(PyTuple_GetItem(attr, j), depth + 2);
             }
-            PySys_WriteStdout("static PATTERN P%d = {\"%s\", NULL, {", count, type);
+            PySys_WriteStdout("static PATTERN %s%d = {%s, %d, {", name, count, type, list_size);
             for (Py_ssize_t j = 0; j < list_size; j++) {
                 if (j > 0) PySys_WriteStdout(", ");
-                PySys_WriteStdout("&P%d", refs[j]);
+                PySys_WriteStdout("&%s%d", name, refs[j]);
             }
-            PySys_WriteStdout(", NULL}};\n");
+            PySys_WriteStdout("}};\n");
             Py_DECREF(attr);
         }
     } else if (  !strcmp(type, "ARBNO")
@@ -43,7 +44,7 @@ static int dump_pattern(PyObject * pattern, int depth) {
             ref = dump_pattern(attr, depth + 2);
             Py_DECREF(attr);
         }
-        PySys_WriteStdout("static PATTERN P%d = {\"%s\", NULL, &P%d};\n", count, type, ref);
+        PySys_WriteStdout("static PATTERN %s%d = {%s, NULL, &%s%d};\n", name, count, type, name, ref);
     } else if (  !strcmp(type, "Δ")
               || !strcmp(type, "δ")
               ) {
@@ -59,10 +60,10 @@ static int dump_pattern(PyObject * pattern, int depth) {
             if (PyUnicode_Check(attr)) N = PyUnicode_AsUTF8(attr);
             Py_DECREF(attr);
         }
-        PySys_WriteStdout("static PATTERN P%d = {\"%s\", .s=\"%s\", &P%d};\n", count, type, N, ref);
+        PySys_WriteStdout("static PATTERN %s%d = {%s, .s=\"%s\", &%s%d};\n", name, count, type, N, name, ref);
     } else {
 //  --------------------------------------------------------------------------------------------------------------------
-        PySys_WriteStdout("static PATTERN P%d = {\"%s\"", count, type);
+        PySys_WriteStdout("static PATTERN %s%d = {%s", name, count, type);
         for (int i = 0; attrs[i]; i++) {
             if (PyObject_HasAttrString(pattern, attrs[i])) {
                 PyObject * attr = PyObject_GetAttrString(pattern, attrs[i]);
@@ -84,18 +85,20 @@ static int dump_pattern(PyObject * pattern, int depth) {
     return count;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static PyObject * bootstrap(PyObject *self, PyObject *args) {
+static PyObject * _bootstrap(PyObject *self, PyObject *args) {
     const char * subject;
     PyObject * pattern;
-    if (!PyArg_ParseTuple(args, "sO", &subject, &pattern))
+    const char * nm;
+    if (!PyArg_ParseTuple(args, "sOs", &subject, &pattern, &nm))
         return NULL;
-    PySys_WriteStdout("Subject: %s\n", subject);
+    strcpy(name, nm);
+    counter = 0;
     dump_pattern(pattern, 0);
     Py_RETURN_NONE;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static PyMethodDef bootstrap_methods[] = {
-    {"_bootstrap", bootstrap, METH_VARARGS, "Dump the hierarchical PATTERN structure recursively."},
+    {"_bootstrap", _bootstrap, METH_VARARGS, "Dump the hierarchical PATTERN structure recursively."},
     {NULL, NULL, 0, NULL}
 };
 //----------------------------------------------------------------------------------------------------------------------
