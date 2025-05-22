@@ -146,14 +146,13 @@ static int iTracks = 0;
 static state_t *aTracks = NULL;
 static void init_tracks() { iTracks = 0; aTracks = NULL; }
 static void fini_tracks() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
-static void push_track(state_t state) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = state; }
-static state_t pop_track() {
+static void push_track(state_t s) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = s; }
+static void pop_track(state_t * s) {
     if (iTracks > 0) {
         state_t state = aTracks[iTracks - 1];
         aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
-        return state;
-    }
-    return empty_state;
+        if (s) *s = state;
+    } else if (s) *s = empty_state;
 }
 //======================================================================================================================
 void ζ_down(state_t * s, heap_t * heap) {
@@ -251,43 +250,43 @@ bool LITERAL(state_t * pS, const char * s) {
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void MATCH(const PATTERN * PI, const char * subject) {
-    const int LENGTH = strlen(subject);
+void MATCH(const PATTERN * pattern, const char * subject) {
     init_tracks();
     int iteration = 0;
     int action = PROCEED;
     heap_t heap; heap = empty_heap;
-    state_t s = {subject, 0, (void *) -1, -1, PI, 0, NULL};
-    while (s.PI) {
+    const int LENGTH = strlen(subject);
+    state_t state = {subject, 0, NULL, 0, pattern, 0, NULL};
+    while (state.PI) {
         iteration++; // if (iteration > 20) break;
-        animate(action, s, iteration, LENGTH);
-        const char * type = s.PI->type;
+        animate(action, state, iteration, LENGTH);
+        const char * type = state.PI->type;
         if (type == Π)
             switch (action) {
                 case PROCEED:
-                    if (s.ctx < s.PI->n)
-                                    { action = PROCEED; push_track(s); ζ_down(&s, &heap); break; }
-                    else            { action = RECEDE;  s = pop_track(); break; }
-                case SUCCEED:       { action = SUCCEED; ζ_up_success(&s); break; }
-                case FAIL:          { action = PROCEED; pop_track(); ζ_stay_next(&s); break; }
-                case RECEDE:        { action = PROCEED; ζ_stay_next(&s); break; } // track already popped
+                    if (state.ctx < state.PI->n)
+                                    { action = PROCEED; push_track(state); ζ_down(&state, &heap); break; }
+                    else            { action = RECEDE;  pop_track(&state); break; }
+                case SUCCEED:       { action = SUCCEED; ζ_up_success(&state); break; }
+                case FAIL:          { action = PROCEED; pop_track(NULL); ζ_stay_next(&state); break; }
+                case RECEDE:        { action = PROCEED; ζ_stay_next(&state); break; } // track already popped
             }
         else if (type == Σ)
             switch (action) {
                 case PROCEED:
-                    if (s.ctx < s.PI->n)
-                                    { action = PROCEED; ζ_down(&s, &heap); break; }
-                    else            { action = SUCCEED; ζ_up_success(&s); break; }
-                case SUCCEED:       { action = PROCEED; ζ_move_next(&s); break; }
-                case FAIL:          { action = RECEDE;  s = pop_track(); break; }
+                    if (state.ctx < state.PI->n)
+                                    { action = PROCEED; ζ_down(&state, &heap); break; }
+                    else            { action = SUCCEED; ζ_up_success(&state); break; }
+                case SUCCEED:       { action = PROCEED; ζ_move_next(&state); break; }
+                case FAIL:          { action = RECEDE;  pop_track(&state); break; }
                 case RECEDE:        { assert(0); }
             }
         else if (type == σ)
             switch (action) {
                 case PROCEED:
-                    if (LITERAL(&s, s.PI->s))
-                                    { action = SUCCEED; ζ_up_success(&s); break; }
-                    else            { action = FAIL;    ζ_up_fail(&s); break; }
+                    if (LITERAL(&state, state.PI->s))
+                                    { action = SUCCEED; ζ_up_success(&state); break; }
+                    else            { action = FAIL;    ζ_up_fail(&state); break; }
                 case SUCCEED:       { assert(0); }
                 case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
@@ -296,7 +295,7 @@ void MATCH(const PATTERN * PI, const char * subject) {
                 || type == Δ
                 || type == λ)
             switch (action) {
-                case PROCEED:       { action = SUCCEED; ζ_up_success(&s); break; }
+                case PROCEED:       { action = SUCCEED; ζ_up_success(&state); break; }
                 case SUCCEED:       { assert(0); }
                 case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
@@ -304,9 +303,9 @@ void MATCH(const PATTERN * PI, const char * subject) {
         else if (type == POS)
             switch (action) {
                 case PROCEED:
-                    if (s.DELTA == s.PI->n)
-                                    { action = SUCCEED; ζ_up_success(&s); }
-                    else            { action = FAIL;    ζ_up_fail(&s); }
+                    if (state.DELTA == state.PI->n)
+                                    { action = SUCCEED; ζ_up_success(&state); }
+                    else            { action = FAIL;    ζ_up_fail(&state); }
                     break;
                 case SUCCEED:       { assert(0); }
                 case FAIL:          { assert(0); }
@@ -315,9 +314,9 @@ void MATCH(const PATTERN * PI, const char * subject) {
         else if (type == RPOS)
             switch (action) {
                 case PROCEED:
-                    if (LENGTH - s.DELTA == s.PI->n)
-                                    { action = SUCCEED; ζ_up_success(&s); }
-                    else            { action = FAIL;    ζ_up_fail(&s); }
+                    if (LENGTH - state.DELTA == state.PI->n)
+                                    { action = SUCCEED; ζ_up_success(&state); }
+                    else            { action = FAIL;    ζ_up_fail(&state); }
                     break;
                 case SUCCEED:       { assert(0); }
                 case FAIL:          { assert(0); }
