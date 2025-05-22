@@ -1,252 +1,345 @@
 #include <malloc.h>
-//----------------------------------------------------------------------------------------------------------------------
-static const char ε[] = "ε";
-static const char σ[] = "σ";
-static const char Σ[] = "Σ";
-static const char Π[] = "Π";
-static const char ρ[] = "ρ";
-static const char ARBNO[] = "ARBNO";
-static const char FENCE[] = "FENCE";
-static const char π[] = "π";
-static const char Δ[] = "Δ";
-static const char δ[] = "δ";
-static const char ANY[] = "ANY";
-static const char NOTANY[] = "NOTANY";
-static const char SPAN[] = "SPAN";
-static const char BREAK[] = "BREAK";
-static const char POS[] = "POS";
-static const char RPOS[] = "RPOS";
-static const char λ[] = "λ";
-static const char ζ[] = "ζ";
-//----------------------------------------------------------------------------------------------------------------------
+#include <assert.h>
+#include <string.h>
+#include <printf.h>
+#include <stdbool.h>
+//======================================================================================================================
+static const char ABORT[]   = "ABORT";
+static const char ANY[]     = "ANY";
+static const char ARBNO[]   = "ARBNO";
+static const char ARB[]     = "ARB";
+static const char BAL[]     = "BAL";
+static const char BREAKX[]  = "BREAKX";
+static const char BREAK[]   = "BREAK";
+static const char FAIL[]    = "FAIL";
+static const char FENCE[]   = "FENCE";
+static const char LEN[]     = "LEN";
+static const char MARBNO[]  = "MARBNO";
+static const char MARB[]    = "MARB";
+static const char NOTANY[]  = "NOTANY";
+static const char POS[]     = "POS";
+static const char REM[]     = "REM";
+static const char RPOS[]    = "RPOS";
+static const char RTAB[]    = "RTAB";
+static const char SPAN[]    = "SPAN";
+static const char SUCCESS[] = "SUCCESS";
+static const char TAB[]     = "TAB";
+static const char Shift[]   = "Shift";
+static const char Reduce[]  = "Reduce";
+static const char Pop[]     = "Pop";
+static const char nInc[]    = "nInc";
+static const char nPop[]    = "nPop";
+static const char nPush[]   = "nPush";
+static const char Δ[]       = "Δ";
+static const char Θ[]       = "Θ";
+static const char Λ[]       = "Λ";
+static const char Π[]       = "ALT"; // "Π";
+static const char Σ[]       = "SEQ"; // "Σ";
+static const char Φ[]       = "Φ";
+static const char α[]       = "α";
+static const char δ[]       = "δ";
+static const char ε[]       = "ε";
+static const char ζ[]       = "ζ";
+static const char θ[]       = "θ";
+static const char λ[]       = "λ";
+static const char π[]       = "π";
+static const char ρ[]       = "ρ";
+static const char σ[]       = "LIT"; // "σ";
+static const char φ[]       = "φ";
+static const char ω[]       = "ω";
+//======================================================================================================================
 typedef struct PATTERN PATTERN;
 typedef struct PATTERN {
     const char * type;
-    const char * s;
     union {
-        PATTERN * AP[32];
-        const long n;
-        const char * N;
-        const char * command;
-        const char * chars;
+        const int       n;         /* POS, RPOS, Σ, Π */
+        const char *    s;         /* σ, δ, Δ */
+        const char *    t;         /* Shift, Reduce, Pop */
+    };
+    union {
+        const PATTERN * AP[30];    /* Δ */
+        const char *    N;         /* ζ */
+        const char *    command;   /* λ */
+        const char *    chars;     /* ANY, NOTANY, SPAN, BREAK */
+        const char *    v;         /* Shift, Reduce, Pop  */
     };
 } PATTERN;
 //----------------------------------------------------------------------------------------------------------------------
-static PATTERN P1 = {POS, .n=0};
-static PATTERN P2 = {λ, .command="S = []"};
-static PATTERN P8 = {ANY, .chars="abcdefghijklmnopqrstuvwxyz"};
-static PATTERN P7 = {Δ, .s="N", &P8};
-static PATTERN P9 = {λ, .command="S.append(int(globals()[N]))"};
-static PATTERN P6 = {Σ, NULL, {&P7, &P9}};
-static PATTERN P12 = {SPAN, .chars="0123456789"};
-static PATTERN P11 = {Δ, .s="N", &P12};
-static PATTERN P13 = {λ, .command="S.append(int(N))"};
-static PATTERN P10 = {Σ, NULL, {&P11, &P13}};
-static PATTERN P15 = {σ, .s="("};
-static PATTERN P16 = {ζ, .N="X"};
-static PATTERN P17 = {σ, .s=")"};
-static PATTERN P14 = {Σ, NULL, {&P15, &P16, &P17}};
-static PATTERN P5 = {Π, NULL, {&P6, &P10, &P14}};
-static PATTERN P18 = {σ, .s="+"};
-static PATTERN P19 = {ζ, .N="X"};
-static PATTERN P20 = {λ, .command="S.append(S.pop() + S.pop())"};
-static PATTERN P4 = {Σ, NULL, {&P5, &P18, &P19, &P20}};
-static PATTERN P25 = {ANY, .chars="abcdefghijklmnopqrstuvwxyz"};
-static PATTERN P24 = {Δ, .s="N", &P25};
-static PATTERN P26 = {λ, .command="S.append(int(globals()[N]))"};
-static PATTERN P23 = {Σ, NULL, {&P24, &P26}};
-static PATTERN P29 = {SPAN, .chars="0123456789"};
-static PATTERN P28 = {Δ, .s="N", &P29};
-static PATTERN P30 = {λ, .command="S.append(int(N))"};
-static PATTERN P27 = {Σ, NULL, {&P28, &P30}};
-static PATTERN P32 = {σ, .s="("};
-static PATTERN P33 = {ζ, .N="X"};
-static PATTERN P34 = {σ, .s=")"};
-static PATTERN P31 = {Σ, NULL, {&P32, &P33, &P34}};
-static PATTERN P22 = {Π, NULL, {&P23, &P27, &P31}};
-static PATTERN P35 = {σ, .s="-"};
-static PATTERN P36 = {ζ, .N="X"};
-static PATTERN P37 = {λ, .command="S.append(S.pop() - S.pop())"};
-static PATTERN P21 = {Σ, NULL, {&P22, &P35, &P36, &P37}};
-static PATTERN P42 = {ANY, .chars="abcdefghijklmnopqrstuvwxyz"};
-static PATTERN P41 = {Δ, .s="N", &P42};
-static PATTERN P43 = {λ, .command="S.append(int(globals()[N]))"};
-static PATTERN P40 = {Σ, NULL, {&P41, &P43}};
-static PATTERN P46 = {SPAN, .chars="0123456789"};
-static PATTERN P45 = {Δ, .s="N", &P46};
-static PATTERN P47 = {λ, .command="S.append(int(N))"};
-static PATTERN P44 = {Σ, NULL, {&P45, &P47}};
-static PATTERN P49 = {σ, .s="("};
-static PATTERN P50 = {ζ, .N="X"};
-static PATTERN P51 = {σ, .s=")"};
-static PATTERN P48 = {Σ, NULL, {&P49, &P50, &P51}};
-static PATTERN P39 = {Π, NULL, {&P40, &P44, &P48}};
-static PATTERN P52 = {σ, .s="*"};
-static PATTERN P53 = {ζ, .N="X"};
-static PATTERN P54 = {λ, .command="S.append(S.pop() * S.pop())"};
-static PATTERN P38 = {Σ, NULL, {&P39, &P52, &P53, &P54}};
-static PATTERN P59 = {ANY, .chars="abcdefghijklmnopqrstuvwxyz"};
-static PATTERN P58 = {Δ, .s="N", &P59};
-static PATTERN P60 = {λ, .command="S.append(int(globals()[N]))"};
-static PATTERN P57 = {Σ, NULL, {&P58, &P60}};
-static PATTERN P63 = {SPAN, .chars="0123456789"};
-static PATTERN P62 = {Δ, .s="N", &P63};
-static PATTERN P64 = {λ, .command="S.append(int(N))"};
-static PATTERN P61 = {Σ, NULL, {&P62, &P64}};
-static PATTERN P66 = {σ, .s="("};
-static PATTERN P67 = {ζ, .N="X"};
-static PATTERN P68 = {σ, .s=")"};
-static PATTERN P65 = {Σ, NULL, {&P66, &P67, &P68}};
-static PATTERN P56 = {Π, NULL, {&P57, &P61, &P65}};
-static PATTERN P69 = {σ, .s="/"};
-static PATTERN P70 = {ζ, .N="X"};
-static PATTERN P71 = {λ, .command="S.append(S.pop() // S.pop())"};
-static PATTERN P55 = {Σ, NULL, {&P56, &P69, &P70, &P71}};
-static PATTERN P73 = {σ, .s="+"};
-static PATTERN P74 = {ζ, .N="X"};
-static PATTERN P72 = {Σ, NULL, {&P73, &P74}};
-static PATTERN P76 = {σ, .s="-"};
-static PATTERN P77 = {ζ, .N="X"};
-static PATTERN P78 = {λ, .command="S.append(-S.pop())"};
-static PATTERN P75 = {Σ, NULL, {&P76, &P77, &P78}};
-static PATTERN P82 = {ANY, .chars="abcdefghijklmnopqrstuvwxyz"};
-static PATTERN P81 = {Δ, .s="N", &P82};
-static PATTERN P83 = {λ, .command="S.append(int(globals()[N]))"};
-static PATTERN P80 = {Σ, NULL, {&P81, &P83}};
-static PATTERN P86 = {SPAN, .chars="0123456789"};
-static PATTERN P85 = {Δ, .s="N", &P86};
-static PATTERN P87 = {λ, .command="S.append(int(N))"};
-static PATTERN P84 = {Σ, NULL, {&P85, &P87}};
-static PATTERN P89 = {σ, .s="("};
-static PATTERN P90 = {ζ, .N="X"};
-static PATTERN P91 = {σ, .s=")"};
-static PATTERN P88 = {Σ, NULL, {&P89, &P90, &P91}};
-static PATTERN P79 = {Π, NULL, {&P80, &P84, &P88}};
-static PATTERN P3 = {Π, NULL, {&P4, &P21, &P38, &P55, &P72, &P75, &P79}};
-static PATTERN P92 = {λ, .command="print(S.pop())"};
-static PATTERN P93 = {RPOS, .n=0};
-static PATTERN P0 = {Σ, NULL, {&P1, &P2, &P3, &P92, &P93}};
-//----------------------------------------------------------------------------------------------------------------------
-typedef enum _entry {START=0, RESUME=1} entry_t;
-typedef enum _result {SUCCESS=0, FAILURE=1} result_t;
-//----------------------------------------------------------------------------------------------------------------------
-typedef struct _state {entry_t entry; PATTERN * pattern; int pos; int ctx;} state_t;
-typedef struct _action {result_t action; PATTERN * pattern; int pos; int ctx;} action_t;
+void preview(const PATTERN * pattern) {
+    const char * type = pattern->type;
+    if      (type == ε)         { printf("ε()"); }
+    else if (type == σ)         { printf("\"%s\"", pattern->s); }
+    else if (type == λ)         { printf("λ(\"%s\")", pattern->command); }
+    else if (type == ζ)         { printf("ζ(\"%s\")", pattern->N); }
+    else if (type == POS)       { printf("POS(%d)", pattern->n); }
+    else if (type == RPOS)      { printf("RPOS(%d)", pattern->n); }
+    else if (type == ANY)       { printf("ANY(\"%s\")", pattern->chars); }
+    else if (type == SPAN)      { printf("SPAN(\"%s\")", pattern->chars); }
+    else if (type == BREAK)     { printf("BREAK(\"%s\")", pattern->chars); }
+    else if (type == NOTANY)    { printf("NOTANY(\"%s\")", pattern->chars); }
+    else if (type == ARBNO)     { printf("ARBNO("); preview(pattern->AP[0]); printf(")"); }
+    else if (type == Δ)         { printf("Δ("); preview(pattern->AP[0]); printf(", \"%s\")", pattern->s); }
+    else if (type == δ)         { printf("δ("); preview(pattern->AP[0]); printf(", \"%s\")", pattern->s); }
+    else if (type == π)         { printf("π("); preview(pattern->AP[0]); printf(")"); }
+    else if (type == FENCE)     { printf("FENCE("); if (pattern->n > 0) preview(pattern->AP[0]); printf(")"); }
+    else if (type == Π
+         ||  type == Σ
+         ||  type == ρ)         { printf("%s(", pattern->type);
+                                  for (int i = 0; i < pattern->n; i++) {
+                                      if (i) printf(" ");
+                                      preview(pattern->AP[i]);
+                                  }
+                                  printf(")");
+                                }
+}
+//======================================================================================================================
+#include "C_PATTERN.h"
+#include "BEAD_PATTERN.h"
+#include "BEARDS_PATTERN.h"
+//======================================================================================================================
+typedef struct _state {
+    const char *    SIGMA;
+    int             DELTA;
+    const char *    sigma;
+    int             delta;
+    const PATTERN * pattern;
+    int             ctx;
+} state_t;
 //----------------------------------------------------------------------------------------------------------------------
 static int iStates = 0;
 static state_t * aStates = NULL;
-static void init_states() {
-    iStates = 0;
-    aStates = NULL;
-}
-static void push_state(entry_t entry, PATTERN * pattern, int pos) {
-    state_t state = {entry, pattern, pos, 0};
-    aStates = realloc(aStates, ++iStates * sizeof(state_t));
-    aStates[iStates - 1] = state;
-}
-static state_t * top_state() {
-    if (iStates > 0)
-        return &aStates[iStates - 1];
-    else return NULL;
-}
+static void init_states() { iStates = 0; aStates = NULL; }
+static void push_state(state_t s) { aStates = realloc(aStates, ++iStates * sizeof(state_t)); aStates[iStates - 1] = s; }
+static state_t top_state() { return aStates[iStates - 1]; }
 static state_t pop_state() {
-    state_t state = {START, NULL, 0, 0};
+    state_t s = {NULL, 0, NULL, 0, NULL, 0};
     if (iStates > 0) {
-        state = aStates[iStates - 1];
+        s = aStates[iStates - 1];
         aStates = realloc(aStates, --iStates * sizeof(state_t));
     }
-    return state;
-}
-//-----------------------------------------------------------------------------------------------------------------------
-static int iActions = 0;
-static action_t * aActions = NULL;
-static void init_actions() {
-    iActions = 0;
-    aActions = NULL;
-}
-static void push_action(result_t result, PATTERN * pattern, int pos) {
-    action_t action = {result, pattern, pos, 0};
-    aActions = realloc(aActions, ++iActions * sizeof(action_t));
-    aActions[iActions - 1] = action;
-}
-static action_t * top_action() {
-    if (iActions > 0)
-        return &aActions[iActions - 1];
-    else return NULL;
-}
-static action_t pop_action() {
-    action_t action = {START, NULL, 0, 0};
-    if (iActions > 0) {
-        action = aActions[iActions - 1];
-        aActions = realloc(aActions, --iActions * sizeof(action_t));
-    }
-    return action;
+    return s;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void MATCH(PATTERN * pattern, const char * subject) {
+static int iTracks = 0;
+static int * aTracks = NULL;
+static void init_tracks() { iTracks = 0; aTracks = NULL; }
+static void push_track() { aTracks = realloc(aTracks, ++iTracks * sizeof(int)); aTracks[iTracks - 1] = iStates; }
+static int pop_track() {
+    int t = 0;
+    if (iTracks > 0) {
+        t = aTracks[iTracks - 1];
+        aTracks = realloc(aTracks, --iTracks * sizeof(int));
+    }
+    return t;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static state_t back_track() {
+    iStates = pop_track();
+    aStates = realloc(aStates, iStates * sizeof(state_t));
+    return pop_state();
+}
+//======================================================================================================================
+state_t ζ_down(state_t s, const PATTERN * pattern) {
+    push_state(s);
+    s.sigma = s.SIGMA;
+    s.delta = s.DELTA;
+    if (pattern)
+        s.pattern = pattern;
+    else s.pattern = s.pattern->AP[s.ctx];
+    s.ctx = 0;
+    return s;
+}
+//----------------------------------------------------------------------------------------------------------------------
+state_t ζ_up(state_t s) {
+    state_t s_parent = top_state();
+    s.pattern = s_parent.pattern;
+    s.ctx = s_parent.ctx;
+    return s;
+}
+//----------------------------------------------------------------------------------------------------------------------
+state_t ζ_up_success(state_t s) {
+    state_t s_parent = top_state();
+    push_state(s);
+    s.pattern = s_parent.pattern;
+    s.ctx = s_parent.ctx;
+    return s;
+}
+//----------------------------------------------------------------------------------------------------------------------
+state_t ζ_up_fail() {
+    return pop_state();
+}
+//----------------------------------------------------------------------------------------------------------------------
+state_t ζ_stay_next(state_t s) {
+    s.sigma = s.SIGMA;
+    s.delta = s.DELTA;
+    s.ctx++;
+    return s;
+}
+//----------------------------------------------------------------------------------------------------------------------
+state_t ζ_move_next(state_t s) {
+    s.SIGMA = s.sigma;
+    s.DELTA = s.delta;
+    s.ctx++;
+    return s;
+}
+//======================================================================================================================
+#define PROCEED 0
+#define SUCCEED 1
+#define CONCEDE 2
+#define RECEDE 3
+//----------------------------------------------------------------------------------------------------------------------
+static const char * actions[4] = {
+    ":proceed",
+    ":succeed",
+    ":concede",
+    ":recede"
+};
+//----------------------------------------------------------------------------------------------------------------------
+bool LITERAL(state_t * pS, const char * s) {
+    pS->sigma = pS->SIGMA;
+    pS->delta = pS->DELTA;
+    while (*s) {
+        if (!*(pS->sigma)) return false;
+        if (*(pS->sigma) != *s) return false;
+        pS->sigma++;
+        pS->delta++;
+        s++;
+    }
+    return true;
+}
+//----------------------------------------------------------------------------------------------------------------------
+int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
+int max(int x1, int x2) { if (x1 > x2) return x1; else return x2; }
+//----------------------------------------------------------------------------------------------------------------------
+#define WINDOW 12
+void animate(int action, state_t s, int iteration, int LENGTH) {
+//  --------------------------------------------------------------------------------------------------------------------
+    char head[WINDOW+3]; memset(head, 0, sizeof(head));
+    char tail[WINDOW+3]; memset(tail, 0, sizeof(tail));
+    int α_delta = min(s.DELTA, WINDOW);
+    int ω_delta = min(LENGTH - s.DELTA, WINDOW);
+    const char * sigma = NULL;
+    int i;
+    i = 0;
+    tail[i++] = '"';
+    for (sigma = s.SIGMA - α_delta; sigma < s.SIGMA;)
+        tail[i++] = *(sigma++);
+    tail[i++] = '"';
+    tail[i++] = 0;
+    i = 0;
+    head[i++] = '"';
+    for (sigma = s.SIGMA + ω_delta; sigma > s.SIGMA;)
+        head[i++] = *(--sigma);
+    head[i++] = '"';
+    head[i++] = 0;
+//  --------------------------------------------------------------------------------------------------------------------
+    char states[66]; char * pStates = states;
+    for (int i = 0; i < iStates; i++)
+        pStates += sprintf(pStates, "%s%s/%d", i == 0 ? "" : " ", s.pattern->type, s.ctx + 1);
+//  --------------------------------------------------------------------------------------------------------------------
+    char status[20]; sprintf(status, "%s/%d", s.pattern->type, s.ctx + 1);
+    printf("%3d %2d %-64s %2d %-*s %*s %3d %*s %-8s ",
+        iteration,
+        iStates,
+        states,
+        iTracks,
+        12, status,
+        WINDOW, tail,
+        s.DELTA,
+        WINDOW, head,
+        actions[action]
+    );
+    preview(s.pattern);
+    printf("\n");
+}
+//----------------------------------------------------------------------------------------------------------------------
+void MATCH(const PATTERN * pattern, const char * subject) {
+    const int LENGTH = strlen(subject);
     init_states();
-    push_state(START, pattern, 0);
-    while (iStates > 0) {
-        state_t * pState = top_state();
-        entry_t entry = pState->entry;
-        const char * type = pState->pattern->type;
-        if (type == ε)          {   switch (entry) {
-                                    case START:     { push_action(SUCCESS); }
-                                    case RESUME:    { push_action(FAILURE); }
-                                }}
-        if (type == σ)          {   switch (entry) {
-                                    case START:
-                                    case RESUME:
-                                }}
-        if (type == Σ)          {   switch (entry) {
-                                    case START:     {   pState->action = RESUME;
-                                                        push_state(START, pattern->AP[pState->ctx], pState->pos);
-                                                    }
-                                    case RESUME:
-                                }}
-        if (type == Π)          {   switch (entry) {
-                                    case START:     {   pState->action = RESUME;
-                                                        push_state(START, pattern->AP[pState->ctx], pState->pos);
-                                                    }
-                                    case RESUME:    {   pState->ctx++;
-                                                        if (pState->ctx < pattern->n) {
-                                                            push_state(START, pattern->AP[pState->ctx], pState->pos);
-                                                        } else pop_state();
-                                                    }
-                                }
-        }
-        if (type == ρ) {
-        }
-        if (type == ARBNO) {
-        }
-        if (type == FENCE) {
-        }
-        if (type == π) {
-        }
-        if (type == Δ) {
-        }
-        if (type == δ) {
-        }
-        if (type == ANY) {
-        }
-        if (type == NOTANY) {
-        }
-        if (type == SPAN) {
-        }
-        if (type == BREAK) {
-        }
-        if (type == POS) {
-        }
-        if (type == RPOS) {
-        }
-        if (type == λ) {
-        }
-        if (type == ζ) {
-        }
+    int iteration = 0;
+    int action = PROCEED;
+    state_t s = {subject, 0, (void *) -1, -1, pattern, 0};
+    while (s.SIGMA && s.pattern) {
+        iteration++;
+        animate(action, s, iteration, LENGTH);
+        const char * type = s.pattern->type;
+        if (type == Π)
+            switch (action) {
+                case PROCEED:
+                    if (s.ctx < s.pattern->n)
+                                    { action = PROCEED; push_track(); s = ζ_down(s, NULL); break; }
+                    else            { action = RECEDE;  s = back_track(); break; }
+                case SUCCEED:       { action = SUCCEED; s = ζ_up_success(s); break; }
+                case CONCEDE:       { action = PROCEED; s = ζ_stay_next(s); pop_track(); break; }
+                case RECEDE:        { action = PROCEED; s = ζ_stay_next(s); break; } // track already popped
+            }
+        else if (type == Σ)
+            switch (action) {
+                case PROCEED:
+                    if (s.ctx < s.pattern->n)
+                                    { action = PROCEED; s = ζ_down(s, NULL); break; }
+                    else            { action = SUCCEED; s = ζ_up(s); break; }
+                case SUCCEED:       { action = PROCEED; s = ζ_move_next(s); break; }
+                case CONCEDE:       { action = RECEDE;  s = back_track(); break; }
+                case RECEDE:        { assert(0); }
+            }
+        else if (type == σ)
+            switch (action) {
+                case PROCEED:
+                    if (LITERAL(&s, s.pattern->s))
+                                    { action = SUCCEED; s = ζ_up_success(s); break; }
+                    else            { action = CONCEDE; s = ζ_up_fail(); break; }
+                case SUCCEED:       { assert(0); }
+                case CONCEDE:       { assert(0); }
+                case RECEDE:        { assert(0); }
+            }
+        else if (  type == ε
+                || type == Δ
+                || type == λ)
+            switch (action) {
+                case PROCEED:       { action = SUCCEED; s = ζ_up_success(s); break; }
+                case SUCCEED:       { assert(0); }
+                case CONCEDE:       { assert(0); }
+                case RECEDE:        { assert(0); }
+            }
+        else if (type == POS)
+            switch (action) {
+                case PROCEED:
+                    if (s.DELTA == s.pattern->n)
+                                    { action = SUCCEED; s = ζ_up_success(s); }
+                    else            { action = CONCEDE; s = ζ_up_fail(); }
+                    break;
+                case SUCCEED:       { assert(0); }
+                case CONCEDE:       { assert(0); }
+                case RECEDE:        { assert(0); }
+            }
+        else if (type == RPOS)
+            switch (action) {
+                case PROCEED:
+                    if (LENGTH - s.DELTA == s.pattern->n)
+                                    { action = SUCCEED; s = ζ_up_success(s); }
+                    else            { action = CONCEDE; s = ζ_up_fail(); }
+                    break;
+                case SUCCEED:       { assert(0); }
+                case CONCEDE:       { assert(0); }
+                case RECEDE:        { assert(0); }
+            }
+        else if (type == ρ)         assert(0); /*not implemented*/
+        else if (type == ARBNO)     assert(0); /*not implemented*/
+        else if (type == FENCE)     assert(0); /*not implemented*/
+        else if (type == π)         assert(0); /*not implemented*/
+        else if (type == δ)         assert(0); /*not implemented*/
+        else if (type == ANY)       assert(0); /*not implemented*/
+        else if (type == NOTANY)    assert(0); /*not implemented*/
+        else if (type == SPAN)      assert(0); /*not implemented*/
+        else if (type == BREAK)     assert(0); /*not implemented*/
+        else if (type == ζ)         assert(0); /*not implemented*/
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
 int main() {
-    MATCH(&P0, "x+y*z");
+    MATCH(&BEAD_0, "READS");
+//  MATCH(&BEARDS_0, "ROOSTS");
+//  MATCH(&C_0, "x+y*z");
 }
 //----------------------------------------------------------------------------------------------------------------------
