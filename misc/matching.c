@@ -97,6 +97,7 @@ void preview(const PATTERN * pattern) {
 #include "BEAD_PATTERN.h"
 #include "BEARDS_PATTERN.h"
 //======================================================================================================================
+typedef struct _state state_t;
 typedef struct _state {
     const char *    SIGMA;
     int             DELTA;
@@ -104,69 +105,84 @@ typedef struct _state {
     int             delta;
     const PATTERN * pattern;
     int             ctx;
+    state_t *       psi;
 } state_t;
+//======================================================================================================================
+#define HEAP_SIZE_INIT 64
+#define HEAP_SIZE_BUMP 64
+int iHeapPos = 0;
+int iHeapSize = 0;
+state_t * aHeap = NULL;
+static state_t empty_state = {(void *) 0,  0, (void *) 0,  0, (void *) 0,  0, (void *) 0 };
 //----------------------------------------------------------------------------------------------------------------------
-static int iStates = 0;
-static state_t * aStates = NULL;
-static void init_states() { iStates = 0; aStates = NULL; }
-static void push_state(state_t s) { aStates = realloc(aStates, ++iStates * sizeof(state_t)); aStates[iStates - 1] = s; }
-static state_t top_state() { return aStates[iStates - 1]; }
-static state_t pop_state() {
-    state_t s = {NULL, 0, NULL, 0, NULL, 0};
-    if (iStates > 0) {
-        s = aStates[iStates - 1];
-        aStates = realloc(aStates, --iStates * sizeof(state_t));
+state_t * alloc_state() {
+    if (iHeapPos >= iHeapSize) {
+        if (aHeap == NULL) {
+            aHeap = (state_t *) malloc(HEAP_SIZE_INIT * sizeof(state_t));
+            memset(aHeap, -1, HEAP_SIZE_INIT * sizeof(state_t));
+            iHeapSize = HEAP_SIZE_INIT;
+        } else {
+            aHeap = (state_t *) realloc(aHeap, (iHeapSize + HEAP_SIZE_BUMP) * sizeof(state_t));
+            memset(aHeap + iHeapSize, -1, HEAP_SIZE_BUMP * sizeof(state_t));
+            iHeapSize += HEAP_SIZE_BUMP;
+        }
     }
-    return s;
+    aHeap[iHeapPos] = empty_state;
+    return &aHeap[iHeapPos++];
 }
+//----------------------------------------------------------------------------------------------------------------------
+state_t * pop_state(state_t * psi) { if (psi) return psi->psi; else return NULL; }
+state_t * push_state(state_t * psi, state_t s) { state_t * PSI = alloc_state(); *PSI = s; PSI->psi = psi; return PSI; }
 //----------------------------------------------------------------------------------------------------------------------
 static int iTracks = 0;
-static int * aTracks = NULL;
+static state_t *aTracks = NULL;
 static void init_tracks() { iTracks = 0; aTracks = NULL; }
-static void push_track() { aTracks = realloc(aTracks, ++iTracks * sizeof(int)); aTracks[iTracks - 1] = iStates; }
-static int pop_track() {
-    int t = 0;
+static void push_track(state_t state) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = state; }
+static state_t pop_track() {
     if (iTracks > 0) {
-        t = aTracks[iTracks - 1];
-        aTracks = realloc(aTracks, --iTracks * sizeof(int));
+        state_t state = aTracks[iTracks - 1];
+        aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
+        return state;
     }
-    return t;
-}
-//----------------------------------------------------------------------------------------------------------------------
-static state_t back_track() {
-    iStates = pop_track();
-    aStates = realloc(aStates, iStates * sizeof(state_t));
-    return pop_state();
+    return empty_state;
 }
 //======================================================================================================================
-state_t ζ_down(state_t s, const PATTERN * pattern) {
-    push_state(s);
+state_t ζ_down(state_t s) {
+    s.psi = push_state(s.psi, s);
     s.sigma = s.SIGMA;
     s.delta = s.DELTA;
-    if (pattern)
-        s.pattern = pattern;
-    else s.pattern = s.pattern->AP[s.ctx];
+    s.pattern = s.pattern->AP[s.ctx];
     s.ctx = 0;
     return s;
 }
 //----------------------------------------------------------------------------------------------------------------------
-state_t ζ_up(state_t s) {
-    state_t s_parent = top_state();
-    s.pattern = s_parent.pattern;
-    s.ctx = s_parent.ctx;
+state_t ζ_out(state_t s, const PATTERN * pattern) {
+    s.sigma = s.SIGMA;
+    s.delta = s.DELTA;
+    s.pattern = pattern;
+    s.ctx = 0;
     return s;
 }
 //----------------------------------------------------------------------------------------------------------------------
 state_t ζ_up_success(state_t s) {
-    state_t s_parent = top_state();
-    push_state(s);
-    s.pattern = s_parent.pattern;
-    s.ctx = s_parent.ctx;
+    if (s.psi) {
+        s.pattern = s.psi->pattern;
+        s.ctx = s.psi->ctx;
+        s.psi = pop_state(s.psi);
+    } else {
+        s.pattern = NULL;
+        s.ctx = 0;
+    }
     return s;
 }
 //----------------------------------------------------------------------------------------------------------------------
-state_t ζ_up_fail() {
-    return pop_state();
+state_t ζ_up_fail(state_t s) {
+    s.sigma = s.SIGMA;
+    s.delta = s.DELTA;
+    s.pattern = s.psi->pattern;
+    s.ctx = s.psi->ctx;
+    s.psi = pop_state(s.psi);
+    return s;
 }
 //----------------------------------------------------------------------------------------------------------------------
 state_t ζ_stay_next(state_t s) {
@@ -175,7 +191,6 @@ state_t ζ_stay_next(state_t s) {
     s.ctx++;
     return s;
 }
-//----------------------------------------------------------------------------------------------------------------------
 state_t ζ_move_next(state_t s) {
     s.SIGMA = s.sigma;
     s.DELTA = s.delta;
@@ -185,28 +200,15 @@ state_t ζ_move_next(state_t s) {
 //======================================================================================================================
 #define PROCEED 0
 #define SUCCEED 1
-#define CONCEDE 2
+#define FAIL 2
 #define RECEDE 3
 //----------------------------------------------------------------------------------------------------------------------
 static const char * actions[4] = {
-    ":proceed",
-    ":succeed",
-    ":concede",
-    ":recede"
+    ":proceed", // ↓ →↘
+    ":succeed", // → ↑↗
+    ":fail",    // ← ↑↙
+    ":recede"   // ↑ ←↖
 };
-//----------------------------------------------------------------------------------------------------------------------
-bool LITERAL(state_t * pS, const char * s) {
-    pS->sigma = pS->SIGMA;
-    pS->delta = pS->DELTA;
-    while (*s) {
-        if (!*(pS->sigma)) return false;
-        if (*(pS->sigma) != *s) return false;
-        pS->sigma++;
-        pS->delta++;
-        s++;
-    }
-    return true;
-}
 //----------------------------------------------------------------------------------------------------------------------
 int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
 int max(int x1, int x2) { if (x1 > x2) return x1; else return x2; }
@@ -233,15 +235,9 @@ void animate(int action, state_t s, int iteration, int LENGTH) {
     head[i++] = '"';
     head[i++] = 0;
 //  --------------------------------------------------------------------------------------------------------------------
-    char states[66]; char * pStates = states;
-    for (int i = 0; i < iStates; i++)
-        pStates += sprintf(pStates, "%s%s/%d", i == 0 ? "" : " ", s.pattern->type, s.ctx + 1);
-//  --------------------------------------------------------------------------------------------------------------------
     char status[20]; sprintf(status, "%s/%d", s.pattern->type, s.ctx + 1);
-    printf("%3d %2d %-64s %2d %-*s %*s %3d %*s %-8s ",
+    printf("%3d %2d %-*s %*s %3d %*s %-8s ",
         iteration,
-        iStates,
-        states,
         iTracks,
         12, status,
         WINDOW, tail,
@@ -251,36 +247,49 @@ void animate(int action, state_t s, int iteration, int LENGTH) {
     );
     preview(s.pattern);
     printf("\n");
+    fflush(stdout);
+}
+//----------------------------------------------------------------------------------------------------------------------
+bool LITERAL(state_t * pS, const char * s) {
+    pS->sigma = pS->SIGMA;
+    pS->delta = pS->DELTA;
+    while (*s) {
+        if (!*(pS->sigma)) return false;
+        if (*(pS->sigma) != *s) return false;
+        pS->sigma++;
+        pS->delta++;
+        s++;
+    }
+    return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
 void MATCH(const PATTERN * pattern, const char * subject) {
     const int LENGTH = strlen(subject);
-    init_states();
     int iteration = 0;
     int action = PROCEED;
-    state_t s = {subject, 0, (void *) -1, -1, pattern, 0};
+    state_t s = {subject, 0, (void *) -1, -1, pattern, 0, NULL};
     while (s.SIGMA && s.pattern) {
-        iteration++;
+        iteration++; // if (iteration > 20) break;
         animate(action, s, iteration, LENGTH);
         const char * type = s.pattern->type;
         if (type == Π)
             switch (action) {
                 case PROCEED:
                     if (s.ctx < s.pattern->n)
-                                    { action = PROCEED; push_track(); s = ζ_down(s, NULL); break; }
-                    else            { action = RECEDE;  s = back_track(); break; }
+                                    { action = PROCEED; push_track(s); s = ζ_down(s); break; }
+                    else            { action = RECEDE;  s = pop_track(); break; }
                 case SUCCEED:       { action = SUCCEED; s = ζ_up_success(s); break; }
-                case CONCEDE:       { action = PROCEED; s = ζ_stay_next(s); pop_track(); break; }
+                case FAIL:          { action = PROCEED; pop_track(); s = ζ_stay_next(s); break; }
                 case RECEDE:        { action = PROCEED; s = ζ_stay_next(s); break; } // track already popped
             }
         else if (type == Σ)
             switch (action) {
                 case PROCEED:
                     if (s.ctx < s.pattern->n)
-                                    { action = PROCEED; s = ζ_down(s, NULL); break; }
-                    else            { action = SUCCEED; s = ζ_up(s); break; }
+                                    { action = PROCEED; s = ζ_down(s); break; }
+                    else            { action = SUCCEED; s = ζ_up_success(s); break; }
                 case SUCCEED:       { action = PROCEED; s = ζ_move_next(s); break; }
-                case CONCEDE:       { action = RECEDE;  s = back_track(); break; }
+                case FAIL:          { action = RECEDE;  s = pop_track(); break; }
                 case RECEDE:        { assert(0); }
             }
         else if (type == σ)
@@ -288,9 +297,9 @@ void MATCH(const PATTERN * pattern, const char * subject) {
                 case PROCEED:
                     if (LITERAL(&s, s.pattern->s))
                                     { action = SUCCEED; s = ζ_up_success(s); break; }
-                    else            { action = CONCEDE; s = ζ_up_fail(); break; }
+                    else            { action = FAIL; s = ζ_up_fail(s); break; }
                 case SUCCEED:       { assert(0); }
-                case CONCEDE:       { assert(0); }
+                case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
             }
         else if (  type == ε
@@ -299,7 +308,7 @@ void MATCH(const PATTERN * pattern, const char * subject) {
             switch (action) {
                 case PROCEED:       { action = SUCCEED; s = ζ_up_success(s); break; }
                 case SUCCEED:       { assert(0); }
-                case CONCEDE:       { assert(0); }
+                case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
             }
         else if (type == POS)
@@ -307,10 +316,10 @@ void MATCH(const PATTERN * pattern, const char * subject) {
                 case PROCEED:
                     if (s.DELTA == s.pattern->n)
                                     { action = SUCCEED; s = ζ_up_success(s); }
-                    else            { action = CONCEDE; s = ζ_up_fail(); }
+                    else            { action = FAIL; s = ζ_up_fail(s); }
                     break;
                 case SUCCEED:       { assert(0); }
-                case CONCEDE:       { assert(0); }
+                case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
             }
         else if (type == RPOS)
@@ -318,10 +327,10 @@ void MATCH(const PATTERN * pattern, const char * subject) {
                 case PROCEED:
                     if (LENGTH - s.DELTA == s.pattern->n)
                                     { action = SUCCEED; s = ζ_up_success(s); }
-                    else            { action = CONCEDE; s = ζ_up_fail(); }
+                    else            { action = FAIL; s = ζ_up_fail(s); }
                     break;
                 case SUCCEED:       { assert(0); }
-                case CONCEDE:       { assert(0); }
+                case FAIL:          { assert(0); }
                 case RECEDE:        { assert(0); }
             }
         else if (type == ρ)         assert(0); /*not implemented*/
@@ -338,8 +347,8 @@ void MATCH(const PATTERN * pattern, const char * subject) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 int main() {
-    MATCH(&BEAD_0, "READS");
+//  MATCH(&BEAD_0, "READS");
 //  MATCH(&BEARDS_0, "ROOSTS");
-//  MATCH(&C_0, "x+y*z");
+    MATCH(&C_0, "x+y*z");
 }
 //----------------------------------------------------------------------------------------------------------------------
