@@ -5,23 +5,23 @@
 #include <stdbool.h>
 //======================================================================================================================
 static const char ABORT[]   = "ABORT";
-static const char ANY[]     = "ANY";
+static const char ANY[]     = "ANY$";
 static const char ARBNO[]   = "ARBNO";
 static const char ARB[]     = "ARB";
 static const char BAL[]     = "BAL";
 static const char BREAKX[]  = "BREAKX";
-static const char BREAK[]   = "BREAK";
+static const char BREAK[]   = "BREAK$";
 static const char FAIL[]    = "FAIL";
 static const char FENCE[]   = "FENCE";
 static const char LEN[]     = "LEN";
 static const char MARBNO[]  = "MARBNO";
 static const char MARB[]    = "MARB";
-static const char NOTANY[]  = "NOTANY";
-static const char POS[]     = "POS";
+static const char NOTANY[]  = "NOTANY$";
+static const char POS[]     = "POS#";
 static const char REM[]     = "REM";
-static const char RPOS[]    = "RPOS";
+static const char RPOS[]    = "RPOS#";
 static const char RTAB[]    = "RTAB";
-static const char SPAN[]    = "SPAN";
+static const char SPAN[]    = "SPAN$";
 static const char SUCCESS[] = "SUCCESS";
 static const char TAB[]     = "TAB";
 static const char Shift[]   = "Shift";
@@ -30,7 +30,7 @@ static const char Pop[]     = "Pop";
 static const char nInc[]    = "nInc";
 static const char nPop[]    = "nPop";
 static const char nPush[]   = "nPush";
-static const char Δ[]       = "Δ";
+static const char Δ[]       = "DELTA"; // "Δ";
 static const char Θ[]       = "Θ";
 static const char Λ[]       = "Λ";
 static const char Π[]       = "ALT"; // "Π";
@@ -38,13 +38,13 @@ static const char Σ[]       = "SEQ"; // "Σ";
 static const char Φ[]       = "Φ";
 static const char α[]       = "α";
 static const char δ[]       = "δ";
-static const char ε[]       = "ε";
-static const char ζ[]       = "ζ";
+static const char ε[]       = "epsilon"; // "ε";
+static const char ζ[]       = "zeta"; // "ζ";
 static const char θ[]       = "θ";
-static const char λ[]       = "λ";
+static const char λ[]       = "lambda"; // "λ";
 static const char π[]       = "π";
 static const char ρ[]       = "ρ";
-static const char σ[]       = "LIT"; // "σ";
+static const char σ[]       = "LIT$"; // "σ";
 static const char φ[]       = "φ";
 static const char ω[]       = "ω";
 //======================================================================================================================
@@ -65,7 +65,9 @@ typedef struct PATTERN {
     };
 } PATTERN;
 //----------------------------------------------------------------------------------------------------------------------
-void preview(const PATTERN * PI) {
+#define MAX_DEPTH 2
+void preview(const PATTERN * PI, int depth) {
+    if (depth >= MAX_DEPTH) return;
     const char * type = PI->type;
     if      (type == ε)         { printf("ε()"); }
     else if (type == σ)         { printf("\"%s\"", PI->s); }
@@ -77,17 +79,17 @@ void preview(const PATTERN * PI) {
     else if (type == SPAN)      { printf("SPAN(\"%s\")", PI->chars); }
     else if (type == BREAK)     { printf("BREAK(\"%s\")", PI->chars); }
     else if (type == NOTANY)    { printf("NOTANY(\"%s\")", PI->chars); }
-    else if (type == ARBNO)     { printf("ARBNO("); preview(PI->AP[0]); printf(")"); }
-    else if (type == Δ)         { printf("Δ("); preview(PI->AP[0]); printf(", \"%s\")", PI->s); }
-    else if (type == δ)         { printf("δ("); preview(PI->AP[0]); printf(", \"%s\")", PI->s); }
-    else if (type == π)         { printf("π("); preview(PI->AP[0]); printf(")"); }
-    else if (type == FENCE)     { printf("FENCE("); if (PI->n > 0) preview(PI->AP[0]); printf(")"); }
+    else if (type == ARBNO)     { printf("ARBNO("); preview(PI->AP[0], depth + 1); printf(")"); }
+    else if (type == Δ)         { printf("Δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); }
+    else if (type == δ)         { printf("δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); }
+    else if (type == π)         { printf("π("); preview(PI->AP[0], depth + 1); printf(")"); }
+    else if (type == FENCE)     { printf("FENCE("); if (PI->n > 0) preview(PI->AP[0], depth + 1); printf(")"); }
     else if (type == Π
          ||  type == Σ
          ||  type == ρ)         { printf("%s(", PI->type);
-                                  for (int i = 0; i < PI->n; i++) {
+                                  for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
                                       if (i) printf(" ");
-                                      preview(PI->AP[i]);
+                                      preview(PI->AP[i], depth + 1);
                                   }
                                   printf(")");
                                 }
@@ -155,36 +157,6 @@ static void pop_track(state_t * s) {
     } else if (s) *s = empty_state;
 }
 //======================================================================================================================
-void ζ_down(state_t * s, heap_t * heap) {
-    s->psi = push_state(s->psi, s, heap);
-    s->sigma = s->SIGMA;
-    s->delta = s->DELTA;
-    s->PI = s->PI->AP[s->ctx];
-    s->ctx = 0;
-}
-//----------------------------------------------------------------------------------------------------------------------
-void ζ_out(state_t * s, const PATTERN * PI) { s->sigma = s->SIGMA; s->delta = s->DELTA; s->PI = PI; s->ctx = 0; }
-void ζ_stay_next(state_t * s) { s->sigma = s->SIGMA; s->delta = s->DELTA; s->ctx++; }
-void ζ_move_next(state_t * s) { s->SIGMA = s->sigma; s->DELTA = s->delta; s->ctx++; }
-//----------------------------------------------------------------------------------------------------------------------
-void ζ_up_success(state_t * s) {
-    if (s->psi) {
-        s->PI = s->psi->PI;
-        s->ctx = s->psi->ctx;
-        s->psi = pop_state(s->psi);
-    } else s->PI = NULL;
-}
-//----------------------------------------------------------------------------------------------------------------------
-void ζ_up_fail(state_t * s) {
-    s->sigma = s->SIGMA;
-    s->delta = s->DELTA;
-    if (s->psi) {
-        s->PI = s->psi->PI;
-        s->ctx = s->psi->ctx;
-        s->psi = pop_state(s->psi);
-    } else s->PI = NULL;
-}
-//======================================================================================================================
 #define PROCEED 0
 #define SUCCEED 1
 #define FAIL 2
@@ -197,11 +169,11 @@ static const char * actions[4] = {
     ":recede"   // ↑ ←↖
 };
 //----------------------------------------------------------------------------------------------------------------------
-int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
-int max(int x1, int x2) { if (x1 > x2) return x1; else return x2; }
+static int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
+static int max(int x1, int x2) { if (x1 > x2) return x1; else return x2; }
 //----------------------------------------------------------------------------------------------------------------------
 #define WINDOW 12
-void animate(int action, state_t s, int iteration, int LENGTH) {
+static void animate(int action, state_t s, int iteration, int LENGTH) {
 //  --------------------------------------------------------------------------------------------------------------------
     char head[WINDOW+3]; memset(head, 0, sizeof(head));
     char tail[WINDOW+3]; memset(tail, 0, sizeof(tail));
@@ -232,25 +204,118 @@ void animate(int action, state_t s, int iteration, int LENGTH) {
         WINDOW, head,
         actions[action]
     );
-    preview(s.PI);
+    preview(s.PI, 0);
     printf("\n");
     fflush(stdout);
 }
 //----------------------------------------------------------------------------------------------------------------------
-bool LITERAL(state_t * pS, const char * s) {
-    pS->sigma = pS->SIGMA;
-    pS->delta = pS->DELTA;
-    while (*s) {
-        if (!*(pS->sigma)) return false;
-        if (*(pS->sigma) != *s) return false;
-        pS->sigma++;
-        pS->delta++;
-        s++;
+static bool Π_LITERAL(state_t * s, const char * string) {
+    for ( s->sigma = s->SIGMA, s->delta = s->DELTA
+        ; *string
+        ; s->sigma++, s->delta++, string++) {
+        if (*s->sigma == 0) return false;
+        if (*s->sigma != *string) return false;
     }
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void MATCH(const PATTERN * pattern, const char * subject) {
+static bool Π_ANY(state_t * s, const char * chars) {
+    s->sigma = s->SIGMA;
+    s->delta = s->DELTA;
+    if (*s->sigma != 0) {
+        const char * c;
+        for (c = chars; *c; c++)
+            if (*s->sigma == *c)
+                break;
+        if (*c != 0) {
+            s->sigma++;
+            s->delta++;
+            return true;
+        } else return false;
+    } else return false;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static bool Π_NOTANY(state_t * s, const char * chars) {
+    s->sigma = s->SIGMA;
+    s->delta = s->DELTA;
+    if (*s->sigma != 0) {
+        const char * c;
+        for (c = chars; *c; c++)
+            if (*s->sigma == *c)
+                break;
+        if (*c == 0) {
+            s->sigma++;
+            s->delta++;
+            return true;
+        } else return false;
+    } else return false;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static bool Π_SPAN(state_t * s, const char * chars) {
+    for ( s->sigma = s->SIGMA
+        , s->delta = s->DELTA
+        ; *s->sigma
+        ; s->sigma++
+        , s->delta++) {
+        const char * c;
+        for (c = chars; *c; c++)
+            if (*s->sigma == *c)
+                break;
+        if (!*c) break;
+    }
+    if (s->delta > s->DELTA)
+        return true;
+    return false;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static bool Π_BREAK(state_t * s, const char * chars) {
+    for ( s->sigma = s->SIGMA
+        , s->delta = s->DELTA
+        ; *s->sigma
+        ; s->sigma++
+        , s->delta++) {
+        const char * c;
+        for (c = chars; *c; c++)
+            if (*s->sigma == *c)
+                break;
+        if (*c) break;
+    }
+    if (*s->sigma == 0)
+        return false;
+    else return true;
+}
+//======================================================================================================================
+static void ζ_down(state_t * s, heap_t * heap) {
+    s->psi = push_state(s->psi, s, heap);
+    s->sigma = s->SIGMA;
+    s->delta = s->DELTA;
+    s->PI = s->PI->AP[s->ctx];
+    s->ctx = 0;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void ζ_over(state_t * s, const PATTERN * PI) { s->sigma = s->SIGMA; s->delta = s->DELTA; s->ctx = 0; s->PI = PI; }
+static void ζ_stay_next(state_t * s)                { s->sigma = s->SIGMA; s->delta = s->DELTA; s->ctx++; }
+static void ζ_move_next(state_t * s)                { s->SIGMA = s->sigma; s->DELTA = s->delta; s->ctx++; }
+//----------------------------------------------------------------------------------------------------------------------
+static void ζ_up_success(state_t * s) {
+    if (s->psi) {
+        s->PI = s->psi->PI;
+        s->ctx = s->psi->ctx;
+        s->psi = pop_state(s->psi);
+    } else s->PI = NULL;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void ζ_up_fail(state_t * s) {
+    s->sigma = s->SIGMA;
+    s->delta = s->DELTA;
+    if (s->psi) {
+        s->PI = s->psi->PI;
+        s->ctx = s->psi->ctx;
+        s->psi = pop_state(s->psi);
+    } else s->PI = NULL;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void MATCH(const PATTERN * pattern, const char * subject) {
     init_tracks();
     int iteration = 0;
     int action = PROCEED;
@@ -258,80 +323,69 @@ void MATCH(const PATTERN * pattern, const char * subject) {
     const int LENGTH = strlen(subject);
     state_t state = {subject, 0, NULL, 0, pattern, 0, NULL};
     while (state.PI) {
-        iteration++; // if (iteration > 20) break;
+        iteration++; // if (iteration > 1000) break;
         animate(action, state, iteration, LENGTH);
         const char * type = state.PI->type;
         if (type == Π)
             switch (action) {
-                case PROCEED:
-                    if (state.ctx < state.PI->n)
+                case PROCEED:  if   (state.ctx < state.PI->n)
                                     { action = PROCEED; push_track(state); ζ_down(&state, &heap); break; }
-                    else            { action = RECEDE;  pop_track(&state); break; }
+                               else { action = RECEDE;  pop_track(&state); break; }
                 case SUCCEED:       { action = SUCCEED; ζ_up_success(&state); break; }
                 case FAIL:          { action = PROCEED; pop_track(NULL); ζ_stay_next(&state); break; }
-                case RECEDE:        { action = PROCEED; ζ_stay_next(&state); break; } // track already popped
+                case RECEDE:        { action = PROCEED; ζ_stay_next(&state); break; }
             }
         else if (type == Σ)
             switch (action) {
-                case PROCEED:
-                    if (state.ctx < state.PI->n)
+                case PROCEED:  if   (state.ctx < state.PI->n)
                                     { action = PROCEED; ζ_down(&state, &heap); break; }
-                    else            { action = SUCCEED; ζ_up_success(&state); break; }
+                               else { action = SUCCEED; ζ_up_success(&state); break; }
                 case SUCCEED:       { action = PROCEED; ζ_move_next(&state); break; }
                 case FAIL:          { action = RECEDE;  pop_track(&state); break; }
                 case RECEDE:        { assert(0); }
             }
-        else if (type == σ)
-            switch (action) {
-                case PROCEED:
-                    if (LITERAL(&state, state.PI->s))
-                                    { action = SUCCEED; ζ_up_success(&state); break; }
-                    else            { action = FAIL;    ζ_up_fail(&state); break; }
-                case SUCCEED:       { assert(0); }
-                case FAIL:          { assert(0); }
-                case RECEDE:        { assert(0); }
-            }
-        else if (  type == ε
-                || type == Δ
-                || type == λ)
-            switch (action) {
-                case PROCEED:       { action = SUCCEED; ζ_up_success(&state); break; }
-                case SUCCEED:       { assert(0); }
-                case FAIL:          { assert(0); }
-                case RECEDE:        { assert(0); }
-            }
-        else if (type == POS)
-            switch (action) {
-                case PROCEED:
-                    if (state.DELTA == state.PI->n)
-                                    { action = SUCCEED; ζ_up_success(&state); }
-                    else            { action = FAIL;    ζ_up_fail(&state); }
-                    break;
-                case SUCCEED:       { assert(0); }
-                case FAIL:          { assert(0); }
-                case RECEDE:        { assert(0); }
-            }
-        else if (type == RPOS)
-            switch (action) {
-                case PROCEED:
-                    if (LENGTH - state.DELTA == state.PI->n)
-                                    { action = SUCCEED; ζ_up_success(&state); }
-                    else            { action = FAIL;    ζ_up_fail(&state); }
-                    break;
-                case SUCCEED:       { assert(0); }
-                case FAIL:          { assert(0); }
-                case RECEDE:        { assert(0); }
-            }
+        else if (type == ε
+             && action == PROCEED)  { action = SUCCEED; ζ_up_success(&state); }
+        else if (type == λ
+             && action == PROCEED)  { action = SUCCEED; ζ_up_success(&state); }
+        else if (type == ζ
+             && action == PROCEED)  { action = PROCEED; ζ_over(&state, &C_3); }
+        else if (type == Δ
+             && action == PROCEED)  { action = PROCEED; ζ_over(&state, state.PI->AP[0]); }
+        else if (type == δ
+             && action == PROCEED)  { action = PROCEED; ζ_over(&state, state.PI->AP[0]); }
+        else if (type == σ
+             && action == PROCEED)  if   (Π_LITERAL(&state, state.PI->s))
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == ANY
+             && action == PROCEED)  if   (Π_ANY(&state, state.PI->chars))
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == NOTANY
+             && action == PROCEED)  if   (Π_NOTANY(&state, state.PI->chars))
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == SPAN
+             && action == PROCEED)  if   (Π_SPAN(&state, state.PI->chars))
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == BREAK
+             && action == PROCEED ) if   (Π_BREAK(&state, state.PI->chars))
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == POS
+             && action == PROCEED)  if   (state.DELTA == state.PI->n)
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
+        else if (type == RPOS
+             && action == PROCEED)  if   (LENGTH - state.DELTA == state.PI->n)
+                                         { action = SUCCEED; ζ_up_success(&state); }
+                                    else { action = FAIL;    ζ_up_fail(&state); }
         else if (type == ρ)         assert(0); /*not implemented*/
         else if (type == ARBNO)     assert(0); /*not implemented*/
         else if (type == FENCE)     assert(0); /*not implemented*/
         else if (type == π)         assert(0); /*not implemented*/
-        else if (type == δ)         assert(0); /*not implemented*/
-        else if (type == ANY)       assert(0); /*not implemented*/
-        else if (type == NOTANY)    assert(0); /*not implemented*/
-        else if (type == SPAN)      assert(0); /*not implemented*/
-        else if (type == BREAK)     assert(0); /*not implemented*/
-        else if (type == ζ)         assert(0); /*not implemented*/
     }
     fini_tracks();
 }
@@ -339,6 +393,6 @@ void MATCH(const PATTERN * pattern, const char * subject) {
 int main() {
     MATCH(&BEAD_0, "READS");
     MATCH(&BEARDS_0, "ROOSTS");
-//  MATCH(&C_0, "x+y*z");
+    MATCH(&C_0, "x+y*z");
 }
 //----------------------------------------------------------------------------------------------------------------------
