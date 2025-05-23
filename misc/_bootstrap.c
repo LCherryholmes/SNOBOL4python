@@ -44,7 +44,7 @@ static int dump_pattern(PyObject * pattern, int depth) {
             ref = dump_pattern(attr, depth + 2);
             Py_DECREF(attr);
         }
-        PySys_WriteStdout("static PATTERN %s%d = {%s, NULL, &%s%d};\n", name, count, type, name, ref);
+        PySys_WriteStdout("static PATTERN %s%d = {%s, 1, &%s%d};\n", name, count, type, name, ref);
     } else if (  !strcmp(type, "Δ")
               || !strcmp(type, "δ")
               ) {
