@@ -198,19 +198,19 @@ class Shift(PATTERN):
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 class Reduce(PATTERN):
-    def __init__(self, t, n=-1): super().__init__(); self.t = t; self.n = n
-    def __repr__(self): return f"Reduce({pformat(self.t)}, {pformat(self.n)})"
-    def __deepcopy__(self, memo): return Reduce(self.t, self.n)
+    def __init__(self, t, x=-1): super().__init__(); self.t = t; self.x = x
+    def __repr__(self): return f"Reduce({pformat(self.t)}, {pformat(self.x)})"
+    def __deepcopy__(self, memo): return Reduce(self.t, self.x)
     def γ(self):
-        global Ϣ; n = self.n; t = self.t
+        global Ϣ; x = self.x; t = self.t
         if callable(t): t = t()
         else: t = t
-        logger.info("Reduce(%r, %r) SUCCESS", t, n)
-        if   n == -2: n = "Ϣ[-1].istack[Ϣ[-1].itop + 1]"
-        elif n == -1: n = "Ϣ[-1].istack[Ϣ[-1].itop]"
-        Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{t}', {n})")
+        logger.info("Reduce(%r, %r) SUCCESS", t, x)
+        if   x == -2: x = "Ϣ[-1].istack[Ϣ[-1].itop + 1]"
+        elif x == -1: x = "Ϣ[-1].istack[Ϣ[-1].itop]"
+        Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{t}', {x})")
         yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-        logger.warning("Reduce(%r, %r) backtracking...", t, n)
+        logger.warning("Reduce(%r, %r) backtracking...", x, n)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 class Pop(PATTERN):
