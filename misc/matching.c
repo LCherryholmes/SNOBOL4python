@@ -509,16 +509,12 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
         else if (t == Σ       && a == FAILURE)      { a = RECEDE;  pop_track(&Z);   }
         else if (t == Σ       && a == RECEDE)       { assert(0); }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == ARBNO   && a == PROCEED)
-                                                 if (Z.ctx == 0)
+        else if (t == ARBNO   && a == PROCEED)   if (Z.ctx == 0)
                                                     { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
                                                else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); }
-        else if (t == ARBNO   && a == SUCCEED)
-                                                    { a = SUCCEED;                  ζ_up_track_success(&Z); }
-        else if (t == ARBNO   && a == FAILURE)
-                                                    { a = RECEDE;  pop_track(&Z);   }
-        else if (t == ARBNO   && a == RECEDE)
-                                                    { a = PROCEED;                  ζ_move_next(&Z); }
+        else if (t == ARBNO   && a == SUCCEED)      { a = SUCCEED;                  ζ_up_track_success(&Z); }
+        else if (t == ARBNO   && a == FAILURE)      { a = RECEDE;  pop_track(&Z);   }
+        else if (t == ARBNO   && a == RECEDE)       { a = PROCEED;                  ζ_move_next(&Z); }
 //      ----------------------------------------------------------------------------------------------------------------
         else if (t == ARB     && a == PROCEED)   if (Π_ARB(&Z))
                                                     { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
