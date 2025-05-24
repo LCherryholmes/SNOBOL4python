@@ -65,6 +65,118 @@ typedef struct PATTERN {
         int             x;         /* Reduce */
     };
 } PATTERN;
+//======================================================================================================================
+#include "BEAD_PATTERN.h"
+#include "BEARDS_PATTERN.h"
+#include "C_PATTERN.h"
+#include "RE_PATTERN.h"
+//======================================================================================================================
+#define HEAP_SIZE_INIT 4096
+#define HEAP_SIZE_BUMP 4096
+#define HEAP_ALIGN_SIZE 8
+#define HEAP_ALIGN_BITS 3
+#define STAMP_STRING -1
+#define STAMP_COMMAND -2
+#define STAMP_STATE -3
+//----------------------------------------------------------------------------------------------------------------------
+typedef struct _address { int offset; } address_t;
+typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
+static heap_t heap = {0, 0, NULL};
+static heap_t empty_heap = {0, 0, NULL};
+static void heap_init() { heap.pos = 0; heap.size = 0; heap.a = NULL; }
+static void heap_free() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
+static inline void * pointer(address_t address) { return heap.a + address.offset; }
+static address_t heap_alloc(int stamp, int size) {
+    assert(size < HEAP_SIZE_BUMP);
+    size = (size + HEAP_ALIGN_SIZE-1) >> HEAP_ALIGN_BITS << HEAP_ALIGN_BITS;
+    if (heap.pos + HEAP_ALIGN_SIZE + size >= heap.size) {
+        if (heap.a == NULL) {
+            heap.a = (unsigned char *) malloc(HEAP_SIZE_INIT);
+            memset(heap.a, 0, HEAP_SIZE_INIT);
+            heap.size = HEAP_SIZE_INIT;
+        } else {
+            heap.a = (unsigned char *) realloc(heap.a, heap.size + HEAP_SIZE_BUMP);
+            memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
+            heap.size += HEAP_SIZE_BUMP;
+        }
+    }
+    address_t address = {heap.pos + HEAP_ALIGN_SIZE};
+    ((int *) &heap.a[address.offset])[-1] = stamp;
+    heap.pos = address.offset + size;
+    printf("0x%08.8x = heap_alloc()\n", address.offset);
+    return address;
+}
+//======================================================================================================================
+static address_t alloc_string(const char * string) {
+    address_t address = heap_alloc(STAMP_STRING, strlen(string) + 1);
+    char * mem = (char *) pointer(address);
+    strcpy(mem, string);
+    return address;
+}
+static inline const char * _string_(address_t address)  { return (const char *) (heap.a + address.offset); }
+//----------------------------------------------------------------------------------------------------------------------
+typedef struct _command command_t;
+typedef struct _command { address_t string; address_t command; } command_t;
+static inline command_t * _c_(address_t address)  { return (command_t *) (heap.a + address.offset); }
+//----------------------------------------------------------------------------------------------------------------------
+static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
+static address_t pop_command(address_t command) { if (command.offset) return _c_(command)->command; else return command; }
+static address_t push_command(address_t command, const char * string) {
+    address_t COMMAND = alloc_command();
+    _c_(COMMAND)->string = alloc_string(string);
+    _c_(COMMAND)->command = command;
+    return COMMAND;
+}
+//======================================================================================================================
+typedef struct _state state_t;
+typedef struct _state {
+    const char *    SIGMA;
+    int             DELTA;
+    int             OMEGA;
+    const char *    sigma;
+    int             delta;
+    const PATTERN * PI;
+    int             ctx;
+    address_t       psi; // state stack
+    address_t       lambda; // command stack
+} state_t;
+static inline state_t * _s_(address_t address)      { return (state_t *) (heap.a + address.offset); }
+//----------------------------------------------------------------------------------------------------------------------
+static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, {0}, {0} };
+static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
+static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _s_(psi)->psi) /**/; return len; }
+static address_t pop_state(address_t psi) { if (psi.offset) return _s_(psi)->psi; else return psi; }
+static address_t push_state(address_t psi, state_t * z) {
+    address_t PSI = alloc_state();
+    *(_s_(PSI)) = *z;
+    _s_(PSI)->psi = psi;
+    return PSI;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static int iTracks = 0;
+static state_t *aTracks = NULL;
+static void init_tracks() { iTracks = 0; aTracks = NULL; }
+static void fini_tracks() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
+static void push_track(state_t Z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = Z; }
+static void pop_track(state_t * z) {
+    if (iTracks > 0) {
+        state_t state = aTracks[iTracks - 1];
+        aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
+        if (z) *z = state;
+    } else if (z) *z = empty_state;
+}
+//======================================================================================================================
+#define PROCEED 0
+#define SUCCEED 1
+#define FAILURE 2
+#define RECEDE 3
+//----------------------------------------------------------------------------------------------------------------------
+static const char * actions[4] = {
+    ":proceed", // ↓ →↘
+    ":succeed", // → ↑↗
+    ":fail",    // ← ↑↙
+    ":recede"   // ↑ ←↖
+};
 //----------------------------------------------------------------------------------------------------------------------
 #define MAX_DEPTH 3
 void preview(const PATTERN * PI, int depth) {
@@ -110,110 +222,6 @@ void preview(const PATTERN * PI, int depth) {
                                 }
     else { printf("\n%s\n", type); fflush(stdout); assert(0); }
 }
-//======================================================================================================================
-#include "BEAD_PATTERN.h"
-#include "BEARDS_PATTERN.h"
-#include "C_PATTERN.h"
-#include "RE_PATTERN.h"
-//======================================================================================================================
-#define STAMP_STRING 1
-#define STAMP_COMMAND 2
-#define STAMP_STATE 3
-typedef struct _heap {
-    int pos;
-    int size;
-    unsigned char * a;
-} heap_t;
-//----------------------------------------------------------------------------------------------------------------------
-#define HEAP_SIZE_INIT 8192
-#define HEAP_SIZE_BUMP 4096
-static heap_t empty_heap = {0, 0, NULL };
-static void heap_init(heap_t * heap) { heap->pos = 0; heap->size = 0; heap->a = NULL; }
-static void heap_free(heap_t * heap) { heap->pos = 0; heap->size = 0; free(heap->a); heap->a = NULL; }
-static void * heap_alloc(heap_t * heap, int stamp, int size) {
-    size = (size + 3) >> 2 << 2;
-    if (heap->pos + sizeof(int) + size >= heap->size) {
-        if (heap->a == NULL) {
-            heap->a = (unsigned char *) malloc(HEAP_SIZE_INIT);
-            memset(heap->a, 0, HEAP_SIZE_INIT);
-            heap->size = HEAP_SIZE_INIT;
-        } else {
-            heap->a = (unsigned char *) realloc(heap->a, heap->size + HEAP_SIZE_BUMP);
-            memset(heap->a + heap->size, 0, HEAP_SIZE_BUMP);
-            heap->size += HEAP_SIZE_BUMP;
-        }
-    }
-    int * mem = (int *) &heap->a[heap->pos]; mem[0] = stamp;
-    heap->pos += sizeof(int) + size;
-    return &mem[1];
-}
-//======================================================================================================================
-typedef struct _command command_t;
-typedef struct _command { const char * string; command_t * command; } command_t;
-//----------------------------------------------------------------------------------------------------------------------
-static command_t * alloc_command(heap_t * heap) { return (command_t *) heap_alloc(heap, STAMP_COMMAND, sizeof(command_t)); }
-static command_t * pop_command(command_t * command) { if (command) return command->command; else return NULL; }
-static command_t * push_command(command_t * command, const char * string, heap_t * heap) {
-    command_t * COMMAND = alloc_command(heap);
-    COMMAND->string = string;
-    COMMAND->command = command;
-    return COMMAND;
-}
-//----------------------------------------------------------------------------------------------------------------------
-static const char * alloc_string(heap_t * heap, const char * string) {
-    char * mem = (char *) heap_alloc(heap, STAMP_STRING, strlen(string) + 1);
-    strcpy(mem, string);
-    return mem;
-}
-//======================================================================================================================
-typedef struct _state state_t;
-typedef struct _state {
-    const char *    SIGMA;
-    int             DELTA;
-    int             OMEGA;
-    const char *    sigma;
-    int             delta;
-    const PATTERN * PI;
-    int             ctx;
-    state_t *       psi; // state stack
-    command_t *     lambda; // command stack
-} state_t;
-//----------------------------------------------------------------------------------------------------------------------
-static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, NULL, NULL };
-static state_t * alloc_state(heap_t * heap) { return (state_t *) heap_alloc(heap, STAMP_STATE, sizeof(state_t)); }
-static int       total_states(state_t * psi) { int len = 0; for (; psi; len++, psi = psi->psi) /**/; return len; }
-static state_t * pop_state(state_t * psi) { if (psi) return psi->psi; else return NULL; }
-static state_t * push_state(state_t * psi, state_t * z, heap_t * heap) {
-    state_t * PSI = alloc_state(heap);
-    *PSI = *z;
-    PSI->psi = psi;
-    return PSI;
-}
-//----------------------------------------------------------------------------------------------------------------------
-static int iTracks = 0;
-static state_t *aTracks = NULL;
-static void init_tracks() { iTracks = 0; aTracks = NULL; }
-static void fini_tracks() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
-static void push_track(state_t Z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = Z; }
-static void pop_track(state_t * z) {
-    if (iTracks > 0) {
-        state_t state = aTracks[iTracks - 1];
-        aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
-        if (z) *z = state;
-    } else if (z) *z = empty_state;
-}
-//======================================================================================================================
-#define PROCEED 0
-#define SUCCEED 1
-#define FAILURE 2
-#define RECEDE 3
-//----------------------------------------------------------------------------------------------------------------------
-static const char * actions[4] = {
-    ":proceed", // ↓ →↘
-    ":succeed", // → ↑↗
-    ":fail",    // ← ↑↙
-    ":recede"   // ↑ ←↖
-};
 //----------------------------------------------------------------------------------------------------------------------
 static int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
 static int max(int x1, int x2) { if (x1 > x2) return x1; else return x2; }
@@ -242,8 +250,8 @@ static void animate(int action, state_t Z, int iteration) {
     head[i++] = 0;
 //  --------------------------------------------------------------------------------------------------------------------
     char status[20]; sprintf(status, "%s/%d", Z.PI->type, Z.ctx + 1);
-    printf("%2d %2d %-*s %*s %3d %*s  %-8s  ",
-//      iteration,
+    printf("%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
+        iteration,
         total_states(Z.psi),
         iTracks,
         12, status,
@@ -369,72 +377,72 @@ static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
                                           }
                                         }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_nPush(state_t * z, heap_t * heap)  { z->lambda = push_command(z->lambda, "N = N_push(N)", heap); return true; }
-static inline bool Π_nInc(state_t * z, heap_t * heap)   { z->lambda = push_command(z->lambda, "N_inc(N)",      heap); return true; }
-static inline bool Π_nPop(state_t * z, heap_t * heap)   { z->lambda = push_command(z->lambda, "N = N_pop(N)",  heap); return true; }
+static inline bool Π_nPush(state_t * z)  { z->lambda = push_command(z->lambda, "N = N_push(N)"); return true; }
+static inline bool Π_nInc(state_t * z)   { z->lambda = push_command(z->lambda, "N_inc(N)");      return true; }
+static inline bool Π_nPop(state_t * z)   { z->lambda = push_command(z->lambda, "N = N_pop(N)");  return true; }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_Shift(state_t * z, heap_t * heap)  {
-    char cmd_text[128];
-    if (z->PI->t == NULL)       sprintf(cmd_text, "shift();");
-    else if (z->PI->v == NULL)  sprintf(cmd_text, "shift(\"%s\");", z->PI->t);
-    else                        sprintf(cmd_text, "shift(\"%s\", \"%s\");", z->PI->t, z->PI->v);
-    z->lambda = push_command(z->lambda, alloc_string(heap, cmd_text), heap);
+static inline bool Π_Shift(state_t * z)  {
+    char command_text[128];
+    if (z->PI->t == NULL)       sprintf(command_text, "shift();");
+    else if (z->PI->v == NULL)  sprintf(command_text, "shift(\"%s\");", z->PI->t);
+    else                        sprintf(command_text, "shift(\"%s\", \"%s\");", z->PI->t, z->PI->v);
+    z->lambda = push_command(z->lambda, command_text);
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_Reduce(state_t * z, heap_t * heap) {
+static inline bool Π_Reduce(state_t * z) {
     char top_text[32];
     if      (z->PI->x == -2)    sprintf(top_text, "istack[itop + 1]");
     else if (z->PI->x == -1)    sprintf(top_text, "istack[itop]");
     else                        sprintf(top_text, "%s", z->PI->x);
-    char cmd_text[128];
-    sprintf(cmd_text, "reduce(\"%s\", \"%s\");", z->PI->t, top_text);
-    z->lambda = push_command(z->lambda, alloc_string(heap, cmd_text), heap);
+    char command_text[128];
+    sprintf(command_text, "reduce(\"%s\", \"%s\");", z->PI->t, top_text);
+    z->lambda = push_command(z->lambda, command_text);
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_Pop(state_t * z, heap_t * heap) {
-    char cmd_text[128];
+static inline bool Π_Pop(state_t * z) {
+    char command_text[128];
     if (z->PI->v == NULL)
-        sprintf(cmd_text, "pop();");
-    else sprintf(cmd_text, "pop(\"%s\");", z->PI->v);
-    z->lambda = push_command(z->lambda, alloc_string(heap, cmd_text), heap);
+        sprintf(command_text, "pop();");
+    else sprintf(command_text, "pop(\"%s\");", z->PI->v);
+    z->lambda = push_command(z->lambda, command_text);
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_theta(state_t * z, heap_t * heap) {
-    char cmd_text[128];
+static inline bool Π_theta(state_t * z) {
+    char command_text[128];
     if (strcmp(z->PI->N, "OUTPUT") == 0)
-        sprintf(cmd_text, "printf(\" %d\");", z->DELTA);
-    else sprintf(cmd_text, "%s = %d;", z->PI->N, z->DELTA);
-    z->lambda = push_command(z->lambda, alloc_string(heap, cmd_text), heap);
+        sprintf(command_text, "printf(\" %d\");", z->DELTA);
+    else sprintf(command_text, "%s = %d;", z->PI->N, z->DELTA);
+    z->lambda = push_command(z->lambda, command_text);
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_DELTA(state_t * z, heap_t * heap) {
-    char cmd_text[128];
+static inline bool Π_DELTA(state_t * z) {
+    char command_text[128];
     if (strcmp(z->PI->N, "OUTPUT") == 0)
-        sprintf(cmd_text, "printf(\"%%s\", subject[%d:%d]);", z->DELTA, z->delta);
-    else sprintf(cmd_text, "%s = subject[%d:%d];", z->PI->N, z->DELTA, z->delta);
-    z->lambda = push_command(z->lambda, alloc_string(heap, cmd_text), heap);
+        sprintf(command_text, "printf(\"%%s\", subject[%d:%d]);", z->DELTA, z->delta);
+    else sprintf(command_text, "%s = subject[%d:%d];", z->PI->N, z->DELTA, z->delta);
+    z->lambda = push_command(z->lambda, command_text);
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_lambda(state_t * z, heap_t * heap) {
-    z->lambda = push_command(z->lambda, alloc_string(heap, z->PI->command), heap);
+static inline bool Π_lambda(state_t * z) {
+    z->lambda = push_command(z->lambda, z->PI->command);
     return true;
 }
 //======================================================================================================================
-static void ζ_down_context(state_t * z, heap_t * heap) {
-    z->psi = push_state(z->psi, z, heap);
+static void ζ_down_context(state_t * z) {
+    z->psi = push_state(z->psi, z);
     z->sigma = z->SIGMA;
     z->delta = z->DELTA;
     z->PI = z->PI->AP[z->ctx];
     z->ctx = 0;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void ζ_down_select(state_t * z, const PATTERN * PI, heap_t * heap) {
-    z->psi = push_state(z->psi, z, heap);
+static void ζ_down_select(state_t * z, const PATTERN * PI) {
+    z->psi = push_state(z->psi, z);
     z->SIGMA = z->sigma;
     z->DELTA = z->delta;
     z->PI = PI;
@@ -446,42 +454,42 @@ static void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->d
 static void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_success(state_t * z) {
-    if (z->psi) {
-        z->PI = z->psi->PI;
-        z->ctx = z->psi->ctx;
+    if (z->psi.offset) {
+        z->PI = _s_(z->psi)->PI;
+        z->ctx = _s_(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_fail(state_t * z) {
-    if (z->psi) {
-        z->PI = z->psi->PI;
-        z->ctx = z->psi->ctx;
+    if (z->psi.offset) {
+        z->PI = _s_(z->psi)->PI;
+        z->ctx = _s_(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void MATCH(const PATTERN * pattern, const char * subject) {
+    heap_init();
     init_tracks();
     int a = PROCEED;
     int iteration = 0;
     num_t num; num = empty_num;
-    heap_t heap; heap = empty_heap;
-    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, NULL};
+    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
     while (Z.PI) {
         iteration++; if (iteration > 512) break;
         animate(a, Z, iteration);
         const char * t = Z.PI->type;
 //      ----------------------------------------------------------------------------------------------------------------
         if      (t == Π       && a == PROCEED)   if (Z.ctx < Z.PI->n)
-                                                    { a = PROCEED; push_track(Z);   ζ_down_context(&Z, &heap); }
+                                                    { a = PROCEED; push_track(Z);   ζ_down_context(&Z); }
                                                else { a = RECEDE;  pop_track(&Z);   }
         else if (t == Π       && a == SUCCEED)      { a = SUCCEED;                  ζ_up_success(&Z); }
         else if (t == Π       && a == FAILURE)      { a = PROCEED;                  ζ_stay_next(&Z); }
         else if (t == Π       && a == RECEDE)       { a = PROCEED;                  ζ_stay_next(&Z); }
 //      ----------------------------------------------------------------------------------------------------------------
         else if (t == Σ       && a == PROCEED)   if (Z.ctx < Z.PI->n)
-                                                    { a = PROCEED;                  ζ_down_context(&Z, &heap); }
+                                                    { a = PROCEED;                  ζ_down_context(&Z); }
                                                else { a = SUCCEED;                  ζ_up_success(&Z); }
         else if (t == Σ       && a == SUCCEED)      { a = PROCEED;                  ζ_move_next(&Z); }
         else if (t == Σ       && a == FAILURE)      { a = RECEDE;  pop_track(&Z);   }
@@ -490,7 +498,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
         else if (t == ARBNO   && a == PROCEED)
                                                  if (Z.ctx == 0)
                                                     { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
-                                               else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0], &heap); }
+                                               else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); }
         else if (t == ARBNO   && a == SUCCEED)
                                                     { a = SUCCEED;                  ζ_up_success(&Z); }
         else if (t == ARBNO   && a == FAILURE)
@@ -541,21 +549,22 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
                                                     { a = SUCCEED; ζ_up_success(&Z); }
                                                else { a = FAILURE; ζ_up_fail(&Z); }
         else if (t == ζ       && a == PROCEED)      { a = PROCEED; ζ_over(&Z, &C_3); }
-        else if (t == Δ       && a == PROCEED)      { a = PROCEED; Π_DELTA(&Z, &heap); ζ_over(&Z, Z.PI->AP[0]); }
+        else if (t == Δ       && a == PROCEED)      { a = PROCEED; Π_DELTA(&Z); ζ_over(&Z, Z.PI->AP[0]); }
         else if (t == δ       && a == PROCEED)      { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]); }
         else if (t == ε       && a == PROCEED)      { a = SUCCEED; ζ_up_success(&Z); }
-        else if (t == λ       && a == PROCEED)      { a = SUCCEED; Π_lambda(&Z, &heap); ζ_up_success(&Z); }
+        else if (t == λ       && a == PROCEED)      { a = SUCCEED; Π_lambda(&Z); ζ_up_success(&Z); }
         else if (t == FAIL    && a == PROCEED)      { a = FAILURE; ζ_up_fail(&Z); }
         else if (t == ABORT   && a == PROCEED)      { a = FAILURE; Z.PI = NULL; }
-        else if (t == nPush   && a == PROCEED)      { a = SUCCEED; Π_nPush(&Z, &heap); ζ_up_success(&Z); }
-        else if (t == nInc    && a == PROCEED)      { a = SUCCEED; Π_nInc(&Z, &heap); ζ_up_success(&Z); }
-        else if (t == nPop    && a == PROCEED)      { a = SUCCEED; Π_nPop(&Z, &heap); ζ_up_success(&Z); }
-        else if (t == Shift   && a == PROCEED)      { a = SUCCEED; Π_Shift(&Z, &heap); ζ_up_success(&Z); }
-        else if (t == Reduce  && a == PROCEED)      { a = SUCCEED; Π_Reduce(&Z, &heap); ζ_up_success(&Z); }
-        else if (t == Pop     && a == PROCEED)      { a = SUCCEED; Π_Pop(&Z, &heap); ζ_up_success(&Z); }
+        else if (t == nPush   && a == PROCEED)      { a = SUCCEED; Π_nPush(&Z); ζ_up_success(&Z); }
+        else if (t == nInc    && a == PROCEED)      { a = SUCCEED; Π_nInc(&Z); ζ_up_success(&Z); }
+        else if (t == nPop    && a == PROCEED)      { a = SUCCEED; Π_nPop(&Z); ζ_up_success(&Z); }
+        else if (t == Shift   && a == PROCEED)      { a = SUCCEED; Π_Shift(&Z); ζ_up_success(&Z); }
+        else if (t == Reduce  && a == PROCEED)      { a = SUCCEED; Π_Reduce(&Z); ζ_up_success(&Z); }
+        else if (t == Pop     && a == PROCEED)      { a = SUCCEED; Π_Pop(&Z); ζ_up_success(&Z); }
         else { printf("%s\n", t); fflush(stdout); assert(0); }
     }
     fini_tracks();
+    heap_free();
 }
 //----------------------------------------------------------------------------------------------------------------------
 // typedef (*PI_function_t)();
@@ -574,9 +583,9 @@ static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 int main() {
 //  MATCH(&BEAD_0, "READS");
 //  MATCH(&BEARDS_0, "ROOSTS");
-    MATCH(&C_0, "x+y*z");
+//  MATCH(&C_0, "x+y*z");
 //  MATCH(&ARB_0, "xyz");
-//  MATCH(&ARBNO_0, "xyz");
+    MATCH(&ARBNO_0, "xyz");
 //  MATCH(&RE_0, "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
