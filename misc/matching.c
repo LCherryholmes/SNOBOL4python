@@ -103,7 +103,6 @@ static address_t heap_alloc(int stamp, int size) {
     address_t address = {heap.pos + HEAP_ALIGN_SIZE};
     ((int *) &heap.a[address.offset])[-1] = stamp;
     heap.pos = address.offset + size;
-    printf("0x%08.8x = heap_alloc()\n", address.offset);
     return address;
 }
 //======================================================================================================================
@@ -113,7 +112,7 @@ static address_t alloc_string(const char * string) {
     strcpy(mem, string);
     return address;
 }
-static inline const char * _string_(address_t address)  { return (const char *) (heap.a + address.offset); }
+static inline const char * _s_(address_t address) { return (const char *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _command command_t;
 typedef struct _command { address_t string; address_t command; } command_t;
@@ -140,23 +139,24 @@ typedef struct _state {
     address_t       psi; // state stack
     address_t       lambda; // command stack
 } state_t;
-static inline state_t * _s_(address_t address)      { return (state_t *) (heap.a + address.offset); }
+static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
 static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
-static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _s_(psi)->psi) /**/; return len; }
-static address_t pop_state(address_t psi) { if (psi.offset) return _s_(psi)->psi; else return psi; }
+static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _z_(psi)->psi) /**/; return len; }
+static address_t pop_state(address_t psi) { if (psi.offset) return _z_(psi)->psi; else return psi; }
 static address_t push_state(address_t psi, state_t * z) {
     address_t PSI = alloc_state();
-    *(_s_(PSI)) = *z;
-    _s_(PSI)->psi = psi;
+    *(_z_(PSI)) = *z;
+    _z_(PSI)->psi = psi;
     return PSI;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static int iTracks = 0;
-static state_t *aTracks = NULL;
+static state_t * aTracks = NULL;
 static void init_tracks() { iTracks = 0; aTracks = NULL; }
 static void fini_tracks() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
+static state_t * top_track() { if (iTracks > 0) return &aTracks[iTracks - 1]; else return NULL; }
 static void push_track(state_t Z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = Z; }
 static void pop_track(state_t * z) {
     if (iTracks > 0) {
@@ -165,6 +165,23 @@ static void pop_track(state_t * z) {
         if (z) *z = state;
     } else if (z) *z = empty_state;
 }
+//======================================================================================================================
+//----------------------------------------------------------------------------------------------------------------------
+typedef struct _num { int iN; int * aN; } num_t;
+static num_t empty_num = {0, NULL};
+//----------------------------------------------------------------------------------------------------------------------
+static inline void N_init(num_t * N)    { N->iN = 0; N->aN = NULL; }
+static inline void N_push(num_t * N)    { N->aN = realloc(N->aN, ++N->iN * sizeof(int));
+                                          N->aN[N->iN - 1] = 0;
+                                        }
+static inline void N_inc(num_t * N)     { N->aN[N->iN - 1]++; }
+static inline int  N_top(num_t * N)     { return N->aN[N->iN - 1]; }
+static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
+                                            int n = N->aN[N->iN - 1];
+                                            N->aN = realloc(N->aN, --N->iN * sizeof(int));
+                                            return n;
+                                          }
+                                        }
 //======================================================================================================================
 #define PROCEED 0
 #define SUCCEED 1
@@ -252,8 +269,8 @@ static void animate(int action, state_t Z, int iteration) {
     char status[20]; sprintf(status, "%s/%d", Z.PI->type, Z.ctx + 1);
     printf("%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
         iteration,
-        total_states(Z.psi),
         iTracks,
+        total_states(Z.psi),
         12, status,
         TAIL_WINDOW, tail,
         Z.DELTA,
@@ -360,22 +377,6 @@ static inline bool Π_LEN(state_t * z)   { return Π_move(z, z->PI->n); }
 static inline bool Π_TAB(state_t * z)   { return Π_move(z, z->PI->n - z->DELTA); }
 static inline bool Π_REM(state_t * z)   { return Π_move(z, z->OMEGA - z->DELTA); }
 static inline bool Π_RTAB(state_t * z)  { return Π_move(z, z->OMEGA - z->DELTA - z->PI->n); }
-//======================================================================================================================
-typedef struct _num { int iN; int * aN; } num_t;
-static num_t empty_num = {0, NULL};
-//----------------------------------------------------------------------------------------------------------------------
-static inline void N_init(num_t * N)    { N->iN = 0; N->aN = NULL; }
-static inline void N_push(num_t * N)    { N->aN = realloc(N->aN, ++N->iN * sizeof(int));
-                                          N->aN[N->iN - 1] = 0;
-                                        }
-static inline void N_inc(num_t * N)     { N->aN[N->iN - 1]++; }
-static inline int  N_top(num_t * N)     { return N->aN[N->iN - 1]; }
-static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
-                                            int n = N->aN[N->iN - 1];
-                                            N->aN = realloc(N->aN, --N->iN * sizeof(int));
-                                            return n;
-                                          }
-                                        }
 //----------------------------------------------------------------------------------------------------------------------
 static inline bool Π_nPush(state_t * z)  { z->lambda = push_command(z->lambda, "N = N_push(N)"); return true; }
 static inline bool Π_nInc(state_t * z)   { z->lambda = push_command(z->lambda, "N_inc(N)");      return true; }
@@ -443,8 +444,8 @@ static void ζ_down_context(state_t * z) {
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_down_select(state_t * z, const PATTERN * PI) {
     z->psi = push_state(z->psi, z);
-    z->SIGMA = z->sigma;
-    z->DELTA = z->delta;
+    z->sigma = z->SIGMA;
+    z->delta = z->DELTA;
     z->PI = PI;
     z->ctx = 0;
 }
@@ -455,16 +456,29 @@ static void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->D
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_success(state_t * z) {
     if (z->psi.offset) {
-        z->PI = _s_(z->psi)->PI;
-        z->ctx = _s_(z->psi)->ctx;
+        z->PI = _z_(z->psi)->PI;
+        z->ctx = _z_(z->psi)->ctx;
+        z->psi = pop_state(z->psi);
+    } else z->PI = NULL;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void ζ_up_track_success(state_t * z) {
+    state_t * track = top_track();
+    track->SIGMA = z->SIGMA;
+    track->DELTA = z->DELTA;
+    track->sigma = z->sigma;
+    track->delta = z->delta;
+    if (z->psi.offset) {
+        z->PI = _z_(z->psi)->PI;
+        z->ctx = _z_(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_fail(state_t * z) {
     if (z->psi.offset) {
-        z->PI = _s_(z->psi)->PI;
-        z->ctx = _s_(z->psi)->ctx;
+        z->PI = _z_(z->psi)->PI;
+        z->ctx = _z_(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
@@ -477,7 +491,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
     num_t num; num = empty_num;
     state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
     while (Z.PI) {
-        iteration++; if (iteration > 512) break;
+        iteration++; // if (iteration > 32) break;
         animate(a, Z, iteration);
         const char * t = Z.PI->type;
 //      ----------------------------------------------------------------------------------------------------------------
@@ -500,7 +514,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
                                                     { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
                                                else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); }
         else if (t == ARBNO   && a == SUCCEED)
-                                                    { a = SUCCEED;                  ζ_up_success(&Z); }
+                                                    { a = SUCCEED;                  ζ_up_track_success(&Z); }
         else if (t == ARBNO   && a == FAILURE)
                                                     { a = RECEDE;  pop_track(&Z);   }
         else if (t == ARBNO   && a == RECEDE)
@@ -581,10 +595,10 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-//  MATCH(&BEAD_0, "READS");
-//  MATCH(&BEARDS_0, "ROOSTS");
-//  MATCH(&C_0, "x+y*z");
-//  MATCH(&ARB_0, "xyz");
+    MATCH(&BEAD_0, "READS");
+    MATCH(&BEARDS_0, "ROOSTS");
+    MATCH(&C_0, "x+y*z");
+    MATCH(&ARB_0, "xyz");
     MATCH(&ARBNO_0, "xyz");
 //  MATCH(&RE_0, "x|yz");
 }
