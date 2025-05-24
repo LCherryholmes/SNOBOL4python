@@ -73,8 +73,9 @@ typedef struct PATTERN {
 //======================================================================================================================
 #define HEAP_SIZE_INIT 4096
 #define HEAP_SIZE_BUMP 4096
-#define HEAP_ALIGN_SIZE 8
-#define HEAP_ALIGN_BITS 3
+#define HEAP_HEAD_SIZE 8
+#define HEAP_ALIGN_SIZE 16
+#define HEAP_ALIGN_BITS 4
 #define STAMP_STRING -1
 #define STAMP_COMMAND -2
 #define STAMP_STATE -3
@@ -87,16 +88,16 @@ static void heap_fini() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NU
 static inline void * pointer(address_t a) { return heap.a + a.offset; }
 static inline address_t heap_incref(address_t a) {
     if (a.offset > 0) {
-        short * mem = (short *) &heap.a[a.offset];
-        mem[-1]++;
+        short * ms = (short *) &heap.a[a.offset];
+        ms[-3]++;
     }
     return a;
 }
 static inline address_t heap_decref(address_t a) {
     if (a.offset > 0) {
-        short * mem = (short *) &heap.a[a.offset];
-        assert(mem[-1] > 0);
-        mem[-1]--;
+        short * ms = (short *) &heap.a[a.offset];
+        assert(ms[-3] > 0);
+        ms[-3]--;
     }
     return a;
 }
@@ -114,20 +115,23 @@ static address_t heap_alloc(short stamp, int size) {
             heap.size += HEAP_SIZE_BUMP;
         }
     }
-    address_t a = {heap.pos + HEAP_ALIGN_SIZE};
-    short * mem = (short *) &heap.a[a.offset];
-    mem[-1] = 1;
-    mem[-2] = stamp;
+    address_t a = {heap.pos + HEAP_HEAD_SIZE};
+    int * mi = (int *) &heap.a[a.offset];
+    short * ms = (short *) &heap.a[a.offset];
+    ms[-4] = stamp;
+    ms[-3] = 1;
+    mi[-1] = size;
     heap.pos = a.offset + size;
-    printf("0x%08.8x: %2d %3d alloc\n", a.offset, mem[-2], mem[-1]);
+    printf("0x%08.8x: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static address_t heap_free(address_t address) {
-    if (address.offset) {
-        short * mem = (short *) &heap.a[address.offset];
-        printf("0x%08.8x: %2d %3d free\n", address.offset, mem[-2], mem[-1]);
-        heap_decref(address);
+static address_t heap_free(address_t a) {
+    if (a.offset) {
+        int * mi = (int *) &heap.a[a.offset];
+        short * ms = (short *) &heap.a[a.offset];
+        printf("0x%08.8x: %2d %3d %5d free\n", a.offset, ms[-4], mi[-3], ms[-1]);
+        heap_decref(a);
     }
 }
 //======================================================================================================================
