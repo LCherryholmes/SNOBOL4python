@@ -222,8 +222,8 @@ void preview(const PATTERN * PI, int depth) {
                                     printf("Shift(\"%s\", \"%s\")", PI->t, PI->v);
                                   else printf("Shift(\"%s\")", PI->t);
                                 }
-    else if (type == Reduce)    { if (PI->v)
-                                    printf("Reduce(\"%s\", \"%s\")", PI->t, PI->v);
+    else if (type == Reduce)    { if (PI->x)
+                                    printf("Reduce(\"%s\", %d)", PI->t, PI->x);
                                   else printf("Reduce(\"%s\")", PI->t);
                                 }
     else if (type == Pop)       { printf("Pop(\"%s\")", PI->v); } // t
@@ -595,11 +595,11 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-    MATCH(&BEAD_0, "READS");
-    MATCH(&BEARDS_0, "ROOSTS");
-    MATCH(&C_0, "x+y*z");
-    MATCH(&ARB_0, "xyz");
-    MATCH(&ARBNO_0, "xyz");
-//  MATCH(&RE_0, "x|yz");
+//  MATCH(&BEAD_0, "READS");
+//  MATCH(&BEARDS_0, "ROOSTS");
+//  MATCH(&C_0, "x+y*z");
+//  MATCH(&ARB_0, "xyz");
+//  MATCH(&ARBNO_0, "xyz");
+    MATCH(&RE_0, "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
