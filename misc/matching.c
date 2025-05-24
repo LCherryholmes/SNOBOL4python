@@ -47,7 +47,7 @@ static const char ρ[]       = "ρ";
 static const char σ[]       = "LIT$"; // "σ";
 static const char φ[]       = "φ";
 static const char ω[]       = "ω";
-//======================================================================================================================
+//----------------------------------------------------------------------------------------------------------------------
 typedef struct PATTERN PATTERN;
 typedef struct PATTERN {
     const char * type;
@@ -65,7 +65,7 @@ typedef struct PATTERN {
         int             x;         /* Reduce */
     };
 } PATTERN;
-//======================================================================================================================
+//----------------------------------------------------------------------------------------------------------------------
 #include "BEAD_PATTERN.h"
 #include "BEARDS_PATTERN.h"
 #include "C_PATTERN.h"
@@ -78,15 +78,29 @@ typedef struct PATTERN {
 #define STAMP_STRING -1
 #define STAMP_COMMAND -2
 #define STAMP_STATE -3
-//----------------------------------------------------------------------------------------------------------------------
 typedef struct _address { int offset; } address_t;
 typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
 static heap_t heap = {0, 0, NULL};
 static heap_t empty_heap = {0, 0, NULL};
 static void heap_init() { heap.pos = 0; heap.size = 0; heap.a = NULL; }
-static void heap_free() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
-static inline void * pointer(address_t address) { return heap.a + address.offset; }
-static address_t heap_alloc(int stamp, int size) {
+static void heap_fini() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
+static inline void * pointer(address_t a) { return heap.a + a.offset; }
+static inline address_t heap_incref(address_t a) {
+    if (a.offset > 0) {
+        short * mem = (short *) &heap.a[a.offset];
+        mem[-1]++;
+    }
+    return a;
+}
+static inline address_t heap_decref(address_t a) {
+    if (a.offset > 0) {
+        short * mem = (short *) &heap.a[a.offset];
+        assert(mem[-1] > 0);
+        mem[-1]--;
+    }
+    return a;
+}
+static address_t heap_alloc(short stamp, int size) {
     assert(size < HEAP_SIZE_BUMP);
     size = (size + HEAP_ALIGN_SIZE-1) >> HEAP_ALIGN_BITS << HEAP_ALIGN_BITS;
     if (heap.pos + HEAP_ALIGN_SIZE + size >= heap.size) {
@@ -100,10 +114,21 @@ static address_t heap_alloc(int stamp, int size) {
             heap.size += HEAP_SIZE_BUMP;
         }
     }
-    address_t address = {heap.pos + HEAP_ALIGN_SIZE};
-    ((int *) &heap.a[address.offset])[-1] = stamp;
-    heap.pos = address.offset + size;
-    return address;
+    address_t a = {heap.pos + HEAP_ALIGN_SIZE};
+    short * mem = (short *) &heap.a[a.offset];
+    mem[-1] = 1;
+    mem[-2] = stamp;
+    heap.pos = a.offset + size;
+    printf("0x%08.8x: %2d %3d alloc\n", a.offset, mem[-2], mem[-1]);
+    return a;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static address_t heap_free(address_t address) {
+    if (address.offset) {
+        short * mem = (short *) &heap.a[address.offset];
+        printf("0x%08.8x: %2d %3d free\n", address.offset, mem[-2], mem[-1]);
+        heap_decref(address);
+    }
 }
 //======================================================================================================================
 static address_t alloc_string(const char * string) {
@@ -119,11 +144,18 @@ typedef struct _command { address_t string; address_t command; } command_t;
 static inline command_t * _c_(address_t address)  { return (command_t *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
 static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
-static address_t pop_command(address_t command) { if (command.offset) return _c_(command)->command; else return command; }
 static address_t push_command(address_t command, const char * string) {
     address_t COMMAND = alloc_command();
     _c_(COMMAND)->string = alloc_string(string);
-    _c_(COMMAND)->command = command;
+    _c_(COMMAND)->command = heap_incref(command);
+    return COMMAND;
+}
+static address_t pop_command(address_t command) {
+    address_t COMMAND = command;
+    if (command.offset) {
+        COMMAND = _c_(command)->command;
+        heap_free(command);
+    }
     return COMMAND;
 }
 //======================================================================================================================
@@ -144,11 +176,18 @@ static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + ad
 static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
 static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _z_(psi)->psi) /**/; return len; }
-static address_t pop_state(address_t psi) { if (psi.offset) return _z_(psi)->psi; else return psi; }
 static address_t push_state(address_t psi, state_t * z) {
     address_t PSI = alloc_state();
     *(_z_(PSI)) = *z;
-    _z_(PSI)->psi = psi;
+    _z_(PSI)->psi = heap_incref(psi);
+    return PSI;
+}
+static address_t pop_state(address_t psi) {
+    address_t PSI = psi;
+    if (psi.offset) {
+        PSI = _z_(psi)->psi;
+        heap_free(PSI);
+    }
     return PSI;
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -574,7 +613,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
         else { printf("%s\n", t); fflush(stdout); assert(0); }
     }
     fini_tracks();
-    heap_free();
+    heap_fini();
 }
 //----------------------------------------------------------------------------------------------------------------------
 // typedef (*PI_function_t)();
@@ -591,11 +630,11 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-//  MATCH(&BEAD_0, "READS");
-//  MATCH(&BEARDS_0, "ROOSTS");
-//  MATCH(&C_0, "x+y*z");
-//  MATCH(&ARB_0, "xyz");
-//  MATCH(&ARBNO_0, "xyz");
-    MATCH(&RE_0, "x|yz");
+    MATCH(&BEAD_0, "READS");
+    MATCH(&BEARDS_0, "ROOSTS");
+    MATCH(&C_0, "x+y*z");
+    MATCH(&ARB_0, "xyz");
+    MATCH(&ARBNO_0, "xyz");
+//  MATCH(&RE_0, "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
