@@ -71,8 +71,8 @@ typedef struct PATTERN {
 #include "C_PATTERN.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
-#define HEAP_SIZE_INIT 4096
-#define HEAP_SIZE_BUMP 4096
+#define HEAP_SIZE_INIT 1024
+#define HEAP_SIZE_BUMP 512
 #define HEAP_HEAD_SIZE 8
 #define HEAP_ALIGN_SIZE 16
 #define HEAP_ALIGN_BITS 4
@@ -81,6 +81,7 @@ typedef struct PATTERN {
 #define STAMP_STATE -3
 typedef struct _address { int offset; } address_t;
 typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
+//----------------------------------------------------------------------------------------------------------------------
 static heap_t heap = {0, 0, NULL};
 static heap_t empty_heap = {0, 0, NULL};
 static void heap_init() { heap.pos = 0; heap.size = 0; heap.a = NULL; }
@@ -101,6 +102,7 @@ static inline address_t heap_decref(address_t a) {
     }
     return a;
 }
+//----------------------------------------------------------------------------------------------------------------------
 static address_t heap_alloc(short stamp, int size) {
     assert(size < HEAP_SIZE_BUMP);
     size = (size + HEAP_ALIGN_SIZE-1) >> HEAP_ALIGN_BITS << HEAP_ALIGN_BITS;
@@ -114,6 +116,7 @@ static address_t heap_alloc(short stamp, int size) {
             memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
             heap.size += HEAP_SIZE_BUMP;
         }
+        printf("heap_alloc=(0x%08.8X, %d, %d)", heap.a, heap.pos, heap.size);
     }
     address_t a = {heap.pos + HEAP_HEAD_SIZE};
     int * mi = (int *) &heap.a[a.offset];
@@ -122,7 +125,7 @@ static address_t heap_alloc(short stamp, int size) {
     ms[-3] = 1;
     mi[-1] = size;
     heap.pos = a.offset + size;
-    printf("0x%08.8x: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
+    printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -130,7 +133,7 @@ static address_t heap_free(address_t a) {
     if (a.offset) {
         int * mi = (int *) &heap.a[a.offset];
         short * ms = (short *) &heap.a[a.offset];
-        printf("0x%08.8x: %2d %3d %5d free\n", a.offset, ms[-4], mi[-3], ms[-1]);
+        printf("0x%08.8X: %2d %3d %5d free\n", a.offset, ms[-4], ms[-3], mi[-1]);
         heap_decref(a);
     }
 }
@@ -207,6 +210,41 @@ static void pop_track(state_t * z) {
         aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
         if (z) *z = state;
     } else if (z) *z = empty_state;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_print(state_t * z) {
+    printf("zeta: 0x%8.8X 0x%8.8X %d \"%s\"\n", z->psi, z->lambda, z->ctx, z->PI ? z->PI->type : "");
+    printf("tracks: %d\n", iTracks);
+    for (int i = 0; i < iTracks; i++) {
+        printf("0x%8.8X 0x%8.8X %d %s\n",
+            aTracks[i].psi,
+            aTracks[i].lambda,
+            aTracks[i].ctx,
+            aTracks[i].PI->type
+        );
+    }
+    printf("\n");
+    printf("heap: 0x%08.8x %d %d\n", heap.a, heap.pos, heap.size);
+    int size = -1;
+    for (int offset = HEAP_HEAD_SIZE; size && offset < heap.size; ) {
+        void * mem = &heap.a[offset];
+        int * mi = (int *) mem;
+        short * ms = (short *) mem;
+        printf("0x%08.8X: %2d %3d %5d ", offset, ms[-4], ms[-3], mi[-1]);
+        switch (ms[-4]) {
+            case STAMP_STRING:  { const char *      s = (const char *) mem;      printf("%s", s); break; }
+            case STAMP_COMMAND: { const command_t * c = (const command_t *) mem; printf("0x%8.8X, 0x%8.8X", c->string, c->command); break; }
+            case STAMP_STATE: {
+                const state_t * z = (const state_t *) mem;
+                printf("0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, z->PI->type);
+                break;
+            }
+        }
+        printf("\n");
+        size = mi[-1];
+        if (size) size += HEAP_HEAD_SIZE;
+        offset += size;
+    }
 }
 //======================================================================================================================
 //----------------------------------------------------------------------------------------------------------------------
@@ -616,6 +654,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
         else if (t == Pop     && a == PROCEED)      { a = SUCCEED; Π_Pop(&Z); ζ_up_success(&Z); }
         else { printf("%s\n", t); fflush(stdout); assert(0); }
     }
+    heap_print(&Z);
     fini_tracks();
     heap_fini();
 }
@@ -634,11 +673,11 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-    MATCH(&BEAD_0, "READS");
+//  MATCH(&BEAD_0, "READS");
     MATCH(&BEARDS_0, "ROOSTS");
-    MATCH(&C_0, "x+y*z");
-    MATCH(&ARB_0, "xyz");
-    MATCH(&ARBNO_0, "xyz");
+//  MATCH(&C_0, "x+y*z");
+//  MATCH(&ARB_0, "xyz");
+//  MATCH(&ARBNO_0, "xyz");
 //  MATCH(&RE_0, "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
