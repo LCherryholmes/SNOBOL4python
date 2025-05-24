@@ -8,12 +8,14 @@ __pycache__/
 .spyproject/
 .pytest_cache/
 .vscode/
+*.egg-info/
 dist/
 build/
-*.egg-info/
-deleteme*.*
+misc/*-out.*
+misc/matching
 tests/*.txt
 tests/*.lst
+deleteme*.*
 ENG-685/*.pdf
 ENG-685/*.odp
 ENG-685/*.txt
