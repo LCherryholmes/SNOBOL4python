@@ -143,7 +143,7 @@ static void * heap_alloc(heap_t * heap, int stamp, int size) {
             heap->size += HEAP_SIZE_BUMP;
         }
     }
-    int * mem = &heap->a[heap->pos]; mem[0] = stamp;
+    int * mem = (int *) &heap->a[heap->pos]; mem[0] = stamp;
     heap->pos += sizeof(int) + size;
     return &mem[1];
 }
@@ -151,7 +151,7 @@ static void * heap_alloc(heap_t * heap, int stamp, int size) {
 typedef struct _command command_t;
 typedef struct _command { const char * string; command_t * command; } command_t;
 //----------------------------------------------------------------------------------------------------------------------
-static command_t * alloc_command(heap_t * heap) { return (command_t *) heap_alloc(heap, sizeof(command_t)); }
+static command_t * alloc_command(heap_t * heap) { return (command_t *) heap_alloc(heap, STAMP_COMMAND, sizeof(command_t)); }
 static command_t * pop_command(command_t * command) { if (command) return command->command; else return NULL; }
 static command_t * push_command(command_t * command, const char * string, heap_t * heap) {
     command_t * COMMAND = alloc_command(heap);
@@ -161,7 +161,7 @@ static command_t * push_command(command_t * command, const char * string, heap_t
 }
 //----------------------------------------------------------------------------------------------------------------------
 static const char * alloc_string(heap_t * heap, const char * string) {
-    char * mem = (char *) heap_alloc(heap, strlen(string) + 1);
+    char * mem = (char *) heap_alloc(heap, STAMP_STRING, strlen(string) + 1);
     strcpy(mem, string);
     return mem;
 }
@@ -180,7 +180,7 @@ typedef struct _state {
 } state_t;
 //----------------------------------------------------------------------------------------------------------------------
 static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, NULL, NULL };
-static state_t * alloc_state(heap_t * heap) { return (state_t *) heap_alloc(heap, sizeof(state_t)); }
+static state_t * alloc_state(heap_t * heap) { return (state_t *) heap_alloc(heap, STAMP_STATE, sizeof(state_t)); }
 static int       total_states(state_t * psi) { int len = 0; for (; psi; len++, psi = psi->psi) /**/; return len; }
 static state_t * pop_state(state_t * psi) { if (psi) return psi->psi; else return NULL; }
 static state_t * push_state(state_t * psi, state_t * z, heap_t * heap) {
