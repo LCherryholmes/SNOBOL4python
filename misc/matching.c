@@ -275,12 +275,23 @@ static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
 // Global variables
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct entry_t { char * name; const void * value; } entry_t;
-typedef struct bucket_t { entry_t * entries; int count; int capacity; } bucket_t;
-typedef struct globals_t { bucket_t * buckets; int num_buckets; } globals_t;
-static globals_t globals_empty = {NULL, 0};
-static globals_t globals;
+typedef struct bucket_t { int count; int capacity; entry_t * entries; } bucket_t;
+typedef struct globals_t { int num_buckets; bucket_t * buckets; } globals_t;
+static globals_t globals = {0, NULL};
+static void globals_init() {
+    globals.num_buckets = 4;
+    globals.buckets = calloc(globals.num_buckets, sizeof(bucket_t));
+}
+static void globals_fini() {
+    for (int i = 0; i < globals.num_buckets; i++) {
+        for (int j = 0; j < globals.buckets[i].count; j++)
+            free(globals.buckets[i].entries[j].name);
+        free(globals.buckets[i].entries);
+    }
+    free(globals.buckets);
+}
 //----------------------------------------------------------------------------------------------------------------------
-unsigned int hash(const char * str, int num_buckets) {
+static unsigned int hash(const char * str, int num_buckets) {
     int c;
     unsigned int h = 5381;
     while ((c = *str++))
@@ -288,7 +299,7 @@ unsigned int hash(const char * str, int num_buckets) {
     return h % num_buckets;
 }
 //----------------------------------------------------------------------------------------------------------------------
-const void * globals_lookup(const char * name) {
+static const void * globals_lookup(const char * name) {
     unsigned int index = hash(name, globals.num_buckets);
     bucket_t * bucket = &globals.buckets[index];
     int low = 0, high = bucket->count - 1;
@@ -302,7 +313,7 @@ const void * globals_lookup(const char * name) {
     return NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void globals_insert(const char * name, const void * value) {
+static void globals_insert(const char * name, const void * value) {
     unsigned int index = hash(name, globals.num_buckets);
     bucket_t * bucket = &globals.buckets[index];
     int low = 0, high = bucket->count - 1;
@@ -310,14 +321,16 @@ void globals_insert(const char * name, const void * value) {
     while (low <= high) {
         int mid = (low + high) >> 1;
         int cmp = strcmp(name, bucket->entries[mid].name);
-        if (cmp == 0) { bucket->entries[mid].value = value; return; } // replace logic
+        if (cmp == 0) { bucket->entries[mid].value = value; return; } // using replacement logic
         else if (cmp < 0) high = mid - 1;
         else low = mid + 1;
     }
     pos = low;
-    if (bucket->count == bucket->capacity) {
-        int new_capacity = bucket->capacity == 0 ? 4 : bucket->capacity * 2;
+    if (bucket->count >= bucket->capacity) {
+        int bump_capacity = bucket->capacity == 0 ? 4 : bucket->capacity;
+        int new_capacity = bucket->capacity + bump_capacity;
         entry_t * new_entries = realloc(bucket->entries, new_capacity * sizeof(entry_t));
+        memset(&new_entries[bucket->capacity], 0, bump_capacity * sizeof(entry_t));
         bucket->entries = new_entries;
         bucket->capacity = new_capacity;
     }
@@ -326,17 +339,6 @@ void globals_insert(const char * name, const void * value) {
         bucket->entries[i] = bucket->entries[i - 1];
     bucket->entries[pos] = new_entry;
     bucket->count++;
-}
-//----------------------------------------------------------------------------------------------------------------------
-void globals_free() {
-    for (int i = 0; i < globals.num_buckets; i++) {
-        bucket_t * bucket = &globals.buckets[i];
-        for (int j = 0; j < bucket->count; j++) {
-            free(bucket->entries[j].name);
-        }
-        free(bucket->entries);
-    }
-    free(globals.buckets);
 }
 //======================================================================================================================
 #define PROCEED 0
@@ -612,6 +614,8 @@ static inline void ζ_down_select(state_t * z, const PATTERN * PI) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static inline void ζ_over(state_t * z, const PATTERN * PI) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = PI; }
+static inline void ζ_over_dynamic(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = globals_lookup(z->PI->N); }
+//----------------------------------------------------------------------------------------------------------------------
 static inline void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
 static inline void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
@@ -653,7 +657,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
     const PATTERN * pattern = globals_lookup(pattern_name);
     state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
     while (Z.PI) {
-        iteration++; if (iteration > 64) break;
+        iteration++; // if (iteration > 64) break;
         animate(a, Z, iteration);
         int t = Z.PI->type;
         switch (t<<2|a) {
@@ -712,7 +716,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCEED; ζ_up_success(&Z);    break; }
                                     else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case ζ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, &C_3);                        break; }
+        case ζ<<2|PROCEED:          { a = PROCEED; ζ_over_dynamic(&Z);                      break; }
         case Δ<<2|PROCEED:          { a = PROCEED; Π_DELTA(&Z); ζ_over(&Z, Z.PI->AP[0]);    break; }
         case δ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]);                 break; }
         case ε<<2|PROCEED:          { a = SUCCEED; ζ_up_success(&Z);                        break; }
@@ -728,12 +732,10 @@ static void MATCH(const char * pattern_name, const char * subject) {
         default:                    { printf("%s\n", t); fflush(stdout); assert(0);         break; }
         }
     }
-//  heap_print(&Z);
+    if (false) heap_print(&Z);
     fini_tracks();
     heap_fini();
 }
-//----------------------------------------------------------------------------------------------------------------------
-// typedef (*PI_function_t)();
 //----------------------------------------------------------------------------------------------------------------------
 static const PATTERN ARB_1 = {POS, .n=0};
 static const PATTERN ARB_2 = {ARB};
@@ -747,9 +749,11 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
+    globals_init();
     globals_insert("BEAD",          &BEAD_0);
     globals_insert("BEARDS",        &BEARDS_0);
     globals_insert("C",             &C_0);
+    globals_insert("X",             &C_3);
     globals_insert("Arb",           &ARB_0);
     globals_insert("Arbno",         &ARBNO_0);
     globals_insert("Quantifier",    &RE_Quantifier_0);
@@ -758,11 +762,12 @@ int main() {
     globals_insert("Term",          &RE_Term_0);
     globals_insert("Expression",    &RE_Expression_0);
     globals_insert("RegEx",         &RE_RegEx_0);
-    MATCH("BED",    "READS");
-    MATCH("BEARDS", "ROOSTS");
+//  MATCH("BEAD",   "READS");
+//  MATCH("BEARDS", "ROOSTS");
     MATCH("C",      "x+y*z");
-    MATCH("Arb",    "xyz");
-    MATCH("Arbno",  "xyz");
-    MATCH("RegEx",  "x|yz");
+//  MATCH("Arb",    "xyz");
+//  MATCH("Arbno",  "xyz");
+//  MATCH("RegEx",  "x|yz");
+    globals_fini();
 }
 //----------------------------------------------------------------------------------------------------------------------
