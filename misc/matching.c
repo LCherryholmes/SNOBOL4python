@@ -1,9 +1,13 @@
-#include <malloc.h>
-#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <printf.h>
+#include <malloc.h>
+#include <assert.h>
 #include <stdbool.h>
 //======================================================================================================================
+// PATTERN data type
+//----------------------------------------------------------------------------------------------------------------------
 #define ABORT   0 // ABORT
 #define ANY     1 // ANY$
 #define ARB     2 // ARB
@@ -50,25 +54,11 @@
 //----------------------------------------------------------------------------------------------------------------------
 static const char * types[] =
 {
-    "ABORT", "ANY$", "ARB", "ARBNO",
-    "BAL", "BREAK$", "BREAKX",
-    "FAIL", "FENCE",
-    "LEN#",
-    "MARB", "MARBNO",
-    "NOTANY$",
-    "POS#",
-    "REM", "RPOS#", "RTAB",
-    "SPAN$", "SUCCESS",
-    "TAB",
-    "Shift", "Reduce", "Pop", "nInc", "nPop", "nPush",
-    "DELTA" /*Δ*/, "Θ", "Λ", "ALT" /*Π*/, "SEQ" /*Σ*/, "Φ",
-    "α", "δ", "epsilon" /*ε*/, "zeta" /*ζ*/, "θ", "lambda" /*λ*/, "π", "ρ", "LIT$" /*σ*/, "φ", "ω"
+    "ABORT", "ANY$", "ARB", "ARBNO", "BAL", "BREAK$", "BREAKX", "FAIL", "FENCE", "LEN#", "MARB", "MARBNO", "NOTANY$",
+    "POS#", "REM", "RPOS#", "RTAB", "SPAN$", "SUCCESS", "TAB", "Shift", "Reduce", "Pop", "nInc", "nPop", "nPush",
+    "DELTA" /*Δ*/, "Θ", "Λ", "ALT" /*Π*/, "SEQ" /*Σ*/, "Φ", "α", "δ", "epsilon" /*ε*/, "zeta" /*ζ*/, "θ",
+    "lambda" /*λ*/, "π", "ρ", "LIT$" /*σ*/, "φ", "ω"
 };
-//----------------------------------------------------------------------------------------------------------------------
-#define PROCEED 0
-#define SUCCEED 1
-#define FAILURE 2
-#define RECEDE  3
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct PATTERN PATTERN;
 typedef struct PATTERN {
@@ -93,6 +83,7 @@ typedef struct PATTERN {
 #include "C_PATTERN-calculate.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
+// Heap memory management
 const int HEAP_SIZE_INIT  = 32768;
 const int HEAP_SIZE_BUMP  = 32768;
 const int HEAP_HEAD_SIZE  = 8;
@@ -104,24 +95,24 @@ const int HEAP_ALIGN_BITS = 4;
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _address { int offset; } address_t;
 typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
+typedef struct _head { short stamp; short refs; int size; } head_t;
 //----------------------------------------------------------------------------------------------------------------------
 static heap_t heap = {0, 0, NULL};
-static heap_t empty_heap = {0, 0, NULL};
 static void heap_init() { heap.pos = 0; heap.size = 0; heap.a = NULL; }
 static void heap_fini() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
 static inline void * pointer(address_t a) { return heap.a + a.offset; }
 static inline address_t heap_incref(address_t a) {
     if (a.offset > 0) {
-        short * ms = (short *) &heap.a[a.offset];
-        ms[-3]++;
+        head_t * h = (head_t *) &heap.a[a.offset];
+        h[-1].refs++;
     }
     return a;
 }
 static inline address_t heap_decref(address_t a) {
     if (a.offset > 0) {
-        short * ms = (short *) &heap.a[a.offset];
-        assert(ms[-3] > 0);
-        ms[-3]--;
+        head_t * h = (head_t *) &heap.a[a.offset];
+        assert(h[-1].refs > 0);
+        h[-1].refs--;
     }
     return a;
 }
@@ -139,24 +130,20 @@ static address_t heap_alloc(short stamp, int size) {
             memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
             heap.size += HEAP_SIZE_BUMP;
         }
-//      printf("heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.pos, heap.size);
+        if (false) printf("heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.pos, heap.size);
     }
     address_t a = {heap.pos + HEAP_HEAD_SIZE};
-    int * mi = (int *) &heap.a[a.offset];
-    short * ms = (short *) &heap.a[a.offset];
-    ms[-4] = stamp;
-    ms[-3] = 1;
-    mi[-1] = size;
+    head_t * h = (head_t *) &heap.a[a.offset];
+    h[-1] = (head_t) {stamp, 1, size};
     heap.pos = a.offset + size;
-//  printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
+    if (false) printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, h[-1].stamp, h[-1].refs, h[-1].size);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static address_t heap_free(address_t a) {
     if (a.offset) {
-        int * mi = (int *) &heap.a[a.offset];
-        short * ms = (short *) &heap.a[a.offset];
-//      printf("0x%08.8X: %2d %3d %5d free\n", a.offset, ms[-4], ms[-3], mi[-1]);
+        head_t * h = (head_t *) &heap.a[a.offset];
+        if (false) printf("0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].refs, h[-1].size);
         heap_decref(a);
     }
 }
@@ -167,12 +154,12 @@ static address_t alloc_string(const char * string) {
     strcpy(mem, string);
     return address;
 }
-static inline const char * _s_(address_t address) { return (const char *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _command command_t;
 typedef struct _command { address_t string; address_t command; } command_t;
-static inline command_t * _c_(address_t address)  { return (command_t *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
+static inline const char * _s_(address_t address) { return (const char *) (heap.a + address.offset); }
+static inline command_t * _c_(address_t address)  { return (command_t *) (heap.a + address.offset); }
 static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
 static address_t push_command(address_t command, const char * string) {
     address_t COMMAND = alloc_command();
@@ -201,8 +188,8 @@ typedef struct _state {
     address_t       psi; // state stack
     address_t       lambda; // command stack
 } state_t;
-static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + address.offset); }
 //----------------------------------------------------------------------------------------------------------------------
+static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + address.offset); }
 static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
 static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _z_(psi)->psi) /**/; return len; }
@@ -251,10 +238,9 @@ static void heap_print(state_t * z) {
     int size = -1;
     for (int offset = HEAP_HEAD_SIZE; size && offset < heap.size; ) {
         void * mem = &heap.a[offset];
-        int * mi = (int *) mem;
-        short * ms = (short *) mem;
-        printf("0x%08.8X: %2d %3d %5d ", offset, ms[-4], ms[-3], mi[-1]);
-        switch (ms[-4]) {
+        head_t * h = (head_t *) mem;
+        printf("0x%08.8X: %2d %3d %5d ", offset, h[-1].stamp, h[-1].refs, h[-1].size);
+        switch (h[-1].stamp) {
             case STAMP_STRING:  { const char *      s = (const char *) mem;      printf("%s", s); break; }
             case STAMP_COMMAND: { const command_t * c = (const command_t *) mem; printf("0x%8.8X, 0x%8.8X", c->string, c->command); break; }
             case STAMP_STATE: {
@@ -264,7 +250,7 @@ static void heap_print(state_t * z) {
             }
         }
         printf("\n");
-        size = mi[-1];
+        size = h[-1].size;
         if (size) size += HEAP_HEAD_SIZE;
         offset += size;
     }
@@ -286,6 +272,78 @@ static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
                                           }
                                         }
 //======================================================================================================================
+// Global variables
+//----------------------------------------------------------------------------------------------------------------------
+typedef struct entry_t { char * name; const void * value; } entry_t;
+typedef struct bucket_t { entry_t * entries; int count; int capacity; } bucket_t;
+typedef struct globals_t { bucket_t * buckets; int num_buckets; } globals_t;
+static globals_t globals_empty = {NULL, 0};
+static globals_t globals;
+//----------------------------------------------------------------------------------------------------------------------
+unsigned int hash(const char * str, int num_buckets) {
+    int c;
+    unsigned int h = 5381;
+    while ((c = *str++))
+        h = ((h << 5) + h) + c; /* h * 33 + c */
+    return h % num_buckets;
+}
+//----------------------------------------------------------------------------------------------------------------------
+const void * globals_lookup(const char * name) {
+    unsigned int index = hash(name, globals.num_buckets);
+    bucket_t * bucket = &globals.buckets[index];
+    int low = 0, high = bucket->count - 1;
+    while (low <= high) {
+        int mid = (low + high) >> 1;
+        int cmp = strcmp(name, bucket->entries[mid].name);
+        if (cmp == 0) return bucket->entries[mid].value;
+        else if (cmp < 0) high = mid - 1;
+        else low = mid + 1;
+    }
+    return NULL;
+}
+//----------------------------------------------------------------------------------------------------------------------
+void globals_insert(const char * name, const void * value) {
+    unsigned int index = hash(name, globals.num_buckets);
+    bucket_t * bucket = &globals.buckets[index];
+    int low = 0, high = bucket->count - 1;
+    int pos = 0;
+    while (low <= high) {
+        int mid = (low + high) >> 1;
+        int cmp = strcmp(name, bucket->entries[mid].name);
+        if (cmp == 0) { bucket->entries[mid].value = value; return; } // replace logic
+        else if (cmp < 0) high = mid - 1;
+        else low = mid + 1;
+    }
+    pos = low;
+    if (bucket->count == bucket->capacity) {
+        int new_capacity = bucket->capacity == 0 ? 4 : bucket->capacity * 2;
+        entry_t * new_entries = realloc(bucket->entries, new_capacity * sizeof(entry_t));
+        bucket->entries = new_entries;
+        bucket->capacity = new_capacity;
+    }
+    entry_t new_entry = {strdup(name), value};
+    for (int i = bucket->count; i > pos; i--)
+        bucket->entries[i] = bucket->entries[i - 1];
+    bucket->entries[pos] = new_entry;
+    bucket->count++;
+}
+//----------------------------------------------------------------------------------------------------------------------
+void globals_free() {
+    for (int i = 0; i < globals.num_buckets; i++) {
+        bucket_t * bucket = &globals.buckets[i];
+        for (int j = 0; j < bucket->count; j++) {
+            free(bucket->entries[j].name);
+        }
+        free(bucket->entries);
+    }
+    free(globals.buckets);
+}
+//======================================================================================================================
+#define PROCEED 0
+#define SUCCEED 1
+#define FAILURE 2
+#define RECEDE  3
+//----------------------------------------------------------------------------------------------------------------------
 static const char * actions[4] = {
     ":proceed", // ↓ →↘
     ":succeed", // → ↑↗
@@ -297,45 +355,50 @@ static const char * actions[4] = {
 void preview(const PATTERN * PI, int depth) {
     int type = PI->type;
     if (depth >= MAX_DEPTH)     { printf("."); return; }
-    if      (type == ε)         { printf("ε()"); }
-    else if (type == σ)         { printf("\"%s\"", PI->s); }
-    else if (type == λ)         { printf("λ(\"%s\")", PI->command); }
-    else if (type == ζ)         { printf("ζ(\"%s\")", PI->N); }
-    else if (type == LEN)       { printf("LEN(%d)", PI->n); }
-    else if (type == POS)       { printf("POS(%d)", PI->n); }
-    else if (type == RPOS)      { printf("RPOS(%d)", PI->n); }
-    else if (type == ANY)       { printf("ANY(\"%s\")", PI->chars); }
-    else if (type == SPAN)      { printf("SPAN(\"%s\")", PI->chars); }
-    else if (type == BREAK)     { printf("BREAK(\"%s\")", PI->chars); }
-    else if (type == NOTANY)    { printf("NOTANY(\"%s\")", PI->chars); }
-    else if (type == ARBNO)     { printf("ARBNO("); preview(PI->AP[0], depth + 1); printf(")"); }
-    else if (type == Δ)         { printf("Δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); }
-    else if (type == δ)         { printf("δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); }
-    else if (type == π)         { printf("π("); preview(PI->AP[0], depth + 1); printf(")"); }
-    else if (type == FENCE)     { printf("FENCE("); if (PI->n > 0) preview(PI->AP[0], depth + 1); printf(")"); }
-    else if (type == nPush)     { printf("nPush()"); }
-    else if (type == nInc)      { printf("nInc()"); }
-    else if (type == nPop)      { printf("nPop()"); }
-    else if (type == Shift)     { if (PI->v)
-                                    printf("Shift(\"%s\", \"%s\")", PI->t, PI->v);
-                                  else printf("Shift(\"%s\")", PI->t);
-                                }
-    else if (type == Reduce)    { if (PI->x)
-                                    printf("Reduce(\"%s\", %d)", PI->t, PI->x);
-                                  else printf("Reduce(\"%s\")", PI->t);
-                                }
-    else if (type == Pop)       { printf("Pop(\"%s\")", PI->v); } // t
-    else if (type == ARB)       { printf("ARB"); }
-    else if (type == Π
-         ||  type == Σ
-         ||  type == ρ)         { printf("%s(", types[PI->type]);
-                                  for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
-                                      if (i) printf(" ");
-                                      preview(PI->AP[i], depth + 1);
-                                  }
-                                  printf(")");
-                                }
-    else { printf("\n%s\n", types[type]); fflush(stdout); assert(0); }
+    switch (type) {
+    case ε:         { printf("ε()"); break; }
+    case σ:         { printf("\"%s\"", PI->s); break; }
+    case λ:         { printf("λ(\"%s\")", PI->command); break; }
+    case ζ:         { printf("ζ(\"%s\")", PI->N); break; }
+    case LEN:       { printf("LEN(%d)", PI->n); break; }
+    case POS:       { printf("POS(%d)", PI->n); break; }
+    case RPOS:      { printf("RPOS(%d)", PI->n); break; }
+    case ANY:       { printf("ANY(\"%s\")", PI->chars); break; }
+    case SPAN:      { printf("SPAN(\"%s\")", PI->chars); break; }
+    case BREAK:     { printf("BREAK(\"%s\")", PI->chars); break; }
+    case NOTANY:    { printf("NOTANY(\"%s\")", PI->chars); break; }
+    case ARBNO:     { printf("ARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case Δ:         { printf("Δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
+    case δ:         { printf("δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
+    case π:         { printf("π("); preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case FENCE:     { printf("FENCE("); if (PI->n > 0) preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case nPush:     { printf("nPush()"); break; }
+    case nInc:      { printf("nInc()"); break; }
+    case nPop:      { printf("nPop()"); break; }
+    case Shift:     { if (PI->v)
+                        printf("Shift(\"%s\", \"%s\")", PI->t, PI->v);
+                      else printf("Shift(\"%s\")", PI->t);
+                      break;
+                    }
+    case Reduce:    { if (PI->x)
+                        printf("Reduce(\"%s\", %d)", PI->t, PI->x);
+                      else printf("Reduce(\"%s\")", PI->t);
+                      break;
+                    }
+    case Pop:       { printf("Pop(\"%s\")", PI->v); break; } // t
+    case ARB:       { printf("ARB"); break; }
+    case Π:
+    case Σ:
+    case ρ:         { printf("%s(", types[PI->type]);
+                        for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
+                            if (i) printf(" ");
+                            preview(PI->AP[i], depth + 1);
+                        }
+                        printf(")");
+                        break;
+                    }
+    default:        { printf("\n%s\n", types[type]); fflush(stdout); assert(0); break; }
+    }
 }
 //----------------------------------------------------------------------------------------------------------------------
 static int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
@@ -581,15 +644,16 @@ static void ζ_up_fail(state_t * z) {
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void MATCH(const PATTERN * pattern, const char * subject) {
+static void MATCH(const char * pattern_name, const char * subject) {
     heap_init();
     init_tracks();
     int a = PROCEED;
     int iteration = 0;
     num_t num; num = empty_num;
+    const PATTERN * pattern = globals_lookup(pattern_name);
     state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
     while (Z.PI) {
-        iteration++; // if (iteration > 1024) break;
+        iteration++; if (iteration > 64) break;
         animate(a, Z, iteration);
         int t = Z.PI->type;
         switch (t<<2|a) {
@@ -664,7 +728,7 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
         default:                    { printf("%s\n", t); fflush(stdout); assert(0);         break; }
         }
     }
-    heap_print(&Z);
+//  heap_print(&Z);
     fini_tracks();
     heap_fini();
 }
@@ -683,11 +747,22 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-    MATCH(&BEAD_0, "READS");
-    MATCH(&BEARDS_0, "ROOSTS");
-    MATCH(&C_0, "x+y*z");
-    MATCH(&ARB_0, "xyz");
-    MATCH(&ARBNO_0, "xyz");
-//  MATCH(&RE_0, "x|yz");
+    globals_insert("BEAD",          &BEAD_0);
+    globals_insert("BEARDS",        &BEARDS_0);
+    globals_insert("C",             &C_0);
+    globals_insert("Arb",           &ARB_0);
+    globals_insert("Arbno",         &ARBNO_0);
+    globals_insert("Quantifier",    &RE_Quantifier_0);
+    globals_insert("Item",          &RE_Item_0);
+    globals_insert("Factor",        &RE_Factor_0);
+    globals_insert("Term",          &RE_Term_0);
+    globals_insert("Expression",    &RE_Expression_0);
+    globals_insert("RegEx",         &RE_RegEx_0);
+    MATCH("BED",    "READS");
+    MATCH("BEARDS", "ROOSTS");
+    MATCH("C",      "x+y*z");
+    MATCH("Arb",    "xyz");
+    MATCH("Arbno",  "xyz");
+    MATCH("RegEx",  "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
