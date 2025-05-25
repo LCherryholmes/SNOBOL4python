@@ -4,53 +4,75 @@
 #include <printf.h>
 #include <stdbool.h>
 //======================================================================================================================
-static const char ABORT[]   = "ABORT";
-static const char ANY[]     = "ANY$";
-static const char ARBNO[]   = "ARBNO";
-static const char ARB[]     = "ARB";
-static const char BAL[]     = "BAL";
-static const char BREAKX[]  = "BREAKX";
-static const char BREAK[]   = "BREAK$";
-static const char FAIL[]    = "FAIL";
-static const char FENCE[]   = "FENCE";
-static const char LEN[]     = "LEN#";
-static const char MARBNO[]  = "MARBNO";
-static const char MARB[]    = "MARB";
-static const char NOTANY[]  = "NOTANY$";
-static const char POS[]     = "POS#";
-static const char REM[]     = "REM";
-static const char RPOS[]    = "RPOS#";
-static const char RTAB[]    = "RTAB";
-static const char SPAN[]    = "SPAN$";
-static const char SUCCESS[] = "SUCCESS";
-static const char TAB[]     = "TAB";
-static const char Shift[]   = "Shift";
-static const char Reduce[]  = "Reduce";
-static const char Pop[]     = "Pop";
-static const char nInc[]    = "nInc";
-static const char nPop[]    = "nPop";
-static const char nPush[]   = "nPush";
-static const char Δ[]       = "DELTA"; // "Δ";
-static const char Θ[]       = "Θ";
-static const char Λ[]       = "Λ";
-static const char Π[]       = "ALT"; // "Π";
-static const char Σ[]       = "SEQ"; // "Σ";
-static const char Φ[]       = "Φ";
-static const char α[]       = "α";
-static const char δ[]       = "δ";
-static const char ε[]       = "epsilon"; // "ε";
-static const char ζ[]       = "zeta"; // "ζ";
-static const char θ[]       = "θ";
-static const char λ[]       = "lambda"; // "λ";
-static const char π[]       = "π";
-static const char ρ[]       = "ρ";
-static const char σ[]       = "LIT$"; // "σ";
-static const char φ[]       = "φ";
-static const char ω[]       = "ω";
+#define ABORT   0 // ABORT
+#define ANY     1 // ANY$
+#define ARB     2 // ARB
+#define ARBNO   3 // ARBNO
+#define BAL     4 // BAL
+#define BREAK   5 // BREAK$
+#define BREAKX  6 // BREAKX
+#define FAIL    7 // FAIL
+#define FENCE   8 // FENCE
+#define LEN     9 // LEN#
+#define MARB    10 // MARB
+#define MARBNO  11 // MARBNO
+#define NOTANY  12 // NOTANY$
+#define POS     13 // POS#
+#define REM     14 // REM
+#define RPOS    15 // RPOS#
+#define RTAB    16 // RTAB
+#define SPAN    17 // SPAN$
+#define SUCCESS 18 // SUCCESS
+#define TAB     19 // TAB
+#define Shift   20 // Shift
+#define Reduce  21 // Reduce
+#define Pop     22 // Pop
+#define nInc    23 // nInc
+#define nPop    24 // nPop
+#define nPush   25 // nPush
+#define Δ       26 // DELTA // "Δ"
+#define Θ       27 // Θ
+#define Λ       28 // Λ
+#define Π       29 // ALT // "Π"
+#define Σ       30 // SEQ // "Σ"
+#define Φ       31 // Φ
+#define α       32 // α
+#define δ       33 // δ
+#define ε       34 // epsilon // "ε"
+#define ζ       35 // zeta // "ζ"
+#define θ       36 // θ
+#define λ       37 // lambda // "λ"
+#define π       38 // π
+#define ρ       39 // ρ
+#define σ       40 // LIT$ // "σ"
+#define φ       41 // φ
+#define ω       42 // ω
+//----------------------------------------------------------------------------------------------------------------------
+static const char * types[] =
+{
+    "ABORT", "ANY$", "ARB", "ARBNO",
+    "BAL", "BREAK$", "BREAKX",
+    "FAIL", "FENCE",
+    "LEN#",
+    "MARB", "MARBNO",
+    "NOTANY$",
+    "POS#",
+    "REM", "RPOS#", "RTAB",
+    "SPAN$", "SUCCESS",
+    "TAB",
+    "Shift", "Reduce", "Pop", "nInc", "nPop", "nPush",
+    "DELTA" /*Δ*/, "Θ", "Λ", "ALT" /*Π*/, "SEQ" /*Σ*/, "Φ",
+    "α", "δ", "epsilon" /*ε*/, "zeta" /*ζ*/, "θ", "lambda" /*λ*/, "π", "ρ", "LIT$" /*σ*/, "φ", "ω"
+};
+//----------------------------------------------------------------------------------------------------------------------
+#define PROCEED 0
+#define SUCCEED 1
+#define FAILURE 2
+#define RECEDE  3
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct PATTERN PATTERN;
 typedef struct PATTERN {
-    const char * type;
+    int type;
     union {
         const int       n;         /* POS, RPOS, Σ, Π */
         const char *    s;         /* σ, δ, Δ */
@@ -68,17 +90,18 @@ typedef struct PATTERN {
 //----------------------------------------------------------------------------------------------------------------------
 #include "BEAD_PATTERN.h"
 #include "BEARDS_PATTERN.h"
-#include "C_PATTERN.h"
+#include "C_PATTERN-calculate.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
-#define HEAP_SIZE_INIT 1024
-#define HEAP_SIZE_BUMP 512
-#define HEAP_HEAD_SIZE 8
-#define HEAP_ALIGN_SIZE 16
-#define HEAP_ALIGN_BITS 4
+const int HEAP_SIZE_INIT  = 32768;
+const int HEAP_SIZE_BUMP  = 32768;
+const int HEAP_HEAD_SIZE  = 8;
+const int HEAP_ALIGN_SIZE = 16;
+const int HEAP_ALIGN_BITS = 4;
 #define STAMP_STRING -1
 #define STAMP_COMMAND -2
 #define STAMP_STATE -3
+//----------------------------------------------------------------------------------------------------------------------
 typedef struct _address { int offset; } address_t;
 typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
 //----------------------------------------------------------------------------------------------------------------------
@@ -116,7 +139,7 @@ static address_t heap_alloc(short stamp, int size) {
             memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
             heap.size += HEAP_SIZE_BUMP;
         }
-        printf("heap_alloc=(0x%08.8X, %d, %d)", heap.a, heap.pos, heap.size);
+//      printf("heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.pos, heap.size);
     }
     address_t a = {heap.pos + HEAP_HEAD_SIZE};
     int * mi = (int *) &heap.a[a.offset];
@@ -125,7 +148,7 @@ static address_t heap_alloc(short stamp, int size) {
     ms[-3] = 1;
     mi[-1] = size;
     heap.pos = a.offset + size;
-    printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
+//  printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, ms[-4], ms[-3], mi[-1]);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -133,7 +156,7 @@ static address_t heap_free(address_t a) {
     if (a.offset) {
         int * mi = (int *) &heap.a[a.offset];
         short * ms = (short *) &heap.a[a.offset];
-        printf("0x%08.8X: %2d %3d %5d free\n", a.offset, ms[-4], ms[-3], mi[-1]);
+//      printf("0x%08.8X: %2d %3d %5d free\n", a.offset, ms[-4], ms[-3], mi[-1]);
         heap_decref(a);
     }
 }
@@ -213,14 +236,14 @@ static void pop_track(state_t * z) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void heap_print(state_t * z) {
-    printf("zeta: 0x%8.8X 0x%8.8X %d \"%s\"\n", z->psi, z->lambda, z->ctx, z->PI ? z->PI->type : "");
+    printf("zeta: 0x%8.8X 0x%8.8X %d %s\n\n", z->psi, z->lambda, z->ctx, z->PI ? types[z->PI->type] : "NULL");
     printf("tracks: %d\n", iTracks);
     for (int i = 0; i < iTracks; i++) {
         printf("0x%8.8X 0x%8.8X %d %s\n",
             aTracks[i].psi,
             aTracks[i].lambda,
             aTracks[i].ctx,
-            aTracks[i].PI->type
+            types[aTracks[i].PI->type]
         );
     }
     printf("\n");
@@ -236,7 +259,7 @@ static void heap_print(state_t * z) {
             case STAMP_COMMAND: { const command_t * c = (const command_t *) mem; printf("0x%8.8X, 0x%8.8X", c->string, c->command); break; }
             case STAMP_STATE: {
                 const state_t * z = (const state_t *) mem;
-                printf("0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, z->PI->type);
+                printf("0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
                 break;
             }
         }
@@ -247,7 +270,6 @@ static void heap_print(state_t * z) {
     }
 }
 //======================================================================================================================
-//----------------------------------------------------------------------------------------------------------------------
 typedef struct _num { int iN; int * aN; } num_t;
 static num_t empty_num = {0, NULL};
 //----------------------------------------------------------------------------------------------------------------------
@@ -264,11 +286,6 @@ static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
                                           }
                                         }
 //======================================================================================================================
-#define PROCEED 0
-#define SUCCEED 1
-#define FAILURE 2
-#define RECEDE 3
-//----------------------------------------------------------------------------------------------------------------------
 static const char * actions[4] = {
     ":proceed", // ↓ →↘
     ":succeed", // → ↑↗
@@ -278,7 +295,7 @@ static const char * actions[4] = {
 //----------------------------------------------------------------------------------------------------------------------
 #define MAX_DEPTH 3
 void preview(const PATTERN * PI, int depth) {
-    const char * type = PI->type;
+    int type = PI->type;
     if (depth >= MAX_DEPTH)     { printf("."); return; }
     if      (type == ε)         { printf("ε()"); }
     else if (type == σ)         { printf("\"%s\"", PI->s); }
@@ -311,14 +328,14 @@ void preview(const PATTERN * PI, int depth) {
     else if (type == ARB)       { printf("ARB"); }
     else if (type == Π
          ||  type == Σ
-         ||  type == ρ)         { printf("%s(", PI->type);
+         ||  type == ρ)         { printf("%s(", types[PI->type]);
                                   for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
                                       if (i) printf(" ");
                                       preview(PI->AP[i], depth + 1);
                                   }
                                   printf(")");
                                 }
-    else { printf("\n%s\n", type); fflush(stdout); assert(0); }
+    else { printf("\n%s\n", types[type]); fflush(stdout); assert(0); }
 }
 //----------------------------------------------------------------------------------------------------------------------
 static int min(int x1, int x2) { if (x1 < x2) return x1; else return x2; }
@@ -347,7 +364,7 @@ static void animate(int action, state_t Z, int iteration) {
     head[i++] = '"';
     head[i++] = 0;
 //  --------------------------------------------------------------------------------------------------------------------
-    char status[20]; sprintf(status, "%s/%d", Z.PI->type, Z.ctx + 1);
+    char status[20]; sprintf(status, "%s/%d", types[Z.PI->type], Z.ctx + 1);
     printf("%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
         iteration,
         iTracks,
@@ -515,7 +532,7 @@ static inline bool Π_lambda(state_t * z) {
     return true;
 }
 //======================================================================================================================
-static void ζ_down_context(state_t * z) {
+static inline void ζ_down_context(state_t * z) {
     z->psi = push_state(z->psi, z);
     z->sigma = z->SIGMA;
     z->delta = z->DELTA;
@@ -523,7 +540,7 @@ static void ζ_down_context(state_t * z) {
     z->ctx = 0;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void ζ_down_select(state_t * z, const PATTERN * PI) {
+static inline void ζ_down_select(state_t * z, const PATTERN * PI) {
     z->psi = push_state(z->psi, z);
     z->sigma = z->SIGMA;
     z->delta = z->DELTA;
@@ -531,9 +548,9 @@ static void ζ_down_select(state_t * z, const PATTERN * PI) {
     z->ctx = 0;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void ζ_over(state_t * z, const PATTERN * PI) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = PI; }
-static void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
-static void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
+static inline void ζ_over(state_t * z, const PATTERN * PI) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = PI; }
+static inline void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
+static inline void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_success(state_t * z) {
     if (z->psi.offset) {
@@ -572,87 +589,80 @@ static void MATCH(const PATTERN * pattern, const char * subject) {
     num_t num; num = empty_num;
     state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
     while (Z.PI) {
-        iteration++; // if (iteration > 32) break;
+        iteration++; // if (iteration > 1024) break;
         animate(a, Z, iteration);
-        const char * t = Z.PI->type;
+        int t = Z.PI->type;
+        switch (t<<2|a) {
 //      ----------------------------------------------------------------------------------------------------------------
-        if      (t == Π       && a == PROCEED)   if (Z.ctx < Z.PI->n)
-                                                    { a = PROCEED; push_track(Z);   ζ_down_context(&Z); }
-                                               else { a = RECEDE;  pop_track(&Z);   }
-        else if (t == Π       && a == SUCCEED)      { a = SUCCEED;                  ζ_up_success(&Z); }
-        else if (t == Π       && a == FAILURE)      { a = PROCEED;                  ζ_stay_next(&Z); }
-        else if (t == Π       && a == RECEDE)       { a = PROCEED;                  ζ_stay_next(&Z); }
+        case Π<<2|PROCEED:       if (Z.ctx < Z.PI->n)
+                                    { a = PROCEED; push_track(Z);   ζ_down_context(&Z); break; }
+                               else { a = RECEDE;  pop_track(&Z);                       break; }
+        case Π<<2|SUCCEED:          { a = SUCCEED;                  ζ_up_success(&Z);   break; }
+        case Π<<2|FAILURE:          { a = PROCEED;                  ζ_stay_next(&Z);    break; }
+        case Π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == Σ       && a == PROCEED)   if (Z.ctx < Z.PI->n)
-                                                    { a = PROCEED;                  ζ_down_context(&Z); }
-                                               else { a = SUCCEED;                  ζ_up_success(&Z); }
-        else if (t == Σ       && a == SUCCEED)      { a = PROCEED;                  ζ_move_next(&Z); }
-        else if (t == Σ       && a == FAILURE)      { a = RECEDE;  pop_track(&Z);   }
-        else if (t == Σ       && a == RECEDE)       { assert(0); }
+        case Σ<<2|PROCEED:       if (Z.ctx < Z.PI->n)
+                                    { a = PROCEED;                  ζ_down_context(&Z); break; }
+                               else { a = SUCCEED;                  ζ_up_success(&Z);   break; }
+        case Σ<<2|SUCCEED:          { a = PROCEED;                  ζ_move_next(&Z);    break; }
+        case Σ<<2|FAILURE:          { a = RECEDE;  pop_track(&Z);                       break; }
+        case Σ<<2|RECEDE:           { assert(0); }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == ARBNO   && a == PROCEED)   if (Z.ctx == 0)
-                                                    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
-                                               else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); }
-        else if (t == ARBNO   && a == SUCCEED)      { a = SUCCEED;                  ζ_up_track_success(&Z); }
-        else if (t == ARBNO   && a == FAILURE)      { a = RECEDE;  pop_track(&Z);   }
-        else if (t == ARBNO   && a == RECEDE)       { a = PROCEED;                  ζ_move_next(&Z); }
+        case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
+                                    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
+                               else { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); break; }
+        case ARBNO<<2|SUCCEED:      { a = SUCCEED;                  ζ_up_track_success(&Z); break; }
+        case ARBNO<<2|FAILURE:      { a = RECEDE;  pop_track(&Z);                       break; }
+        case ARBNO<<2|RECEDE:       { a = PROCEED;                  ζ_move_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == ARB     && a == PROCEED)   if (Π_ARB(&Z))
-                                                    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
-                                               else { a = RECEDE;  pop_track(&Z);   }
-        else if (t == ARB     && a == RECEDE)       { a = PROCEED;                  ζ_stay_next(&Z); }
+        case ARB<<2|PROCEED:     if (Π_ARB(&Z))
+                                    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
+                               else { a = RECEDE;  pop_track(&Z);                       break; }
+        case ARB<<2|RECEDE:         { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == SUCCESS && a == PROCEED)      { a = SUCCEED; push_track(Z);   ζ_up_success(&Z); }
-        else if (t == SUCCESS && a == RECEDE)       { a = PROCEED;                  ζ_stay_next(&Z); }
+        case SUCCESS<<2|PROCEED:    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
+        case SUCCESS<<2|RECEDE:     { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == π       && a == PROCEED)      assert(0);
-        else if (t == ρ       && a == PROCEED)      assert(0);
-        else if (t == FENCE   && a == PROCEED)      assert(0);
+        case π<<2|PROCEED:          { assert(0); break; }
+        case ρ<<2|PROCEED:          { assert(0); break; }
+        case FENCE<<2|PROCEED:      { assert(0); break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        else if (t == σ       && a == PROCEED)   if (Π_LITERAL(&Z, Z.PI->s))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == ANY     && a == PROCEED)   if (Π_ANY(&Z, Z.PI->chars))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == NOTANY  && a == PROCEED)   if (Π_NOTANY(&Z, Z.PI->chars))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == SPAN    && a == PROCEED)   if (Π_SPAN(&Z, Z.PI->chars))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == BREAK   && a == PROCEED)   if (Π_BREAK(&Z, Z.PI->chars))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == POS     && a == PROCEED)   if (Π_POS(&Z))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == RPOS    && a == PROCEED)   if (Π_RPOS(&Z))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == LEN     && a == PROCEED)   if (Π_LEN(&Z))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == α       && a == PROCEED)   if (Π_alpha(&Z))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == ω       && a == PROCEED)   if (Π_omega(&Z))
-                                                    { a = SUCCEED; ζ_up_success(&Z); }
-                                               else { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == ζ       && a == PROCEED)      { a = PROCEED; ζ_over(&Z, &C_3); }
-        else if (t == Δ       && a == PROCEED)      { a = PROCEED; Π_DELTA(&Z); ζ_over(&Z, Z.PI->AP[0]); }
-        else if (t == δ       && a == PROCEED)      { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]); }
-        else if (t == ε       && a == PROCEED)      { a = SUCCEED; ζ_up_success(&Z); }
-        else if (t == λ       && a == PROCEED)      { a = SUCCEED; Π_lambda(&Z); ζ_up_success(&Z); }
-        else if (t == FAIL    && a == PROCEED)      { a = FAILURE; ζ_up_fail(&Z); }
-        else if (t == ABORT   && a == PROCEED)      { a = FAILURE; Z.PI = NULL; }
-        else if (t == nPush   && a == PROCEED)      { a = SUCCEED; Π_nPush(&Z); ζ_up_success(&Z); }
-        else if (t == nInc    && a == PROCEED)      { a = SUCCEED; Π_nInc(&Z); ζ_up_success(&Z); }
-        else if (t == nPop    && a == PROCEED)      { a = SUCCEED; Π_nPop(&Z); ζ_up_success(&Z); }
-        else if (t == Shift   && a == PROCEED)      { a = SUCCEED; Π_Shift(&Z); ζ_up_success(&Z); }
-        else if (t == Reduce  && a == PROCEED)      { a = SUCCEED; Π_Reduce(&Z); ζ_up_success(&Z); }
-        else if (t == Pop     && a == PROCEED)      { a = SUCCEED; Π_Pop(&Z); ζ_up_success(&Z); }
-        else { printf("%s\n", t); fflush(stdout); assert(0); }
+        case σ<<2|PROCEED:          if (Π_LITERAL(&Z, Z.PI->s))     { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case ANY<<2|PROCEED:        if (Π_ANY(&Z, Z.PI->chars))     { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case NOTANY<<2|PROCEED:     if (Π_NOTANY(&Z, Z.PI->chars))  { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case SPAN<<2|PROCEED:       if (Π_SPAN(&Z, Z.PI->chars))    { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case BREAK<<2|PROCEED:      if (Π_BREAK(&Z, Z.PI->chars))   { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case POS<<2|PROCEED:        if (Π_POS(&Z))                  { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case RPOS<<2|PROCEED:       if (Π_RPOS(&Z))                 { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case LEN<<2|PROCEED:        if (Π_LEN(&Z))                  { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case α<<2|PROCEED:          if (Π_alpha(&Z))                { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+        case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCEED; ζ_up_success(&Z);    break; }
+                                    else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
+//      ----------------------------------------------------------------------------------------------------------------
+        case ζ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, &C_3);                        break; }
+        case Δ<<2|PROCEED:          { a = PROCEED; Π_DELTA(&Z); ζ_over(&Z, Z.PI->AP[0]);    break; }
+        case δ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]);                 break; }
+        case ε<<2|PROCEED:          { a = SUCCEED; ζ_up_success(&Z);                        break; }
+        case λ<<2|PROCEED:          { a = SUCCEED; Π_lambda(&Z); ζ_up_success(&Z);          break; }
+        case FAIL<<2|PROCEED:       { a = FAILURE; ζ_up_fail(&Z);                           break; }
+        case ABORT<<2|PROCEED:      { a = FAILURE; Z.PI = NULL;                             break; }
+        case nPush<<2|PROCEED:      { a = SUCCEED; Π_nPush(&Z); ζ_up_success(&Z);           break; }
+        case nInc<<2|PROCEED:       { a = SUCCEED; Π_nInc(&Z); ζ_up_success(&Z);            break; }
+        case nPop<<2|PROCEED:       { a = SUCCEED; Π_nPop(&Z); ζ_up_success(&Z);            break; }
+        case Shift<<2|PROCEED:      { a = SUCCEED; Π_Shift(&Z); ζ_up_success(&Z);           break; }
+        case Reduce<<2|PROCEED:     { a = SUCCEED; Π_Reduce(&Z); ζ_up_success(&Z);          break; }
+        case Pop<<2|PROCEED:        { a = SUCCEED; Π_Pop(&Z); ζ_up_success(&Z);             break; }
+        default:                    { printf("%s\n", t); fflush(stdout); assert(0);         break; }
+        }
     }
     heap_print(&Z);
     fini_tracks();
@@ -673,11 +683,11 @@ static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
-//  MATCH(&BEAD_0, "READS");
+    MATCH(&BEAD_0, "READS");
     MATCH(&BEARDS_0, "ROOSTS");
-//  MATCH(&C_0, "x+y*z");
-//  MATCH(&ARB_0, "xyz");
-//  MATCH(&ARBNO_0, "xyz");
+    MATCH(&C_0, "x+y*z");
+    MATCH(&ARB_0, "xyz");
+    MATCH(&ARBNO_0, "xyz");
 //  MATCH(&RE_0, "x|yz");
 }
 //----------------------------------------------------------------------------------------------------------------------
