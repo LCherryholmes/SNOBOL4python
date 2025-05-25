@@ -3,7 +3,7 @@
 from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
-from SNOBOL4python import RTAB, SPAN, SUCCESS, TAB
+from SNOBOL4python import RTAB, SPAN, SUCCEED, TAB
 from SNOBOL4python import PATTERN, STRING, NULL
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
@@ -43,7 +43,6 @@ X = ( E + σ('+') + ζ("X") + λ("S.append(S.pop() + S.pop())")
 C = POS(0) + λ("S = []") + X + λ("print(S.pop())") + RPOS(0)
 _bootstrap("x+y*z", C, "C")
 print()
-"""
 #-----------------------------------------------------------------------------------------------------------------------
 RE_Quantifier   =   ( σ('*') + Shift('*')
                     | σ('+') + Shift('+')
@@ -69,5 +68,12 @@ _bootstrap("", RE_Factor, "RE_Factor")
 _bootstrap("", RE_Term, "RE_Term")
 _bootstrap("", RE_Expression, "RE_Expression")
 _bootstrap("", RE_RegEx, "RE_RegEx")
+print()
+"""
+#-----------------------------------------------------------------------------------------------------------------------
+P = FENCE(TAB(lambda: N + 1) + Θ("OUTPUT") + Θ("N") | ABORT())
+S = POS(0) + Θ("N") + SUCCEED() + ζ("P") + FAIL()
+_bootstrap("", P, "P")
+_bootstrap("", S, "S")
 print()
 #-----------------------------------------------------------------------------------------------------------------------

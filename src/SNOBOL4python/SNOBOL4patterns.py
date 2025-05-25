@@ -87,9 +87,9 @@ class ABORT(PATTERN):
     def __repr__(self): return "ABORT()"
     def γ(self): raise F("ABORT()")
 #----------------------------------------------------------------------------------------------------------------------
-class SUCCESS(PATTERN):
+class SUCCEED(PATTERN):
     def __init__(self): super().__init__()
-    def __repr__(self): return "SUCCESS()"
+    def __repr__(self): return "SUCCEED()"
     def γ(self):
         global Ϣ
         while True:

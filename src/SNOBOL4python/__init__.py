@@ -3,7 +3,7 @@ from .SNOBOL4patterns  import GLOBALS, TRACE
 from .SNOBOL4patterns  import ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from .SNOBOL4patterns  import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from .SNOBOL4patterns  import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
-from .SNOBOL4patterns  import RTAB, SPAN, SUCCESS, TAB
+from .SNOBOL4patterns  import RTAB, SPAN, SUCCEED, TAB
 from .SNOBOL4functions import ALPHABET, DIGITS, UCASE, LCASE
 from .SNOBOL4functions import DEFINE, REPLACE, SUBSTITUTE
 from .SNOBOL4patterns  import nPush, nInc, nPop, Shift, Reduce, Pop
@@ -23,7 +23,7 @@ __all__ = [
             "ε", "σ", "π", "λ", "Λ", "ζ", "θ", "Θ", "φ", "Φ", "α", "ω",
             "ABORT", "ANY", "ARB", "ARBNO", "BAL", "BREAK", "BREAKX", "FAIL",
             "FENCE", "LEN", "MARB", "MARBNO", "NOTANY", "POS", "REM", "RPOS",
-            "RTAB", "SPAN", "SUCCESS", "TAB",
+            "RTAB", "SPAN", "SUCCEED", "TAB",
             "ALPHABET", "DIGITS", "UCASE", "LCASE", "NULL",
             "DEFINE", "REPLACE", "SUBSTITUTE"
             "nPush", "nInc", "nPop", "Shift", "Reduce", "Pop",
