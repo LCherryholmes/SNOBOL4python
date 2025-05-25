@@ -80,7 +80,8 @@ typedef struct PATTERN {
 //----------------------------------------------------------------------------------------------------------------------
 #include "BEAD_PATTERN.h"
 #include "BEARDS_PATTERN.h"
-#include "C_PATTERN-calculate.h"
+#include "C_PATTERN.h"
+#include "CALC_PATTERN.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
 // Heap memory management
@@ -585,9 +586,9 @@ static inline bool Π_theta(state_t * z) {
 //----------------------------------------------------------------------------------------------------------------------
 static inline bool Π_DELTA(state_t * z) {
     char command_text[128];
-    if (strcmp(z->PI->N, "OUTPUT") == 0)
+    if (strcmp(z->PI->t, "OUTPUT") == 0)
         sprintf(command_text, "printf(\"%%s\", subject[%d:%d]);", z->DELTA, z->delta);
-    else sprintf(command_text, "%s = subject[%d:%d];", z->PI->N, z->DELTA, z->delta);
+    else sprintf(command_text, "%s = subject[%d:%d];", z->PI->t, z->DELTA, z->delta);
     z->lambda = push_command(z->lambda, command_text);
     return true;
 }
@@ -688,6 +689,10 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                else { a = RECEDE;  pop_track(&Z);                       break; }
         case ARB<<2|RECEDE:         { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
+        case Δ<<2|PROCEED:          { a = PROCEED;                  ζ_down_select(&Z, Z.PI->AP[0]); break; }
+        case Δ<<2|SUCCEED:          { a = SUCCEED; Π_DELTA(&Z);     ζ_up_success(&Z);   break; }
+        case Δ<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);      break; }
+//      ----------------------------------------------------------------------------------------------------------------
         case SUCCESS<<2|PROCEED:    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
         case SUCCESS<<2|RECEDE:     { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
@@ -717,7 +722,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ζ<<2|PROCEED:          { a = PROCEED; ζ_over_dynamic(&Z);                      break; }
-        case Δ<<2|PROCEED:          { a = PROCEED; Π_DELTA(&Z); ζ_over(&Z, Z.PI->AP[0]);    break; }
+//      ----------------------------------------------------------------------------------------------------------------
         case δ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]);                 break; }
         case ε<<2|PROCEED:          { a = SUCCEED; ζ_up_success(&Z);                        break; }
         case λ<<2|PROCEED:          { a = SUCCEED; Π_lambda(&Z); ζ_up_success(&Z);          break; }
@@ -732,7 +737,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
         default:                    { printf("%s\n", t); fflush(stdout); assert(0);         break; }
         }
     }
-    if (false) heap_print(&Z);
+    if (true) heap_print(&Z);
     fini_tracks();
     heap_fini();
 }
@@ -754,6 +759,8 @@ int main() {
     globals_insert("BEARDS",        &BEARDS_0);
     globals_insert("C",             &C_0);
     globals_insert("X",             &C_3);
+    globals_insert("CALC",          &CALC_0);
+    globals_insert("EXPR",          &CALC_3);
     globals_insert("Arb",           &ARB_0);
     globals_insert("Arbno",         &ARBNO_0);
     globals_insert("Quantifier",    &RE_Quantifier_0);
@@ -764,10 +771,11 @@ int main() {
     globals_insert("RegEx",         &RE_RegEx_0);
 //  MATCH("BEAD",   "READS");
 //  MATCH("BEARDS", "ROOSTS");
-    MATCH("C",      "x+y*z");
+//  MATCH("C",      "x+y*z");
+//  MATCH("CALC",   "x+y*z");
 //  MATCH("Arb",    "xyz");
 //  MATCH("Arbno",  "xyz");
-//  MATCH("RegEx",  "x|yz");
+    MATCH("RegEx",  "x|yz");
     globals_fini();
 }
 //----------------------------------------------------------------------------------------------------------------------
