@@ -593,12 +593,16 @@ static inline bool Π_DELTA(state_t * z) {
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
+static inline bool Π_delta(state_t * z) {
+    return true;
+}
+//----------------------------------------------------------------------------------------------------------------------
 static inline bool Π_lambda(state_t * z) {
     z->lambda = push_command(z->lambda, z->PI->command);
     return true;
 }
 //======================================================================================================================
-static inline void ζ_down_context(state_t * z) {
+static inline void ζ_down(state_t * z) {
     z->psi = push_state(z->psi, z);
     z->sigma = z->SIGMA;
     z->delta = z->DELTA;
@@ -664,18 +668,34 @@ static void MATCH(const char * pattern_name, const char * subject) {
         switch (t<<2|a) {
 //      ----------------------------------------------------------------------------------------------------------------
         case Π<<2|PROCEED:       if (Z.ctx < Z.PI->n)
-                                    { a = PROCEED; push_track(Z);   ζ_down_context(&Z); break; }
+                                    { a = PROCEED; push_track(Z);   ζ_down(&Z);         break; }
                                else { a = RECEDE;  pop_track(&Z);                       break; }
         case Π<<2|SUCCEED:          { a = SUCCEED;                  ζ_up_success(&Z);   break; }
         case Π<<2|FAILURE:          { a = PROCEED;                  ζ_stay_next(&Z);    break; }
         case Π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case Σ<<2|PROCEED:       if (Z.ctx < Z.PI->n)
-                                    { a = PROCEED;                  ζ_down_context(&Z); break; }
+                                    { a = PROCEED;                  ζ_down(&Z);         break; }
                                else { a = SUCCEED;                  ζ_up_success(&Z);   break; }
         case Σ<<2|SUCCEED:          { a = PROCEED;                  ζ_move_next(&Z);    break; }
         case Σ<<2|FAILURE:          { a = RECEDE;  pop_track(&Z);                       break; }
         case Σ<<2|RECEDE:           { assert(0); }
+//      ----------------------------------------------------------------------------------------------------------------
+        case ρ<<2|PROCEED:       if (Z.ctx < Z.PI->n)
+                                    { a = PROCEED;                  ζ_down(&Z);         break; }
+                               else { a = SUCCEED;                  ζ_up_success(&Z);   break; }
+        case ρ<<2|SUCCEED:          { a = PROCEED;                  ζ_stay_next(&Z);    break; }
+        case ρ<<2|FAILURE:          { a = RECEDE;  pop_track(&Z);                       break; }
+        case ρ<<2|RECEDE:           { assert(0); }
+//      ----------------------------------------------------------------------------------------------------------------
+        case π<<2|PROCEED:       if (Z.ctx == 0)
+                                    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
+                            else if (Z.ctx == 1)
+                                    { a = PROCEED; push_track(Z);   ζ_down_select(&Z, Z.PI->AP[0]); break; }
+                               else { a = RECEDE;  pop_track(&Z);                       break; }
+        case π<<2|SUCCEED:          { a = SUCCEED;                  ζ_up_success(&Z);   break; }
+        case π<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);      break; }
+        case π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);    break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
                                     { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
@@ -693,11 +713,14 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case Δ<<2|SUCCEED:          { a = SUCCEED; Π_DELTA(&Z);     ζ_up_success(&Z);   break; }
         case Δ<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);      break; }
 //      ----------------------------------------------------------------------------------------------------------------
+        case δ<<2|PROCEED:          { a = PROCEED;                  ζ_down_select(&Z, Z.PI->AP[0]); break; }
+        case δ<<2|SUCCEED:          { a = SUCCEED; Π_delta(&Z);     ζ_up_success(&Z);   break; }
+        case δ<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);      break; }
+//      ----------------------------------------------------------------------------------------------------------------
         case SUCCESS<<2|PROCEED:    { a = SUCCEED; push_track(Z);   ζ_up_success(&Z);   break; }
         case SUCCESS<<2|RECEDE:     { a = PROCEED;                  ζ_stay_next(&Z);    break; }
+        case FAIL<<2|PROCEED:       { a = FAILURE; ζ_up_fail(&Z);                       break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case π<<2|PROCEED:          { assert(0); break; }
-        case ρ<<2|PROCEED:          { assert(0); break; }
         case FENCE<<2|PROCEED:      { assert(0); break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case σ<<2|PROCEED:          if (Π_LITERAL(&Z, Z.PI->s))     { a = SUCCEED; ζ_up_success(&Z);    break; }
@@ -721,12 +744,9 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCEED; ζ_up_success(&Z);    break; }
                                     else                            { a = FAILURE; ζ_up_fail(&Z);       break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case ζ<<2|PROCEED:          { a = PROCEED; ζ_over_dynamic(&Z);                      break; }
-//      ----------------------------------------------------------------------------------------------------------------
-        case δ<<2|PROCEED:          { a = PROCEED; ζ_over(&Z, Z.PI->AP[0]);                 break; }
         case ε<<2|PROCEED:          { a = SUCCEED; ζ_up_success(&Z);                        break; }
+        case ζ<<2|PROCEED:          { a = PROCEED; ζ_over_dynamic(&Z);                      break; }
         case λ<<2|PROCEED:          { a = SUCCEED; Π_lambda(&Z); ζ_up_success(&Z);          break; }
-        case FAIL<<2|PROCEED:       { a = FAILURE; ζ_up_fail(&Z);                           break; }
         case ABORT<<2|PROCEED:      { a = FAILURE; Z.PI = NULL;                             break; }
         case nPush<<2|PROCEED:      { a = SUCCEED; Π_nPush(&Z); ζ_up_success(&Z);           break; }
         case nInc<<2|PROCEED:       { a = SUCCEED; Π_nInc(&Z); ζ_up_success(&Z);            break; }
@@ -763,19 +783,19 @@ int main() {
     globals_insert("EXPR",          &CALC_3);
     globals_insert("Arb",           &ARB_0);
     globals_insert("Arbno",         &ARBNO_0);
-    globals_insert("Quantifier",    &RE_Quantifier_0);
-    globals_insert("Item",          &RE_Item_0);
-    globals_insert("Factor",        &RE_Factor_0);
-    globals_insert("Term",          &RE_Term_0);
-    globals_insert("Expression",    &RE_Expression_0);
-    globals_insert("RegEx",         &RE_RegEx_0);
-//  MATCH("BEAD",   "READS");
-//  MATCH("BEARDS", "ROOSTS");
-//  MATCH("C",      "x+y*z");
-//  MATCH("CALC",   "x+y*z");
-//  MATCH("Arb",    "xyz");
-//  MATCH("Arbno",  "xyz");
-    MATCH("RegEx",  "x|yz");
+    globals_insert("RE_Quantifier", &RE_Quantifier_0);
+    globals_insert("RE_Item",       &RE_Item_0);
+    globals_insert("RE_Factor",     &RE_Factor_0);
+    globals_insert("RE_Term",       &RE_Term_0);
+    globals_insert("RE_Expression", &RE_Expression_0);
+    globals_insert("RE_RegEx",      &RE_RegEx_0);
+//  MATCH("BEAD",       "READS");
+//  MATCH("BEARDS",     "ROOSTS");
+//  MATCH("C",          "x+y*z");
+//  MATCH("CALC",       "x+y*z");
+//  MATCH("Arb",        "xyz");
+//  MATCH("Arbno",      "xyz");
+    MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }
 //----------------------------------------------------------------------------------------------------------------------
