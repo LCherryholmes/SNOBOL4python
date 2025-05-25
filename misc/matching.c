@@ -214,7 +214,7 @@ static state_t * aTracks = NULL;
 static void Ω_init() { iTracks = 0; aTracks = NULL; }
 static void Ω_fini() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
 static state_t * Ω_top() { if (iTracks > 0) return &aTracks[iTracks - 1]; else return NULL; }
-static void Ω_push(state_t Z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = Z; }
+static void Ω_push(state_t * z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = *z; }
 static void Ω_pop(state_t * z) {
     if (iTracks > 0) {
         state_t state = aTracks[iTracks - 1];
@@ -670,7 +670,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
         switch (t<<2|a) {
 //      ----------------------------------------------------------------------------------------------------------------
         case Π<<2|PROCEED:       if (Z.ctx < Z.PI->n)
-                                    { a = PROCEED; Ω_push(Z);       ζ_down(&Z);                     break; }
+                                    { a = PROCEED; Ω_push(&Z);      ζ_down(&Z);                     break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case Π<<2|SUCCEED:          { a = SUCCEED;                  ζ_up(&Z);                       break; }
         case Π<<2|FAILURE:          { a = PROCEED;                  ζ_stay_next(&Z);                break; }
@@ -689,27 +689,27 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ρ<<2|FAILURE:          { a = RECEDE;  Ω_pop(&Z);                                       break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case π<<2|PROCEED:       if (Z.ctx == 0)
-                                    { a = SUCCEED; Ω_push(Z);       ζ_up(&Z);                       break; }
+                                    { a = SUCCEED; Ω_push(&Z);      ζ_up(&Z);                       break; }
                             else if (Z.ctx == 1)
-                                    { a = PROCEED; Ω_push(Z);       ζ_down_single(&Z);              break; }
+                                    { a = PROCEED; Ω_push(&Z);      ζ_down_single(&Z);              break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case π<<2|SUCCEED:          { a = SUCCEED;                  ζ_up(&Z);                       break; }
         case π<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
         case π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);                break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
-                                    { a = SUCCEED; Ω_push(Z);       ζ_up(&Z);                       break; }
-                               else { a = PROCEED; Ω_push(Z);       ζ_down_single(&Z);              break; }
+                                    { a = SUCCEED; Ω_push(&Z);      ζ_up(&Z);                       break; }
+                               else { a = PROCEED; Ω_push(&Z);      ζ_down_single(&Z);              break; }
         case ARBNO<<2|SUCCEED:      { a = SUCCEED;                  ζ_up_track(&Z);                 break; }
         case ARBNO<<2|FAILURE:      { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case ARBNO<<2|RECEDE:       { a = PROCEED;                  ζ_move_next(&Z);                break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ARB<<2|PROCEED:     if (Π_ARB(&Z))
-                                    { a = SUCCEED; Ω_push(Z);       ζ_up(&Z);                       break; }
+                                    { a = SUCCEED; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case ARB<<2|RECEDE:         { a = PROCEED;                  ζ_stay_next(&Z);                break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case SUCCESS<<2|PROCEED:    { a = SUCCEED; Ω_push(Z);       ζ_up(&Z);                       break; }
+        case SUCCESS<<2|PROCEED:    { a = SUCCEED; Ω_push(&Z);      ζ_up(&Z);                       break; }
         case SUCCESS<<2|RECEDE:     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
         case FAIL<<2|PROCEED:       { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
