@@ -12,6 +12,7 @@ __pycache__/
 dist/
 build/
 misc/*-out.*
+misc/SNOBOL4c
 misc/matching
 tests/*.txt
 tests/*.lst

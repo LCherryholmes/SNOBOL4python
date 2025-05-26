@@ -376,25 +376,42 @@ static const char * actions[4] = {
 //----------------------------------------------------------------------------------------------------------------------
 #define MAX_DEPTH 3
 void preview(const PATTERN * PI, int depth) {
+    if (depth >= MAX_DEPTH) { printf("."); return; }
     int type = PI->type;
-    if (depth >= MAX_DEPTH)     { printf("."); return; }
     switch (type) {
     case ε:         { printf("ε()"); break; }
+    case α:         { printf("α()"); break; }
+    case ω:         { printf("ω()"); break; }
     case σ:         { printf("\"%s\"", PI->s); break; }
+    case Λ:         { printf("Λ(\"%s\")", PI->command); break; }
     case λ:         { printf("λ(\"%s\")", PI->command); break; }
     case ζ:         { printf("ζ(\"%s\")", PI->N); break; }
-    case LEN:       { printf("LEN(%d)", PI->n); break; }
+    case Θ:         { printf("Θ(\"%s\")", PI->N); break; }
+    case θ:         { printf("θ(\"%s\")", PI->N); break; }
+    case Φ:         { printf("Φ(\"%s\")", PI->N); break; }
+    case φ:         { printf("φ(\"%s\")", PI->N); break; }
     case POS:       { printf("POS(%d)", PI->n); break; }
+    case TAB:       { printf("TAB(%d)", PI->n); break; }
+    case LEN:       { printf("LEN(%d)", PI->n); break; }
+    case RTAB:      { printf("RTAB(%d)", PI->n); break; }
     case RPOS:      { printf("RPOS(%d)", PI->n); break; }
     case ANY:       { printf("ANY(\"%s\")", PI->chars); break; }
     case SPAN:      { printf("SPAN(\"%s\")", PI->chars); break; }
     case BREAK:     { printf("BREAK(\"%s\")", PI->chars); break; }
+    case BREAKX:    { printf("BREAKX(\"%s\")", PI->chars); break; }
     case NOTANY:    { printf("NOTANY(\"%s\")", PI->chars); break; }
     case ARBNO:     { printf("ARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case MARBNO:    { printf("MARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
     case Δ:         { printf("Δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
     case δ:         { printf("δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
     case π:         { printf("π("); preview(PI->AP[0], depth + 1); printf(")"); break; }
-    case FENCE:     { printf("FENCE("); if (PI->n > 0) preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case FENCE:     { if (PI->n > 0) {
+                          printf("FENCE(");
+                          preview(PI->AP[0], depth + 1);
+                          printf(")");
+                      } else printf("FENCE");
+                      break;
+                    }
     case nPush:     { printf("nPush()"); break; }
     case nInc:      { printf("nInc()"); break; }
     case nPop:      { printf("nPop()"); break; }
@@ -410,6 +427,12 @@ void preview(const PATTERN * PI, int depth) {
                     }
     case Pop:       { printf("Pop(\"%s\")", PI->v); break; } // t
     case ARB:       { printf("ARB"); break; }
+    case BAL:       { printf("BAL"); break; }
+    case REM:       { printf("REM"); break; }
+    case FAIL:      { printf("FAIL"); break; }
+    case MARB:      { printf("MARB"); break; }
+    case ABORT:     { printf("ABORT"); break; }
+    case SUCCEED:   { printf("SUCCEED"); break; }
     case Π:
     case Σ:
     case ρ:         { printf("%s(", types[PI->type]);
