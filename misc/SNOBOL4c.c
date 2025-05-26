@@ -8,9 +8,10 @@
 //----------------------------------------------------------------------------------------------------------------------
 #define DEBUG_HEAP false
 #define DEBUG_MATCH false
+#define DEBUG_COLLECT false
 //======================================================================================================================
-// PATTERN data type
-//----------------------------------------------------------------------------------------------------------------------
+// PATTERN data type ===================================================================================================
+//======================================================================================================================
 #define ABORT   0 // ABORT
 #define ANY     1 // ANY$
 #define ARB     2 // ARB
@@ -88,7 +89,8 @@ typedef struct PATTERN {
 #include "TESTS_PATTERN.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
-// Heap memory management
+// Heap memory management ==============================================================================================
+//======================================================================================================================
 const int HEAP_SIZE_INIT  = 32768;
 const int HEAP_SIZE_BUMP  = 32768;
 const int HEAP_HEAD_SIZE  = 4;
@@ -150,7 +152,7 @@ static inline const char * CC(address_t address) { return (const char *) (heap.a
 static inline command_t * C(address_t address)  { return (command_t *) (heap.a + address.offset); }
 static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
 static address_t push_command(address_t lambda, const char * string) {
-    address_t s = alloc_string(string);
+    address_t s = alloc_string(string); // addresses always point backward
     address_t LAMBDA = alloc_command();
     C(LAMBDA)->string = s;
     C(LAMBDA)->lambda = lambda;
@@ -196,16 +198,16 @@ static address_t pop_state(address_t psi) {
     return PSI;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static int iTracks = 0;
-static state_t * aTracks = NULL;
-static void Ω_init() { iTracks = 0; aTracks = NULL; }
-static void Ω_fini() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
-static inline state_t * Ω_top() { if (iTracks > 0) return &aTracks[iTracks - 1]; else return NULL; }
-static void Ω_push(state_t * z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = *z; }
+static int num_tracks = 0;
+static state_t * tracks = NULL;
+static void Ω_init() { num_tracks = 0; tracks = NULL; }
+static void Ω_fini() { num_tracks = 0; if (tracks) free(tracks); tracks = NULL; }
+static inline state_t * Ω_top() { if (num_tracks > 0) return &tracks[num_tracks - 1]; else return NULL; }
+static void Ω_push(state_t * z) { tracks = realloc(tracks, ++num_tracks * sizeof(state_t)); tracks[num_tracks - 1] = *z; }
 static void Ω_pop(state_t * z) {
-    if (iTracks > 0) {
-        state_t state = aTracks[iTracks - 1];
-        aTracks = realloc(aTracks, --iTracks * sizeof(state_t));
+    if (num_tracks > 0) {
+        state_t state = tracks[num_tracks - 1];
+        tracks = realloc(tracks, --num_tracks * sizeof(state_t));
         if (z) *z = state;
     } else if (z) *z = empty_state;
 }
@@ -264,9 +266,9 @@ static void heap_collect_1_commands(address_t lambda) {
 static void heap_collect_1(state_t * z) {
     heap_collect_1_states(z->psi);
     heap_collect_1_commands(z->lambda);
-    for (int i = 0; i < iTracks; i++) {
-        heap_collect_1_states(aTracks[i].psi);
-        heap_collect_1_commands(aTracks[i].lambda);
+    for (int i = 0; i < num_tracks; i++) {
+        heap_collect_1_states(tracks[i].psi);
+        heap_collect_1_commands(tracks[i].lambda);
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -330,7 +332,8 @@ static void heap_collect_3(state_t * z) {
             head_t * d = head_pointer(destination);
             memcpy(d, s, size + HEAP_HEAD_SIZE);
             d->address = 0;
-            heap_display_entry(destination);
+            if (DEBUG_COLLECT)
+                heap_display_entry(destination);
         }
         if (size) size += HEAP_HEAD_SIZE;
     }
@@ -343,24 +346,8 @@ static void heap_collect(state_t * z) {
     heap_collect_3(z);
 }
 //======================================================================================================================
-typedef struct _num { int iN; int * aN; } num_t;
-static num_t empty_num = {0, NULL};
-//----------------------------------------------------------------------------------------------------------------------
-static inline void N_init(num_t * N)    { N->iN = 0; N->aN = NULL; }
-static inline void N_push(num_t * N)    { N->aN = realloc(N->aN, ++N->iN * sizeof(int));
-                                          N->aN[N->iN - 1] = 0;
-                                        }
-static inline void N_inc(num_t * N)     { N->aN[N->iN - 1]++; }
-static inline int  N_top(num_t * N)     { return N->aN[N->iN - 1]; }
-static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
-                                            int n = N->aN[N->iN - 1];
-                                            N->aN = realloc(N->aN, --N->iN * sizeof(int));
-                                            return n;
-                                          }
-                                        }
+// Global variable dictionary ==========================================================================================
 //======================================================================================================================
-// Global variables
-//----------------------------------------------------------------------------------------------------------------------
 typedef struct entry_t { char * name; const void * value; } entry_t;
 typedef struct bucket_t { int count; int capacity; entry_t * entries; } bucket_t;
 typedef struct globals_t { int num_buckets; bucket_t * buckets; } globals_t;
@@ -439,6 +426,8 @@ static void assign(const char * name, const void * value) {
 static inline void assign_str(const char * name, const char * v) { return assign(name, strdup(v)); }
 static inline void assign_int(const char * name, int v) { int * V = malloc(sizeof(int)); *V = v; return assign(name, V); }
 static void assign_ptr(const char * name, const void * v) { const void ** V = malloc(sizeof(void *)); *V = v; return assign(name, V); }
+//======================================================================================================================
+// PATTERN scanner =====================================================================================================
 //======================================================================================================================
 #define PROCEED 0
 #define SUCCESS 1
@@ -554,7 +543,7 @@ static void animate(int action, state_t Z, int iteration) {
     char status[20]; sprintf(status, "%s/%d", types[Z.PI->type], Z.ctx + 1);
     fprintf(stderr, "%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
         iteration,
-        iTracks,
+        num_tracks,
         total_states(Z.psi),
         12, status,
         TAIL_WINDOW, tail,
@@ -566,7 +555,7 @@ static void animate(int action, state_t Z, int iteration) {
     fprintf(stderr, "\n");
     fflush(stderr);
 }
-//----------------------------------------------------------------------------------------------------------------------
+//======================================================================================================================
 static inline bool Π_ARB(state_t * z) {
     if (z->DELTA + z->ctx <= z->OMEGA) {
         z->sigma += z->ctx;
@@ -806,6 +795,21 @@ static void ζ_up_fail(state_t * z) {
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
+typedef struct _num { int iN; int * aN; } num_t;
+static num_t empty_num = {0, NULL};
+static inline void N_init(num_t * N)    { N->iN = 0; N->aN = NULL; }
+static inline void N_push(num_t * N)    { N->aN = realloc(N->aN, ++N->iN * sizeof(int));
+                                          N->aN[N->iN - 1] = 0;
+                                        }
+static inline void N_inc(num_t * N)     { N->aN[N->iN - 1]++; }
+static inline int  N_top(num_t * N)     { return N->aN[N->iN - 1]; }
+static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
+                                            int n = N->aN[N->iN - 1];
+                                            N->aN = realloc(N->aN, --N->iN * sizeof(int));
+                                            return n;
+                                          }
+                                        }
+//======================================================================================================================
 static void MATCH(const char * pattern_name, const char * subject) {
     Ω_init();
     heap_init();
@@ -901,13 +905,13 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case FENCE<<2|RECEDE:    if (Z.PI->n == 0)
                                     { a = RECEDE;                   Z.PI = NULL;                    break; }
                             else if (Z.PI->n == 1)
-                                    { assert(0); }
+                                    { assert(0); /* invalid */ }
         case FENCE<<2|SUCCESS:   if (Z.PI->n == 1)
                                     { a = SUCCESS; Z.fence = false; ζ_up(&Z);                       break; }
-                               else { assert(0); }
+                               else { assert(0); /* invalid */ }
         case FENCE<<2|FAILURE:   if (Z.PI->n == 1)
                                     { a = FAILURE; Z.fence = false; ζ_up_fail(&Z);                  break; }
-                               else { assert(0); }
+                               else { assert(0); /* invalid */ }
 //      ----------------------------------------------------------------------------------------------------------------
         case Δ<<2|PROCEED:          { a = PROCEED;                  ζ_down_single(&Z);              break; }
         case Δ<<2|SUCCESS:          { a = SUCCESS; Π_DELTA(&Z);     ζ_up(&Z);                       break; }
@@ -917,6 +921,8 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case δ<<2|SUCCESS:          { a = SUCCESS; Π_delta(&Z);     ζ_up(&Z);                       break; }
         case δ<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
+        case ζ<<2|PROCEED:          { a = PROCEED;                  ζ_over_dynamic(&Z);             break; }
+//      ----------------------------------------------------------------------------------------------------------------
         case ε<<2|PROCEED:          { a = SUCCESS;                  ζ_up(&Z);                       break; }
         case Λ<<2|PROCEED:          { a = SUCCESS; Π_LAMBDA(&Z);    ζ_up(&Z);                       break; }
         case λ<<2|PROCEED:          { a = SUCCESS; Π_lambda(&Z);    ζ_up(&Z);                       break; }
@@ -924,7 +930,6 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case θ<<2|PROCEED:          { a = SUCCESS; Π_theta(&Z);     ζ_up(&Z);                       break; }
         case Φ<<2|PROCEED:          { a = SUCCESS; Π_PHI(&Z);       ζ_up(&Z);                       break; }
         case φ<<2|PROCEED:          { a = SUCCESS; Π_phi(&Z);       ζ_up(&Z);                       break; }
-        case ζ<<2|PROCEED:          { a = PROCEED;                  ζ_over_dynamic(&Z);             break; }
         case nPush<<2|PROCEED:      { a = SUCCESS; Π_nPush(&Z);     ζ_up(&Z);                       break; }
         case nInc<<2|PROCEED:       { a = SUCCESS; Π_nInc(&Z);      ζ_up(&Z);                       break; }
         case nPop<<2|PROCEED:       { a = SUCCESS; Π_nPop(&Z);      ζ_up(&Z);                       break; }
@@ -971,7 +976,9 @@ static void MATCH(const char * pattern_name, const char * subject) {
     heap_fini();
     Ω_fini();
 }
-//----------------------------------------------------------------------------------------------------------------------
+//======================================================================================================================
+// Main test program ===================================================================================================
+//======================================================================================================================
 static const PATTERN ARB_1 = {POS, .n=0};
 static const PATTERN ARB_2 = {ARB};
 static const PATTERN ARB_3 = {RPOS, .n=0};
@@ -1032,4 +1039,4 @@ int main() {
 //  MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }
-//----------------------------------------------------------------------------------------------------------------------
+//======================================================================================================================
