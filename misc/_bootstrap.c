@@ -26,7 +26,7 @@ static int dump_pattern(PyObject * pattern, int depth) {
                 for (Py_ssize_t j = 0; j < list_size; j++)
                     refs[j] = dump_pattern(PyTuple_GetItem(attr, j), depth + 2);
             }
-            PySys_WriteStdout("static PATTERN %s_%d = {%s, %d, {", name, count, type, list_size);
+            PySys_WriteStdout("static const PATTERN %s_%d = {%s, %d, {", name, count, type, list_size);
             for (Py_ssize_t j = 0; j < list_size; j++) {
                 if (j > 0) PySys_WriteStdout(", ");
                 PySys_WriteStdout("&%s_%d", name, refs[j]);
@@ -44,7 +44,7 @@ static int dump_pattern(PyObject * pattern, int depth) {
             ref = dump_pattern(attr, depth + 2);
             Py_DECREF(attr);
         }
-        PySys_WriteStdout("static PATTERN %s_%d = {%s, 1, &%s_%d};\n", name, count, type, name, ref);
+        PySys_WriteStdout("static const PATTERN %s_%d = {%s, 1, &%s_%d};\n", name, count, type, name, ref);
     } else if (  !strcmp(type, "Δ")
               || !strcmp(type, "δ")
               ) {
@@ -60,10 +60,10 @@ static int dump_pattern(PyObject * pattern, int depth) {
             if (PyUnicode_Check(attr)) N = PyUnicode_AsUTF8(attr);
             Py_DECREF(attr);
         }
-        PySys_WriteStdout("static PATTERN %s_%d = {%s, .s=\"%s\", &%s_%d};\n", name, count, type, N, name, ref);
+        PySys_WriteStdout("static const PATTERN %s_%d = {%s, .s=\"%s\", &%s_%d};\n", name, count, type, N, name, ref);
     } else {
 //  --------------------------------------------------------------------------------------------------------------------
-        PySys_WriteStdout("static PATTERN %s_%d = {%s", name, count, type);
+        PySys_WriteStdout("static const PATTERN %s_%d = {%s", name, count, type);
         for (int i = 0; attrs[i]; i++) {
             if (PyObject_HasAttrString(pattern, attrs[i])) {
                 PyObject * attr = PyObject_GetAttrString(pattern, attrs[i]);

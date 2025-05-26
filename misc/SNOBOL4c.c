@@ -88,7 +88,7 @@ typedef struct PATTERN {
 // Heap memory management
 const int HEAP_SIZE_INIT  = 32768;
 const int HEAP_SIZE_BUMP  = 32768;
-const int HEAP_HEAD_SIZE  = 8;
+const int HEAP_HEAD_SIZE  = 4;
 const int HEAP_ALIGN_SIZE = 16;
 const int HEAP_ALIGN_BITS = 4;
 #define STAMP_STRING -1
@@ -96,33 +96,18 @@ const int HEAP_ALIGN_BITS = 4;
 #define STAMP_STATE -3
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _address { int offset; } address_t;
-typedef struct _heap { int pos; int size; unsigned char * a; } heap_t;
-typedef struct _head { short stamp; short refs; int size; } head_t;
+typedef struct _heap { int current; int size; unsigned char * a; } heap_t;
+typedef struct _head { int stamp:8; int size:24; } head_t;
 //----------------------------------------------------------------------------------------------------------------------
 static heap_t heap = {0, 0, NULL};
-static void heap_init() { heap.pos = 0; heap.size = 0; heap.a = NULL; }
-static void heap_fini() { heap.pos = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
+static void heap_init() { heap.current = 0; heap.size = 0; heap.a = NULL; }
+static void heap_fini() { heap.current = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
 static inline void * pointer(address_t a) { return heap.a + a.offset; }
-static inline address_t heap_incref(address_t a) {
-    if (a.offset > 0) {
-        head_t * h = (head_t *) &heap.a[a.offset];
-        h[-1].refs++;
-    }
-    return a;
-}
-static inline address_t heap_decref(address_t a) {
-    if (a.offset > 0) {
-        head_t * h = (head_t *) &heap.a[a.offset];
-        assert(h[-1].refs > 0);
-        h[-1].refs--;
-    }
-    return a;
-}
 //----------------------------------------------------------------------------------------------------------------------
 static address_t heap_alloc(short stamp, int size) {
     assert(size < HEAP_SIZE_BUMP);
     size = (size + HEAP_ALIGN_SIZE-1) >> HEAP_ALIGN_BITS << HEAP_ALIGN_BITS;
-    if (heap.pos + HEAP_ALIGN_SIZE + size >= heap.size) {
+    if (heap.current + HEAP_ALIGN_SIZE + size >= heap.size) {
         if (heap.a == NULL) {
             heap.a = (unsigned char *) malloc(HEAP_SIZE_INIT);
             memset(heap.a, 0, HEAP_SIZE_INIT);
@@ -132,21 +117,20 @@ static address_t heap_alloc(short stamp, int size) {
             memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
             heap.size += HEAP_SIZE_BUMP;
         }
-        if (false) printf("heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.pos, heap.size);
+        if (false) fprintf(stderr, "heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.current, heap.size);
     }
-    address_t a = {heap.pos + HEAP_HEAD_SIZE};
+    address_t a = {heap.current + HEAP_HEAD_SIZE};
     head_t * h = (head_t *) &heap.a[a.offset];
-    h[-1] = (head_t) {stamp, 1, size};
-    heap.pos = a.offset + size;
-    if (false) printf("0x%08.8X: %2d %3d %5d alloc\n", a.offset, h[-1].stamp, h[-1].refs, h[-1].size);
+    h[-1] = (head_t) {stamp, size};
+    heap.current = a.offset + size;
+    if (false) fprintf(stderr, "0x%08.8X: %2d %5d alloc\n", a.offset, h[-1].stamp, h[-1].size);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static address_t heap_free(address_t a) {
     if (a.offset) {
         head_t * h = (head_t *) &heap.a[a.offset];
-        if (false) printf("0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].refs, h[-1].size);
-        heap_decref(a);
+        if (false) fprintf(stderr, "0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].size);
     }
 }
 //======================================================================================================================
@@ -166,7 +150,7 @@ static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(comma
 static address_t push_command(address_t command, const char * string) {
     address_t COMMAND = alloc_command();
     _c_(COMMAND)->string = alloc_string(string);
-    _c_(COMMAND)->command = heap_incref(command);
+    _c_(COMMAND)->command = command;
     return COMMAND;
 }
 static address_t pop_command(address_t command) {
@@ -199,7 +183,7 @@ static int       total_states(address_t psi) { int len = 0; for (; psi.offset; l
 static address_t push_state(address_t psi, state_t * z) {
     address_t PSI = alloc_state();
     *(_z_(PSI)) = *z;
-    _z_(PSI)->psi = heap_incref(psi);
+    _z_(PSI)->psi = psi;
     return PSI;
 }
 static address_t pop_state(address_t psi) {
@@ -226,41 +210,41 @@ static void Ω_pop(state_t * z) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void heap_print(state_t * z) {
-    printf("zeta: 0x%8.8X 0x%8.8X %d %s\n\n", z->psi, z->lambda, z->ctx, z->PI ? types[z->PI->type] : "NULL");
-    printf("tracks: %d\n", iTracks);
+    fprintf(stderr, "zeta: 0x%8.8X 0x%8.8X %d %s\n\n", z->psi, z->lambda, z->ctx, z->PI ? types[z->PI->type] : "NULL");
+    fprintf(stderr, "tracks: %d\n", iTracks);
     for (int i = 0; i < iTracks; i++) {
-        printf("0x%8.8X 0x%8.8X %d %s\n",
+        fprintf(stderr, "0x%8.8X 0x%8.8X %d %s\n",
             aTracks[i].psi,
             aTracks[i].lambda,
             aTracks[i].ctx,
             types[aTracks[i].PI->type]
         );
     }
-    printf("\n");
-    printf("heap: 0x%08.8x %d %d\n", heap.a, heap.pos, heap.size);
+    fprintf(stderr, "\n");
+    fprintf(stderr, "heap: 0x%08.8x %d %d\n", heap.a, heap.current, heap.size);
     int size = -1;
     for (int offset = HEAP_HEAD_SIZE; size && offset < heap.size; ) {
         void * mem = &heap.a[offset];
         head_t * h = (head_t *) mem;
-        printf("0x%08.8X: %2d %3d %5d ", offset, h[-1].stamp, h[-1].refs, h[-1].size);
+        fprintf(stderr, "0x%08.8X: %2d %3d %5d ", offset, h[-1].stamp, h[-1].size);
         switch (h[-1].stamp) {
             case STAMP_STRING: {
                 const char * s = (const char *) mem;
-                printf("%s", s);
+                fprintf(stderr, "%s", s);
                 break;
             }
             case STAMP_COMMAND: {
                 const command_t * c = (const command_t *) mem;
-                printf("0x%8.8X, 0x%8.8X", c->string, c->command);
+                fprintf(stderr, "0x%8.8X, 0x%8.8X", c->string, c->command);
                 break;
             }
             case STAMP_STATE: {
                 const state_t * z = (const state_t *) mem;
-                printf("0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
+                fprintf(stderr, "0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
                 break;
             }
         }
-        printf("\n");
+        fprintf(stderr, "\n");
         size = h[-1].size;
         if (size) size += HEAP_HEAD_SIZE;
         offset += size;
@@ -376,74 +360,74 @@ static const char * actions[4] = {
 //----------------------------------------------------------------------------------------------------------------------
 #define MAX_DEPTH 3
 void preview(const PATTERN * PI, int depth) {
-    if (depth >= MAX_DEPTH) { printf("."); return; }
+    if (depth >= MAX_DEPTH) { fprintf(stderr, "."); return; }
     int type = PI->type;
     switch (type) {
-    case ε:         { printf("ε()"); break; }
-    case α:         { printf("α()"); break; }
-    case ω:         { printf("ω()"); break; }
-    case σ:         { printf("\"%s\"", PI->s); break; }
-    case Λ:         { printf("Λ(\"%s\")", PI->command); break; }
-    case λ:         { printf("λ(\"%s\")", PI->command); break; }
-    case ζ:         { printf("ζ(\"%s\")", PI->N); break; }
-    case Θ:         { printf("Θ(\"%s\")", PI->N); break; }
-    case θ:         { printf("θ(\"%s\")", PI->N); break; }
-    case Φ:         { printf("Φ(\"%s\")", PI->N); break; }
-    case φ:         { printf("φ(\"%s\")", PI->N); break; }
-    case POS:       { printf("POS(%d)", PI->n); break; }
-    case TAB:       { printf("TAB(%d)", PI->n); break; }
-    case LEN:       { printf("LEN(%d)", PI->n); break; }
-    case RTAB:      { printf("RTAB(%d)", PI->n); break; }
-    case RPOS:      { printf("RPOS(%d)", PI->n); break; }
-    case ANY:       { printf("ANY(\"%s\")", PI->chars); break; }
-    case SPAN:      { printf("SPAN(\"%s\")", PI->chars); break; }
-    case BREAK:     { printf("BREAK(\"%s\")", PI->chars); break; }
-    case BREAKX:    { printf("BREAKX(\"%s\")", PI->chars); break; }
-    case NOTANY:    { printf("NOTANY(\"%s\")", PI->chars); break; }
-    case ARBNO:     { printf("ARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
-    case MARBNO:    { printf("MARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
-    case Δ:         { printf("Δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
-    case δ:         { printf("δ("); preview(PI->AP[0], depth + 1); printf(", \"%s\")", PI->s); break; }
-    case π:         { printf("π("); preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case ε:         { fprintf(stderr, "ε"); break; }
+    case α:         { fprintf(stderr, "α"); break; }
+    case ω:         { fprintf(stderr, "ω"); break; }
+    case σ:         { fprintf(stderr, "\"%s\"", PI->s); break; }
+    case Λ:         { fprintf(stderr, "Λ(\"%s\")", PI->command); break; }
+    case λ:         { fprintf(stderr, "λ(\"%s\")", PI->command); break; }
+    case ζ:         { fprintf(stderr, "ζ(\"%s\")", PI->N); break; }
+    case Θ:         { fprintf(stderr, "Θ(\"%s\")", PI->N); break; }
+    case θ:         { fprintf(stderr, "θ(\"%s\")", PI->N); break; }
+    case Φ:         { fprintf(stderr, "Φ(\"%s\")", PI->N); break; }
+    case φ:         { fprintf(stderr, "φ(\"%s\")", PI->N); break; }
+    case POS:       { fprintf(stderr, "POS(%d)", PI->n); break; }
+    case TAB:       { fprintf(stderr, "TAB(%d)", PI->n); break; }
+    case LEN:       { fprintf(stderr, "LEN(%d)", PI->n); break; }
+    case RTAB:      { fprintf(stderr, "RTAB(%d)", PI->n); break; }
+    case RPOS:      { fprintf(stderr, "RPOS(%d)", PI->n); break; }
+    case ANY:       { fprintf(stderr, "ANY(\"%s\")", PI->chars); break; }
+    case SPAN:      { fprintf(stderr, "SPAN(\"%s\")", PI->chars); break; }
+    case BREAK:     { fprintf(stderr, "BREAK(\"%s\")", PI->chars); break; }
+    case BREAKX:    { fprintf(stderr, "BREAKX(\"%s\")", PI->chars); break; }
+    case NOTANY:    { fprintf(stderr, "NOTANY(\"%s\")", PI->chars); break; }
+    case ARBNO:     { fprintf(stderr, "ARBNO("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
+    case MARBNO:    { fprintf(stderr, "MARBNO("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
+    case Δ:         { fprintf(stderr, "Δ("); preview(PI->AP[0], depth + 1); fprintf(stderr, ", \"%s\")", PI->s); break; }
+    case δ:         { fprintf(stderr, "δ("); preview(PI->AP[0], depth + 1); fprintf(stderr, ", \"%s\")", PI->s); break; }
+    case π:         { fprintf(stderr, "π("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
     case FENCE:     { if (PI->n > 0) {
-                          printf("FENCE(");
+                          fprintf(stderr, "FENCE(");
                           preview(PI->AP[0], depth + 1);
-                          printf(")");
-                      } else printf("FENCE");
+                          fprintf(stderr, ")");
+                      } else fprintf(stderr, "FENCE");
                       break;
                     }
-    case nPush:     { printf("nPush()"); break; }
-    case nInc:      { printf("nInc()"); break; }
-    case nPop:      { printf("nPop()"); break; }
+    case nPush:     { fprintf(stderr, "nPush()"); break; }
+    case nInc:      { fprintf(stderr, "nInc()"); break; }
+    case nPop:      { fprintf(stderr, "nPop()"); break; }
     case Shift:     { if (PI->v)
-                        printf("Shift(\"%s\", \"%s\")", PI->t, PI->v);
-                      else printf("Shift(\"%s\")", PI->t);
+                        fprintf(stderr, "Shift(\"%s\", \"%s\")", PI->t, PI->v);
+                      else fprintf(stderr, "Shift(\"%s\")", PI->t);
                       break;
                     }
     case Reduce:    { if (PI->x)
-                        printf("Reduce(\"%s\", %d)", PI->t, PI->x);
-                      else printf("Reduce(\"%s\")", PI->t);
+                        fprintf(stderr, "Reduce(\"%s\", %d)", PI->t, PI->x);
+                      else fprintf(stderr, "Reduce(\"%s\")", PI->t);
                       break;
                     }
-    case Pop:       { printf("Pop(\"%s\")", PI->v); break; } // t
-    case ARB:       { printf("ARB"); break; }
-    case BAL:       { printf("BAL"); break; }
-    case REM:       { printf("REM"); break; }
-    case FAIL:      { printf("FAIL"); break; }
-    case MARB:      { printf("MARB"); break; }
-    case ABORT:     { printf("ABORT"); break; }
-    case SUCCEED:   { printf("SUCCEED"); break; }
+    case Pop:       { fprintf(stderr, "Pop(\"%s\")", PI->v); break; } // t
+    case ARB:       { fprintf(stderr, "ARB"); break; }
+    case BAL:       { fprintf(stderr, "BAL"); break; }
+    case REM:       { fprintf(stderr, "REM"); break; }
+    case FAIL:      { fprintf(stderr, "FAIL"); break; }
+    case MARB:      { fprintf(stderr, "MARB"); break; }
+    case ABORT:     { fprintf(stderr, "ABORT"); break; }
+    case SUCCEED:   { fprintf(stderr, "SUCCEED"); break; }
     case Π:
     case Σ:
-    case ρ:         { printf("%s(", types[PI->type]);
+    case ρ:         { fprintf(stderr, "%s(", types[PI->type]);
                         for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
-                            if (i) printf(" ");
+                            if (i) fprintf(stderr, " ");
                             preview(PI->AP[i], depth + 1);
                         }
-                        printf(")");
+                        fprintf(stderr, ")");
                         break;
                     }
-    default:        { printf("\n%s\n", types[type]); fflush(stdout); assert(0); break; }
+    default:        { fprintf(stderr, "\n%s\n", types[type]); fflush(stdout); assert(0); break; }
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -474,7 +458,7 @@ static void animate(int action, state_t Z, int iteration) {
     head[i++] = 0;
 //  --------------------------------------------------------------------------------------------------------------------
     char status[20]; sprintf(status, "%s/%d", types[Z.PI->type], Z.ctx + 1);
-    printf("%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
+    fprintf(stderr, "%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
         iteration,
         iTracks,
         total_states(Z.psi),
@@ -485,8 +469,8 @@ static void animate(int action, state_t Z, int iteration) {
         actions[action]
     );
     preview(Z.PI, 0);
-    printf("\n");
-    fflush(stdout);
+    fprintf(stderr, "\n");
+    fflush(stderr);
 }
 //----------------------------------------------------------------------------------------------------------------------
 static bool Π_ARB(state_t * z) {
@@ -507,8 +491,8 @@ static bool Π_MARB(state_t * z) {
 //----------------------------------------------------------------------------------------------------------------------
 static bool Π_BAL(state_t * z) {
     int nest = 0;
-    z->sigma++;
-    z->delta++;
+    z->sigma += z->ctx + 1;
+    z->delta += z->ctx + 1;
     while (z->delta <= z->OMEGA) {
         char ch = z->sigma[-1];
         switch (ch) {
@@ -517,8 +501,9 @@ static bool Π_BAL(state_t * z) {
         }
         if (nest < 0) break;
         else if (nest > 0 && z->delta >= z->OMEGA) break;
-        else if (nest == 0) return true;
-        z->delta += 1;
+        else if (nest == 0) { z->ctx = z->delta; return true; }
+        z->sigma++;
+        z->delta++;
     }
     return false;
 }
@@ -636,12 +621,17 @@ static inline bool Π_Pop(state_t * z) {
     return true;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline bool Π_delta(state_t * z) { return true; }
+static inline bool Π_delta(state_t * z) {
+    if (strcmp(z->PI->s, "OUTPUT") == 0)
+        printf("%.*s", z->delta - z->DELTA, z->sigma);
+    else ;
+    return true;
+}
 static inline bool Π_DELTA(state_t * z) {
     char command_text[128];
-    if (strcmp(z->PI->t, "OUTPUT") == 0)
+    if (strcmp(z->PI->s, "OUTPUT") == 0)
         sprintf(command_text, "printf(\"%%s\", subject[%d:%d]);", z->DELTA, z->delta);
-    else sprintf(command_text, "%s = subject[%d:%d];", z->PI->t, z->DELTA, z->delta);
+    else sprintf(command_text, "%s = subject[%d:%d];", z->PI->s, z->DELTA, z->delta);
     z->lambda = push_command(z->lambda, command_text);
     return true;
 }
@@ -689,6 +679,7 @@ static inline void ζ_over_dynamic(state_t * z) {
     z->PI = * (const PATTERN **) lookup(z->PI->N);
 }
 //----------------------------------------------------------------------------------------------------------------------
+static inline void ζ_next(state_t * z)      { z->sigma = z->SIGMA; z->delta = z->DELTA; }
 static inline void ζ_stay_next(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
 static inline void ζ_move_next(state_t * z) { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
@@ -799,7 +790,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case BAL<<2|RECEDE:      if (Z.fence == false)
-                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                                    { a = PROCEED;                  ζ_next(&Z);                     break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ABORT<<2|PROCEED:      { a = FAILURE;                  Z.PI = NULL;                    break; }
@@ -874,8 +865,8 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCESS; ζ_up(&Z);        break; }
                                     else                            { a = FAILURE; ζ_up_fail(&Z);   break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        default:                    { printf("%d %s\n", t, t <= ω ? types[t] : "");
-                                      fflush(stdout);
+        default:                    { fprintf(stderr, "%d %s\n", t, t <= ω ? types[t] : "");
+                                      fflush(stderr);
                                       assert(0);
                                       break;
                                     }
@@ -897,6 +888,12 @@ static const PATTERN ARBNO_2 = {ARBNO, 1, &ARBNO_3};
 static const PATTERN ARBNO_4 = {RPOS, .n=0};
 static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
+static const PATTERN Bal_1 = {POS, .n=0};
+static const PATTERN Bal_3 = {BAL};
+static const PATTERN Bal_2 = {δ, .s="OUTPUT", &Bal_3};
+static const PATTERN Bal_4 = {RPOS, .n=0};
+static const PATTERN Bal_0 = {Σ, 3, {&Bal_1, &Bal_2, &Bal_4}};
+
 int main() {
     globals_init();
     assign_ptr("BEAD",          &BEAD_0);
@@ -915,17 +912,28 @@ int main() {
     assign_ptr("RE_RegEx",      &RE_RegEx_0);
     assign_ptr("identifier",    &identifier_0);
     assign_ptr("real_number",   &real_number_0);
-    MATCH("BEAD",       "READS");
-    MATCH("BEARDS",     "ROOSTS");
-    MATCH("C",          "x+y*z");
-    MATCH("CALC",       "x+y*z");
-    MATCH("Arb",        "xyz");
-    MATCH("Arbno",      "xyz");
-    MATCH("identifier", "x");
-    MATCH("identifier", "Id_99");
-    MATCH("identifier", "Id+");
-    MATCH("real_number","12.99E+3");
-    MATCH("real_number","12990.0");
+    assign_ptr("Bal",           &Bal_0);
+//  MATCH("BEAD",       "READS");
+//  MATCH("BEARDS",     "ROOSTS");
+//  MATCH("C",          "x+y*z");
+//  MATCH("CALC",       "x+y*z");
+//  MATCH("Arb",        "");
+//  MATCH("Arb",        "x");
+//  MATCH("Arb",        "xy");
+//  MATCH("Arb",        "xyz");
+//  MATCH("Arbno",      "");
+//  MATCH("Arbno",      "x");
+//  MATCH("Arbno",      "xy");
+//  MATCH("Arbno",      "xyz");
+//  MATCH("identifier", "x");
+//  MATCH("identifier", "Id_99");
+//  MATCH("identifier", "Id+");
+//  MATCH("real_number","12.99E+3");
+//  MATCH("real_number","12990.0");
+    MATCH("Bal",        ")A+B(");
+    MATCH("Bal",        "A+B)");
+    MATCH("Bal",        "(A+B");
+    MATCH("Bal",        "(A+B)");
 //  MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }
