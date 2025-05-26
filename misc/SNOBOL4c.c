@@ -50,7 +50,7 @@
 #define ρ       39 // ρ
 #define σ       40 // LIT$ // "σ"
 #define φ       41 // φ
-#define ω       42 // ω
+#define ω       42 // ω (omega MUST be last)
 //----------------------------------------------------------------------------------------------------------------------
 static const char * types[] =
 {
@@ -497,6 +497,32 @@ static bool Π_ARB(state_t * z) {
     } else return false;
 }
 //----------------------------------------------------------------------------------------------------------------------
+static bool Π_MARB(state_t * z) {
+    if (z->OMEGA - z->ctx >= z->DELTA) {
+        z->sigma += z->ctx;
+        z->delta += z->ctx;
+        return true;
+    } else return false;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static bool Π_BAL(state_t * z) {
+    int nest = 0;
+    z->sigma++;
+    z->delta++;
+    while (z->delta <= z->OMEGA) {
+        char ch = z->sigma[-1];
+        switch (ch) {
+            case '(': nest += 1; break;
+            case ')': nest -= 1; break;
+        }
+        if (nest < 0) break;
+        else if (nest > 0 && z->delta >= z->OMEGA) break;
+        else if (nest == 0) return true;
+        z->delta += 1;
+    }
+    return false;
+}
+//----------------------------------------------------------------------------------------------------------------------
 static bool Π_LITERAL(state_t * z) {
     const char * string = z->PI->s;
     for (; *string; z->sigma++, z->delta++, string++) {
@@ -663,8 +689,8 @@ static inline void ζ_over_dynamic(state_t * z) {
     z->PI = * (const PATTERN **) lookup(z->PI->N);
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
-static inline void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
+static inline void ζ_stay_next(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
+static inline void ζ_move_next(state_t * z) { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up(state_t * z) {
     if (z->psi.offset) {
@@ -750,10 +776,29 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     { a = PROCEED;                  ζ_move_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
+        case MARBNO<<2|PROCEED:     { assert(0); }
+        case MARBNO<<2|RECEDE:      { assert(0); }
+        case MARBNO<<2|SUCCESS:     { assert(0); }
+        case MARBNO<<2|FAILURE:     { assert(0); }
+//      ----------------------------------------------------------------------------------------------------------------
         case ARB<<2|PROCEED:     if (Π_ARB(&Z))
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case ARB<<2|RECEDE:      if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
+//      ----------------------------------------------------------------------------------------------------------------
+        case MARB<<2|PROCEED:    if (Π_MARB(&Z))
+                                    { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
+                               else { a = RECEDE;  Ω_pop(&Z);                                       break; }
+        case MARB<<2|RECEDE:      if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
+//      ----------------------------------------------------------------------------------------------------------------
+        case BAL<<2|PROCEED:     if (Π_BAL(&Z))
+                                    { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
+                               else { a = RECEDE;  Ω_pop(&Z);                                       break; }
+        case BAL<<2|RECEDE:      if (Z.fence == false)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
@@ -829,7 +874,11 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCESS; ζ_up(&Z);        break; }
                                     else                            { a = FAILURE; ζ_up_fail(&Z);   break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        default:                    { printf("%s\n", t); fflush(stdout); assert(0);                 break; }
+        default:                    { printf("%d %s\n", t, t <= ω ? types[t] : "");
+                                      fflush(stdout);
+                                      assert(0);
+                                      break;
+                                    }
         }
     }
     if (true) heap_print(&Z);
