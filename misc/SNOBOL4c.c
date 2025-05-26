@@ -7,6 +7,7 @@
 #include <stdbool.h>
 //----------------------------------------------------------------------------------------------------------------------
 #define DEBUG_HEAP false
+#define DEBUG_MATCH false
 //======================================================================================================================
 // PATTERN data type
 //----------------------------------------------------------------------------------------------------------------------
@@ -93,18 +94,22 @@ const int HEAP_SIZE_BUMP  = 32768;
 const int HEAP_HEAD_SIZE  = 4;
 const int HEAP_ALIGN_SIZE = 16;
 const int HEAP_ALIGN_BITS = 4;
-#define STAMP_STRING -1
-#define STAMP_COMMAND -2
-#define STAMP_STATE -3
+#define STAMP_STRING 1
+#define STAMP_COMMAND 2
+#define STAMP_STATE 3
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _address { int offset; } address_t;
 typedef struct _heap { int current; int size; unsigned char * a; } heap_t;
-typedef struct _head { int stamp:8; int size:24; } head_t;
+typedef struct _head { unsigned int mark:1; unsigned int stamp:3; int address:14; int size:14; } head_t;
 //----------------------------------------------------------------------------------------------------------------------
+static head_t empty_head = {0, 0, 0, 0};
 static heap_t heap = {0, 0, NULL};
 static void heap_init() { heap.current = 0; heap.size = 0; heap.a = NULL; }
 static void heap_fini() { heap.current = 0; heap.size = 0; free(heap.a); heap.a = NULL; }
-static inline void * pointer(address_t a) { return heap.a + a.offset; }
+static inline void * pointer(address_t a) { return &heap.a[a.offset]; }
+static inline head_t * head_pointer(address_t a) { return &((head_t *) pointer(a))[-1]; }
+static inline void heap_mark_set(address_t a)   { head_pointer(a)->mark = true; }
+static inline void heap_mark_clear(address_t a) { head_pointer(a)->mark = false; }
 //----------------------------------------------------------------------------------------------------------------------
 static address_t heap_alloc(short stamp, int size) {
     assert(size < HEAP_SIZE_BUMP);
@@ -120,23 +125,15 @@ static address_t heap_alloc(short stamp, int size) {
             heap.size += HEAP_SIZE_BUMP;
         }
         if (DEBUG_HEAP)
-            fprintf(stderr, "heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.current, heap.size);
+            fprintf(stderr, "heap_alloc=(0x%08.8X: %d, %d)\n", heap.a, heap.current, heap.size);
     }
     address_t a = {heap.current + HEAP_HEAD_SIZE};
-    head_t * h = (head_t *) &heap.a[a.offset];
-    h[-1] = (head_t) {stamp, size};
+    head_t * h = head_pointer(a);
+    *h = (head_t) {0, stamp, 0, size};
     heap.current = a.offset + size;
     if (DEBUG_HEAP)
-        fprintf(stderr, "0x%08.8X: %2d %5d alloc\n", a.offset, h[-1].stamp, h[-1].size);
+        fprintf(stderr, "0x%08.8X: %1d %3d %6d\n", a.offset, h->mark, h->stamp, h->size);
     return a;
-}
-//----------------------------------------------------------------------------------------------------------------------
-static address_t heap_free(address_t a) {
-    if (a.offset) {
-        head_t * h = (head_t *) &heap.a[a.offset];
-        if (DEBUG_HEAP)
-            fprintf(stderr, "0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].size);
-    }
 }
 //======================================================================================================================
 static address_t alloc_string(const char * string) {
@@ -147,24 +144,24 @@ static address_t alloc_string(const char * string) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 typedef struct _command command_t;
-typedef struct _command { address_t string; address_t command; } command_t;
+typedef struct _command { address_t string; address_t lambda; } command_t;
 //----------------------------------------------------------------------------------------------------------------------
-static inline const char * _s_(address_t address) { return (const char *) (heap.a + address.offset); }
-static inline command_t * _c_(address_t address)  { return (command_t *) (heap.a + address.offset); }
+static inline const char * CC(address_t address) { return (const char *) (heap.a + address.offset); }
+static inline command_t * C(address_t address)  { return (command_t *) (heap.a + address.offset); }
 static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
-static address_t push_command(address_t command, const char * string) {
-    address_t COMMAND = alloc_command();
-    _c_(COMMAND)->string = alloc_string(string);
-    _c_(COMMAND)->command = command;
-    return COMMAND;
+static address_t push_command(address_t lambda, const char * string) {
+    address_t s = alloc_string(string);
+    address_t LAMBDA = alloc_command();
+    C(LAMBDA)->string = s;
+    C(LAMBDA)->lambda = lambda;
+    return LAMBDA;
 }
-static address_t pop_command(address_t command) {
-    address_t COMMAND = command;
-    if (command.offset) {
-        COMMAND = _c_(command)->command;
-        heap_free(command);
+static address_t pop_command(address_t lambda) {
+    address_t LAMBDA = lambda;
+    if (lambda.offset) {
+        LAMBDA = C(lambda)->lambda;
     }
-    return COMMAND;
+    return LAMBDA;
 }
 //======================================================================================================================
 typedef struct _state state_t;
@@ -181,21 +178,20 @@ typedef struct _state {
     address_t       lambda; // command stack
 } state_t;
 //----------------------------------------------------------------------------------------------------------------------
-static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + address.offset); }
+static inline state_t * S(address_t address) { return (state_t *) (heap.a + address.offset); }
 static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
-static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _z_(psi)->psi) /**/; return len; }
+static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = S(psi)->psi) /**/; return len; }
 static address_t push_state(address_t psi, state_t * z) {
     address_t PSI = alloc_state();
-    *(_z_(PSI)) = *z;
-    _z_(PSI)->psi = psi;
+    *(S(PSI)) = *z;
+    S(PSI)->psi = psi;
     return PSI;
 }
 static address_t pop_state(address_t psi) {
     address_t PSI = psi;
     if (psi.offset) {
-        PSI = _z_(psi)->psi;
-        heap_free(PSI);
+        PSI = S(psi)->psi;
     }
     return PSI;
 }
@@ -214,47 +210,137 @@ static void Ω_pop(state_t * z) {
     } else if (z) *z = empty_state;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void heap_print(state_t * z) {
-    if (!DEBUG_HEAP) return;
-    fprintf(stderr, "zeta: 0x%8.8X 0x%8.8X %d %s\n\n", z->psi, z->lambda, z->ctx, z->PI ? types[z->PI->type] : "NULL");
-    fprintf(stderr, "tracks: %d\n", iTracks);
-    for (int i = 0; i < iTracks; i++) {
-        fprintf(stderr, "0x%8.8X 0x%8.8X %d %s\n",
-            aTracks[i].psi,
-            aTracks[i].lambda,
-            aTracks[i].ctx,
-            types[aTracks[i].PI->type]
-        );
+static void heap_display_entry(address_t a) {
+    void * mem = pointer(a);
+    head_t * h = head_pointer(a);
+    fprintf(stderr, "0x%8.8X: %1d %2d 0x%08.8X 0x%08.8X: ", a.offset, h->mark, h->stamp, h->address, h->size);
+    switch (h->stamp) {
+        case STAMP_STRING: {
+            const char * s = (const char *) mem;
+            fprintf(stderr, "%s", s);
+            break;
+        }
+        case STAMP_COMMAND: {
+            const command_t * c = (const command_t *) mem;
+            fprintf(stderr, "0x%8.8X 0x%8.8X", c->string, c->lambda);
+            break;
+        }
+        case STAMP_STATE: {
+            const state_t * z = (const state_t *) mem;
+            fprintf(stderr, "0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
+            break;
+        }
+
     }
     fprintf(stderr, "\n");
-    fprintf(stderr, "heap: 0x%08.8x %d %d\n", heap.a, heap.current, heap.size);
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_print(state_t * z) {
+    address_t source = {HEAP_HEAD_SIZE};
     int size = -1;
-    for (int offset = HEAP_HEAD_SIZE; size && offset < heap.size; ) {
-        void * mem = &heap.a[offset];
-        head_t * h = (head_t *) mem;
-        fprintf(stderr, "0x%08.8X: %2d %3d %5d ", offset, h[-1].stamp, h[-1].size);
-        switch (h[-1].stamp) {
-            case STAMP_STRING: {
-                const char * s = (const char *) mem;
-                fprintf(stderr, "%s", s);
-                break;
-            }
-            case STAMP_COMMAND: {
-                const command_t * c = (const command_t *) mem;
-                fprintf(stderr, "0x%8.8X, 0x%8.8X", c->string, c->command);
-                break;
-            }
-            case STAMP_STATE: {
-                const state_t * z = (const state_t *) mem;
-                fprintf(stderr, "0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
-                break;
-            }
-        }
-        fprintf(stderr, "\n");
-        size = h[-1].size;
+    for (; size && source.offset < heap.size; source.offset += size) {
+        head_t * s = head_pointer(source);
+        size = s->size;
+        heap_display_entry(source);
         if (size) size += HEAP_HEAD_SIZE;
-        offset += size;
     }
+    fprintf(stderr, "\n");
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_1_states(address_t psi) {
+    for (; psi.offset; psi = S(psi)->psi) {
+        heap_mark_set(psi);
+        heap_mark_set(S(psi)->lambda);
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_1_commands(address_t lambda) {
+    for (; lambda.offset; lambda = C(lambda)->lambda) {
+        heap_mark_set(lambda);
+        heap_mark_set(C(lambda)->string);
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_1(state_t * z) {
+    heap_collect_1_states(z->psi);
+    heap_collect_1_commands(z->lambda);
+    for (int i = 0; i < iTracks; i++) {
+        heap_collect_1_states(aTracks[i].psi);
+        heap_collect_1_commands(aTracks[i].lambda);
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static inline void heap_adjust_entry(address_t a) {
+    switch (head_pointer(a)->stamp) {
+        case STAMP_STRING: break;
+        case STAMP_COMMAND: {
+            command_t * c = (command_t *) pointer(a);
+            if (c->string.offset) c->string = (address_t) {head_pointer(c->string)->address};
+            if (c->lambda.offset) c->lambda = (address_t) {head_pointer(c->lambda)->address};
+            break;
+        }
+        case STAMP_STATE: {
+            state_t * z = (state_t *) pointer(a);
+            if (z->psi.offset)    z->psi    = (address_t) {head_pointer(z->psi)->address};
+            if (z->lambda.offset) z->lambda = (address_t) {head_pointer(z->lambda)->address};
+            break;
+        }
+        default: assert(0); break;
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_2_calculate(state_t * z) {
+    address_t destination = {HEAP_HEAD_SIZE};
+    address_t source = {HEAP_HEAD_SIZE};
+    for (int size = -1; size && source.offset < heap.size; source.offset += size) {
+        head_t * s = head_pointer(source);
+        size = s->size;
+        if (size && s->mark) {
+            s->address = destination.offset;
+            destination.offset += size + HEAP_HEAD_SIZE;
+        } else s->address = 0;
+        if (size) size += HEAP_HEAD_SIZE;
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_2_adjust(state_t * z) {
+    address_t destination = {HEAP_HEAD_SIZE};
+    address_t source = {HEAP_HEAD_SIZE};
+    for (int size = -1; size && source.offset < heap.size; source.offset += size) {
+        head_t * s = head_pointer(source);
+        size = s->size;
+        if (size && s->mark) heap_adjust_entry(source);
+        if (size) size += HEAP_HEAD_SIZE;
+    }
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_2(state_t * z) {
+    heap_collect_2_calculate(z);
+    heap_collect_2_adjust(z);
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect_3(state_t * z) {
+    address_t destination = {0};
+    address_t source = {HEAP_HEAD_SIZE};
+    for (int size = -1; size && source.offset < heap.size; source.offset += size) {
+        head_t * s = head_pointer(source);
+        size = s->size;
+        if (size && s->mark) {
+            destination = (address_t) {s->address};
+            head_t * d = head_pointer(destination);
+            memcpy(d, s, size + HEAP_HEAD_SIZE);
+            d->address = 0;
+            heap_display_entry(destination);
+        }
+        if (size) size += HEAP_HEAD_SIZE;
+    }
+    *head_pointer(destination) = empty_head;
+}
+//----------------------------------------------------------------------------------------------------------------------
+static void heap_collect(state_t * z) {
+    heap_collect_1(z);
+    heap_collect_2(z);
+    heap_collect_3(z);
 }
 //======================================================================================================================
 typedef struct _num { int iN; int * aN; } num_t;
@@ -693,8 +779,8 @@ static inline void ζ_move_next(state_t * z) { z->SIGMA = z->sigma; z->DELTA = z
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up(state_t * z) {
     if (z->psi.offset) {
-        z->PI = _z_(z->psi)->PI;
-        z->ctx = _z_(z->psi)->ctx;
+        z->PI = S(z->psi)->PI;
+        z->ctx = S(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
@@ -706,23 +792,23 @@ static void ζ_up_track(state_t * z) {
     track->sigma = z->sigma;
     track->delta = z->delta;
     if (z->psi.offset) {
-        z->PI = _z_(z->psi)->PI;
-        z->ctx = _z_(z->psi)->ctx;
+        z->PI = S(z->psi)->PI;
+        z->ctx = S(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up_fail(state_t * z) {
     if (z->psi.offset) {
-        z->PI = _z_(z->psi)->PI;
-        z->ctx = _z_(z->psi)->ctx;
+        z->PI = S(z->psi)->PI;
+        z->ctx = S(z->psi)->ctx;
         z->psi = pop_state(z->psi);
     } else z->PI = NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void MATCH(const char * pattern_name, const char * subject) {
-    heap_init();
     Ω_init();
+    heap_init();
     int a = PROCEED;
     int iteration = 0;
     num_t num; num = empty_num;
@@ -730,7 +816,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
     state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, 0, {0}, {0}};
     while (Z.PI) {
         iteration++; // if (iteration > 64) break;
-        animate(a, Z, iteration);
+        if (DEBUG_MATCH) animate(a, Z, iteration);
         int t = Z.PI->type;
         switch (t<<2|a) {
 //      ----------------------------------------------------------------------------------------------------------------
@@ -880,9 +966,10 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     }
         }
     }
+    heap_collect(&Z);
     heap_print(&Z);
-    Ω_fini();
     heap_fini();
+    Ω_fini();
 }
 //----------------------------------------------------------------------------------------------------------------------
 static const PATTERN ARB_1 = {POS, .n=0};
@@ -924,7 +1011,7 @@ int main() {
 //  MATCH("BEAD",       "READS");
 //  MATCH("BEARDS",     "ROOSTS");
 //  MATCH("C",          "x+y*z");
-//  MATCH("CALC",       "x+y*z");
+    MATCH("CALC",       "x+y*z");
 //  MATCH("Arb",        "");
 //  MATCH("Arb",        "x");
 //  MATCH("Arb",        "xy");
@@ -938,10 +1025,10 @@ int main() {
 //  MATCH("identifier", "Id+");
 //  MATCH("real_number","12.99E+3");
 //  MATCH("real_number","12990.0");
-    MATCH("Bal",        ")A+B(");
-    MATCH("Bal",        "A+B)");
-    MATCH("Bal",        "(A+B");
-    MATCH("Bal",        "(A+B)");
+//  MATCH("Bal",        ")A+B(");
+//  MATCH("Bal",        "A+B)");
+//  MATCH("Bal",        "(A+B");
+//  MATCH("Bal",        "(A+B)");
 //  MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }
