@@ -1,0 +1,15 @@
+START   RE_Quantifier   =   '*' | '+' | '?'
+        RE_Item         =   ( '.'
++                           | '\' ANY('.\(|*+?)')
++                           | ANY(&UCASE &LCASE "0123456789")
++                           | '(' *RE_Expression ')'
++                           )
+        RE_Factor       =   RE_Item (RE_Quantifier | epsilon)
+        RE_Term         =   ARBNO(RE_Factor)
+        RE_Expression   =   RE_Term ARBNO('|' RE_Term)
+        RE_RegEx        =   POS(0) RE_Expression RPOS(0)
+
+        "xy|z" ? RE_RegxEx :S(yeah)F(boo)
+yeah    OUTPUT = "Yeah!"    :(END)
+boo     OUTPUT = "Boo."     :(END)
+END

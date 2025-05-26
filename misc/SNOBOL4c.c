@@ -7,7 +7,7 @@
 #include <stdbool.h>
 //----------------------------------------------------------------------------------------------------------------------
 #define DEBUG_HEAP false
-#define DEBUG_MATCH false
+#define DEBUG_MATCH true
 #define DEBUG_COLLECT false
 //======================================================================================================================
 // PATTERN data type ===================================================================================================
@@ -138,15 +138,15 @@ static address_t heap_alloc(short stamp, int size) {
     return a;
 }
 //======================================================================================================================
+typedef struct _command command_t;
+typedef struct _command { address_t string; address_t lambda; } command_t;
+//----------------------------------------------------------------------------------------------------------------------
 static address_t alloc_string(const char * string) {
     address_t address = heap_alloc(STAMP_STRING, strlen(string) + 1);
     char * mem = (char *) pointer(address);
     strcpy(mem, string);
     return address;
 }
-//----------------------------------------------------------------------------------------------------------------------
-typedef struct _command command_t;
-typedef struct _command { address_t string; address_t lambda; } command_t;
 //----------------------------------------------------------------------------------------------------------------------
 static inline const char * CC(address_t address) { return (const char *) (heap.a + address.offset); }
 static inline command_t * C(address_t address)  { return (command_t *) (heap.a + address.offset); }
@@ -174,14 +174,15 @@ typedef struct _state {
     const char *    sigma;
     int             delta;
     const PATTERN * PI;
-    int             fence:1;
-    int             ctx:31;
+    unsigned int    fenced:1;
+    unsigned int    yielded:1;
+    int             ctx:30;
     address_t       psi; // state stack
     address_t       lambda; // command stack
 } state_t;
 //----------------------------------------------------------------------------------------------------------------------
 static inline state_t * S(address_t address) { return (state_t *) (heap.a + address.offset); }
-static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, 0, {0}, {0} };
+static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, 0, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
 static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = S(psi)->psi) /**/; return len; }
 static address_t push_state(address_t psi, state_t * z) {
@@ -248,7 +249,9 @@ static void heap_print(state_t * z) {
     }
     fprintf(stderr, "\n");
 }
-//----------------------------------------------------------------------------------------------------------------------
+//======================================================================================================================
+// Heap garbage collection =============================================================================================
+//======================================================================================================================
 static void heap_collect_1_states(address_t psi) {
     for (; psi.offset; psi = S(psi)->psi) {
         heap_mark_set(psi);
@@ -427,7 +430,7 @@ static inline void assign_str(const char * name, const char * v) { return assign
 static inline void assign_int(const char * name, int v) { int * V = malloc(sizeof(int)); *V = v; return assign(name, V); }
 static void assign_ptr(const char * name, const void * v) { const void ** V = malloc(sizeof(void *)); *V = v; return assign(name, V); }
 //======================================================================================================================
-// PATTERN scanner =====================================================================================================
+// PATTERN scanners ====================================================================================================
 //======================================================================================================================
 #define PROCEED 0
 #define SUCCESS 1
@@ -763,8 +766,8 @@ static inline void ζ_over_dynamic(state_t * z) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static inline void ζ_next(state_t * z)      { z->sigma = z->SIGMA; z->delta = z->DELTA; }
-static inline void ζ_stay_next(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
-static inline void ζ_move_next(state_t * z) { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
+static inline void ζ_stay_next(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->yielded = false; z->ctx++; }
+static inline void ζ_move_next(state_t * z) { z->SIGMA = z->sigma; z->DELTA = z->delta; z->yielded = false; z->ctx++; }
 //----------------------------------------------------------------------------------------------------------------------
 static void ζ_up(state_t * z) {
     if (z->psi.offset) {
@@ -780,6 +783,7 @@ static void ζ_up_track(state_t * z) {
     track->DELTA = z->DELTA;
     track->sigma = z->sigma;
     track->delta = z->delta;
+    track->yielded = true;
     if (z->psi.offset) {
         z->PI = S(z->psi)->PI;
         z->ctx = S(z->psi)->ctx;
@@ -817,7 +821,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
     int iteration = 0;
     num_t num; num = empty_num;
     const PATTERN * pattern = * (const PATTERN **) lookup(pattern_name);
-    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, 0, {0}, {0}};
+    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, 0, 0, {0}, {0}};
     while (Z.PI) {
         iteration++; // if (iteration > 64) break;
         if (DEBUG_MATCH) animate(a, Z, iteration);
@@ -829,7 +833,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case Π<<2|SUCCESS:          { a = SUCCESS;                  ζ_up(&Z);                       break; }
         case Π<<2|FAILURE:          { a = PROCEED;                  ζ_stay_next(&Z);                break; }
-        case Π<<2|RECEDE:        if (Z.fence == false)
+        case Π<<2|RECEDE:        if (!Z.fenced)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
@@ -852,16 +856,22 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case π<<2|SUCCESS:          { a = SUCCESS;                  ζ_up(&Z);                       break; }
         case π<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
-        case π<<2|RECEDE:        if (Z.fence == false)
+        case π<<2|RECEDE:        if (!Z.fenced)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
-                                    { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
+        case ARBNO<<2|PROCEED:
+                                 if (Z.ctx == 0)
+                                    { a = SUCCESS; Ω_push(&Z);      ζ_up_track(&Z);                 break; }
                                else { a = PROCEED; Ω_push(&Z);      ζ_down_single(&Z);              break; }
-        case ARBNO<<2|SUCCESS:      { a = SUCCESS;                  ζ_up_track(&Z);                 break; }
-        case ARBNO<<2|FAILURE:      { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case ARBNO<<2|RECEDE:    if (Z.fence == false)
+        case ARBNO<<2|SUCCESS:
+                                    { a = SUCCESS;                  ζ_up_track(&Z);                 break; }
+        case ARBNO<<2|FAILURE:
+                                    { a = RECEDE;  Ω_pop(&Z);                                       break; }
+        case ARBNO<<2|RECEDE:
+                                 if (Z.fenced)
+                                    { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
+                            else if (Z.yielded)
                                     { a = PROCEED;                  ζ_move_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
@@ -873,27 +883,27 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ARB<<2|PROCEED:     if (Π_ARB(&Z))
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case ARB<<2|RECEDE:      if (Z.fence == false)
+        case ARB<<2|RECEDE:      if (!Z.fenced)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case MARB<<2|PROCEED:    if (Π_MARB(&Z))
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case MARB<<2|RECEDE:      if (Z.fence == false)
+        case MARB<<2|RECEDE:      if (!Z.fenced)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case BAL<<2|PROCEED:     if (Π_BAL(&Z))
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case BAL<<2|RECEDE:      if (Z.fence == false)
+        case BAL<<2|RECEDE:      if (!Z.fenced)
                                     { a = PROCEED;                  ζ_next(&Z);                     break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ABORT<<2|PROCEED:      { a = FAILURE;                  Z.PI = NULL;                    break; }
         case SUCCEED<<2|PROCEED:    { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
-        case SUCCEED<<2|RECEDE:  if (Z.fence == false)
+        case SUCCEED<<2|RECEDE:  if (!Z.fenced)
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
         case FAIL<<2|PROCEED:       { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
@@ -901,16 +911,16 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case FENCE<<2|PROCEED:   if (Z.PI->n == 0)
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                             else if (Z.PI->n == 1)
-                                    { a = PROCEED; Z.fence = true;  ζ_down_single(&Z);              break; }
+                                    { a = PROCEED; Z.fenced = true; ζ_down_single(&Z);              break; }
         case FENCE<<2|RECEDE:    if (Z.PI->n == 0)
                                     { a = RECEDE;                   Z.PI = NULL;                    break; }
                             else if (Z.PI->n == 1)
                                     { assert(0); /* invalid */ }
         case FENCE<<2|SUCCESS:   if (Z.PI->n == 1)
-                                    { a = SUCCESS; Z.fence = false; ζ_up(&Z);                       break; }
+                                    { a = SUCCESS; Z.fenced = false; ζ_up(&Z);                      break; }
                                else { assert(0); /* invalid */ }
         case FENCE<<2|FAILURE:   if (Z.PI->n == 1)
-                                    { a = FAILURE; Z.fence = false; ζ_up_fail(&Z);                  break; }
+                                    { a = FAILURE; Z.fenced = false; ζ_up_fail(&Z);                 break; }
                                else { assert(0); /* invalid */ }
 //      ----------------------------------------------------------------------------------------------------------------
         case Δ<<2|PROCEED:          { a = PROCEED;                  ζ_down_single(&Z);              break; }
@@ -1018,7 +1028,7 @@ int main() {
 //  MATCH("BEAD",       "READS");
 //  MATCH("BEARDS",     "ROOSTS");
 //  MATCH("C",          "x+y*z");
-    MATCH("CALC",       "x+y*z");
+//  MATCH("CALC",       "x+y*z");
 //  MATCH("Arb",        "");
 //  MATCH("Arb",        "x");
 //  MATCH("Arb",        "xy");
@@ -1036,7 +1046,7 @@ int main() {
 //  MATCH("Bal",        "A+B)");
 //  MATCH("Bal",        "(A+B");
 //  MATCH("Bal",        "(A+B)");
-//  MATCH("RE_RegEx",   "x|yz");
+    MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }
 //======================================================================================================================
