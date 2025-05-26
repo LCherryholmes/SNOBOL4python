@@ -5,6 +5,8 @@
 #include <malloc.h>
 #include <assert.h>
 #include <stdbool.h>
+//----------------------------------------------------------------------------------------------------------------------
+#define DEBUG_HEAP false
 //======================================================================================================================
 // PATTERN data type
 //----------------------------------------------------------------------------------------------------------------------
@@ -117,20 +119,23 @@ static address_t heap_alloc(short stamp, int size) {
             memset(heap.a + heap.size, 0, HEAP_SIZE_BUMP);
             heap.size += HEAP_SIZE_BUMP;
         }
-        if (false) fprintf(stderr, "heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.current, heap.size);
+        if (DEBUG_HEAP)
+            fprintf(stderr, "heap_alloc=(0x%08.8X, %d, %d)\n", heap.a, heap.current, heap.size);
     }
     address_t a = {heap.current + HEAP_HEAD_SIZE};
     head_t * h = (head_t *) &heap.a[a.offset];
     h[-1] = (head_t) {stamp, size};
     heap.current = a.offset + size;
-    if (false) fprintf(stderr, "0x%08.8X: %2d %5d alloc\n", a.offset, h[-1].stamp, h[-1].size);
+    if (DEBUG_HEAP)
+        fprintf(stderr, "0x%08.8X: %2d %5d alloc\n", a.offset, h[-1].stamp, h[-1].size);
     return a;
 }
 //----------------------------------------------------------------------------------------------------------------------
 static address_t heap_free(address_t a) {
     if (a.offset) {
         head_t * h = (head_t *) &heap.a[a.offset];
-        if (false) fprintf(stderr, "0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].size);
+        if (DEBUG_HEAP)
+            fprintf(stderr, "0x%08.8X: %2d %3d %5d free\n", a.offset, h[-1].stamp, h[-1].size);
     }
 }
 //======================================================================================================================
@@ -199,7 +204,7 @@ static int iTracks = 0;
 static state_t * aTracks = NULL;
 static void Ω_init() { iTracks = 0; aTracks = NULL; }
 static void Ω_fini() { iTracks = 0; if (aTracks) free(aTracks); aTracks = NULL; }
-static state_t * Ω_top() { if (iTracks > 0) return &aTracks[iTracks - 1]; else return NULL; }
+static inline state_t * Ω_top() { if (iTracks > 0) return &aTracks[iTracks - 1]; else return NULL; }
 static void Ω_push(state_t * z) { aTracks = realloc(aTracks, ++iTracks * sizeof(state_t)); aTracks[iTracks - 1] = *z; }
 static void Ω_pop(state_t * z) {
     if (iTracks > 0) {
@@ -210,6 +215,7 @@ static void Ω_pop(state_t * z) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void heap_print(state_t * z) {
+    if (!DEBUG_HEAP) return;
     fprintf(stderr, "zeta: 0x%8.8X 0x%8.8X %d %s\n\n", z->psi, z->lambda, z->ctx, z->PI ? types[z->PI->type] : "NULL");
     fprintf(stderr, "tracks: %d\n", iTracks);
     for (int i = 0; i < iTracks; i++) {
@@ -272,11 +278,13 @@ static inline int  N_pop(num_t * N)     { if (N->aN && N->iN > 0) {
 typedef struct entry_t { char * name; const void * value; } entry_t;
 typedef struct bucket_t { int count; int capacity; entry_t * entries; } bucket_t;
 typedef struct globals_t { int num_buckets; bucket_t * buckets; } globals_t;
+//----------------------------------------------------------------------------------------------------------------------
 static globals_t globals = {0, NULL};
 static void globals_init() {
     globals.num_buckets = 4;
     globals.buckets = calloc(globals.num_buckets, sizeof(bucket_t));
 }
+//----------------------------------------------------------------------------------------------------------------------
 static void globals_fini() {
     for (int i = 0; i < globals.num_buckets; i++) {
         for (int j = 0; j < globals.buckets[i].count; j++) {
@@ -342,8 +350,8 @@ static void assign(const char * name, const void * value) {
     bucket->count++;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void assign_str(const char * name, const char * v) { return assign(name, strdup(v)); }
-static void assign_int(const char * name, int v) { int * V = malloc(sizeof(int)); *V = v; return assign(name, V); }
+static inline void assign_str(const char * name, const char * v) { return assign(name, strdup(v)); }
+static inline void assign_int(const char * name, int v) { int * V = malloc(sizeof(int)); *V = v; return assign(name, V); }
 static void assign_ptr(const char * name, const void * v) { const void ** V = malloc(sizeof(void *)); *V = v; return assign(name, V); }
 //======================================================================================================================
 #define PROCEED 0
@@ -473,7 +481,7 @@ static void animate(int action, state_t Z, int iteration) {
     fflush(stderr);
 }
 //----------------------------------------------------------------------------------------------------------------------
-static bool Π_ARB(state_t * z) {
+static inline bool Π_ARB(state_t * z) {
     if (z->DELTA + z->ctx <= z->OMEGA) {
         z->sigma += z->ctx;
         z->delta += z->ctx;
@@ -481,7 +489,7 @@ static bool Π_ARB(state_t * z) {
     } else return false;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static bool Π_MARB(state_t * z) {
+static inline bool Π_MARB(state_t * z) {
     if (z->OMEGA - z->ctx >= z->DELTA) {
         z->sigma += z->ctx;
         z->delta += z->ctx;
@@ -663,7 +671,7 @@ static inline void ζ_down(state_t * z) {
     z->ctx = 0;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static inline void ζ_down_single(state_t * z) {
+static void ζ_down_single(state_t * z) {
     z->psi = push_state(z->psi, z);
     z->sigma = z->SIGMA;
     z->delta = z->DELTA;
@@ -872,7 +880,7 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     }
         }
     }
-    if (true) heap_print(&Z);
+    heap_print(&Z);
     Ω_fini();
     heap_fini();
 }
