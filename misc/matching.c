@@ -56,7 +56,7 @@ static const char * types[] =
 {
     "ABORT", "ANY$", "ARB", "ARBNO", "BAL", "BREAK$", "BREAKX", "FAIL", "FENCE", "LEN#", "MARB", "MARBNO", "NOTANY$",
     "POS#", "REM", "RPOS#", "RTAB", "SPAN$", "SUCCEED", "TAB", "Shift", "Reduce", "Pop", "nInc", "nPop", "nPush",
-    "DELTA" /*Δ*/, "Θ", "Λ", "ALT" /*Π*/, "SEQ" /*Σ*/, "Φ", "α", "δ", "epsilon" /*ε*/, "zeta" /*ζ*/, "θ",
+    "DELTA" /*Δ*/, "Θ", "Λ", "ALT" /*Π*/, "SEQ" /*Σ*/, "Φ", "α", "delta" /*δ*/, "epsilon" /*ε*/, "zeta" /*ζ*/, "θ",
     "lambda" /*λ*/, "π", "ρ", "LIT$" /*σ*/, "φ", "ω"
 };
 //----------------------------------------------------------------------------------------------------------------------
@@ -82,6 +82,7 @@ typedef struct PATTERN {
 #include "BEARDS_PATTERN.h"
 #include "C_PATTERN.h"
 #include "CALC_PATTERN.h"
+#include "TESTS_PATTERN.h"
 #include "RE_PATTERN.h"
 //======================================================================================================================
 // Heap memory management
@@ -185,13 +186,14 @@ typedef struct _state {
     const char *    sigma;
     int             delta;
     const PATTERN * PI;
-    int             ctx;
+    int             fence:1;
+    int             ctx:31;
     address_t       psi; // state stack
     address_t       lambda; // command stack
 } state_t;
 //----------------------------------------------------------------------------------------------------------------------
 static inline state_t * _z_(address_t address) { return (state_t *) (heap.a + address.offset); }
-static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, {0}, {0} };
+static state_t empty_state = {NULL, 0, 0, NULL, 0, NULL, 0, 0, {0}, {0} };
 static address_t alloc_state() { return heap_alloc(STAMP_STATE, sizeof(state_t)); }
 static int       total_states(address_t psi) { int len = 0; for (; psi.offset; len++, psi = _z_(psi)->psi) /**/; return len; }
 static address_t push_state(address_t psi, state_t * z) {
@@ -293,8 +295,10 @@ static void globals_init() {
 }
 static void globals_fini() {
     for (int i = 0; i < globals.num_buckets; i++) {
-        for (int j = 0; j < globals.buckets[i].count; j++)
+        for (int j = 0; j < globals.buckets[i].count; j++) {
             free(globals.buckets[i].entries[j].name);
+            free((void *) globals.buckets[i].entries[j].value);
+        }
         free(globals.buckets[i].entries);
     }
     free(globals.buckets);
@@ -308,7 +312,7 @@ static unsigned int hash(const char * str, int num_buckets) {
     return h % num_buckets;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static const void * globals_lookup(const char * name) {
+static const void * lookup(const char * name) {
     unsigned int index = hash(name, globals.num_buckets);
     bucket_t * bucket = &globals.buckets[index];
     int low = 0, high = bucket->count - 1;
@@ -322,7 +326,7 @@ static const void * globals_lookup(const char * name) {
     return NULL;
 }
 //----------------------------------------------------------------------------------------------------------------------
-static void globals_insert(const char * name, const void * value) {
+static void assign(const char * name, const void * value) {
     unsigned int index = hash(name, globals.num_buckets);
     bucket_t * bucket = &globals.buckets[index];
     int low = 0, high = bucket->count - 1;
@@ -330,7 +334,11 @@ static void globals_insert(const char * name, const void * value) {
     while (low <= high) {
         int mid = (low + high) >> 1;
         int cmp = strcmp(name, bucket->entries[mid].name);
-        if (cmp == 0) { bucket->entries[mid].value = value; return; } // using replacement logic
+        if (cmp == 0) {
+            free((void *) bucket->entries[mid].value);
+            bucket->entries[mid].value = value;
+            return;
+        }
         else if (cmp < 0) high = mid - 1;
         else low = mid + 1;
     }
@@ -349,6 +357,10 @@ static void globals_insert(const char * name, const void * value) {
     bucket->entries[pos] = new_entry;
     bucket->count++;
 }
+//----------------------------------------------------------------------------------------------------------------------
+static void assign_str(const char * name, const char * v) { return assign(name, strdup(v)); }
+static void assign_int(const char * name, int v) { int * V = malloc(sizeof(int)); *V = v; return assign(name, V); }
+static void assign_ptr(const char * name, const void * v) { const void ** V = malloc(sizeof(void *)); *V = v; return assign(name, V); }
 //======================================================================================================================
 #define PROCEED 0
 #define SUCCESS 1
@@ -621,7 +633,12 @@ static inline void ζ_down_single(state_t * z) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 static inline void ζ_over(state_t * z, const PATTERN * PI) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = PI; }
-static inline void ζ_over_dynamic(state_t * z) { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx = 0; z->PI = globals_lookup(z->PI->N); }
+static inline void ζ_over_dynamic(state_t * z) {
+    assert(z->sigma == z->SIGMA); z->sigma = z->SIGMA;
+    assert(z->delta == z->DELTA); z->delta = z->DELTA;
+    z->ctx = 0;
+    z->PI = * (const PATTERN **) lookup(z->PI->N);
+}
 //----------------------------------------------------------------------------------------------------------------------
 static inline void ζ_stay_next(state_t * z)                { z->sigma = z->SIGMA; z->delta = z->DELTA; z->ctx++; }
 static inline void ζ_move_next(state_t * z)                { z->SIGMA = z->sigma; z->DELTA = z->delta; z->ctx++; }
@@ -661,8 +678,8 @@ static void MATCH(const char * pattern_name, const char * subject) {
     int a = PROCEED;
     int iteration = 0;
     num_t num; num = empty_num;
-    const PATTERN * pattern = globals_lookup(pattern_name);
-    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, {0}, {0}};
+    const PATTERN * pattern = * (const PATTERN **) lookup(pattern_name);
+    state_t Z = {subject, 0, strlen(subject), NULL, 0, pattern, 0, 0, {0}, {0}};
     while (Z.PI) {
         iteration++; // if (iteration > 64) break;
         animate(a, Z, iteration);
@@ -674,7 +691,9 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case Π<<2|SUCCESS:          { a = SUCCESS;                  ζ_up(&Z);                       break; }
         case Π<<2|FAILURE:          { a = PROCEED;                  ζ_stay_next(&Z);                break; }
-        case Π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+        case Π<<2|RECEDE:        if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case Σ<<2|PROCEED:       if (Z.ctx < Z.PI->n)
                                     { a = PROCEED;                  ζ_down(&Z);                     break; }
@@ -695,38 +714,46 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
         case π<<2|SUCCESS:          { a = SUCCESS;                  ζ_up(&Z);                       break; }
         case π<<2|FAILURE:          { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
-        case π<<2|RECEDE:           { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+        case π<<2|RECEDE:        if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = PROCEED; Ω_push(&Z);      ζ_down_single(&Z);              break; }
         case ARBNO<<2|SUCCESS:      { a = SUCCESS;                  ζ_up_track(&Z);                 break; }
         case ARBNO<<2|FAILURE:      { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case ARBNO<<2|RECEDE:       { a = PROCEED;                  ζ_move_next(&Z);                break; }
+        case ARBNO<<2|RECEDE:    if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_move_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ARB<<2|PROCEED:     if (Π_ARB(&Z))
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                                else { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case ARB<<2|RECEDE:         { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+        case ARB<<2|RECEDE:      if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case ABORT<<2|PROCEED:      { a = FAILURE;                  Z.PI = NULL;                    break; }
         case SUCCEED<<2|PROCEED:    { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
-        case SUCCEED<<2|RECEDE:     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+        case SUCCEED<<2|RECEDE:  if (Z.fence == false)
+                                    { a = PROCEED;                  ζ_stay_next(&Z);                break; }
+                               else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
         case FAIL<<2|PROCEED:       { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
         case FENCE<<2|PROCEED:   if (Z.PI->n == 0)
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up(&Z);                       break; }
                             else if (Z.PI->n == 1)
-                                    { a = PROCEED;                  ζ_down_single(&Z);              break; }
+                                    { a = PROCEED; Z.fence = true;  ζ_down_single(&Z);              break; }
         case FENCE<<2|RECEDE:    if (Z.PI->n == 0)
                                     { a = RECEDE;                   Z.PI = NULL;                    break; }
                             else if (Z.PI->n == 1)
                                     { assert(0); }
         case FENCE<<2|SUCCESS:   if (Z.PI->n == 1)
-                                    { a = SUCCESS;                  ζ_up(&Z);                       break; }
+                                    { a = SUCCESS; Z.fence = false; ζ_up(&Z);                       break; }
                                else { assert(0); }
         case FENCE<<2|FAILURE:   if (Z.PI->n == 1)
-                                    { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
+                                    { a = FAILURE; Z.fence = false; ζ_up_fail(&Z);                  break; }
                                else { assert(0); }
 //      ----------------------------------------------------------------------------------------------------------------
         case Δ<<2|PROCEED:          { a = PROCEED;                  ζ_down_single(&Z);              break; }
@@ -800,26 +827,33 @@ static const PATTERN ARBNO_0 = {Σ, 3, {&ARBNO_1, &ARBNO_2, &ARBNO_4}};
 
 int main() {
     globals_init();
-    globals_insert("BEAD",          &BEAD_0);
-    globals_insert("BEARDS",        &BEARDS_0);
-    globals_insert("C",             &C_0);
-    globals_insert("X",             &C_3);
-    globals_insert("CALC",          &CALC_0);
-    globals_insert("EXPR",          &CALC_3);
-    globals_insert("Arb",           &ARB_0);
-    globals_insert("Arbno",         &ARBNO_0);
-    globals_insert("RE_Quantifier", &RE_Quantifier_0);
-    globals_insert("RE_Item",       &RE_Item_0);
-    globals_insert("RE_Factor",     &RE_Factor_0);
-    globals_insert("RE_Term",       &RE_Term_0);
-    globals_insert("RE_Expression", &RE_Expression_0);
-    globals_insert("RE_RegEx",      &RE_RegEx_0);
+    assign_ptr("BEAD",          &BEAD_0);
+    assign_ptr("BEARDS",        &BEARDS_0);
+    assign_ptr("C",             &C_0);
+    assign_ptr("X",             &C_3);
+    assign_ptr("CALC",          &CALC_0);
+    assign_ptr("EXPR",          &CALC_3);
+    assign_ptr("Arb",           &ARB_0);
+    assign_ptr("Arbno",         &ARBNO_0);
+    assign_ptr("RE_Quantifier", &RE_Quantifier_0);
+    assign_ptr("RE_Item",       &RE_Item_0);
+    assign_ptr("RE_Factor",     &RE_Factor_0);
+    assign_ptr("RE_Term",       &RE_Term_0);
+    assign_ptr("RE_Expression", &RE_Expression_0);
+    assign_ptr("RE_RegEx",      &RE_RegEx_0);
+    assign_ptr("identifier",    &identifier_0);
+    assign_ptr("real_number",   &real_number_0);
     MATCH("BEAD",       "READS");
     MATCH("BEARDS",     "ROOSTS");
     MATCH("C",          "x+y*z");
     MATCH("CALC",       "x+y*z");
     MATCH("Arb",        "xyz");
     MATCH("Arbno",      "xyz");
+    MATCH("identifier", "x");
+    MATCH("identifier", "Id_99");
+    MATCH("identifier", "Id+");
+    MATCH("real_number","12.99E+3");
+    MATCH("real_number","12990.0");
 //  MATCH("RE_RegEx",   "x|yz");
     globals_fini();
 }

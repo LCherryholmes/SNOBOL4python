@@ -69,11 +69,36 @@ _bootstrap("", RE_Term, "RE_Term")
 _bootstrap("", RE_Expression, "RE_Expression")
 _bootstrap("", RE_RegEx, "RE_RegEx")
 print()
-"""
 #-----------------------------------------------------------------------------------------------------------------------
 P = FENCE(TAB(lambda: N + 1) + Θ("OUTPUT") + Θ("N") | ABORT())
 S = POS(0) + Θ("N") + SUCCEED() + ζ("P") + FAIL()
 _bootstrap("", P, "P")
 _bootstrap("", S, "S")
+print()
+"""
+#-----------------------------------------------------------------------------------------------------------------------
+identifier = (   POS(0)
+             +   ANY(UCASE + LCASE)
+             +   FENCE(SPAN("." + DIGITS + UCASE + "_" + LCASE) | ε())
+             +   RPOS(0)
+             )
+_bootstrap("", identifier, "identifier")
+print()
+#-----------------------------------------------------------------------------------------------------------------------
+real_number = ( POS(0)
+              + ( (   SPAN(DIGITS) @ 'whole'
+                  +   (σ('.') + FENCE(SPAN(DIGITS) | ε()) @ 'fract' | ε())
+                  +   (σ('E') | σ('e'))
+                  +   (σ('+') | σ('-') | ε())
+                  +   SPAN(DIGITS) @ 'exp'
+                  )
+                | (   SPAN(DIGITS) @ 'whole'
+                  +   σ('.')
+                  +   FENCE(SPAN(DIGITS) | ε()) @ 'fract'
+                  )
+                )
+              +   RPOS(0)
+              )
+_bootstrap("", real_number, "real_number")
 print()
 #-----------------------------------------------------------------------------------------------------------------------
