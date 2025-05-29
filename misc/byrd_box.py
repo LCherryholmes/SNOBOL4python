@@ -57,15 +57,15 @@ expr1     =   ( expr2
                 | ς('>')  + expr2 + Reduce('>', 2)
                 | ς('==') + expr2 + Reduce('==', 2)
                 | ς('<=') + expr2 + Reduce('<=', 2)
-                | ς('>=') + expr2 + Reduce('<=', 2)
+                | ς('>=') + expr2 + Reduce('>=', 2)
                 | ς('!=') + expr2 + Reduce('!=', 2)
                 | ε()
                 )
               )
 #------------------------------------------------------------------------------
-stmt        =   every + expr1 + Reduce('EVERY', 1) | expr1
+stmt      =   every + expr1 + Reduce('EVERY', 1) | expr1
 #------------------------------------------------------------------------------
-program     =   ( POS(0)
+program   =   ( POS(0)
               + nPush()
               + ARBNO(stmt + nInc() + ς(';'))
               + Reduce("ICON")
@@ -74,7 +74,33 @@ program     =   ( POS(0)
               + RPOS(0)
               )
 #------------------------------------------------------------------------------
+def out(s): print(s, end="")
+def dump(t):
+    if t is None: return
+    match t[0]:
+        case 'ICON':
+            out('(icon')
+            for c in t[1:]: out(' '); dump(c)
+            out(')')
+        case 'I':     out(t[1])
+        case 'V':     out(t[1])
+        case 'WRITE': out('(write '); dump(t[1]); out(')')
+        case 'EVERY': out('(every '); dump(t[1]); out(')')
+        case '+':     out('(+ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '-':     out('(- ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '*':     out('(* ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '/':     out('(/ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '<':     out('(< ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '>':     out('(> ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '==':    out('(== ');    dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '<=':    out('(<= ');    dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '>=':    out('(>= ');    dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '!=':    out('(!= ');    dump(t[1]); out(' '); dump(t[2]); out(')')
+        case 'TO':    out('(to ');    dump(t[1]); out(' '); dump(t[2]); out(')')
+#------------------------------------------------------------------------------
 if icon_source in program:
     pprint(icon)
+    dump(icon)
+    print()
 else: print("Boo!")
 #------------------------------------------------------------------------------
