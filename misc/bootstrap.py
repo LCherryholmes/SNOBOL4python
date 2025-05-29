@@ -15,7 +15,6 @@ from _bootstrap import _bootstrap # import the C extension function
 #-----------------------------------------------------------------------------------------------------------------------
 GLOBALS(globals())
 TRACE(40)
-"""
 #-----------------------------------------------------------------------------------------------------------------------
 BEAD = POS(0) + (σ('B') | σ('R')) + (σ('E') | σ('EA')) + (σ('D') | σ('DS')) + RPOS(0)
 _bootstrap("READS", BEAD, "BEAD")
@@ -70,7 +69,7 @@ real_number = ( POS(0)
                   +   FENCE(SPAN(DIGITS) | ε()) @ 'fract'
                   )
                 )
-              +   RPOS(0)
+              + RPOS(0)
               )
 _bootstrap("", real_number, "real_number")
 print()
@@ -78,12 +77,8 @@ print()
 Bal = POS(0) + BAL() @ 'OUTPUT' + RPOS(0)
 _bootstrap("", Bal, "Bal")
 print()
-"""
 #-----------------------------------------------------------------------------------------------------------------------
-RE_Quantifier   =   ( σ('*')
-                    | σ('+')
-                    | σ('?')
-                    )
+RE_Quantifier   =   σ('*') | σ('+') | σ('?')
 RE_Item         =   ( σ('.')
                     | σ('\\') + ANY('.\\(|*+?)') % 'tx'
                     | ANY(UCASE + LCASE + DIGITS) % 'tx'
@@ -91,10 +86,9 @@ RE_Item         =   ( σ('.')
                     )
 RE_Factor       =   ζ("RE_Item") + (ζ("RE_Quantifier") | ε())
 RE_Term         =   ARBNO(ζ("RE_Factor"))
-RE_Expression   =   ( ζ("RE_Term")
-                    + ARBNO(σ('|') + ζ("RE_Term"))
-                    )
+RE_Expression   =   ζ("RE_Term") + ARBNO(σ('|') + ζ("RE_Term"))
 RE_RegEx        =   POS(0) + ζ("RE_Expression") + RPOS(0)
+#-----------------------------------------------------------------------------------------------------------------------
 _bootstrap("", RE_Quantifier, "RE_Quantifier")
 _bootstrap("", RE_Item,       "RE_Item")
 _bootstrap("", RE_Factor,     "RE_Factor")

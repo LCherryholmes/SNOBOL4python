@@ -127,14 +127,14 @@ static address_t heap_alloc(short stamp, int size) {
             heap.size += HEAP_SIZE_BUMP;
         }
         if (DEBUG_HEAP)
-            fprintf(stderr, "heap_alloc=(0x%08.8X: %d, %d)\n", heap.a, heap.current, heap.size);
+            printf("heap_alloc=(0x%08.8X: %d, %d)\n", heap.a, heap.current, heap.size);
     }
     address_t a = {heap.current + HEAP_HEAD_SIZE};
     head_t * h = head_pointer(a);
     *h = (head_t) {0, stamp, 0, size};
     heap.current = a.offset + size;
     if (DEBUG_HEAP)
-        fprintf(stderr, "0x%08.8X: %1d %3d %6d\n", a.offset, h->mark, h->stamp, h->size);
+        printf("0x%08.8X: %1d %3d %6d\n", a.offset, h->mark, h->stamp, h->size);
     return a;
 }
 //======================================================================================================================
@@ -152,9 +152,9 @@ static inline const char * CC(address_t address) { return (const char *) (heap.a
 static inline command_t * C(address_t address)  { return (command_t *) (heap.a + address.offset); }
 static address_t alloc_command() { return heap_alloc(STAMP_COMMAND, sizeof(command_t)); }
 static address_t push_command(address_t lambda, const char * string) {
-    address_t s = alloc_string(string); // addresses always point backward
+    address_t s = alloc_string(string);
     address_t LAMBDA = alloc_command();
-    C(LAMBDA)->string = s;
+    C(LAMBDA)->string = s; // addresses always point backward
     C(LAMBDA)->lambda = lambda;
     return LAMBDA;
 }
@@ -216,26 +216,26 @@ static void Ω_pop(state_t * z) {
 static void heap_display_entry(address_t a) {
     void * mem = pointer(a);
     head_t * h = head_pointer(a);
-    fprintf(stderr, "0x%8.8X: %1d %2d 0x%08.8X 0x%08.8X: ", a.offset, h->mark, h->stamp, h->address, h->size);
+    printf("0x%8.8X: %1d %2d 0x%08.8X 0x%08.8X: ", a.offset, h->mark, h->stamp, h->address, h->size);
     switch (h->stamp) {
         case STAMP_STRING: {
             const char * s = (const char *) mem;
-            fprintf(stderr, "%s", s);
+            printf("%s", s);
             break;
         }
         case STAMP_COMMAND: {
             const command_t * c = (const command_t *) mem;
-            fprintf(stderr, "0x%8.8X 0x%8.8X", c->string, c->lambda);
+            printf("0x%8.8X 0x%8.8X", c->string, c->lambda);
             break;
         }
         case STAMP_STATE: {
             const state_t * z = (const state_t *) mem;
-            fprintf(stderr, "0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
+            printf("0x%8.8X 0x%8.8X %d %s", z->psi, z->lambda, z->ctx, types[z->PI->type]);
             break;
         }
 
     }
-    fprintf(stderr, "\n");
+    printf("\n");
 }
 //----------------------------------------------------------------------------------------------------------------------
 static void heap_print(state_t * z) {
@@ -247,7 +247,7 @@ static void heap_print(state_t * z) {
         heap_display_entry(source);
         if (size) size += HEAP_HEAD_SIZE;
     }
-    fprintf(stderr, "\n");
+    printf("\n");
 }
 //======================================================================================================================
 // Heap garbage collection =============================================================================================
@@ -444,76 +444,92 @@ static const char * actions[4] = {
     ":recede"   // ↑ ←↖
 };
 //----------------------------------------------------------------------------------------------------------------------
+void putq(const char * s) {
+    putc('"', stdout);
+    for (; *s; s++) {
+        switch (*s) {
+            case '\\': printf("\\\\"); break;
+            case '\n': printf("\\n"); break;
+            case '\t': printf("\\t"); break;
+            case '\r': printf("\\r"); break;
+            case '\f': printf("\\f"); break;
+            case '\v': printf("\\v"); break;
+            default:   putc(*s, stdout); break;
+        }
+    }
+    putc('"', stdout);
+}
+//----------------------------------------------------------------------------------------------------------------------
 #define MAX_DEPTH 3
 void preview(const PATTERN * PI, int depth) {
-    if (depth >= MAX_DEPTH) { fprintf(stderr, "."); return; }
+    if (depth >= MAX_DEPTH) { printf("."); return; }
     int type = PI->type;
     switch (type) {
-    case ε:         { fprintf(stderr, "ε"); break; }
-    case α:         { fprintf(stderr, "α"); break; }
-    case ω:         { fprintf(stderr, "ω"); break; }
-    case σ:         { fprintf(stderr, "\"%s\"", PI->s); break; }
-    case Λ:         { fprintf(stderr, "Λ(\"%s\")", PI->command); break; }
-    case λ:         { fprintf(stderr, "λ(\"%s\")", PI->command); break; }
-    case ζ:         { fprintf(stderr, "ζ(\"%s\")", PI->N); break; }
-    case Θ:         { fprintf(stderr, "Θ(\"%s\")", PI->N); break; }
-    case θ:         { fprintf(stderr, "θ(\"%s\")", PI->N); break; }
-    case Φ:         { fprintf(stderr, "Φ(\"%s\")", PI->N); break; }
-    case φ:         { fprintf(stderr, "φ(\"%s\")", PI->N); break; }
-    case POS:       { fprintf(stderr, "POS(%d)", PI->n); break; }
-    case TAB:       { fprintf(stderr, "TAB(%d)", PI->n); break; }
-    case LEN:       { fprintf(stderr, "LEN(%d)", PI->n); break; }
-    case RTAB:      { fprintf(stderr, "RTAB(%d)", PI->n); break; }
-    case RPOS:      { fprintf(stderr, "RPOS(%d)", PI->n); break; }
-    case ANY:       { fprintf(stderr, "ANY(\"%s\")", PI->chars); break; }
-    case SPAN:      { fprintf(stderr, "SPAN(\"%s\")", PI->chars); break; }
-    case BREAK:     { fprintf(stderr, "BREAK(\"%s\")", PI->chars); break; }
-    case BREAKX:    { fprintf(stderr, "BREAKX(\"%s\")", PI->chars); break; }
-    case NOTANY:    { fprintf(stderr, "NOTANY(\"%s\")", PI->chars); break; }
-    case ARBNO:     { fprintf(stderr, "ARBNO("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
-    case MARBNO:    { fprintf(stderr, "MARBNO("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
-    case Δ:         { fprintf(stderr, "Δ("); preview(PI->AP[0], depth + 1); fprintf(stderr, ", \"%s\")", PI->s); break; }
-    case δ:         { fprintf(stderr, "δ("); preview(PI->AP[0], depth + 1); fprintf(stderr, ", \"%s\")", PI->s); break; }
-    case π:         { fprintf(stderr, "π("); preview(PI->AP[0], depth + 1); fprintf(stderr, ")"); break; }
+    case ε:         { printf("ε");       break; }
+    case α:         { printf("α");       break; }
+    case ω:         { printf("ω");       break; }
+    case σ:         { putq(PI->s);       break; }
+    case POS:       { printf("POS(%d)",  PI->n); break; }
+    case TAB:       { printf("TAB(%d)",  PI->n); break; }
+    case LEN:       { printf("LEN(%d)",  PI->n); break; }
+    case RTAB:      { printf("RTAB(%d)", PI->n); break; }
+    case RPOS:      { printf("RPOS(%d)", PI->n); break; }
+    case Λ:         { printf("Λ(");      putq(PI->command); printf(")"); break; }
+    case λ:         { printf("λ(");      putq(PI->command); printf(")"); break; }
+    case ζ:         { printf("ζ(");      putq(PI->N);       printf(")"); break; }
+    case Θ:         { printf("Θ(");      putq(PI->N);       printf(")"); break; }
+    case θ:         { printf("θ(");      putq(PI->N);       printf(")"); break; }
+    case Φ:         { printf("Φ(");      putq(PI->N);       printf(")"); break; }
+    case φ:         { printf("φ(");      putq(PI->N);       printf(")"); break; }
+    case ANY:       { printf("ANY(");    putq(PI->chars);   printf(")"); break; }
+    case SPAN:      { printf("SPAN(");   putq(PI->chars);   printf(")"); break; }
+    case BREAK:     { printf("BREAK(");  putq(PI->chars);   printf(")"); break; }
+    case BREAKX:    { printf("BREAKX("); putq(PI->chars);   printf(")"); break; }
+    case NOTANY:    { printf("NOTANY("); putq(PI->chars);   printf(")"); break; }
+    case ARBNO:     { printf("ARBNO(");  preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case MARBNO:    { printf("MARBNO("); preview(PI->AP[0], depth + 1); printf(")"); break; }
+    case Δ:         { printf("Δ(");      preview(PI->AP[0], depth + 1); printf(", "); putq(PI->s); printf(")"); break; }
+    case δ:         { printf("δ(");      preview(PI->AP[0], depth + 1); printf(", "); putq(PI->s); printf(")"); break; }
+    case π:         { printf("π(");      preview(PI->AP[0], depth + 1); printf(")"); break; }
     case FENCE:     { if (PI->n > 0) {
-                          fprintf(stderr, "FENCE(");
+                          printf("FENCE(");
                           preview(PI->AP[0], depth + 1);
-                          fprintf(stderr, ")");
-                      } else fprintf(stderr, "FENCE");
+                          printf(")");
+                      } else printf("FENCE");
                       break;
                     }
-    case nPush:     { fprintf(stderr, "nPush()"); break; }
-    case nInc:      { fprintf(stderr, "nInc()"); break; }
-    case nPop:      { fprintf(stderr, "nPop()"); break; }
+    case nPush:     { printf("nPush()"); break; }
+    case nInc:      { printf("nInc()"); break; }
+    case nPop:      { printf("nPop()"); break; }
     case Shift:     { if (PI->v)
-                        fprintf(stderr, "Shift(\"%s\", \"%s\")", PI->t, PI->v);
-                      else fprintf(stderr, "Shift(\"%s\")", PI->t);
+                        printf("Shift(\"%s\", \"%s\")", PI->t, PI->v);
+                      else printf("Shift(\"%s\")", PI->t);
                       break;
                     }
     case Reduce:    { if (PI->x)
-                        fprintf(stderr, "Reduce(\"%s\", %d)", PI->t, PI->x);
-                      else fprintf(stderr, "Reduce(\"%s\")", PI->t);
+                        printf("Reduce(\"%s\", %d)", PI->t, PI->x);
+                      else printf("Reduce(\"%s\")", PI->t);
                       break;
                     }
-    case Pop:       { fprintf(stderr, "Pop(\"%s\")", PI->v); break; } // t
-    case ARB:       { fprintf(stderr, "ARB"); break; }
-    case BAL:       { fprintf(stderr, "BAL"); break; }
-    case REM:       { fprintf(stderr, "REM"); break; }
-    case FAIL:      { fprintf(stderr, "FAIL"); break; }
-    case MARB:      { fprintf(stderr, "MARB"); break; }
-    case ABORT:     { fprintf(stderr, "ABORT"); break; }
-    case SUCCEED:   { fprintf(stderr, "SUCCEED"); break; }
+    case Pop:       { printf("Pop(\"%s\")", PI->v); break; } // t
+    case ARB:       { printf("ARB"); break; }
+    case BAL:       { printf("BAL"); break; }
+    case REM:       { printf("REM"); break; }
+    case FAIL:      { printf("FAIL"); break; }
+    case MARB:      { printf("MARB"); break; }
+    case ABORT:     { printf("ABORT"); break; }
+    case SUCCEED:   { printf("SUCCEED"); break; }
     case Π:
     case Σ:
-    case ρ:         { fprintf(stderr, "%s(", types[PI->type]);
+    case ρ:         { printf("%s(", types[PI->type]);
                         for (int i = 0; i < PI->n && depth + 1 < MAX_DEPTH; i++) {
-                            if (i) fprintf(stderr, " ");
+                            if (i) printf(" ");
                             preview(PI->AP[i], depth + 1);
                         }
-                        fprintf(stderr, ")");
+                        printf(")");
                         break;
                     }
-    default:        { fprintf(stderr, "\n%s\n", types[type]); fflush(stdout); assert(0); break; }
+    default:        { printf("\n%s\n", types[type]); fflush(stdout); assert(0); break; }
     }
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -544,7 +560,7 @@ static void animate(int action, state_t Z, int iteration) {
     head[i++] = 0;
 //  --------------------------------------------------------------------------------------------------------------------
     char status[20]; sprintf(status, "%s/%d", types[Z.PI->type], Z.ctx + 1);
-    fprintf(stderr, "%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
+    printf("%4d %2d %2d %-*s %*s %3d %*s  %-8s  ",
         iteration,
         num_tracks,
         total_states(Z.psi),
@@ -555,8 +571,8 @@ static void animate(int action, state_t Z, int iteration) {
         actions[action]
     );
     preview(Z.PI, 0);
-    fprintf(stderr, "\n");
-    fflush(stderr);
+    printf("\n");
+    fflush(stdout);
 }
 //======================================================================================================================
 static inline bool Π_ARB(state_t * z) {
@@ -860,16 +876,12 @@ static void MATCH(const char * pattern_name, const char * subject) {
                                     { a = PROCEED;                  ζ_stay_next(&Z);                break; }
                                else { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        case ARBNO<<2|PROCEED:
-                                 if (Z.ctx == 0)
+        case ARBNO<<2|PROCEED:   if (Z.ctx == 0)
                                     { a = SUCCESS; Ω_push(&Z);      ζ_up_track(&Z);                 break; }
                                else { a = PROCEED; Ω_push(&Z);      ζ_down_single(&Z);              break; }
-        case ARBNO<<2|SUCCESS:
-                                    { a = SUCCESS;                  ζ_up_track(&Z);                 break; }
-        case ARBNO<<2|FAILURE:
-                                    { a = RECEDE;  Ω_pop(&Z);                                       break; }
-        case ARBNO<<2|RECEDE:
-                                 if (Z.fenced)
+        case ARBNO<<2|SUCCESS:      { a = SUCCESS;                  ζ_up_track(&Z);                 break; }
+        case ARBNO<<2|FAILURE:      { a = RECEDE;  Ω_pop(&Z);                                       break; }
+        case ARBNO<<2|RECEDE:    if (Z.fenced)
                                     { a = FAILURE;                  ζ_up_fail(&Z);                  break; }
                             else if (Z.yielded)
                                     { a = PROCEED;                  ζ_move_next(&Z);                break; }
@@ -974,15 +986,15 @@ static void MATCH(const char * pattern_name, const char * subject) {
         case ω<<2|PROCEED:          if (Π_omega(&Z))                { a = SUCCESS; ζ_up(&Z);        break; }
                                     else                            { a = FAILURE; ζ_up_fail(&Z);   break; }
 //      ----------------------------------------------------------------------------------------------------------------
-        default:                    { fprintf(stderr, "%d %s\n", t, t <= ω ? types[t] : "");
-                                      fflush(stderr);
+        default:                    { printf("%d %s\n", t, t <= ω ? types[t] : "");
+                                      fflush(stdout);
                                       assert(0);
                                       break;
                                     }
         }
     }
-    heap_collect(&Z);
-    heap_print(&Z);
+//  heap_collect(&Z);
+//  heap_print(&Z);
     heap_fini();
     Ω_fini();
 }

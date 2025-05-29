@@ -210,7 +210,7 @@ class Reduce(PATTERN):
         elif x == -1: x = "Ϣ[-1].istack[Ϣ[-1].itop]"
         Ϣ[-1].cstack.append(f"Ϣ[-1].reduce('{t}', {x})")
         yield slice(Ϣ[-1].pos, Ϣ[-1].pos)
-        logger.warning("Reduce(%r, %r) backtracking...", x, n)
+        logger.warning("Reduce(%r, %r) backtracking...", t, x)
         Ϣ[-1].cstack.pop()
 #----------------------------------------------------------------------------------------------------------------------
 class Pop(PATTERN):
