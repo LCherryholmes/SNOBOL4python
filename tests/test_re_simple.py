@@ -29,7 +29,6 @@ re_Expression   =   ( nPush()
                     + nPop()
                     )
 re_RegEx        =   POS(0) + re_Expression + Pop('RE_tree') + RPOS(0)
-
 #------------------------------------------------------------------------------
 rexs = {
     "",

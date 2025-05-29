@@ -1,0 +1,77 @@
+*-------------------------------------------------------------------------------
+START   functions          = TABLE()
+        functions["read"]  = 1
+        functions["write"] = 2
+        reserved           = TABLE()
+        reserved["every"]  = 1
+        reserved["to"]     = 2
+*-------------------------------------------------------------------------------
+        icon_source =   "every write(5 > ((1 to 2) * (3 to 4)));"
+*-------------------------------------------------------------------------------
+        white       =   FENCE(SPAN(" ") | epsilon)
+        $'('        =   white '('
+        $'+'        =   white '+'
+        $'-'        =   white '-'
+        $'*'        =   white '*'
+        $'/'        =   white '/'
+        $'<='       =   white '<='
+        $'<'        =   white '<'
+        $'>'        =   white '>'
+        $'>='       =   white '>='
+        $'=='       =   white '=='
+        $'!='       =   white '!='
+        $')'        =   white ')'
+        $';'        =   white ';'
+*-------------------------------------------------------------------------------
+        integer     =   white SPAN("0123456789") $ tx ;* $ OUTPUT
+        word        =   white SPAN(&LCASE) $ tx ;* $ OUTPUT
+        to          =   (word *IDENT(tx, "to")) ;* $ OUTPUT
+        every       =   (word *IDENT(tx, "every")) ;* $ OUTPUT
+        variable    =   (word *IDENT(reserved[tx])) ;* $ OUTPUT
+        function    =   (word *DIFFER(functions[tx])) ;* $ OUTPUT
+*-------------------------------------------------------------------------------
+        expression6 =   ( integer
++                       | function $'(' *expression1 $')'
++                       | variable
++                       | $'(' *expression1 $')'
++                       )
+*-------------------------------------------------------------------------------
+        expression5 =   ( $'+' *expression5
++                       | $'-' *expression5
++                       | expression6
++                       )
+*-------------------------------------------------------------------------------
+        expression4 =   expression5
++                       ( $'*' *expression4
++                       | $'/' *expression4
++                       | epsilon
++                       )
+*-------------------------------------------------------------------------------
+        expression3 =   expression4
++                       ( $'+' *expression3
++                       | $'-' *expression3
++                       | epsilon
++                       )
+*-------------------------------------------------------------------------------
+        expression2 =   ( expression3 to expression3
++                       | expression3
++                       )
+*-------------------------------------------------------------------------------
+        expression1 =   expression2
++                       ( $'<=' *expression2
++                       | $'<'  *expression2
++                       | $'>=' *expression2
++                       | $'>'  *expression2
++                       | $'==' *expression2
++                       | $'!=' *expression2
++                       | epsilon
++                       )
+*-------------------------------------------------------------------------------
+        statement   =   every expression1 | expression1
+*-------------------------------------------------------------------------------
+        program     =   POS(0) statement $';' RPOS(0)
+        icon_source ?   program :S(success)F(failure)
+success OUTPUT      =   "Success!" :(END)
+failure OUTPUT      =   "Failure." :(END)
+END
+*-------------------------------------------------------------------------------
