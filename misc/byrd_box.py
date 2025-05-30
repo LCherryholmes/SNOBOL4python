@@ -9,7 +9,7 @@ from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint, pformat
 GLOBALS(globals())
-TRACE(40)
+TRACE(30)
 #------------------------------------------------------------------------------
 icon_source = "every write(5 > ((1 to 2) * (3 to 4)));"
 #------------------------------------------------------------------------------
@@ -63,9 +63,9 @@ expr1       =   ( expr2
                   )
                 )
 #------------------------------------------------------------------------------
-stmt        =   every + expr1 + Reduce('EVERY', 1) | expr1
+stmt        =   every + expr1 + Reduce('EVERY', 1)
 #------------------------------------------------------------------------------
-program     =   ( POS(0)
+ICON        =   ( POS(0)
                 + nPush()
                 + ARBNO(stmt + nInc() + ς(';'))
                 + Reduce("ICON")
@@ -99,82 +99,169 @@ def dump(t):
         case '>=':    out('(>= ');    dump(t[1]); out(' '); dump(t[2]); out(')')
         case '!=':    out('(!= ');    dump(t[1]); out(' '); dump(t[2]); out(')')
 #------------------------------------------------------------------------------
+c_source = []
+def emit_line(line=''): c_source.append(line)
+def emit_decl(type, var): c_source.append("%-4s%s" % (type, var))
+def emit_code(label, body): c_source.append("%-4s%-20s%s" % ('', label, body))
+#------------------------------------------------------------------------------
+def program_head():
+    emit_line('#ifdef __GNUC__')
+    emit_line('#define __kernel')
+    emit_line('#define __global')
+    emit_line('extern int printf(char *, ...);')
+    emit_line('extern void assert(int a);')
+    emit_line('#endif')
+    emit_line()
+    emit_line('typedef struct {')
+    emit_line('             unsigned int    pos;')
+    emit_line('    __global unsigned char * buffer;')
+    emit_line('} output_t;')
+    emit_line()
+    emit_line('#if 0')
+    emit_line('void write_nl(output_t * out)         {}')
+    emit_line('int  write_int(output_t * out, int v) {}')
+    emit_line('void write_str(output_t * out, const unsigned char * s) {}')
+    emit_line('void write_flush(output_t * out)      {}')
+    emit_line('#else')
+    emit_line('#if 0')
+    emit_line('extern int printf(char *, ...);')
+    emit_line('void write_nl(output_t * out)         { printf("%s", "\\n"); }')
+    emit_line('int  write_int(output_t * out, int v) { printf("%d\\n", v); return v; }')
+    emit_line('void write_str(output_t * out, const unsigned char * s) { printf("%s\\n", s); }')
+    emit_line('void write_flush(output_t * out)      {}')
+    emit_line('#else')
+    emit_line('    void write_nl(output_t * out) {')
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line('        out->buffer[out->pos] = 0;')
+    emit_line('    }')
+    emit_line()
+    emit_line('    int write_int(output_t * out, int v) {')
+    emit_line("        out->buffer[out->pos++] = '0' + v;")
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line('        out->buffer[out->pos] = 0;')
+    emit_line('        return v;')
+    emit_line('    }')
+    emit_line()
+    emit_line('    void write_str(output_t * out, const unsigned char * s) {')
+    emit_line('        for (int i = 0; s[i]; i++)')
+    emit_line('            out->buffer[out->pos++] = s[i];')
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line('        out->buffer[out->pos] = 0;')
+    emit_line('    }')
+    emit_line()
+    emit_line('    void write_flush(output_t * out) {')
+    emit_line('#   ifdef __GNUC__')
+    emit_line('        printf("%s", out->buffer);')
+    emit_line('#   endif')
+    emit_line('    }')
+    emit_line('#endif')
+    emit_line('#endif')
+    emit_line()
+    emit_line('__kernel void icon(')
+    emit_line('    __global const unsigned char * in,')
+    emit_line('    __global       unsigned char * buffer,')
+    emit_line('             const unsigned int num_chars)')
+    emit_line('{')
+    emit_line('    const unsigned char cszFailure[9] = "Failure.";')
+    emit_line('    const unsigned char cszSuccess[9] = "Success!";')
+    emit_line('    output_t output = { 0, buffer };')
+    emit_line('    output_t * out = &output;')
+    emit_line('    buffer[0] = 0;')
+    emit_line('    for (int i = 0; i < num_chars; i++)')
+    emit_line('        buffer[i] = 0;')
+
+def program_tail():
+    emit_line('}')
+    emit_line()
+    emit_line('#ifdef __GNUC__')
+    emit_line('static unsigned char buffer[1024] = {0};')
+    emit_line('int main() {')
+    emit_line('    icon(0, buffer, sizeof(buffer));')
+    emit_line('    return 0;')
+    emit_line('}')
+    emit_line('#endif')
+#------------------------------------------------------------------------------
 counter = 0
-def gen(t):
+def genc(t):
     global counter; counter += 1
     if t is None: return
     L = None
-    fmt = "    %-20s%s"
-    vfmt = "%-4s%s"
     match t[0]:
         case 'ICON':
-            dump_tree(t)
-            print('#include <stdio.h>')
-            print('static int write(int n) { printf("%d\\n", n); }')
-            print('int main() {')
             L = f'main{counter}'
-            print(fmt % (f'',               f'goto {L}_start;'))
-            E = gen(t[1]) # for c in t[1:]: # just one for now
-            print(fmt % (f'{L}_start:',     f'goto {E}_start;'))
-            print(fmt % (f'{E}_fail:',      f'printf("Failure.\\n"); return 0;'))
-            print(fmt % (f'{E}_succeed:',   f'printf("Success!\\n"); goto {E}_resume;'))
-            print("}")
-        case 'EVERY': L = gen(t[1])
-        case 'I'|'V':
-            L = f'_{str(t[1])}' # _{counter}
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(fmt % (f'{L}_start:',     f'{L}_value = {t[1]};'))
-            print(fmt % ('',                f'goto {L}_succeed;'))
-            print(fmt % (f'{L}_resume:',    f'goto {L}_fail;'))
+            dump_tree(t)
+            program_head()
+            emit_code(f'',              f'goto {L}_start;')
+            E = genc(t[1])
+            emit_code(f'{L}_start:',    f'goto {E}_start;')
+            emit_code(f'{L}_resume:',   f'return; /* function re-entry? */')
+            emit_code(f'{E}_fail:',     f'write_str(out, cszFailure);')
+            emit_code(f'',              f'return;')
+            emit_code(f'{E}_succeed:',  f'write_str(out, cszSuccess);')
+            emit_code(f'',              f'goto {E}_resume;')
+            program_tail()
+        case 'EVERY': L = genc(t[1])
+        case 'I':
+            L = f'x{counter}_{t[1]}'
+            emit_decl(f'int',           f'{L}_value;')
+            emit_code(f'{L}_start:',    f'{L}_value = {t[1]};')
+            emit_code('',               f'goto {L}_succeed;')
+            emit_code(f'{L}_resume:',   f'goto {L}_fail;')
+        case 'V':
+            L = f'{t[1]}{counter}'
+            emit_decl(f'int',           f'{L}_value;')
+            emit_code(f'{L}_start:',    f'{L}_value = {t[1]};')
+            emit_code('',               f'goto {L}_succeed;')
+            emit_code(f'{L}_resume:',   f'goto {L}_fail;')
         case 'WRITE':
             L = f'write{counter}'
-            E = gen(t[1])
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(fmt % (f'{L}_start:',    f'goto {E}_start;'))
-            print(fmt % (f'{L}_resume:',   f'goto {E}_resume;'))
-            print(fmt % (f'{E}_fail:',     f'goto {L}_fail;'))
-            print(fmt % (f'{E}_succeed:',  f'{L}_value = write({E}_value);'))
-            print(fmt % (f'',              f'goto {L}_succeed;'))
+            E = genc(t[1])
+            emit_decl(f'int', f'{L}_value;')
+            emit_code(f'{L}_start:',    f'goto {E}_start;')
+            emit_code(f'{L}_resume:',   f'goto {E}_resume;')
+            emit_code(f'{E}_fail:',     f'goto {L}_fail;')
+            emit_code(f'{E}_succeed:',  f'{L}_value = write_int(out, {E}_value);')
+            emit_code(f'',              f'goto {L}_succeed;')
         case '+'|'-':
             if len(t) == 2:
                 op = t[0]
                 if op == '+': L = f'uplus{counter}'
                 if op == '-': L = f'uminus{counter}'
-                E = gen(t[1])
-                print(vfmt % (f'int', f'{L}_value;'))
-                print(fmt % (f'{L}_start:',    f'goto {E}_start;'))
-                print(fmt % (f'{L}_resume:',   f'goto {E}_resume;'))
-                print(fmt % (f'{E}_fail:',     f'goto {L}_fail;'))
-                print(fmt % (f'{E}_succeed:',  f'{L}_value = {op}{E}_value;'))
-                print(fmt % (f'',              f'goto {L}_succeed;'))
+                E = genc(t[1])
+                emit_decl(f'int', f'{L}_value;')
+                emit_code(f'{L}_start:',    f'goto {E}_start;')
+                emit_code(f'{L}_resume:',   f'goto {E}_resume;')
+                emit_code(f'{E}_fail:',     f'goto {L}_fail;')
+                emit_code(f'{E}_succeed:',  f'{L}_value = {op}{E}_value;')
+                emit_code(f'',              f'goto {L}_succeed;')
             elif len(t) == 3:
                 op = t[0]
                 if op == '+': L = f'plus{counter}'
                 if op == '-': L = f'minus{counter}'
-                E1 = gen(t[1])
-                E2 = gen(t[2])
-                print(vfmt % (f'int', f'{L}_value;'))
-                print(fmt % (f'{L}_start:',    f'goto {E1}_start;'))
-                print(fmt % (f'{L}_resume:',   f'goto {E2}_resume;'))
-                print(fmt % (f'{E1}_fail:',    f'goto {L}_fail;'))
-                print(fmt % (f'{E1}_succeed:', f'goto {E2}_start;'))
-                print(fmt % (f'{E2}_fail:',    f'goto {E1}_resume;'))
-                print(fmt % (f'{E2}_succeed:', f'{L}_value = {E1}_value {op} {E2}_value;'))
-                print(fmt % (f'',              f'goto {L}_succeed;'))
+                E1 = genc(t[1])
+                E2 = genc(t[2])
+                emit_decl(f'int',           f'{L}_value;')
+                emit_code(f'{L}_start:',    f'goto {E1}_start;')
+                emit_code(f'{L}_resume:',   f'goto {E2}_resume;')
+                emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
+                emit_code(f'{E1}_succeed:', f'goto {E2}_start;')
+                emit_code(f'{E2}_fail:',    f'goto {E1}_resume;')
+                emit_code(f'{E2}_succeed:', f'{L}_value = {E1}_value {op} {E2}_value;')
+                emit_code(f'',              f'goto {L}_succeed;')
         case '*'|'/':
             op = t[0]
             if op == '*': L = f'mult{counter}'
             if op == '/': L = f'divide{coiunter}'
-            E1 = gen(t[1])
-            E2 = gen(t[2])
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(fmt % (f'{L}_start:',        f'goto {E1}_start;'))
-            print(fmt % (f'{L}_resume:',       f'goto {E2}_resume;'))
-            print(fmt % (f'{E1}_fail:',        f'goto {L}_fail;'))
-            print(fmt % (f'{E1}_succeed:',     f'goto {E2}_start;'))
-            print(fmt % (f'{E2}_fail:',        f'goto {E1}_resume;'))
-            print(fmt % (f'{E2}_succeed:',     f'{L}_value = {E1}_value {op} {E2}_value;'))
-            print(fmt % (f'',                  f'goto {L}_succeed;'))
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int',           f'{L}_value;')
+            emit_code(f'{L}_start:',    f'goto {E1}_start;')
+            emit_code(f'{L}_resume:',   f'goto {E2}_resume;')
+            emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E1}_succeed:', f'goto {E2}_start;')
+            emit_code(f'{E2}_fail:',    f'goto {E1}_resume;')
+            emit_code(f'{E2}_succeed:', f'{L}_value = {E1}_value {op} {E2}_value;')
+            emit_code(f'',              f'goto {L}_succeed;')
         case '<'|'>'|'=='|'<='|'>='|'!=':
             op = t[0]
             if op == '<':  L = f'lt{counter}'
@@ -183,56 +270,97 @@ def gen(t):
             if op == '<=': L = f'le{counter}'
             if op == '>=': L = f'ge{counter}'
             if op == '!=': L = f'ne{counter}'
-            E1 = gen(t[1])
-            E2 = gen(t[2])
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(fmt % (f'{L}_start:',        f'goto {E1}_start;'))
-            print(fmt % (f'{L}_resume:',       f'goto {E2}_resume;'))
-            print(fmt % (f'{E1}_fail:',        f'goto {L}_fail;'))
-            print(fmt % (f'{E1}_succeed:',     f'goto {E2}_start;'))
-            print(fmt % (f'{E2}_fail:',        f'goto {E1}_resume;'))
-            print(fmt % (f'{E2}_succeed:',     f'if ({E1}_value {op} {E2}_value) goto {E2}_resume;'))
-            print(fmt % (f'',                  f'{L}_value = {E2}_value;'))
-            print(fmt % (f'',                  f'goto {L}_succeed;'))
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int', f'{L}_value;')
+            emit_code(f'{L}_start:',    f'goto {E1}_start;')
+            emit_code(f'{L}_resume:',   f'goto {E2}_resume;')
+            emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E1}_succeed:', f'goto {E2}_start;')
+            emit_code(f'{E2}_fail:',    f'goto {E1}_resume;')
+            emit_code(f'{E2}_succeed:', f'if ({E1}_value {op} {E2}_value) goto {E2}_resume;')
+            emit_code(f'',              f'{L}_value = {E2}_value;')
+            emit_code(f'',              f'goto {L}_succeed;')
         case 'TO':
             L = f'to{counter}'
-            E1 = gen(t[1])
-            E2 = gen(t[2])
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(vfmt % (f'int', f'{L}_I;'))
-            print(fmt % (f'{L}_start:',        f'goto {E1}_start;'))
-            print(fmt % (f'{L}_resume:',       f'{L}_I = {L}_I + 1;'))
-            print(fmt % (f'',                  f'goto {L}_code;'))
-            print(fmt % (f'{E1}_fail:',        f'goto {L}_fail;'))
-            print(fmt % (f'{E1}_succeed:',     f'goto {E2}_start;'))
-            print(fmt % (f'{E2}_fail:',        f'goto {E1}_resume;'))
-            print(fmt % (f'{E2}_succeed:',     f'{L}_I = {E1}_value;'))
-            print(fmt % (f'',                  f'goto {L}_code;'))
-            print(fmt % (f'{L}_code:',         f'if ({L}_I > {E2}_value) goto {E2}_resume;'))
-            print(fmt % (f'',                  f'{L}_value = {L}_I;'))
-            print(fmt % (f'',                  f'goto {L}_succeed;'))
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int', f'{L}_value;')
+            emit_decl(f'int', f'{L}_i;')
+            emit_code(f'{L}_start:',    f'goto {E1}_start;')
+            emit_code(f'{L}_resume:',   f'{L}_i = {L}_i + 1;')
+            emit_code(f'',              f'goto {L}_code;')
+            emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E1}_succeed:', f'goto {E2}_start;')
+            emit_code(f'{E2}_fail:',    f'goto {E1}_resume;')
+            emit_code(f'{E2}_succeed:', f'{L}_i = {E1}_value;')
+            emit_code(f'',              f'goto {L}_code;')
+            emit_code(f'{L}_code:',     f'if ({L}_i > {E2}_value) goto {E2}_resume;')
+            emit_code(f'',              f'{L}_value = {L}_i;')
+            emit_code(f'',              f'goto {L}_succeed;')
         case 'IF':
             L = f'ifstmt{counter}'
-            E1 = gen(t[1])
-            E2 = gen(t[2])
-            E2 = gen(t[3])
-            print(vfmt % (f'int', f'{L}_value;'))
-            print(fmt % (f'{L}_start:',        f'goto {E1}_start;'))
-            print(fmt % (f'{L}_resume:',       f'goto [{L}_gate];'))
-            print(fmt % (f'{E1}_fail:',        f'{L}_gate = addrOf({E3}_resume);'))
-            print(fmt % (f'',                  f'goto {E3}_start;'))
-            print(fmt % (f'{E1}_succeed:',     f'{L}_gate = addrOf({E2}_resume);'))
-            print(fmt % (f'',                  f'goto {E2}_start;'))
-            print(fmt % (f'{E2}_fail:',        f'goto {L}_fail;'))
-            print(fmt % (f'{E2}_succeed:',     f'{L}_value = {E2}_value;'))
-            print(fmt % (f'',                  f'goto {L}_succeed;'))
-            print(fmt % (f'{E3}_fail:',        f'goto {L}_fail;'))
-            print(fmt % (f'{E3}_succeed:',     f'{L}_value = {E3}_value;'))
-            print(fmt % (f'',                  f'goto {L}_succeed;'))
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            E2 = genc(t[3])
+            emit_decl(f'int', f'{L}_value;')
+            emit_code(f'{L}_start:',    f'goto {E1}_start;')
+            emit_code(f'{L}_resume:',   f'goto [{L}_gate];')
+            emit_code(f'{E1}_fail:',    f'{L}_gate = addrOf({E3}_resume);')
+            emit_code(f'',              f'goto {E3}_start;')
+            emit_code(f'{E1}_succeed:', f'{L}_gate = addrOf({E2}_resume);')
+            emit_code(f'',              f'goto {E2}_start;')
+            emit_code(f'{E2}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E2}_succeed:', f'{L}_value = {E2}_value;')
+            emit_code(f'',              f'goto {L}_succeed;')
+            emit_code(f'{E3}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E3}_succeed:', f'{L}_value = {E3}_value;')
+            emit_code(f'',              f'goto {L}_succeed;')
     print()
     return L
 #------------------------------------------------------------------------------
-if icon_source in program:
-    gen(icon)
-else: print("Boo!")
+import timeit
+import pyopencl as cl
+import numpy as np
+#------------------------------------------------------------------------------
+ctx = cl.create_some_context()
+queue = cl.CommandQueue(ctx)
+input_text = "\0" * 1024
+input_array = np.frombuffer(input_text.encode('ascii'), dtype=np.uint8)
+mf = cl.mem_flags
+input_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=input_array)
+output_buf = cl.Buffer(ctx, mf.WRITE_ONLY, input_array.nbytes)
+#------------------------------------------------------------------------------
+while True:
+    icon_source = input("Enter ICON (or 'exit'): ")
+    print(icon_source)
+    if icon_source.lower() == "exit": break
+    if icon_source == "": continue
+    print("Parsing ICON ...")
+    if icon_source in ICON:
+        print("Translating ICON to C ...")
+        c_source = []
+        kernel_source = genc(icon)
+        for num, line in enumerate(c_source):
+            print("%-4d%s" % (num, line))
+        kernel_source = "\n".join(c_source)
+        print("Compiling C ...")
+        program = cl.Program(ctx, kernel_source).build()
+        print("Executing ...")
+        global_size = (1,) # (input_array.size,)
+        if False:
+            time = timeit.timeit(
+                lambda: program.icon(
+                    queue, global_size,
+                    None, input_buf, output_buf,
+                    np.uint32(input_array.size)
+                ), number = 10_000, globals = globals());
+            print(time)
+        else: program.icon(queue, global_size, None, input_buf, output_buf, np.uint32(input_array.size))
+        output_array = np.empty_like(input_array)
+        cl.enqueue_copy(queue, output_array, output_buf)
+        queue.finish()
+        output_text = output_array.tobytes().decode('ascii')
+        print(output_text)
+    else: print("Parse error!")
 #------------------------------------------------------------------------------

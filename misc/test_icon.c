@@ -9,7 +9,7 @@ typedef struct {
     __global unsigned char * buffer;
 } output_t;
 
-#if 1
+#if 0
 void write_nl(output_t * out)         {}
 void write_int(output_t * out, int v) {}
 void write_str(output_t * out, const unsigned char * s) {}
@@ -58,6 +58,8 @@ __kernel void icon(
     output_t output = { 0, buffer };
     output_t * out = &output;
     buffer[0] = 0;
+    for (int i = 0; i < num_chars; i++)
+        buffer[i] = 0;
     goto main1;    
     //============================================================================
     // ICON Programming Language: (1st pass, attribute grammar generated)
