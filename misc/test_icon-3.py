@@ -25,7 +25,6 @@ with open(c_name, "r") as c_file:
     output_array = np.empty_like(input_array)
     cl.enqueue_copy(queue, output_array, output_buf)
     queue.finish()
-    print(output_array[:128])
     output_text = output_array.tobytes().decode('utf-8')
     print(output_text)
 #------------------------------------------------------------------------------

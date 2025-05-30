@@ -27,10 +27,18 @@ void write_flush(output_t * out)      {}
         out->buffer[out->pos] = 0;
     }
 
-    void write_int(output_t * out, int v) {
-        out->buffer[out->pos++] = '0' + v;
+    int write_int(output_t *out, int v) {
+        if (v < 0) { out->buffer[out->pos++] = '-'; v = -v; }
+        if (v == 0) out->buffer[out->pos++] = '0';
+        else {
+            int i = 0;
+            char temp[16] = "";
+            while (v > 0) { temp[i++] = '0' + (v % 10); v /= 10; }
+            while (i > 0) out->buffer[out->pos++] = temp[--i];
+        }
         out->buffer[out->pos++] = '\n';
-        out->buffer[out->pos] = 0;
+        out->buffer[out->pos] = '\0';
+        return v;
     }
 
     void write_str(output_t * out, const unsigned char * s) {
