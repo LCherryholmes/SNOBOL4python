@@ -12,8 +12,6 @@ GLOBALS(globals())
 TRACE(40)
 #------------------------------------------------------------------------------
 icon_source = "every write(5 > ((1 to 2) * (3 to 4)));"
-icon_source = "every write(write(5) > ((write(1) to write(2)) * (write(3) to write(4))));"
-icon_source = "every write(write(5) > ((1 to 2) * (3 to 4)));"
 #------------------------------------------------------------------------------
 η           =   SPAN(" \t\r\n") | ε()
 def ς(s):       return η + σ(s) @ "text"
