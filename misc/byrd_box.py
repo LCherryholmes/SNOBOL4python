@@ -9,14 +9,22 @@ from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint, pformat
 GLOBALS(globals())
-TRACE(40)
+TRACE(30)
 #------------------------------------------------------------------------------
 icon_source = "every write(5 > ((1 to 2) * (3 to 4)));"
+icon_source = "every write(1 + (+2 * +3) + (+4 * +5) + (+6 * +7) + 8);"
+icon_source = "every write(+POS + (+B * +R) + (+E * +EA) + (+DS * +D) + +RPOS);"
+icon_source = "every write(+POS + (+B * +R) + +RPOS);"
+icon_source = "every write(-POS + -bird + -RPOS);"
 #------------------------------------------------------------------------------
 η           =   SPAN(" \t\r\n") | ε()
 def ς(s):       return η + σ(s) @ "text"
 integer     =   η + SPAN(DIGITS) @ "text" % "value"
-word        =   η + SPAN(LCASE) @ "text" % "word"
+word        =   ( η
+                + ( ANY(UCASE+LCASE)
+                  + FENCE(SPAN(UCASE+LCASE+"0123456789") | ε())
+                  ) @ "text" % "word"
+                )
 to          =   word + Λ(lambda: text == "to")
 every       =   word + Λ(lambda: text == "every")
 write       =   word + Λ(lambda: text == "write")
@@ -88,8 +96,12 @@ def dump(t):
         case 'EVERY': out('(every '); dump(t[1]); out(')')
         case 'WRITE': out('(write '); dump(t[1]); out(')')
         case 'TO':    out('(to ');    dump(t[1]); out(' '); dump(t[2]); out(')')
-        case '+':     out('(+ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
-        case '-':     out('(- ');     dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '+':
+                      if len(t) == 2:   out('(+ '); dump(t[1]); out(')')
+                      elif len(t) == 3: out('(+ '); dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '-':
+                      if len(t) == 2:   out('(- '); dump(t[1]); out(')')
+                      elif len(t) == 3: out('(- '); dump(t[1]); out(' '); dump(t[2]); out(')')
         case '*':     out('(* ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '/':     out('(/ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '<':     out('(< ');     dump(t[1]); out(' '); dump(t[2]); out(')')
@@ -350,29 +362,31 @@ while True:
         c_source = []
         kernel_source = genc(icon)
         for num, line in enumerate(c_source):
-            print("%4d %s" % (num, line))
+#           print("%4d %s" % (num + 1, line))
+            print(line)
         kernel_source = "\n".join(c_source)
-        print("Compiling C ...")
-        program = cl.Program(ctx, kernel_source).build()
-        print("Executing ...")
-        global_size = (1,) # (input_array.size,)
         if False:
-            time = timeit.timeit(
-                lambda: program.icon(
+            print("Compiling C ...")
+            program = cl.Program(ctx, kernel_source).build()
+            print("Executing ...")
+            global_size = (1,) # (input_array.size,)
+            if False:
+                time = timeit.timeit(
+                    lambda: program.icon(
+                        queue, global_size,
+                        None, input_buf, output_buf,
+                        np.uint32(input_array.size))
+                    , number = 10_000, globals = globals());
+                print(time)
+            else:
+                program.icon(
                     queue, global_size,
                     None, input_buf, output_buf,
                     np.uint32(input_array.size))
-                , number = 10_000, globals = globals());
-            print(time)
-        else:
-            program.icon(
-                queue, global_size,
-                None, input_buf, output_buf,
-                np.uint32(input_array.size))
-        output_array = np.empty_like(input_array)
-        cl.enqueue_copy(queue, output_array, output_buf)
-        queue.finish()
-        output_text = output_array.tobytes().decode('ascii')
-        print(output_text)
+            output_array = np.empty_like(input_array)
+            cl.enqueue_copy(queue, output_array, output_buf)
+            queue.finish()
+            output_text = output_array.tobytes().decode('ascii')
+            print(output_text)
     else: print("Parse error!")
 #------------------------------------------------------------------------------
