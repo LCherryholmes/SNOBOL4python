@@ -9,9 +9,11 @@ from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint, pformat
 GLOBALS(globals())
-TRACE(30)
+TRACE(40)
 #------------------------------------------------------------------------------
 icon_source = "every write(5 > ((1 to 2) * (3 to 4)));"
+icon_source = "every write(write(5) > ((write(1) to write(2)) * (write(3) to write(4))));"
+icon_source = "every write(write(5) > ((1 to 2) * (3 to 4)));"
 #------------------------------------------------------------------------------
 η           =   SPAN(" \t\r\n") | ε()
 def ς(s):       return η + σ(s) @ "text"
@@ -136,12 +138,13 @@ def program_head():
     emit_line('    }')
     emit_line()
     emit_line('    int write_int(output_t * out, int v) {')
-    emit_line("        if (v < 0) { out->buffer[out->pos++] = '-'; v = -v; }")
-    emit_line("        if (v == 0) out->buffer[out->pos++] = '0';")
+    emit_line("        int n = v;")
+    emit_line("        if (v < 0) { out->buffer[out->pos++] = '-'; n = -v; }")
+    emit_line("        if (n == 0) out->buffer[out->pos++] = '0';")
     emit_line('        else {')
     emit_line('            int i = 0;')
     emit_line('            char temp[16] = "";')
-    emit_line("            while (v > 0) { temp[i++] = '0' + (v % 10); v /= 10; }")
+    emit_line("            while (n > 0) { temp[i++] = '0' + (n % 10); n /= 10; }")
     emit_line('            while (i > 0) out->buffer[out->pos++] = temp[--i];')
     emit_line('        }')
     emit_line("        out->buffer[out->pos++] = '\\n';")
@@ -271,12 +274,12 @@ def genc(t):
             emit_code(f'',              f'goto {L}_succeed;')
         case '<'|'>'|'=='|'<='|'>='|'!=':
             op = t[0]
-            if op == '<':  L = f'lt{counter}'
-            if op == '>':  L = f'gt{counter}'
-            if op == '==': L = f'eq{counter}'
-            if op == '<=': L = f'le{counter}'
-            if op == '>=': L = f'ge{counter}'
-            if op == '!=': L = f'ne{counter}'
+            if op == '<':  L = f'lt{counter}'; nop = '>='
+            if op == '>':  L = f'gt{counter}'; nop = '<='
+            if op == '==': L = f'eq{counter}'; nop = '!='
+            if op == '<=': L = f'le{counter}'; nop = '>'
+            if op == '>=': L = f'ge{counter}'; nop = '<'
+            if op == '!=': L = f'ne{counter}'; nop = '=='
             E1 = genc(t[1])
             E2 = genc(t[2])
             emit_decl(f'int',           f'{L}_value;')
@@ -285,7 +288,7 @@ def genc(t):
             emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
             emit_code(f'{E1}_succeed:', f'goto {E2}_start;')
             emit_code(f'{E2}_fail:',    f'goto {E1}_resume;')
-            emit_code(f'{E2}_succeed:', f'if ({E1}_value {op} {E2}_value) goto {E2}_resume;')
+            emit_code(f'{E2}_succeed:', f'if ({E1}_value {nop} {E2}_value) goto {E2}_resume;')
             emit_code(f'',              f'{L}_value = {E2}_value;')
             emit_code(f'',              f'goto {L}_succeed;')
         case 'TO':
@@ -349,7 +352,7 @@ while True:
         c_source = []
         kernel_source = genc(icon)
         for num, line in enumerate(c_source):
-            print("%-4d%s" % (num, line))
+            print("%4d %s" % (num, line))
         kernel_source = "\n".join(c_source)
         print("Compiling C ...")
         program = cl.Program(ctx, kernel_source).build()
@@ -360,10 +363,14 @@ while True:
                 lambda: program.icon(
                     queue, global_size,
                     None, input_buf, output_buf,
-                    np.uint32(input_array.size)
-                ), number = 10_000, globals = globals());
+                    np.uint32(input_array.size))
+                , number = 10_000, globals = globals());
             print(time)
-        else: program.icon(queue, global_size, None, input_buf, output_buf, np.uint32(input_array.size))
+        else:
+            program.icon(
+                queue, global_size,
+                None, input_buf, output_buf,
+                np.uint32(input_array.size))
         output_array = np.empty_like(input_array)
         cl.enqueue_copy(queue, output_array, output_buf)
         queue.finish()
