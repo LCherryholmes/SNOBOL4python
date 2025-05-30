@@ -12,10 +12,6 @@ GLOBALS(globals())
 TRACE(30)
 #------------------------------------------------------------------------------
 icon_source = "every write(5 > ((1 to 2) * (3 to 4)));"
-icon_source = "every write(1 + (+2 * +3) + (+4 * +5) + (+6 * +7) + 8);"
-icon_source = "every write(+POS + (+B * +R) + (+E * +EA) + (+DS * +D) + +RPOS);"
-icon_source = "every write(+POS + (+B * +R) + +RPOS);"
-icon_source = "every write(-POS + -bird + -RPOS);"
 #------------------------------------------------------------------------------
 η           =   SPAN(" \t\r\n") | ε()
 def ς(s):       return η + σ(s) @ "text"
@@ -96,11 +92,11 @@ def dump(t):
         case 'EVERY': out('(every '); dump(t[1]); out(')')
         case 'WRITE': out('(write '); dump(t[1]); out(')')
         case 'TO':    out('(to ');    dump(t[1]); out(' '); dump(t[2]); out(')')
-        case '+':
-                      if len(t) == 2:   out('(+ '); dump(t[1]); out(')')
+        case '+':     # unary and binary addition
+                      if   len(t) == 2: out('(+ '); dump(t[1]); out(')')
                       elif len(t) == 3: out('(+ '); dump(t[1]); out(' '); dump(t[2]); out(')')
-        case '-':
-                      if len(t) == 2:   out('(- '); dump(t[1]); out(')')
+        case '-':     # unary and binary subtraction
+                      if   len(t) == 2: out('(- '); dump(t[1]); out(')')
                       elif len(t) == 3: out('(- '); dump(t[1]); out(' '); dump(t[2]); out(')')
         case '*':     out('(* ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '/':     out('(/ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
