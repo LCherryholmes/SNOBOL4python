@@ -183,8 +183,8 @@ def program_tail():
 #------------------------------------------------------------------------------
 counter = 0
 def genc(t):
-    global counter; counter += 1
     if t is None: return
+    global counter; counter += 1
     L = None
     match t[0]:
         case 'ICON':
@@ -216,7 +216,7 @@ def genc(t):
         case 'WRITE':
             L = f'write{counter}'
             E = genc(t[1])
-            emit_decl(f'int', f'{L}_value;')
+            emit_decl(f'int',           f'{L}_value;')
             emit_code(f'{L}_start:',    f'goto {E}_start;')
             emit_code(f'{L}_resume:',   f'goto {E}_resume;')
             emit_code(f'{E}_fail:',     f'goto {L}_fail;')
@@ -228,7 +228,7 @@ def genc(t):
                 if op == '+': L = f'uplus{counter}'
                 if op == '-': L = f'uminus{counter}'
                 E = genc(t[1])
-                emit_decl(f'int', f'{L}_value;')
+                emit_decl(f'int',           f'{L}_value;')
                 emit_code(f'{L}_start:',    f'goto {E}_start;')
                 emit_code(f'{L}_resume:',   f'goto {E}_resume;')
                 emit_code(f'{E}_fail:',     f'goto {L}_fail;')
@@ -272,7 +272,7 @@ def genc(t):
             if op == '!=': L = f'ne{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
-            emit_decl(f'int', f'{L}_value;')
+            emit_decl(f'int',           f'{L}_value;')
             emit_code(f'{L}_start:',    f'goto {E1}_start;')
             emit_code(f'{L}_resume:',   f'goto {E2}_resume;')
             emit_code(f'{E1}_fail:',    f'goto {L}_fail;')
@@ -285,8 +285,8 @@ def genc(t):
             L = f'to{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
-            emit_decl(f'int', f'{L}_value;')
-            emit_decl(f'int', f'{L}_i;')
+            emit_decl(f'int',           f'{L}_value;')
+            emit_decl(f'int',           f'{L}_i;')
             emit_code(f'{L}_start:',    f'goto {E1}_start;')
             emit_code(f'{L}_resume:',   f'{L}_i = {L}_i + 1;')
             emit_code(f'',              f'goto {L}_code;')
@@ -303,7 +303,7 @@ def genc(t):
             E1 = genc(t[1])
             E2 = genc(t[2])
             E2 = genc(t[3])
-            emit_decl(f'int', f'{L}_value;')
+            emit_decl(f'int',           f'{L}_value;')
             emit_code(f'{L}_start:',    f'goto {E1}_start;')
             emit_code(f'{L}_resume:',   f'goto [{L}_gate];')
             emit_code(f'{E1}_fail:',    f'{L}_gate = addrOf({E3}_resume);')
