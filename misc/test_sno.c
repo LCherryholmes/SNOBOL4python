@@ -4,23 +4,26 @@
 extern int printf(char *, ...);
 extern void assert(int a);
 #endif
-
-typedef struct { const char * σ; int δ; } m_t;
+/*----------------------------------------------------------------------------*/
+typedef struct { const char * σ; int δ; } str_t;
 typedef struct { unsigned int pos; __global char * buffer; } output_t;
-
+/*----------------------------------------------------------------------------*/
 #if 0
 void write_nl(output_t * out) {}
 int  write_int(output_t * out, int v) {}
-void write_str(output_t * out, const char * s) {}
+void write_sz(output_t * out, const char * s) {}
 void write_flush(output_t * out) {}
 #else
 #if 1
 extern int printf(char *, ...);
-void write_nl(output_t * out) { printf("%s", "\n"); }
-int  write_int(output_t * out, int v) { printf("%d\n", v); return v; }
-void write_str(output_t * out, const char * s) { printf("%s\n", s); }
-m_t  write_slice(output_t * out, m_t slice) { printf("%.*s\n", slice.σ, slice.δ); return slice; }
-void write_flush(output_t * out) {}
+void    write_nl(output_t * out) { printf("%s", "\n"); }
+int     write_int(output_t * out, int v) { printf("%d\n", v); return v; }
+void    write_sz(output_t * out, const char * s) { printf("%s\n", s); }
+str_t   write_str(output_t * out, str_t str) {
+            printf("%.*s\n", str.δ, str.σ);
+            return str;
+        }
+void    write_flush(output_t * out) {}
 #else
     void write_nl(output_t * out) {
         out->buffer[out->pos++] = '\n';
@@ -42,7 +45,7 @@ void write_flush(output_t * out) {}
         return v;
     }
 
-    void write_str(output_t * out, const char * s) {
+    void write_sz(output_t * out, const char * s) {
         for (int i = 0; s[i]; i++)
             out->buffer[out->pos++] = s[i];
         out->buffer[out->pos++] = '\n';
@@ -56,81 +59,80 @@ void write_flush(output_t * out) {}
     }
 #endif
 #endif
-
-__kernel void icon(
-    __global const char * in,
+/*----------------------------------------------------------------------------*/
+__kernel void snobol(
+    __global const char * Σ,
     __global       char * buffer,
-             const int    num_chars)
-{
+             const int    num_chars) {
+    /*------------------------------------------------------------------------*/
     const char cszFailure[9] = "Failure.";
     const char cszSuccess[9] = "Success!";
-    const m_t  empty = {0, 0};
-    const m_t  fail = {0, -1};
+    const str_t empty = {0, 0};
     output_t output = {0, buffer};
     output_t * out = &output;
     for (int i = 0; i < num_chars; i++)
         buffer[i] = 0;
-/*----------------------------------------------------------------------------*/
-    inline int str_len(const char * s) { int len = 0; for (; *s; len++) s++; return len; }
-/*----------------------------------------------------------------------------*/
-    const char * Σ = in;
-    int Ω = str_len(Σ);
+    /*------------------------------------------------------------------------*/
+    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
+    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
+    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
+    /*------------------------------------------------------------------------*/
     int Δ = 0;
+    int Ω = len(Σ);
     goto main1_α;
-/*----------------------------------------------------------------------------*/
-    m_t         POS0 = empty;
+    /*------------------------------------------------------------------------*/
+    str_t       POS0;
     POS0_α:     if (Δ != 0)                     goto POS0_ω;
-                POS0 = (m_t) {Σ, 0};            goto POS0_Ω;
-    POS0_β:     POS0 = (m_t) {0,-1};            goto POS0_ω;
-/*----------------------------------------------------------------------------*/
-    m_t         bird = empty;
-    bird_α:     bird = (m_t) {Σ, 0};
-                if (bird.σ[0] != 'B')           goto bird_ω;
-                if (bird.σ[1] != 'I')           goto bird_ω;
-                if (bird.σ[2] != 'R')           goto bird_ω;
-                if (bird.σ[3] != 'D')           goto bird_ω;
-                bird = (m_t) {Σ, 4};            goto bird_Ω;
-    bird_β:     bird = (m_t) {0,-1};            goto bird_ω;
-/*----------------------------------------------------------------------------*/
-    m_t         RPOS0 = empty;
+                POS0 = str(Σ+Δ, 0);             goto POS0_γ;
+    POS0_β:                                     goto POS0_ω;
+    /*------------------------------------------------------------------------*/
+    str_t       BIRD;
+    BIRD_α:     if (Σ[Δ+0] != 'B')              goto BIRD_ω;
+                if (Σ[Δ+1] != 'I')              goto BIRD_ω;
+                if (Σ[Δ+2] != 'R')              goto BIRD_ω;
+                if (Σ[Δ+3] != 'D')              goto BIRD_ω;
+                BIRD = str(Σ+Δ, 4);
+                Δ += 4;                         goto BIRD_γ;
+    BIRD_β:     Δ -= 4;                         goto BIRD_ω;
+    /*------------------------------------------------------------------------*/
+    str_t       RPOS0;
     RPOS0_α:    if (Δ != Ω)                     goto RPOS0_ω;
-                RPOS0 = (m_t) {Σ, 0};           goto RPOS0_Ω;
-    RPOS0_β:    RPOS0 = (m_t) {0,-1};           goto RPOS0_ω;
-/*----------------------------------------------------------------------------*/
-    m_t         seq7 = empty;
-    seq7_α:                                     goto bird_α;
+                RPOS0 = str(Σ+Δ, 0);            goto RPOS0_γ;
+    RPOS0_β:                                    goto RPOS0_ω;
+    /*------------------------------------------------------------------------*/
+    str_t       seq7;
+    seq7_α:                                     goto BIRD_α;
     seq7_β:                                     goto RPOS0_β;
-    bird_ω:                                     goto seq7_ω;
-    bird_Ω:                                     goto RPOS0_α;
-    RPOS0_ω:                                    goto bird_β;
-    RPOS0_Ω:    seq7.σ = bird.σ;
-                seq7.δ = bird.δ + RPOS0.δ;      goto seq7_Ω;
-/*----------------------------------------------------------------------------*/
-    m_t         seq4 = empty;
+    BIRD_γ:     seq7 = BIRD;                    goto RPOS0_α;
+    BIRD_ω:                                     goto seq7_ω;
+    RPOS0_γ:    seq7 = cat(BIRD, RPOS0);        goto seq7_γ;
+    RPOS0_ω:                                    goto BIRD_β;
+    /*------------------------------------------------------------------------*/
+    str_t       seq4;
     seq4_α:                                     goto POS0_α;
     seq4_β:                                     goto seq7_β;
+    POS0_γ:     seq4 = POS0;                    goto seq7_α;
     POS0_ω:                                     goto seq4_ω;
-    POS0_Ω:                                     goto seq7_α;
+    seq7_γ:     seq4 = cat(POS0, seq7);         goto seq4_γ;
     seq7_ω:                                     goto POS0_β;
-    seq7_Ω:     seq4.σ = POS0.σ;
-                seq4.δ = POS0.δ + seq7.δ;       goto seq4_Ω;
-/*----------------------------------------------------------------------------*/
-    m_t         write = empty;
+    /*------------------------------------------------------------------------*/
+    str_t       write;
     write_α:                                    goto seq4_α;
     write_β:                                    goto seq4_β;
+    seq4_γ:     write = write_str(out, seq4);   goto write_γ;
     seq4_ω:                                     goto write_ω;
-    seq4_Ω:     write = write_slice(out, seq4); goto write_Ω;
-/*----------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------*/
     main1_α:                                    goto write_α;
     main1_β:                                    return;
-    write_ω:   write_str(out, cszFailure);      return;
-    write_Ω:   write_str(out, cszSuccess);      goto write_β;
+    write_γ:    write_sz(out, cszSuccess);      return; /*goto write_β;*/
+    write_ω:    write_sz(out, cszFailure);      return;
 }
 
 #ifdef __GNUC__
-static char buffer[1024] = {0};
+static char szOutput[1024] = {0};
+static const char cszInput[] = "BIRD";
 int main() {
-    icon(0, buffer, sizeof(buffer));
+    snobol(cszInput, szOutput, sizeof(szOutput));
     return 0;
 }
 #endif
