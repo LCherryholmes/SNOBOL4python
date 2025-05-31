@@ -27,42 +27,50 @@ write       =   word + Λ(lambda: text == "write")
 variable    =   word + Λ(lambda: text not in ["every", "to"])
 function    =   word + Λ(lambda: text in ["write"])
 #------------------------------------------------------------------------------
-expr6       =   ( ς('(') + ζ("expr1") + ς(')')
+expr7       =   ( ς('(') + ζ("expr1") + ς(')')
                 | write + ς('(') + ζ("expr1") + ς(')') + Reduce("WRITE", 1)
                 | variable + Shift("V", "word")
                 | integer + Shift("I", "int(value)")
                 )
 #------------------------------------------------------------------------------
-expr5       =   ( ς('+') + ζ("expr5") + Reduce('+', 1)
-                | ς('-') + ζ("expr5") + Reduce('-', 1)
-                | expr6
+expr6       =   ( ς('+') + ζ("expr6") + Reduce('+', 1)
+                | ς('-') + ζ("expr6") + Reduce('-', 1)
+                | expr7
+                )
+#------------------------------------------------------------------------------
+expr5       =   ( expr6
+                + ( ς('*') + ζ("expr5") + Reduce('*', 2)
+                  | ς('/') + ζ("expr5") + Reduce('/', 2)
+                  | ε()
+                  )
                 )
 #------------------------------------------------------------------------------
 expr4       =   ( expr5
-                + ( ς('*') + ζ("expr4") + Reduce('*', 2)
-                  | ς('/') + ζ("expr4") + Reduce('/', 2)
+                + ( ς('+') + ζ("expr4") + Reduce('+', 2)
+                  | ς('-') + ζ("expr4") + Reduce('-', 2)
                   | ε()
                   )
                 )
 #------------------------------------------------------------------------------
 expr3       =   ( expr4
-                + ( ς('+') + ζ("expr3") + Reduce('+', 2)
-                  | ς('-') + ζ("expr3") + Reduce('-', 2)
+                + ( to + expr4 + Reduce('TO', 2)
                   | ε()
                   )
                 )
 #------------------------------------------------------------------------------
-expr2       =   ( expr3 + to + expr3 + Reduce('TO', 2)
-                | expr3
+expr2       =   ( expr3
+                + ( ς('<')  + expr3 + Reduce('<', 2)
+                  | ς('>')  + expr3 + Reduce('>', 2)
+                  | ς('==') + expr3 + Reduce('==', 2)
+                  | ς('<=') + expr3 + Reduce('<=', 2)
+                  | ς('>=') + expr3 + Reduce('>=', 2)
+                  | ς('!=') + expr3 + Reduce('!=', 2)
+                  | ε()
+                  )
                 )
 #------------------------------------------------------------------------------
 expr1       =   ( expr2
-                + ( ς('<')  + expr2 + Reduce('<', 2)
-                  | ς('>')  + expr2 + Reduce('>', 2)
-                  | ς('==') + expr2 + Reduce('==', 2)
-                  | ς('<=') + expr2 + Reduce('<=', 2)
-                  | ς('>=') + expr2 + Reduce('>=', 2)
-                  | ς('!=') + expr2 + Reduce('!=', 2)
+                + ( ς('|') + ζ("expr1") + Reduce('|', 2)
                   | ε()
                   )
                 )
@@ -98,6 +106,7 @@ def dump(t):
         case '-':     # unary and binary subtraction
                       if   len(t) == 2: out('(- '); dump(t[1]); out(')')
                       elif len(t) == 3: out('(- '); dump(t[1]); out(' '); dump(t[2]); out(')')
+        case '|':     out('(| ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '*':     out('(* ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '/':     out('(/ ');     dump(t[1]); out(' '); dump(t[2]); out(')')
         case '<':     out('(< ');     dump(t[1]); out(' '); dump(t[2]); out(')')
@@ -301,8 +310,8 @@ def genc(t):
             L = f'to{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
-            emit_decl(f'int',           f'{L}_value;')
             emit_decl(f'int',           f'{L}_i;')
+            emit_decl(f'int',           f'{L}_value;')
             emit_code(f'{L}_start:',    f'goto {E1}_start;')
             emit_code(f'{L}_resume:',   f'{L}_i = {L}_i + 1;')
             emit_code(f'',              f'goto {L}_code;')
@@ -314,6 +323,20 @@ def genc(t):
             emit_code(f'{L}_code:',     f'if ({L}_i > {E2}_value) goto {E2}_resume;')
             emit_code(f'',              f'{L}_value = {L}_i;')
             emit_code(f'',              f'goto {L}_succeed;')
+        case '|':
+            op = t[0]
+            L = f'alt{counter}'
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int',           f'{L}_i;')
+            emit_decl(f'int',           f'{L}_value;')
+            emit_code(f'{L}_start:',    f'{L}_i = 1; goto {E1}_start;')
+            emit_code(f'{L}_resume:',   f'if ({L}_i == 1) goto {E1}_resume;')
+            emit_code(f'',              f'if ({L}_i == 2) goto {E2}_resume;')
+            emit_code(f'{E1}_fail:',    f'{L}_i = 2; goto {E2}_start;')
+            emit_code(f'{E1}_succeed:', f'{L}_value = {E1}_value; goto {L}_succeed;')
+            emit_code(f'{E2}_fail:',    f'goto {L}_fail;')
+            emit_code(f'{E2}_succeed:', f'{L}_value = {E2}_value; goto {L}_succeed;')
         case 'IF':
             L = f'ifstmt{counter}'
             E1 = genc(t[1])
@@ -361,7 +384,7 @@ while True:
 #           print("%4d %s" % (num + 1, line))
             print(line)
         kernel_source = "\n".join(c_source)
-        if False:
+        if True:
             print("Compiling C ...")
             program = cl.Program(ctx, kernel_source).build()
             print("Executing ...")

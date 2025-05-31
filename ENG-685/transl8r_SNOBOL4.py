@@ -6,7 +6,7 @@ from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
 from SNOBOL4python import RTAB, SPAN, SUCCEED, TAB
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
-from SNOBOL4python import PATTERN, Ϩ, STRING, NULL
+from SNOBOL4python import PATTERN, STRING, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
 from pprint import pprint
 #-----------------------------------------------------------------------------------------------------------------------
@@ -351,28 +351,34 @@ str_Parse = """\
 +               RPOS(0)
 """
 #-----------------------------------------------------------------------------------------------------------------------
-TRACE(50)
-GLOBALS(globals())
 #print(str_Parse)
 #str_Parse in Parse
 #-----------------------------------------------------------------------------------------------------------------------
 #""" x = *y *z""" in Parse
 #exit(0)
-stmtno = 0
-with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
-    line = beauty.readline(); lineno = 1
-    while line != "":
+def process_file():
+    stmtno = 0
+    with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
+        line = beauty.readline(); lineno = 1
         while line != "":
-            if not line in POS(0) + ANY('*-'): break
-            line = beauty.readline(); lineno += 1
-        src = ""
-        while line != "":
-            src += line
-            line = beauty.readline(); lineno += 1
-            if line not in POS(0) + ANY('+.'): break
-        if src in Parse:
-#           pprint([lineno, stmtno, SNOBOL4_tree])
-            print(xl8(SNOBOL4_tree))
-        else: print("ERROR:", src)
-        stmtno += 1
+            while line != "":
+                if not line in POS(0) + ANY('*-'): break
+                line = beauty.readline(); lineno += 1
+            src = ""
+            while line != "":
+                src += line
+                line = beauty.readline(); lineno += 1
+                if line not in POS(0) + ANY('+.'): break
+            if src in Parse:
+               #pprint([lineno, stmtno, SNOBOL4_tree])
+                print(xl8(SNOBOL4_tree))
+            else: print("ERROR:", src)
+            stmtno += 1
+#-----------------------------------------------------------------------------------------------------------------------
+TRACE(30)
+GLOBALS(globals())
+test_program = " subject ? POS(0) ('B' | 'R') ('E' | 'EA') ('DS' | 'D') RPOS(0)\n"
+if test_program in Parse:
+    pprint(SNOBOL4_tree)
+else: print("Yikes!")
 #-----------------------------------------------------------------------------------------------------------------------
