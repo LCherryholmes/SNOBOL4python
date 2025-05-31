@@ -298,31 +298,31 @@ def xl8(t):
         case ['Stmt', labl, subj,
              patrn, asgn, repl,
              go1, go2]:
-                                    s_goto = None
-                                    f_goto = None
-                                    match go1:
-                                        case ['S()', expr]: s_goto = go1
-                                        case ['F()', expr]: f_goto = go1
-                                        case ['()',  expr]: s_goto = f_goto = go1
-                                    match go2:
-                                        case ['S()', expr]: s_goto = go2
-                                        case ['F()', expr]: f_goto = go2
-                                    stmt = ""
-                                    if labl[1] != "":
-                                        stmt += f"def Ξ{labl[1]}():\n"
-                                    else: stmt +=  f"def Ξ{stmtno}():\n"
-                                    stmt += f"{' ' * 20}try:\n"
-                                    if asgn != ['']:
-                                        if subj[0] != '$': stmt += f"{' ' * 20}global    {xl8(subj)}\n"
-                                        if patrn != ['']:
-                                            stmt += f"{' ' * 30}{xl8(subj)} = SUBSTITUTE({xl8(subj)}, {xl8(subj)} == {xl8(patrn)}, {xl8(repl)})\n"
-                                        else: stmt += f"{' ' * 30}{xl8(subj)} = {xl8(repl)}\n"
-                                    elif patrn != ['']: stmt += f"{' ' * 30}{xl8(subj)} == {xl8(patrn)}\n"
-                                    else: stmt += f"{' ' * 30}{xl8(subj)}\n"
-                                    if s_goto: stmt += f"{' ' * 30}return {xl8(s_goto)}\n"
-                                    if f_goto: stmt += f"{' ' * 20}except F: return {xl8(f_goto)}\n"
-                                    else: stmt += f"{' ' * 20}except F: pass\n"
-                                    return stmt
+                s_goto = None
+                f_goto = None
+                match go1:
+                    case ['S()', expr]: s_goto = go1
+                    case ['F()', expr]: f_goto = go1
+                    case ['()',  expr]: s_goto = f_goto = go1
+                match go2:
+                    case ['S()', expr]: s_goto = go2
+                    case ['F()', expr]: f_goto = go2
+                stmt = ""
+                if labl[1] != "":
+                    stmt += f"def Ξ{labl[1]}():\n"
+                else: stmt +=  f"def Ξ{stmtno}():\n"
+                stmt += f"{' ' * 20}try:\n"
+                if asgn != ['']:
+                    if subj[0] != '$': stmt += f"{' ' * 20}global    {xl8(subj)}\n"
+                    if patrn != ['']:
+                        stmt += f"{' ' * 30}{xl8(subj)} = SUBSTITUTE({xl8(subj)}, {xl8(subj)} == {xl8(patrn)}, {xl8(repl)})\n"
+                    else: stmt += f"{' ' * 30}{xl8(subj)} = {xl8(repl)}\n"
+                elif patrn != ['']: stmt += f"{' ' * 30}{xl8(subj)} == {xl8(patrn)}\n"
+                else: stmt += f"{' ' * 30}{xl8(subj)}\n"
+                if s_goto: stmt += f"{' ' * 30}return {xl8(s_goto)}\n"
+                if f_goto: stmt += f"{' ' * 20}except F: return {xl8(f_goto)}\n"
+                else: stmt += f"{' ' * 20}except F: pass\n"
+                return stmt
 #       ----------------------------------------------------------------------------------------------------------------
         case STRING(s): print("Yipper!", s)
         case _: print("Yikes!", type(t), t)
