@@ -21,4 +21,5 @@ ENG-685/*.pdf
 ENG-685/*.odp
 ENG-685/*.txt
 CSCI-513/*.pdf
+tasks.json
 .pypirc
