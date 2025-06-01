@@ -617,8 +617,8 @@ def genc(t):
             L = f'alt{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
+            emit_decl(f'int',         f'{L}_i = 0;')
             emit_decl(f'str_t',       f'{L};')
-            emit_decl(f'int',         f'{L}_i;')
             emit_code(f'{L}_α:',      f'{L}_i = 1;', f'goto {E1}_α;')
             emit_code(f'{L}_β:',      f'if ({L}_i == 1)', f'goto {E1}_β;')
             emit_code(f'',            f'if ({L}_i == 2)', f'goto {E2}_β;')
@@ -626,14 +626,16 @@ def genc(t):
             emit_code(f'{E1}_ω:',     f'{L}_i = 2;', f'goto {E2}_α;')
             emit_code(f'{E2}_γ:',     f'{L} = {E2};', f'goto {L}_γ;')
             emit_code(f'{E2}_ω:',     f'', f'goto {L}_ω;')
+        case '()': return genc(t[1])
     emit_line("    /*------------------------------------------------------------------------*/")
     return L
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(40)
 GLOBALS(globals())
-test_program = " 'READS' ? POS(0) ('B' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
 snobol4_source = ' "BLUEBIRD" POS(0) "BLUE" "BIRD" RPOS(0)\n'
+snobol4_source = " 'READS' ? POS(0) ('B' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
 if snobol4_source in Parse:
+#   pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
     for num, line in enumerate(c_source):
         print(line)
