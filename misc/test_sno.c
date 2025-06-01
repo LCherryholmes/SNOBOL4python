@@ -100,27 +100,21 @@ __kernel void snobol(
                 RPOS0 = str(Σ+Δ, 0);            goto RPOS0_γ;
     RPOS0_β:                                    goto RPOS0_ω;
     /*------------------------------------------------------------------------*/
-    str_t       seq7;
-    seq7_α:                                     goto BIRD_α;
-    seq7_β:                                     goto RPOS0_β;
-    BIRD_γ:     seq7 = BIRD;                    goto RPOS0_α;
-    BIRD_ω:                                     goto seq7_ω;
-    RPOS0_γ:    seq7 = cat(BIRD, RPOS0);        goto seq7_γ;
+    str_t       seq;
+    seq_α:      seq = str(Σ+Δ, 0);              goto POS0_α;
+    seq_β:                                      goto RPOS0_β;
+    POS0_γ:     seq = cat(seq, POS0);           goto BIRD_α;
+    POS0_ω:                                     goto seq_ω;
+    BIRD_γ:     seq = cat(seq, BIRD);           goto RPOS0_α;
+    BIRD_ω:                                     goto POS0_β;
+    RPOS0_γ:    seq = cat(seq, RPOS0);          goto seq_γ;
     RPOS0_ω:                                    goto BIRD_β;
     /*------------------------------------------------------------------------*/
-    str_t       seq4;
-    seq4_α:                                     goto POS0_α;
-    seq4_β:                                     goto seq7_β;
-    POS0_γ:     seq4 = POS0;                    goto seq7_α;
-    POS0_ω:                                     goto seq4_ω;
-    seq7_γ:     seq4 = cat(POS0, seq7);         goto seq4_γ;
-    seq7_ω:                                     goto POS0_β;
-    /*------------------------------------------------------------------------*/
     str_t       write;
-    write_α:                                    goto seq4_α;
-    write_β:                                    goto seq4_β;
-    seq4_γ:     write = write_str(out, seq4);   goto write_γ;
-    seq4_ω:                                     goto write_ω;
+    write_α:                                    goto seq_α;
+    write_β:                                    goto seq_β;
+    seq_γ:      write = write_str(out, seq);    goto write_γ;
+    seq_ω:                                      goto write_ω;
     /*------------------------------------------------------------------------*/
     main1_α:                                    goto write_α;
     main1_β:                                    return;
