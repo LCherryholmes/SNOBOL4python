@@ -615,17 +615,20 @@ def genc(t):
                 else: emit_code(f'{Es[i]}_ω:', f'', f'goto {Es[i-1]}_β;')
         case '|':
             L = f'alt{counter}'
-            E1 = genc(t[1])
-            E2 = genc(t[2])
-            emit_decl(f'int',         f'{L}_i = 0;')
-            emit_decl(f'str_t',       f'{L};')
-            emit_code(f'{L}_α:',      f'{L}_i = 1;', f'goto {E1}_α;')
-            emit_code(f'{L}_β:',      f'if ({L}_i == 1)', f'goto {E1}_β;')
-            emit_code(f'',            f'if ({L}_i == 2)', f'goto {E2}_β;')
-            emit_code(f'{E1}_γ:',     f'{L} = {E1};', f'goto {L}_γ;')
-            emit_code(f'{E1}_ω:',     f'{L}_i = 2;', f'goto {E2}_α;')
-            emit_code(f'{E2}_γ:',     f'{L} = {E2};', f'goto {L}_γ;')
-            emit_code(f'{E2}_ω:',     f'', f'goto {L}_ω;')
+            Es = [genc(c) for c in t[1:]]
+            emit_decl(f'int',             f'{L}_i;')
+            emit_decl(f'str_t',           f'{L};')
+            emit_code(f'{L}_α:',          f'{L}_i = 1;', f'goto {Es[0]}_α;')
+            label = f'{L}_β:'
+            for i in range(len(Es)):
+                emit_code(label,          f'if ({L}_i == {i+1})', f'goto {Es[i]}_β;')
+                label = ''
+            emit_code(f'',                f'', f'goto {L}_ω;')
+            for i in range(len(Es)-1):
+                emit_code(f'{Es[i]}_γ:',  f'{L} = {Es[i]};', f'goto {L}_γ;')
+                emit_code(f'{Es[i]}_ω:',  f'{L}_i++;', f'goto {Es[i+1]}_α;')
+            emit_code(f'{Es[-1]}_γ:',     f'{L} = {Es[-1]};', f'goto {L}_γ;')
+            emit_code(f'{Es[-1]}_ω:',     f'', f'goto {L}_ω;')
         case '()': return genc(t[1])
     emit_line("    /*------------------------------------------------------------------------*/")
     return L
@@ -633,7 +636,8 @@ def genc(t):
 TRACE(40)
 GLOBALS(globals())
 snobol4_source = ' "BLUEBIRD" POS(0) "BLUE" "BIRD" RPOS(0)\n'
-snobol4_source = " 'READS' ? POS(0) ('B' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
+snobol4_source = " 'READS' ? 'R' 'E' 'A' 'D' 'S' RPOS(0)\n"
+snobol4_source = " 'READS' ? POS(0) ('B' | 'F' | 'L' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
 if snobol4_source in Parse:
 #   pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
