@@ -28,10 +28,10 @@ Real            =   ( SPAN(DIGITS)
                     | SPAN(DIGITS) + σ('.') + FENCE(SPAN(DIGITS) | ε())
                     ) % "tx"
 Id              =   (ANY(UCASE+LCASE) + FENCE(SPAN('.'+DIGITS+UCASE+'_'+LCASE) | ε())) % "nm"
-White           =   (  SPAN(' \t') + FENCE(nl + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
+ς               =   (  SPAN(' \t') + FENCE(nl + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε()) | ε())
                     |  nl + (σ('+') | σ('.')) + FENCE(SPAN(' \t') | ε())
-                    )
-Gray            =   White | ε()
+                    ) # white space
+η               =   ς | ε() # grey space
 #-----------------------------------------------------------------------------------------------------------------------
 SpecialNms      =   { 'ABORT', 'CONTINUE', 'END', 'FRETURN', 'NRETURN', 'RETURN', 'SCONTINUE', 'START' }
 BuiltinVars     =   { 'ABORT', 'ARB', 'BAL', 'FAIL', 'FENCE', 'INPUT', 'OUTPUT', 'REM', 'TERMINAL' }
@@ -62,30 +62,30 @@ UnprotKwd       =   φ("\\&(?P<nm>" + "|".join((nm for nm in UnprotKwds))  + ")\
 #-----------------------------------------------------------------------------------------------------------------------
 def τ(op):
     match op:
-        case '=':   return White + σ('=') + White
-        case '?':   return White + σ('?') + White
-        case '|':   return White + σ('|') + White
-        case '+':   return White + σ('+') + White
-        case '-':   return White + σ('-') + White
-        case '/':   return White + σ('/') + White
-        case '*':   return White + σ('*') + White
-        case '^':   return White + σ('^') + White
-        case '!':   return White + σ('!') + White
-        case '**':  return White + σ('**') + White
-        case '$':   return White + σ('$') + White
-        case '.':   return White + σ('.') + White
-        case '&':   return White + σ('&') + White
-        case '@':   return White + σ('@') + White
-        case '#':   return White + σ('#') + White
-        case '%':   return White + σ('%') + White
-        case '~':   return White + σ('~') + White
-        case ',':   return Gray + σ(',') + Gray
-        case '(':   return σ('(') + Gray
-        case '[':   return σ('[') + Gray
-        case '<':   return σ('<') + Gray
-        case ')':   return Gray + σ(')')
-        case ']':   return Gray + σ(']')
-        case '>':   return Gray + σ('>')
+        case '=':   return ς + σ('=') + ς
+        case '?':   return ς + σ('?') + ς
+        case '|':   return ς + σ('|') + ς
+        case '+':   return ς + σ('+') + ς
+        case '-':   return ς + σ('-') + ς
+        case '/':   return ς + σ('/') + ς
+        case '*':   return ς + σ('*') + ς
+        case '^':   return ς + σ('^') + ς
+        case '!':   return ς + σ('!') + ς
+        case '**':  return ς + σ('**') + ς
+        case '$':   return ς + σ('$') + ς
+        case '.':   return ς + σ('.') + ς
+        case '&':   return ς + σ('&') + ς
+        case '@':   return ς + σ('@') + ς
+        case '#':   return ς + σ('#') + ς
+        case '%':   return ς + σ('%') + ς
+        case '~':   return ς + σ('~') + ς
+        case ',':   return η + σ(',') + η
+        case '(':   return σ('(') + η
+        case '[':   return σ('[') + η
+        case '<':   return σ('<') + η
+        case ')':   return η + σ(')')
+        case ']':   return η + σ(']')
+        case '>':   return η + σ('>')
         case _:     raise Exception("tau error")
 #-----------------------------------------------------------------------------------------------------------------------
 Expr17          =   FENCE(
@@ -162,7 +162,7 @@ Expr6           =   ( Expr7
                       )
                     )
 Expr5           =   Expr6 + FENCE(τ('@') + ζ(lambda: Expr5)  + Reduce('@', 2) | ε())
-X4              =   nInc()  + Expr5 + FENCE(White + ζ(lambda: X4) | ε())
+X4              =   nInc()  + Expr5 + FENCE(ς + ζ(lambda: X4) | ε())
 Expr4           =   nPush() + X4 + Reduce('..', -1) + nPop()
 X3              =   nInc()  + Expr4 + FENCE(τ('|')  + ζ(lambda: X3) | ε())
 Expr3           =   nPush() + X3 + Reduce('|', -1)  + nPop()
@@ -183,30 +183,30 @@ SorF            =   SGoto | FGoto
 Target          =   ( τ('(') + Λ(lambda: set_Brackets('()')) + Expr + τ(')')
                     | τ('<') + Λ(lambda: set_Brackets('<>')) + Expr + τ('>')
                     )
-Goto            =   ( Gray + σ(':')
-                    + Gray
+Goto            =   ( η + σ(':')
+                    + η
                     + FENCE(
                         Target                      + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
                       | SorF + Target               + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
-                      + FENCE(Gray + SorF + Target  + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
+                      + FENCE(η + SorF + Target  + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
                       )
                     )
 Control         =   σ('-') + BREAK("\n;") % "tx"
 Comment         =   σ('*') + BREAK("\n") % "tx"
 Label           =   BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
 Stmt            =   ( Label
-                    + ( White
+                    + ( ς
                       + Expr14 + Reduce("Subject", 1)
                       + FENCE(
                           Shift()
-                        + White
-                        + ( σ('=') + Shift('=') + White + Expr
+                        + ς
+                        + ( σ('=') + Shift('=') + ς + Expr
                           | σ('=') + Shift('=') + Shift()
                           )
-                        | (τ('?') | White) + Expr1
+                        | (τ('?') | ς) + Expr1
                         + FENCE(
-                            White
-                          + ( σ('=') + Shift('=') + White + Expr
+                            ς
+                          + ( σ('=') + Shift('=') + ς + Expr
                             | σ('=') + Shift('=') + Shift()
                             )
                           | Shift() + Shift()
@@ -216,7 +216,7 @@ Stmt            =   ( Label
                       | Shift() + Shift() + Shift() + Shift()
                       )
                     + FENCE(Goto | Shift() + Shift())
-                    + Gray
+                    + η
                     )
 Commands        =   ζ(lambda: Command) + FENCE(ζ(lambda: Commands) | ε())
 Command         =   ( nInc()
@@ -371,9 +371,11 @@ def process_file():
             stmtno += 1
 #------------------------------------------------------------------------------
 c_source = []
+left_curly = '{'
+right_curly = '}'
 def emit_line(line=''):           c_source.append(line)
-def emit_decl(type, var):         c_source.append("    %-10s%s" % (type, var))
-def emit_code(label, body, goto): c_source.append("    %-10s%-36s%s" % (label, body, goto))
+def emit_decl(type, var):         c_source.append("    %-14s%s" % (type, var))
+def emit_code(label, body, goto): c_source.append("    %-14s%-42s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
 def program_head():
     emit_line('#ifdef __GNUC__')
@@ -506,17 +508,43 @@ def genc(t):
             subject = eval(t[1][1])
             emit_decl(f'str_t',     f'{L};')
             emit_code(f'{L}_α:',    f'Δ = 0; Σ = "{subject}";', f'')
-            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ, 0);', f'goto {L}_γ;')
+            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ,0);', f'goto {L}_γ;')
             emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
         case 'Call':
             func = t[1][1]
-            position = int(t[2][1][1])
-            if func == 'POS':  L = f'POS{counter}'; V = f'{position}'
-            if func == 'RPOS': L = f'RPOS{counter}'; V = f'Ω-{position}'
-            emit_decl(f'str_t',     f'{L};')
-            emit_code(f'{L}_α:',    f'if (Δ != {V})', f'goto {L}_ω;')
-            emit_code(f'',          f'{L} = str(Σ+Δ, 0);', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            arg = t[2][1][1]
+            if func == 'POS':    L = f'POS{counter}';    pos = f'{int(arg)}'
+            if func == 'RPOS':   L = f'RPOS{counter}';   pos = f'Ω-{int(arg)}'
+            if func == 'ANY':    L = f'ANY{counter}';    chars = eval(str(arg)); op = '=='
+            if func == 'NOTANY': L = f'NOTANY{counter}'; chars = eval(str(arg)); op = '!='
+            if func == 'SPAN':   L = f'SPAN{counter}';   chars = eval(str(arg)); op = '=='
+            if func == 'BREAK':  L = f'BREAK{counter}';  chars = eval(str(arg)); op = '!='
+            emit_decl(f'str_t', f'{L};')
+            match t[1][1]:
+                case 'POS'|'RPOS':
+                    emit_code(f'{L}_α:',    f'if (Δ != {pos})', f'goto {L}_ω;')
+                    emit_code(f'',          f'{L} = str(Σ+Δ,0);', f'goto {L}_γ;')
+                    emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+                case 'ANY'|'NOTANY':
+                    label = f'{L}_α:'
+                    for c in chars:
+                        emit_code(label,    f"if (Σ[Δ] {op} '{c}')", f'goto {L}_αγ;')
+                        label = ''
+                    emit_code(f'',          f'', f'goto {L}_ω;')
+                    emit_code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;', f'goto {L}_γ;')
+                    emit_code(f'{L}_β:',    f'Δ-=1;', f'goto {L}_ω;')
+                case 'SPAN'|'BREAK':
+                    label = f'{L}_α:'
+                    emit_decl(f'int',       f'{L}_δ;')
+                    emit_code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {left_curly}", f'')
+                    for c in chars:
+                        emit_code(f'',      f"    if (Σ[Δ+{L}_δ] {op} '{c}') continue;", f'')
+                    emit_code(f'',          f'    break;', f'')
+                    emit_code(f'',          f"{right_curly}", f'')
+                    emit_code(f'',          f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+                    emit_code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;', f'goto {L}_γ;')
+                    emit_code(f'{L}_β:',    f'Δ-={L}_δ;', f'goto {L}_ω;')
+
         case 'Integer':
             L = f'i{counter}_{t[1]}'
             emit_decl(f'int',       f'{L};')
@@ -530,13 +558,19 @@ def genc(t):
             for i, c in enumerate(eval(t[1])):
                 emit_code(label,    f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
                 label = ''
-            emit_code(f'',          f'{L} = str(Σ+Δ, {len(V)}); Δ += {len(V)};', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'Δ -= {len(V)};', f'goto {L}_ω;')
+            emit_code(f'',          f'{L} = str(Σ+Δ,{len(V)}); Δ+={len(V)};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'Δ-={len(V)};', f'goto {L}_ω;')
         case 'Id':
             L = f'{t[1]}{counter}'
-            emit_decl(f'int',       f'{L};')
-            emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            identifier = t[1]
+            if (identifier in ["NULL", "null", "epsilon"]):
+                emit_decl(f'str_t',     f'{L};')
+                emit_code(f'{L}_α:',    f'{L} = str(Σ+Δ,0);', f'goto {L}_γ;')
+                emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            else:
+                emit_decl(f'int',       f'{L};')
+                emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
+                emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
         case 'OUTPUT':
             L = f'OUTPUT{counter}'
             E = genc(t[1])
@@ -572,7 +606,7 @@ def genc(t):
         case '*'|'/':
             op = t[0]
             if op == '*': L = f'mult{counter}'
-            if op == '/': L = f'divide{coiunter}'
+            if op == '/': L = f'divide{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
             emit_decl(f'int',         f'{L};')
@@ -604,7 +638,7 @@ def genc(t):
             L = f'seq{counter}'
             Es = [genc(c) for c in t[1:]]
             emit_decl(f'str_t', f'{L};')
-            emit_code(f'{L}_α:', f'{L} = str(Σ+Δ, 0);', f'goto {Es[0]}_α;')
+            emit_code(f'{L}_α:', f'{L} = str(Σ+Δ,0);', f'goto {Es[0]}_α;')
             emit_code(f'{L}_β:', f'', f'goto {Es[-1]}_β;')
             for i in range(len(Es)):
                 if i < len(Es)-1:
@@ -635,14 +669,21 @@ def genc(t):
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(40)
 GLOBALS(globals())
-snobol4_source = ' "BLUEBIRD" POS(0) "BLUE" "BIRD" RPOS(0)\n'
-snobol4_source = " 'READS' ? 'R' 'E' 'A' 'D' 'S' RPOS(0)\n"
-snobol4_source = " 'READS' ? POS(0) ('B' | 'F' | 'L' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
+snobol4_source = \
+"""\
+ "Id99"\
+ ( POS(0)\
+   ANY("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")\
+   (SPAN(".0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz") | epsilon)\
+   RPOS(0)\
+ )
+"""
 if snobol4_source in Parse:
 #   pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
     for num, line in enumerate(c_source):
         print(line)
+else: print("Boo!")
 #-----------------------------------------------------------------------------------------------------------------------
 exit()
 import timeit
