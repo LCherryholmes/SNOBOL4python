@@ -447,7 +447,6 @@ def program_head():
     emit_line('    /*------------------------------------------------------------------------*/')
     emit_line('    const char cszFailure[9] = "Failure.";')
     emit_line('    const char cszSuccess[10] = "Success: ";')
-    emit_line('    const str_t empty = {0, 0};')
     emit_line('    output_t output = {0, buffer};')
     emit_line('    output_t * out = &output;')
     emit_line('    for (int i = 0; i < num_chars; i++)')
@@ -574,6 +573,16 @@ def genc(t):
                 emit_decl(f'int',       f'{L};')
                 emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
                 emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+        case 'BuiltinVar':
+            L = f'ARB{counter}'
+            variable = t[1]
+            if t[1] == 'ARB':
+                emit_decl(f'int',       f'{L}_i;')
+                emit_decl(f'str_t',     f'{L};')
+                emit_code(f'{L}_α:',    f'{L}_i = 0;', f'goto {L}_λ;')
+                emit_code(f'{L}_β:',    f'{L}_i++;', f'goto {L}_λ;')
+                emit_code(f'{L}_λ:',    f'if (Δ+{L}_i >= Ω)', f'goto {L}_ω;')
+                emit_code(f'',          f'{L} = str(Σ+Δ,{L}_i);', f'goto {L}_γ;')
         case '$':
             L = f'assign{counter}'
             E = genc(t[1])
@@ -676,7 +685,7 @@ def genc(t):
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(40)
 GLOBALS(globals())
-snobol4_source = ''' "SNOBOL4" POS(0) (BREAK("0123456789") '4') $ OUTPUT RPOS(0)\n'''
+snobol4_source = ''' "SNOBOL4" POS(0) ARB $ OUTPUT RPOS(0)\n'''
 if snobol4_source in Parse:
 #   pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
