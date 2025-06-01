@@ -541,7 +541,10 @@ def genc(t):
                         emit_code(f'',      f"    if (Σ[Δ+{L}_δ] {op} '{c}') continue;", f'')
                     emit_code(f'',          f'    break;', f'')
                     emit_code(f'',          f"{right_curly}", f'')
-                    emit_code(f'',          f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+                    if func == 'SPAN':
+                        emit_code(f'',      f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+                    if func == 'BREAK':
+                        emit_code(f'',      f'if ({L}_δ >= Ω)', f'goto {L}_ω;')
                     emit_code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;', f'goto {L}_γ;')
                     emit_code(f'{L}_β:',    f'Δ-={L}_δ;', f'goto {L}_ω;')
 
@@ -571,14 +574,18 @@ def genc(t):
                 emit_decl(f'int',       f'{L};')
                 emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
                 emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
-        case 'OUTPUT':
-            L = f'OUTPUT{counter}'
+        case '$':
+            L = f'assign{counter}'
             E = genc(t[1])
-            emit_decl(f'int',       f'{L};')
-            emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
-            emit_code(f'{L}_β:',    f'', f'goto {E}_β;')
-            emit_code(f'{E}_γ:',    f'{L} = write_str(out, {E});', f'goto {L}_γ;')
-            emit_code(f'{E}_ω:',    f'', f'goto {L}_ω;')
+            variable = t[2][1]
+            if (variable == "OUTPUT"):
+                emit_decl(f'str_t',     f'{L};')
+                emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
+                emit_code(f'{L}_β:',    f'', f'goto {E}_β;')
+                emit_code(f'{E}_γ:',    f'{L} = write_str(out, {E});', f'')
+                emit_code(f'',          f'write_nl(out);', f'goto {L}_γ;')
+                emit_code(f'{E}_ω:',    f'', f'goto {L}_ω;')
+            else: raise Exception("Unknown variable.")
         case '+'|'-':
             if len(t) == 2:
                 op = t[0]
@@ -669,15 +676,7 @@ def genc(t):
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(40)
 GLOBALS(globals())
-snobol4_source = \
-"""\
- "Id99"\
- ( POS(0)\
-   ANY("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")\
-   (SPAN(".0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz") | epsilon)\
-   RPOS(0)\
- )
-"""
+snobol4_source = ''' "SNOBOL4" POS(0) (BREAK("0123456789") '4') $ OUTPUT RPOS(0)\n'''
 if snobol4_source in Parse:
 #   pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
