@@ -196,7 +196,7 @@ Comment         =   σ('*') + BREAK("\n") % "tx"
 Label           =   BREAK(' \t\n;') % "tx" + Shift('Label', "tx")
 Stmt            =   ( Label
                     + ( White
-                      + Expr14
+                      + Expr14 + Reduce("Subject", 1)
                       + FENCE(
                           Shift()
                         + White
@@ -351,11 +351,6 @@ str_Parse = """\
 +               RPOS(0)
 """
 #-----------------------------------------------------------------------------------------------------------------------
-#print(str_Parse)
-#str_Parse in Parse
-#-----------------------------------------------------------------------------------------------------------------------
-#""" x = *y *z""" in Parse
-#exit(0)
 def process_file():
     stmtno = 0
     with open("C:/snobol4/src/sno/beauty.sno", "r") as beauty:
@@ -374,11 +369,325 @@ def process_file():
                 print(xl8(SNOBOL4_tree))
             else: print("ERROR:", src)
             stmtno += 1
+#------------------------------------------------------------------------------
+c_source = []
+def emit_line(line=''):           c_source.append(line)
+def emit_decl(type, var):         c_source.append("    %-10s%s" % (type, var))
+def emit_code(label, body, goto): c_source.append("    %-10s%-36s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
-TRACE(30)
+def program_head():
+    emit_line('#ifdef __GNUC__')
+    emit_line('#define __kernel')
+    emit_line('#define __global')
+    emit_line('extern int printf(char *, ...);')
+    emit_line('extern void assert(int a);')
+    emit_line('#endif')
+    emit_line('/*----------------------------------------------------------------------------*/')
+    emit_line('typedef struct { const char * σ; int δ; } str_t;')
+    emit_line('typedef struct { unsigned int pos; __global char * buffer; } output_t;')
+    emit_line('/*----------------------------------------------------------------------------*/')
+    emit_line('#if 0')
+    emit_line('void write_nl(output_t * out) {}')
+    emit_line('int  write_int(output_t * out, int v) {}')
+    emit_line('void write_sz(output_t * out, const char * s) {}')
+    emit_line('void write_flush(output_t * out) {}')
+    emit_line('#else')
+    emit_line('#if 1')
+    emit_line('extern int printf(char *, ...);')
+    emit_line('void    write_nl(output_t * out)                 { printf("%s", "\\n"); }')
+    emit_line('int     write_int(output_t * out, int v)         { printf("%d", v); return v; }')
+    emit_line('void    write_sz(output_t * out, const char * s) { printf("%s", s); }')
+    emit_line('str_t   write_str(output_t * out, str_t str) {')
+    emit_line('            printf("%.*s", str.δ, str.σ);')
+    emit_line('            return str;')
+    emit_line('        }')
+    emit_line('void    write_flush(output_t * out) {}')
+    emit_line('#else')
+    emit_line('    void write_nl(output_t * out) {')
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line('        out->buffer[out->pos] = 0;')
+    emit_line('    }')
+    emit_line('')
+    emit_line('    int write_int(output_t * out, int v) {')
+    emit_line('        int n = v;')
+    emit_line("        if (v < 0) { out->buffer[out->pos++] = '-'; n = -v; }")
+    emit_line("        if (n == 0) out->buffer[out->pos++] = '0';")
+    emit_line('        else {')
+    emit_line('            int i = 0;')
+    emit_line('            char temp[16] = "";')
+    emit_line("            while (n > 0) { temp[i++] = '0' + (n % 10); n /= 10; }")
+    emit_line('            while (i > 0) out->buffer[out->pos++] = temp[--i];')
+    emit_line('        }')
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line("        out->buffer[out->pos] = '\\0';")
+    emit_line('        return v;')
+    emit_line('    }')
+    emit_line('')
+    emit_line('    void write_sz(output_t * out, const char * s) {')
+    emit_line('        for (int i = 0; s[i]; i++)')
+    emit_line('            out->buffer[out->pos++] = s[i];')
+    emit_line("        out->buffer[out->pos++] = '\\n';")
+    emit_line('        out->buffer[out->pos] = 0;')
+    emit_line('    }')
+    emit_line('')
+    emit_line('    void write_flush(output_t * out) {')
+    emit_line('#   ifdef __GNUC__')
+    emit_line('        printf("%s", out->buffer);')
+    emit_line('#   endif')
+    emit_line('    }')
+    emit_line('#endif')
+    emit_line('#endif')
+    emit_line('/*----------------------------------------------------------------------------*/')
+    emit_line('__kernel void snobol(')
+    emit_line('    __global const char * in,')
+    emit_line('    __global       char * buffer,')
+    emit_line('             const int    num_chars) {')
+    emit_line('    /*------------------------------------------------------------------------*/')
+    emit_line('    const char cszFailure[9] = "Failure.";')
+    emit_line('    const char cszSuccess[10] = "Success: ";')
+    emit_line('    const str_t empty = {0, 0};')
+    emit_line('    output_t output = {0, buffer};')
+    emit_line('    output_t * out = &output;')
+    emit_line('    for (int i = 0; i < num_chars; i++)')
+    emit_line('        buffer[i] = 0;')
+    emit_line('    /*------------------------------------------------------------------------*/')
+    emit_line('    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
+    emit_line('    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
+    emit_line('    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
+    emit_line('    /*------------------------------------------------------------------------*/')
+    emit_line('    int Δ = 0;')
+    emit_line('    int Ω = 0;')
+    emit_line('    const char * Σ = (const char *) 0;')
+    emit_line("    /*------------------------------------------------------------------------*/")
+
+def program_tail():
+    emit_line('}')
+    emit_line('')
+    emit_line('#ifdef __GNUC__')
+    emit_line('static char szOutput[1024] = {0};')
+    emit_line('int main() {')
+    emit_line('    snobol((const char *) 0, szOutput, sizeof(szOutput));')
+    emit_line('    return 0;')
+    emit_line('}')
+    emit_line('#endif')
+#-----------------------------------------------------------------------------------------------------------------------
+counter = 0
+def genc(t):
+    if t is None: return
+    L = None
+    global counter; counter += 1
+    match t[0]:
+        case 'Parse':
+            L = f'main{counter}'
+            program_head()
+            emit_code(f'',          f'', f'goto {L}_α;')
+            E = genc(t[1])
+            emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
+            emit_code(f'{L}_β:',    f'', f'return; ')
+            emit_code(f'{E}_γ:',    f'write_sz(out, cszSuccess);', f'')
+            emit_code(f'',          f'write_str(out, {E});', f'')
+            emit_code(f'',          f'write_nl(out);', f'goto {E}_β;')
+            emit_code(f'{E}_ω:',    f'write_sz(out, cszFailure);', f'')
+            emit_code(f'',          f'write_nl(out);', f'return;')
+            program_tail()
+        case 'Stmt':
+            L = f'match{counter}'
+            S = genc(t[2]) # subject
+            P = genc(t[3]) # pattern
+            emit_decl(f'str_t',     f'{L};')
+            emit_code(f'{L}_α:',    f'', f'goto {S}_α;')
+            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            emit_code(f'{S}_γ:',    f'', f'goto {P}_α;')
+            emit_code(f'{S}_ω:',    f'', f'goto {L}_ω;')
+            emit_code(f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
+            emit_code(f'{P}_ω:',    f'{L} = {P};', f'goto {L}_ω;')
+        case 'Subject':
+            L = f'subj{counter}'
+            subject = eval(t[1][1])
+            emit_decl(f'str_t',     f'{L};')
+            emit_code(f'{L}_α:',    f'Δ = 0; Σ = "{subject}";', f'')
+            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ, 0);', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+        case 'Call':
+            func = t[1][1]
+            position = int(t[2][1][1])
+            if func == 'POS':  L = f'POS{counter}'; V = f'{position}'
+            if func == 'RPOS': L = f'RPOS{counter}'; V = f'Ω-{position}'
+            emit_decl(f'str_t',     f'{L};')
+            emit_code(f'{L}_α:',    f'if (Δ != {V})', f'goto {L}_ω;')
+            emit_code(f'',          f'{L} = str(Σ+Δ, 0);', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+        case 'Integer':
+            L = f'i{counter}_{t[1]}'
+            emit_decl(f'int',       f'{L};')
+            emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+        case 'String':
+            L = f's{counter}'
+            V = eval(t[1])
+            emit_decl(f'str_t',     f'{L};')
+            label = f'{L}_α:'
+            for i, c in enumerate(eval(t[1])):
+                emit_code(label,    f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
+                label = ''
+            emit_code(f'',          f'{L} = str(Σ+Δ, {len(V)}); Δ += {len(V)};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'Δ -= {len(V)};', f'goto {L}_ω;')
+        case 'Id':
+            L = f'{t[1]}{counter}'
+            emit_decl(f'int',       f'{L};')
+            emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+        case 'OUTPUT':
+            L = f'OUTPUT{counter}'
+            E = genc(t[1])
+            emit_decl(f'int',       f'{L};')
+            emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
+            emit_code(f'{L}_β:',    f'', f'goto {E}_β;')
+            emit_code(f'{E}_γ:',    f'{L} = write_str(out, {E});', f'goto {L}_γ;')
+            emit_code(f'{E}_ω:',    f'', f'goto {L}_ω;')
+        case '+'|'-':
+            if len(t) == 2:
+                op = t[0]
+                if op == '+': L = f'uplus{counter}'
+                if op == '-': L = f'uminus{counter}'
+                E = genc(t[1])
+                emit_decl(f'int',     f'{L};')
+                emit_code(f'{L}_α:',  f'', f'goto {E}_α;')
+                emit_code(f'{L}_β:',  f'', f'goto {E}_β;')
+                emit_code(f'{E}_γ:',  f'{L} = {op}{E};', f'goto {L}_γ;')
+                emit_code(f'{E}_ω:',  f'', f'goto {L}_ω;')
+            elif len(t) == 3:
+                op = t[0]
+                if op == '+': L = f'plus{counter}'
+                if op == '-': L = f'minus{counter}'
+                E1 = genc(t[1])
+                E2 = genc(t[2])
+                emit_decl(f'int',     f'{L};')
+                emit_code(f'{L}_α:',  f'', f'goto {E1}_α;')
+                emit_code(f'{L}_β:',  f'', f'goto {E2}_β;')
+                emit_code(f'{E1}_γ:', f'', f'goto {E2}_α;')
+                emit_code(f'{E1}_ω:', f'', f'goto {L}_ω;')
+                emit_code(f'{E2}_γ:', f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
+                emit_code(f'{E2}_ω:', f'', f'goto {E1}_β;')
+        case '*'|'/':
+            op = t[0]
+            if op == '*': L = f'mult{counter}'
+            if op == '/': L = f'divide{coiunter}'
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int',         f'{L};')
+            emit_code(f'{L}_α:',      f'', f'goto {E1}_α;')
+            emit_code(f'{L}_β:',      f'', f'goto {E2}_β;')
+            emit_code(f'{E1}_γ:',     f'', f'goto {E2}_α;')
+            emit_code(f'{E1}_ω:',     f'', f'goto {L}_ω;')
+            emit_code(f'{E2}_γ:',     f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
+            emit_code(f'{E2}_ω:',     f'', f'goto {E1}_β;')
+        case '<'|'>'|'=='|'<='|'>='|'!=':
+            op = t[0]
+            if op == '<':  L = f'lt{counter}'; nop = '>='
+            if op == '>':  L = f'gt{counter}'; nop = '<='
+            if op == '==': L = f'eq{counter}'; nop = '!='
+            if op == '<=': L = f'le{counter}'; nop = '>'
+            if op == '>=': L = f'ge{counter}'; nop = '<'
+            if op == '!=': L = f'ne{counter}'; nop = '=='
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'int',         f'{L};')
+            emit_code(f'{L}_α:',      f'', f'goto {E1}_α;')
+            emit_code(f'{L}_β:',      f'', f'goto {E2}_β;')
+            emit_code(f'{E1}_γ:',     f'', f'goto {E2}_α;')
+            emit_code(f'{E1}_ω:',     f'', f'goto {L}_ω;')
+            emit_code(f'{E2}_γ:',     f'if ({E1} {nop} {E2})', f'goto {E2}_β;')
+            emit_code(f'',            f'{L} = {E2};', f'goto {L}_γ;')
+            emit_code(f'{E2}_ω:',     f'', f'goto {E1}_β;')
+        case '..':
+            L = f'seq{counter}'
+            Es = [genc(c) for c in t[1:]]
+            emit_decl(f'str_t', f'{L};')
+            emit_code(f'{L}_α:', f'{L} = str(Σ+Δ, 0);', f'goto {Es[0]}_α;')
+            emit_code(f'{L}_β:', f'', f'goto {Es[-1]}_β;')
+            for i in range(len(Es)):
+                if i < len(Es)-1:
+                    emit_code(f'{Es[i]}_γ:', f'{L} = cat({L}, {Es[i]});', f'goto {Es[i+1]}_α;')
+                else: emit_code(f'{Es[i]}_γ:', f'{L} = cat({L}, {Es[i]});', f'goto {L}_γ;')
+                if i == 0:
+                    emit_code(f'{Es[i]}_ω:', f'', f'goto {L}_ω;')
+                else: emit_code(f'{Es[i]}_ω:', f'', f'goto {Es[i-1]}_β;')
+        case '|':
+            L = f'alt{counter}'
+            E1 = genc(t[1])
+            E2 = genc(t[2])
+            emit_decl(f'str_t',       f'{L};')
+            emit_decl(f'int',         f'{L}_i;')
+            emit_code(f'{L}_α:',      f'{L}_i = 1;', f'goto {E1}_α;')
+            emit_code(f'{L}_β:',      f'if ({L}_i == 1)', f'goto {E1}_β;')
+            emit_code(f'',            f'if ({L}_i == 2)', f'goto {E2}_β;')
+            emit_code(f'{E1}_γ:',     f'{L} = {E1};', f'goto {L}_γ;')
+            emit_code(f'{E1}_ω:',     f'{L}_i = 2;', f'goto {E2}_α;')
+            emit_code(f'{E2}_γ:',     f'{L} = {E2};', f'goto {L}_γ;')
+            emit_code(f'{E2}_ω:',     f'', f'goto {L}_ω;')
+    emit_line("    /*------------------------------------------------------------------------*/")
+    return L
+#-----------------------------------------------------------------------------------------------------------------------
+TRACE(40)
 GLOBALS(globals())
-test_program = " subject ? POS(0) ('B' | 'R') ('E' | 'EA') ('DS' | 'D') RPOS(0)\n"
-if test_program in Parse:
-    pprint(SNOBOL4_tree)
-else: print("Yikes!")
+test_program = " 'READS' ? POS(0) ('B' | 'R') ('E' | 'EA') ('D' | 'DS') RPOS(0)\n"
+snobol4_source = ' "BLUEBIRD" POS(0) "BLUE" "BIRD" RPOS(0)\n'
+if snobol4_source in Parse:
+    kernel_source = genc(SNOBOL4_tree)
+    for num, line in enumerate(c_source):
+        print(line)
+#-----------------------------------------------------------------------------------------------------------------------
+exit()
+import timeit
+import pyopencl as cl
+import numpy as np
+#-----------------------------------------------------------------------------------------------------------------------
+ctx = cl.create_some_context()
+queue = cl.CommandQueue(ctx)
+input_text = "\0" * 1024
+input_array = np.frombuffer(input_text.encode('ascii'), dtype=np.uint8)
+mf = cl.mem_flags
+input_buf = cl.Buffer(ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=input_array)
+output_buf = cl.Buffer(ctx, mf.WRITE_ONLY, input_array.nbytes)
+#-----------------------------------------------------------------------------------------------------------------------
+while True:
+    snobol4_source = input("Enter SNOBOL4 (or 'exit'): ")
+    if snobol4_source.lower() == "exit": break
+    if snobol4_source == "": continue
+    print("Parsing SNOBOL4 ...")
+    print(snobol4_source)
+    snobol4_source += '\n'
+    if snobol4_source in Parse:
+        print("Translating SNOBOL4 to C ...")
+        c_source = []
+        kernel_source = genc(SNOBOL4_tree)
+        for num, line in enumerate(c_source):
+#           print("%4d %s" % (num + 1, line))
+            print(line)
+        kernel_source = "\n".join(c_source)
+        if False:
+            print("Compiling C ...")
+            program = cl.Program(ctx, kernel_source).build()
+            print("Executing ...")
+            global_size = (1,) # (input_array.size,)
+            if False:
+                time = timeit.timeit(
+                    lambda: program.snobol4(
+                        queue, global_size,
+                        None, input_buf, output_buf,
+                        np.uint32(input_array.size))
+                    , number = 10_000, globals = globals());
+                print(time)
+            else:
+                program.snobol4(
+                    queue, global_size,
+                    None, input_buf, output_buf,
+                    np.uint32(input_array.size))
+            output_array = np.empty_like(input_array)
+            cl.enqueue_copy(queue, output_array, output_buf)
+            queue.finish()
+            output_text = output_array.tobytes().decode('ascii')
+            print(output_text)
+    else: print("Parse error!")
 #-----------------------------------------------------------------------------------------------------------------------
