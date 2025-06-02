@@ -507,13 +507,16 @@ def genc(t):
             subject = eval(t[1][1])
             emit_decl(f'str_t',     f'{L};')
             emit_code(f'{L}_α:',    f'Δ = 0; Σ = "{subject}";', f'')
-            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ,0);', f'goto {L}_γ;')
+            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ,Ω);', f'goto {L}_γ;')
             emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
         case 'Call':
             func = t[1][1]
             arg = t[2][1][1]
             if func == 'POS':    L = f'POS{counter}';    pos = f'{int(arg)}'
             if func == 'RPOS':   L = f'RPOS{counter}';   pos = f'Ω-{int(arg)}'
+            if func == 'TAB':    L = f'TAB{counter}';    pos = f'{int(arg)}'
+            if func == 'RTAB':   L = f'RTAB{counter}';   pos = f'Ω-{int(arg)}'
+            if func == 'LEN':    L = f'LEN{counter}';    length = f'{int(arg)}'
             if func == 'ANY':    L = f'ANY{counter}';    chars = eval(str(arg)); op = '=='
             if func == 'NOTANY': L = f'NOTANY{counter}'; chars = eval(str(arg)); op = '!='
             if func == 'SPAN':   L = f'SPAN{counter}';   chars = eval(str(arg)); op = '=='
@@ -524,6 +527,10 @@ def genc(t):
                     emit_code(f'{L}_α:',    f'if (Δ != {pos})', f'goto {L}_ω;')
                     emit_code(f'',          f'{L} = str(Σ+Δ,0);', f'goto {L}_γ;')
                     emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+                case 'LEN':
+                    emit_code(f'{L}_α:',    f'if (Δ+{length} > Ω)', f'goto {L}_ω;')
+                    emit_code(f'',          f'{L} = str(Σ+Δ,{length}); Δ+={length};', f'goto {L}_γ;')
+                    emit_code(f'{L}_β:',    f'Δ-={length}', f'goto {L}_ω;')
                 case 'ANY'|'NOTANY':
                     label = f'{L}_α:'
                     for c in chars:
@@ -687,7 +694,7 @@ TRACE(40)
 GLOBALS(globals())
 snobol4_source = ''' "SNOBOL4" POS(0) ARB $ OUTPUT RPOS(0)\n'''
 if snobol4_source in Parse:
-#   pprint(SNOBOL4_tree)
+    pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
     for num, line in enumerate(c_source):
         print(line)
