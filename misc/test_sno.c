@@ -164,7 +164,7 @@ __kernel void snobol(
     str_t       write;
     write_α:                                        goto seq_α;
     write_β:                                        goto seq_β;
-    seq_γ:      write = write_str(out, seq);  goto write_γ;
+    seq_γ:      write = write_str(out, seq);        goto write_γ;
     seq_ω:                                          goto write_ω;
     /*------------------------------------------------------------------------*/
     main1_α:                                        goto write_α;
