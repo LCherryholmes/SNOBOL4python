@@ -65,12 +65,15 @@ static int Ω = 0;
 static const char * Σ = (const char *) 0;
 static const int α = 0;
 static const int β = 1;
+static str_t empty = (str_t) {(const char *) 0, 0};
+static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }
 static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
 static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
 static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
-static str_t empty = (str_t) {(const char *) 0, 0};
+static inline str_t call(int entry, const char * name) { return empty; }
+static output_t * out = (output_t *) 0;
 /*============================================================================*/
-str_t delim() {
+str_t delim(int entry) {
     if (entry == α) goto delim_α;
     if (entry == β) goto delim_β;
     /*------------------------------------------------------------------------*/
@@ -90,7 +93,7 @@ str_t delim() {
     SPAN3_ω:      return empty;
 }
 /*============================================================================*/
-str_t word() {
+str_t word(int entry) {
     if (entry == α) goto word_α;
     if (entry == β) goto word_β;
     /*------------------------------------------------------------------------*/
@@ -147,19 +150,19 @@ str_t group(int entry) {
     str_t         word12;
     word12_α:     word12 = word(α);                         goto word12_λ;
     word12_β:     word12 = word(β);                         goto word12_λ;
-    word12_λ:     if (defer17 == empty)                     goto word12_ω;
+    word12_λ:     if (is_empty(word12))                     goto word12_ω;
                   else                                      goto word12_γ;
     /*------------------------------------------------------------------------*/
     str_t         delim16;
     delim16_α:    delim16 = delim(α);                       goto delim16_λ;
     delim16_β:    delim16 = delim(β);                       goto delim16_λ;
-    delim16_λ:    if (delim16 == empty)                     goto delim16_ω;
+    delim16_λ:    if (is_empty(delim16))                    goto delim16_ω;
                   else                                      goto delim16_γ;
     /*------------------------------------------------------------------------*/
     str_t         defer17;
-    defer17_α:    defer17 = call("group", α);               goto defer17_λ;
-    defer17_β:    defer17 = call("group", β);               goto defer17_λ;
-    defer17_λ:    if (defer17 == empty)                     goto defer17_ω;
+    defer17_α:    defer17 = call(α, "group");               goto defer17_λ;
+    defer17_β:    defer17 = call(β, "group");               goto defer17_λ;
+    defer17_λ:    if (is_empty(defer17))                    goto defer17_ω;
                   else                                      goto defer17_γ;
     /*------------------------------------------------------------------------*/
     str_t         seq15;
@@ -173,7 +176,7 @@ str_t group(int entry) {
     str_t         word18;
     word18_α:     word18 = word(α);                         goto word18_λ;
     word18_β:     word18 = word(β);                         goto word18_λ;
-    word18_λ:     if (word18 == empty)                      goto word18_ω;
+    word18_λ:     if (is_empty(word18))                     goto word18_ω;
                   else                                      goto word18_γ;
     /*------------------------------------------------------------------------*/
     int           alt14_i;
@@ -232,7 +235,7 @@ str_t treebank(int entry) {
     str_t         group26;
     group26_α:    group26 = group(α);                       goto group26_λ;
     group26_β:    group26 = group(β);                       goto group26_λ;
-    group26_λ:    if (group26 == empty)                     goto group26_ω;
+    group26_λ:    if (is_empty(group26))                    goto group26_ω;
                   else                                      goto group26_γ;
     /*------------------------------------------------------------------------*/
     str_t         ARBNO25;
@@ -248,7 +251,7 @@ str_t treebank(int entry) {
     str_t         delim27;
     delim27_α:    delim27 = delim(α);                       goto delim27_λ;
     delim27_β:    delim27 = delim(β);                       goto delim27_λ;
-    delim27_λ:    if (delim27 == empty)                     goto delim27_ω;
+    delim27_λ:    if (is_empty(delim27))                    goto delim27_ω;
                   else                                      goto delim27_γ;
     /*------------------------------------------------------------------------*/
     str_t         seq24;
@@ -310,7 +313,7 @@ __kernel void snobol(
     str_t         treebank31;
     treebank31_α: treebank31 = treebank(α);                 goto treebank31_λ;
     treebank31_β: treebank31 = treebank(β);                 goto treebank31_λ;
-    treebank31_λ: if (treebank31 == empty)                  goto treebank31_ω;
+    treebank31_λ: if (is_empty(treebank31))                 goto treebank31_ω;
                   else                                      goto treebank31_γ;
     /*------------------------------------------------------------------------*/
     str_t         match29;
