@@ -1,0 +1,6 @@
+START delim    =  SPAN(" ")
+      word     =  (NOTANY("( )") + BREAK("( )")) $ OUTPUT
+      group    =  '(' word ARBNO(delim *group | word)) ')'
+      treebank =  POS(0) + ARBNO(ARBNO(group) + delim) + RPOS(0)
+      '(S (NP (FW i)) (VP (VBP am)) (.  .)) ' = POS(0) + ARBNO(ARBNO(group) + delim) + RPOS(0)
+END

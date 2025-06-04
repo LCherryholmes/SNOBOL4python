@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Run transl8r_SNOBOL4.py",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/transl8r_SNOBOL4.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "default": true
+    }
+  ]
+}
