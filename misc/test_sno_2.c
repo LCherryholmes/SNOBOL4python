@@ -1,9 +1,8 @@
 #ifdef __GNUC__
 #define __kernel
 #define __global
-#include <assert.h>
 extern int printf(char *, ...);
-//extern void assert(int a);
+extern void assert(int a);
 #endif
 /*----------------------------------------------------------------------------*/
 typedef struct { const char * σ; int δ; } str_t;
@@ -17,11 +16,11 @@ void write_flush(output_t * out) {}
 #else
 #if 1
 extern int printf(char *, ...);
-void    write_nl(output_t * out) { printf("%s", "\n"); }
-int     write_int(output_t * out, int v) { printf("%d\n", v); return v; }
-void    write_sz(output_t * out, const char * s) { printf("%s\n", s); }
+void    write_nl(output_t * out)                 { printf("%s", "\n"); }
+int     write_int(output_t * out, int v)         { printf("%d", v); return v; }
+void    write_sz(output_t * out, const char * s) { printf("%s", s); }
 str_t   write_str(output_t * out, str_t str) {
-            printf("%.*s\n", str.δ, str.σ);
+            printf("%.*s", str.δ, str.σ);
             return str;
         }
 void    write_flush(output_t * out) {}
@@ -62,13 +61,12 @@ void    write_flush(output_t * out) {}
 #endif
 /*----------------------------------------------------------------------------*/
 __kernel void snobol(
-    __global const char * Σ,
+    __global const char * in,
     __global       char * buffer,
              const int    num_chars) {
     /*------------------------------------------------------------------------*/
     const char cszFailure[9] = "Failure.";
-    const char cszSuccess[9] = "Success!";
-    const str_t empty = {0, 0};
+    const char cszSuccess[10] = "Success: ";
     output_t output = {0, buffer};
     output_t * out = &output;
     for (int i = 0; i < num_chars; i++)
@@ -79,104 +77,247 @@ __kernel void snobol(
     inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
     /*------------------------------------------------------------------------*/
     int Δ = 0;
-    int Ω = len(Σ);
-    goto main1_α;
+    int Ω = 0;
+    const char * Σ = (const char *) 0;
     /*------------------------------------------------------------------------*/
-    /*          POS(0) ARBNO('Bird' | 'Blue' | LEN(1)) $ OUTPUT RPOS(0)       */
+    str_t         SPAN3;
+    int           SPAN3_δ;
+    SPAN3_α:      for (SPAN3_δ = 0; Σ[Δ+SPAN3_δ]; SPAN3_δ++) {
+                      if (Σ[Δ+SPAN3_δ] == ' ') continue;    
+                      break;                                
+                  }                                         
+                  if (SPAN3_δ <= 0)                         goto SPAN3_ω;
+                  SPAN3 = str(Σ+Δ,SPAN3_δ); Δ+=SPAN3_δ;     goto SPAN3_γ;
+    SPAN3_β:      Δ-=SPAN3_δ;                               goto SPAN3_ω;
     /*------------------------------------------------------------------------*/
-    str_t       POS0;
-    POS0_α:     if (Δ != 0)                         goto POS0_ω;
-                POS0 = str(Σ+Δ, 0);                 goto POS0_γ;
-    POS0_β:                                         goto POS0_ω;
+    str_t         delim;
+    delim_α:                                                goto SPAN3_α;
+    delim_β:                                                goto SPAN3_β;
+    SPAN3_γ:      delim = SPAN3;                            goto delim_γ;
+    SPAN3_ω:                                                goto delim_ω;
     /*------------------------------------------------------------------------*/
-    str_t       BIRD;
-    BIRD_α:     if (Σ[Δ+0] != 'B')                  goto BIRD_ω;
-                if (Σ[Δ+1] != 'i')                  goto BIRD_ω;
-                if (Σ[Δ+2] != 'r')                  goto BIRD_ω;
-                if (Σ[Δ+3] != 'd')                  goto BIRD_ω;
-                BIRD = str(Σ+Δ, 4);
-                Δ += 4;                             goto BIRD_γ;
-    BIRD_β:     Δ -= 4;                             goto BIRD_ω;
+    str_t         NOTANY7;
+    NOTANY7_α:    if (Σ[Δ] != '(')                          goto NOTANY7_αγ;
+                  if (Σ[Δ] != ' ')                          goto NOTANY7_αγ;
+                  if (Σ[Δ] != ')')                          goto NOTANY7_αγ;
+                                                            goto NOTANY7_ω;
+    NOTANY7_αγ:   NOTANY7 = str(Σ+Δ,1); Δ+=1;               goto NOTANY7_γ;
+    NOTANY7_β:    Δ-=1;                                     goto NOTANY7_ω;
     /*------------------------------------------------------------------------*/
-    str_t       BLUE;
-    BLUE_α:     if (Σ[Δ+0] != 'B')                  goto BLUE_ω;
-                if (Σ[Δ+1] != 'l')                  goto BLUE_ω;
-                if (Σ[Δ+2] != 'u')                  goto BLUE_ω;
-                if (Σ[Δ+3] != 'e')                  goto BLUE_ω;
-                BLUE = str(Σ+Δ, 4);
-                Δ += 4;                             goto BLUE_γ;
-    BLUE_β:     Δ -= 4;                             goto BLUE_ω;
+    str_t         BREAK8;
+    int           BREAK8_δ;
+    BREAK8_α:     for (BREAK8_δ = 0; Σ[Δ+BREAK8_δ]; BREAK8_δ++) {
+                      if (Σ[Δ+BREAK8_δ] != '(') continue;   
+                      if (Σ[Δ+BREAK8_δ] != ' ') continue;   
+                      if (Σ[Δ+BREAK8_δ] != ')') continue;   
+                      break;                                
+                  }                                         
+                  if (Δ+BREAK8_δ >= Ω)                      goto BREAK8_ω;
+                  BREAK8 = str(Σ+Δ,BREAK8_δ); Δ+=BREAK8_δ;  goto BREAK8_γ;
+    BREAK8_β:     Δ-=BREAK8_δ;                              goto BREAK8_ω;
     /*------------------------------------------------------------------------*/
-    str_t       LEN1;
-    LEN1_α:     if (Δ+1 > Ω)                        goto LEN1_ω;
-                LEN1 = str(Σ+Δ,1); Δ+=1;            goto LEN1_γ;
-    LEN1_β:     Δ-=1;                               goto LEN1_ω;
+    str_t         seq6;
+    seq6_α:       seq6 = str(Σ+Δ,0);                        goto NOTANY7_α;
+    seq6_β:                                                 goto BREAK8_β;
+    NOTANY7_γ:    seq6 = cat(seq6, NOTANY7);                goto BREAK8_α;
+    NOTANY7_ω:                                              goto seq6_ω;
+    BREAK8_γ:     seq6 = cat(seq6, BREAK8);                 goto seq6_γ;
+    BREAK8_ω:                                               goto NOTANY7_β;
     /*------------------------------------------------------------------------*/
-    typedef struct _1 { str_t ARBNO; str_t alt; int alt_i; } _1_t;
-    _1_t _1[64];
-    _1_t * ζ = &_1[0];
+    str_t         immed8;
+    immed8_α:                                               goto seq6_α;
+    immed8_β:                                               goto seq6_β;
+    seq6_γ:       immed8 = write_str(out, seq6);            
+                  write_nl(out);                            goto immed8_γ;
+    seq6_ω:                                                 goto immed8_ω;
     /*------------------------------------------------------------------------*/
-    alt_α:      ζ->alt_i = 1;                       goto BIRD_α;
-    alt_β:      if (ζ->alt_i == 1)                  goto BIRD_β;
-                if (ζ->alt_i == 2)                  goto BLUE_β;
-                if (ζ->alt_i == 3)                  goto LEN1_β;
-                                                    goto alt_ω;
-    BIRD_γ:     ζ->alt = BIRD;                      goto alt_γ;
-    BIRD_ω:     ζ->alt_i++;                         goto BLUE_α;
-    BLUE_γ:     ζ->alt = BLUE;                      goto alt_γ;
-    BLUE_ω:     ζ->alt_i++;                         goto LEN1_α;
-    LEN1_γ:     ζ->alt = LEN1;                      goto alt_γ;
-    LEN1_ω:                                         goto alt_ω;
+    str_t         word;
+    word_α:                                                 goto immed8_α;
+    word_β:                                                 goto immed8_β;
+    immed8_γ:     word = immed8;                            goto word_γ;
+    immed8_ω:                                               goto word_ω;
     /*------------------------------------------------------------------------*/
-    str_t       ARBNO;
-    int         ARBNO_i;
-    ARBNO_α:    ζ = &_1[ARBNO_i=0];
-                ζ->ARBNO = str(Σ+Δ, 0);             goto alt_α;
-    ARBNO_β:    ζ = &_1[++ARBNO_i];
-                ζ->ARBNO = ARBNO;                   goto alt_α;
-    alt_γ:      ARBNO = cat(ζ->ARBNO, ζ->alt);      goto ARBNO_γ;
-    alt_ω:      if (ARBNO_i <= 0)                   goto ARBNO_ω;
-                ARBNO_i--; ζ = &_1[ARBNO_i];        goto alt_β;
+    str_t         s11;
+    s11_α:        if (Σ[Δ+0] != '(')                        goto s11_ω;
+                  s11 = str(Σ+Δ,1); Δ+=1;                   goto s11_γ;
+    s11_β:        Δ-=1;                                     goto s11_ω;
     /*------------------------------------------------------------------------*/
-    str_t       assign;
-    assign_α:                                       goto ARBNO_α;
-    assign_β:                                       goto ARBNO_β;
-    ARBNO_γ:    assign = write_str(out, ARBNO);
-                write_nl(out);                      goto assign_γ;
-    ARBNO_ω:                                        goto assign_ω;
+    str_t         word12;
+    word12_α:                                               goto word_α;
+    word12_β:                                               goto word_β;
+    word_γ:       word12 = word;                            goto word12_γ;
+    word_ω:                                                 goto word12_ω;
     /*------------------------------------------------------------------------*/
-    str_t       RPOS0;
-    RPOS0_α:    if (Δ != Ω)                         goto RPOS0_ω;
-                RPOS0 = str(Σ+Δ, 0);                goto RPOS0_γ;
-    RPOS0_β:                                        goto RPOS0_ω;
+    str_t         delim16;
+    delim16_α:                                              goto delim_α;
+    delim16_β:                                              goto delim_β;
+    delim_γ:      delim16 = delim;                          goto delim16_γ;
+    delim_ω:                                                goto delim16_ω;
     /*------------------------------------------------------------------------*/
-    str_t       seq;
-    seq_α:      seq = str(Σ+Δ, 0);                  goto POS0_α;
-    seq_β:                                          goto RPOS0_β;
-    POS0_γ:     seq = cat(seq, POS0);               goto assign_α;
-    POS0_ω:                                         goto seq_ω;
-    assign_γ:   seq = cat(seq, BIRD);               goto RPOS0_α;
-    assign_ω:                                       goto POS0_β;
-    RPOS0_γ:    seq = cat(seq, RPOS0);              goto seq_γ;
-    RPOS0_ω:                                        goto assign_β;
+    str_t         defer17;
+    defer17_α:                                              goto group_α;
+    defer17_β:                                              goto group_β;
+    group_γ:      defer17 = lookup("group");                goto defer17_γ;
+    group_ω:                                                goto defer17_ω;
     /*------------------------------------------------------------------------*/
-    str_t       write;
-    write_α:                                        goto seq_α;
-    write_β:                                        goto seq_β;
-    seq_γ:      write = write_str(out, seq);        goto write_γ;
-    seq_ω:                                          goto write_ω;
+    str_t         seq15;
+    seq15_α:      seq15 = str(Σ+Δ,0);                       goto delim16_α;
+    seq15_β:                                                goto defer17_β;
+    delim16_γ:    seq15 = cat(seq15, delim16);              goto defer17_α;
+    delim16_ω:                                              goto seq15_ω;
+    defer17_γ:    seq15 = cat(seq15, defer17);              goto seq15_γ;
+    defer17_ω:                                              goto delim16_β;
     /*------------------------------------------------------------------------*/
-    main1_α:                                        goto write_α;
-    main1_β:                                        return;
-    write_γ:    write_sz(out, cszSuccess);          return; /*goto write_β;*/
-    write_ω:    write_sz(out, cszFailure);          return;
+    str_t         word18;
+    word18_α:                                               goto word_α;
+    word18_β:                                               goto word_β;
+    word_γ:       word18 = word;                            goto word18_γ;
+    word_ω:                                                 goto word18_ω;
+    /*------------------------------------------------------------------------*/
+    int           alt14_i;
+    str_t         alt14;
+    alt14_α:      alt14_i = 1;                              goto seq15_α;
+    alt14_β:      if (alt14_i == 1)                         goto seq15_β;
+                  if (alt14_i == 2)                         goto word18_β;
+                                                            goto alt14_ω;
+    seq15_γ:      alt14 = seq15;                            goto alt14_γ;
+    seq15_ω:      alt14_i++;                                goto word18_α;
+    word18_γ:     alt14 = word18;                           goto alt14_γ;
+    word18_ω:                                               goto alt14_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         ARBNO13;
+    int           ARBNO13_i;
+    ARBNO13_α:    ζ = &z[ARBNO13_i=0];                      
+                  ζ->ARBNO13 = str(Σ+Δ, 0);                 goto alt14_α;
+    ARBNO13_β:    ζ = &z[++ARBNO13_i];                      
+                  ζ->ARBNO13 = ARBNO13;                     goto alt14_α;
+    alt14_γ:      ARBNO13 = cat(ζ->ARBNO13, ζ->alt14);      goto ARBNO13_γ;
+    alt14_ω:      if (ARBNO13_i <= 0)                       goto ARBNO13_ω;
+                  ARBNO13_i--; ζ = &z[ARBNO13_i];           goto alt14_β;
+    /*------------------------------------------------------------------------*/
+    str_t         s19;
+    s19_α:        if (Σ[Δ+0] != ')')                        goto s19_ω;
+                  s19 = str(Σ+Δ,1); Δ+=1;                   goto s19_γ;
+    s19_β:        Δ-=1;                                     goto s19_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         seq10;
+    seq10_α:      seq10 = str(Σ+Δ,0);                       goto s11_α;
+    seq10_β:                                                goto s19_β;
+    s11_γ:        seq10 = cat(seq10, s11);                  goto word12_α;
+    s11_ω:                                                  goto seq10_ω;
+    word12_γ:     seq10 = cat(seq10, word12);               goto ARBNO13_α;
+    word12_ω:                                               goto s11_β;
+    ARBNO13_γ:    seq10 = cat(seq10, ARBNO13);              goto s19_α;
+    ARBNO13_ω:                                              goto word12_β;
+    s19_γ:        seq10 = cat(seq10, s19);                  goto seq10_γ;
+    s19_ω:                                                  goto ARBNO13_β;
+    /*------------------------------------------------------------------------*/
+    str_t         group;
+    group_α:                                                goto seq10_α;
+    group_β:                                                goto seq10_β;
+    seq10_γ:      group = seq10;                            goto group_γ;
+    seq10_ω:                                                goto group_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         POS22;
+    POS22_α:      if (Δ != 0)                               goto POS22_ω;
+                  POS22 = str(Σ+Δ,0);                       goto POS22_γ;
+    POS22_β:                                                goto POS22_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         group26;
+    group26_α:                                              goto group_α;
+    group26_β:                                              goto group_β;
+    group_γ:      group26 = group;                          goto group26_γ;
+    group_ω:                                                goto group26_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         ARBNO25;
+    int           ARBNO25_i;
+    ARBNO25_α:    ζ = &z[ARBNO25_i=0];                      
+                  ζ->ARBNO25 = str(Σ+Δ, 0);                 goto group26_α;
+    ARBNO25_β:    ζ = &z[++ARBNO25_i];                      
+                  ζ->ARBNO25 = ARBNO25;                     goto group26_α;
+    group26_γ:    ARBNO25 = cat(ζ->ARBNO25, ζ->group26);    goto ARBNO25_γ;
+    group26_ω:    if (ARBNO25_i <= 0)                       goto ARBNO25_ω;
+                  ARBNO25_i--; ζ = &z[ARBNO25_i];           goto group26_β;
+    /*------------------------------------------------------------------------*/
+    str_t         delim27;
+    delim27_α:                                              goto delim_α;
+    delim27_β:                                              goto delim_β;
+    delim_γ:      delim27 = delim;                          goto delim27_γ;
+    delim_ω:                                                goto delim27_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         seq24;
+    seq24_α:      seq24 = str(Σ+Δ,0);                       goto ARBNO25_α;
+    seq24_β:                                                goto delim27_β;
+    ARBNO25_γ:    seq24 = cat(seq24, ARBNO25);              goto delim27_α;
+    ARBNO25_ω:                                              goto seq24_ω;
+    delim27_γ:    seq24 = cat(seq24, delim27);              goto seq24_γ;
+    delim27_ω:                                              goto ARBNO25_β;
+    /*------------------------------------------------------------------------*/
+    str_t         ARBNO23;
+    int           ARBNO23_i;
+    ARBNO23_α:    ζ = &z[ARBNO23_i=0];                      
+                  ζ->ARBNO23 = str(Σ+Δ, 0);                 goto seq24_α;
+    ARBNO23_β:    ζ = &z[++ARBNO23_i];                      
+                  ζ->ARBNO23 = ARBNO23;                     goto seq24_α;
+    seq24_γ:      ARBNO23 = cat(ζ->ARBNO23, ζ->seq24);      goto ARBNO23_γ;
+    seq24_ω:      if (ARBNO23_i <= 0)                       goto ARBNO23_ω;
+                  ARBNO23_i--; ζ = &z[ARBNO23_i];           goto seq24_β;
+    /*------------------------------------------------------------------------*/
+    str_t         RPOS28;
+    RPOS28_α:     if (Δ != Ω-0)                             goto RPOS28_ω;
+                  RPOS28 = str(Σ+Δ,0);                      goto RPOS28_γ;
+    RPOS28_β:                                               goto RPOS28_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         seq21;
+    seq21_α:      seq21 = str(Σ+Δ,0);                       goto POS22_α;
+    seq21_β:                                                goto RPOS28_β;
+    POS22_γ:      seq21 = cat(seq21, POS22);                goto ARBNO23_α;
+    POS22_ω:                                                goto seq21_ω;
+    ARBNO23_γ:    seq21 = cat(seq21, ARBNO23);              goto RPOS28_α;
+    ARBNO23_ω:                                              goto POS22_β;
+    RPOS28_γ:     seq21 = cat(seq21, RPOS28);               goto seq21_γ;
+    RPOS28_ω:                                               goto ARBNO23_β;
+    /*------------------------------------------------------------------------*/
+    str_t         treebank;
+    treebank_α:                                             goto seq21_α;
+    treebank_β:                                             goto seq21_β;
+    seq21_γ:      treebank = seq21;                         goto treebank_γ;
+    seq21_ω:                                                goto treebank_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         subj30;
+    subj30_α:     Δ = 0; Σ = "(S (NP (FW i)) (VP (VBP am)) (.  .)) ";
+                  Ω = len(Σ); subj30 = str(Σ,Ω);            goto subj30_γ;
+    subj30_β:                                               goto subj30_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         treebank31;
+    treebank31_α:                                           goto treebank_α;
+    treebank31_β:                                           goto treebank_β;
+    treebank_γ:   treebank31 = treebank;                    goto treebank31_γ;
+    treebank_ω:                                             goto treebank31_ω;
+    /*------------------------------------------------------------------------*/
+    str_t         match29;
+    match29_α:                                              goto subj30_α;
+    match29_β:                                              goto match29_ω;
+    subj30_γ:                                               goto treebank31_α;
+    subj30_ω:                                               goto match29_ω;
+    treebank31_γ: match29 = treebank31;                     goto match29_γ;
+    treebank31_ω:                                           goto match29_ω;
+    /*------------------------------------------------------------------------*/
+                                                            goto main1_α;
+    main1_α:                                                goto match29_α;
+    main1_β:                                                return;
+    match29_γ:    write_sz(out, cszSuccess);                
+                  write_str(out, match29);                  
+                  write_nl(out);                            goto match29_β;
+    match29_ω:    write_sz(out, cszFailure);                
+                  write_nl(out);                            return;
 }
 
 #ifdef __GNUC__
 static char szOutput[1024] = {0};
-static const char cszInput[] = "BlueGoldBirdFish";
 int main() {
-    snobol(cszInput, szOutput, sizeof(szOutput));
+    snobol((const char *) 0, szOutput, sizeof(szOutput));
     return 0;
 }
 #endif
+    /*------------------------------------------------------------------------*/
