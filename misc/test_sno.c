@@ -112,9 +112,9 @@ __kernel void snobol(
                 LEN1 = str(Σ+Δ,1); Δ+=1;            goto LEN1_γ;
     LEN1_β:     Δ-=1;                               goto LEN1_ω;
     /*------------------------------------------------------------------------*/
-    typedef struct _z { str_t ARBNO; str_t alt; int alt_i; } z_t;
-    z_t z[64];
-    z_t * ζ = &z[0];
+    typedef struct _1 { str_t ARBNO; str_t alt; int alt_i; } _1_t;
+    _1_t _1[64];
+    _1_t * ζ = &_1[0];
     /*------------------------------------------------------------------------*/
     alt_α:      ζ->alt_i = 1;                       goto BIRD_α;
     alt_β:      if (ζ->alt_i == 1)                  goto BIRD_β;
