@@ -481,34 +481,34 @@ def genc(t):
         case 'Parse':
             L = f'main{counter}'
             program_head()
-            emit_code(f'',          f'', f'goto {L}_α;')
+            emit_code(f'',              f'', f'goto {L}_α;')
             E = genc(t[1])
-            emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
-            emit_code(f'{L}_β:',    f'', f'return; ')
-            emit_code(f'{E}_γ:',    f'write_sz(out, cszSuccess);', f'')
-            emit_code(f'',          f'write_str(out, {E});', f'')
-            emit_code(f'',          f'write_nl(out);', f'goto {E}_β;')
-            emit_code(f'{E}_ω:',    f'write_sz(out, cszFailure);', f'')
-            emit_code(f'',          f'write_nl(out);', f'return;')
+            emit_code(f'{L}_α:',        f'', f'goto {E}_α;')
+            emit_code(f'{L}_β:',        f'', f'return; ')
+            emit_code(f'{E}_γ:',        f'write_sz(out, cszSuccess);', f'')
+            emit_code(f'',              f'write_str(out, {E});', f'')
+            emit_code(f'',              f'write_nl(out);', f'goto {E}_β;')
+            emit_code(f'{E}_ω:',        f'write_sz(out, cszFailure);', f'')
+            emit_code(f'',              f'write_nl(out);', f'return;')
             program_tail()
         case 'Stmt':
             L = f'match{counter}'
             S = genc(t[2]) # subject
             P = genc(t[3]) # pattern
-            emit_decl(f'str_t',     f'{L};')
-            emit_code(f'{L}_α:',    f'', f'goto {S}_α;')
-            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
-            emit_code(f'{S}_γ:',    f'', f'goto {P}_α;')
-            emit_code(f'{S}_ω:',    f'', f'goto {L}_ω;')
-            emit_code(f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
-            emit_code(f'{P}_ω:',    f'{L} = {P};', f'goto {L}_ω;')
+            emit_decl(f'str_t',         f'{L};')
+            emit_code(f'{L}_α:',        f'', f'goto {S}_α;')
+            emit_code(f'{L}_β:',        f'', f'goto {L}_ω;')
+            emit_code(f'{S}_γ:',        f'', f'goto {P}_α;')
+            emit_code(f'{S}_ω:',        f'', f'goto {L}_ω;')
+            emit_code(f'{P}_γ:',        f'{L} = {P};', f'goto {L}_γ;')
+            emit_code(f'{P}_ω:',        f'{L} = {P};', f'goto {L}_ω;')
         case 'Subject':
             L = f'subj{counter}'
             subject = eval(t[1][1])
-            emit_decl(f'str_t',     f'{L};')
-            emit_code(f'{L}_α:',    f'Δ = 0; Σ = "{subject}";', f'')
-            emit_code(f'',          f'Ω = len(Σ); {L} = str(Σ,Ω);', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            emit_decl(f'str_t',         f'{L};')
+            emit_code(f'{L}_α:',        f'Δ = 0; Σ = "{subject}";', f'')
+            emit_code(f'',              f'Ω = len(Σ); {L} = str(Σ,Ω);', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',        f'', f'goto {L}_ω;')
         case 'Call':
             func = t[1][1]
             arg = t[2][1][1]
@@ -556,19 +556,19 @@ def genc(t):
 
         case 'Integer':
             L = f'i{counter}_{t[1]}'
-            emit_decl(f'int',       f'{L};')
-            emit_code(f'{L}_α:',    f'{L} = {t[1]};', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            emit_decl(f'int',           f'{L};')
+            emit_code(f'{L}_α:',        f'{L} = {t[1]};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',        f'', f'goto {L}_ω;')
         case 'String':
             L = f's{counter}'
             V = eval(t[1])
-            emit_decl(f'str_t',     f'{L};')
+            emit_decl(f'str_t',         f'{L};')
             label = f'{L}_α:'
             for i, c in enumerate(eval(t[1])):
-                emit_code(label,    f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
+                emit_code(label,        f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
                 label = ''
-            emit_code(f'',          f'{L} = str(Σ+Δ,{len(V)}); Δ+={len(V)};', f'goto {L}_γ;')
-            emit_code(f'{L}_β:',    f'Δ-={len(V)};', f'goto {L}_ω;')
+            emit_code(f'',              f'{L} = str(Σ+Δ,{len(V)}); Δ+={len(V)};', f'goto {L}_γ;')
+            emit_code(f'{L}_β:',        f'Δ-={len(V)};', f'goto {L}_ω;')
         case 'Id':
             L = f'{t[1]}{counter}'
             identifier = t[1]
@@ -608,37 +608,37 @@ def genc(t):
                 if op == '+': L = f'uplus{counter}'
                 if op == '-': L = f'uminus{counter}'
                 E = genc(t[1])
-                emit_decl(f'int',     f'{L};')
-                emit_code(f'{L}_α:',  f'', f'goto {E}_α;')
-                emit_code(f'{L}_β:',  f'', f'goto {E}_β;')
-                emit_code(f'{E}_γ:',  f'{L} = {op}{E};', f'goto {L}_γ;')
-                emit_code(f'{E}_ω:',  f'', f'goto {L}_ω;')
+                emit_decl(f'int',       f'{L};')
+                emit_code(f'{L}_α:',    f'', f'goto {E}_α;')
+                emit_code(f'{L}_β:',    f'', f'goto {E}_β;')
+                emit_code(f'{E}_γ:',    f'{L} = {op}{E};', f'goto {L}_γ;')
+                emit_code(f'{E}_ω:',    f'', f'goto {L}_ω;')
             elif len(t) == 3:
                 op = t[0]
                 if op == '+': L = f'plus{counter}'
                 if op == '-': L = f'minus{counter}'
                 E1 = genc(t[1])
                 E2 = genc(t[2])
-                emit_decl(f'int',     f'{L};')
-                emit_code(f'{L}_α:',  f'', f'goto {E1}_α;')
-                emit_code(f'{L}_β:',  f'', f'goto {E2}_β;')
-                emit_code(f'{E1}_γ:', f'', f'goto {E2}_α;')
-                emit_code(f'{E1}_ω:', f'', f'goto {L}_ω;')
-                emit_code(f'{E2}_γ:', f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
-                emit_code(f'{E2}_ω:', f'', f'goto {E1}_β;')
+                emit_decl(f'int',       f'{L};')
+                emit_code(f'{L}_α:',    f'', f'goto {E1}_α;')
+                emit_code(f'{L}_β:',    f'', f'goto {E2}_β;')
+                emit_code(f'{E1}_γ:',   f'', f'goto {E2}_α;')
+                emit_code(f'{E1}_ω:',   f'', f'goto {L}_ω;')
+                emit_code(f'{E2}_γ:',   f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
+                emit_code(f'{E2}_ω:',   f'', f'goto {E1}_β;')
         case '*'|'/':
             op = t[0]
             if op == '*': L = f'mult{counter}'
             if op == '/': L = f'divide{counter}'
             E1 = genc(t[1])
             E2 = genc(t[2])
-            emit_decl(f'int',         f'{L};')
-            emit_code(f'{L}_α:',      f'', f'goto {E1}_α;')
-            emit_code(f'{L}_β:',      f'', f'goto {E2}_β;')
-            emit_code(f'{E1}_γ:',     f'', f'goto {E2}_α;')
-            emit_code(f'{E1}_ω:',     f'', f'goto {L}_ω;')
-            emit_code(f'{E2}_γ:',     f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
-            emit_code(f'{E2}_ω:',     f'', f'goto {E1}_β;')
+            emit_decl(f'int',           f'{L};')
+            emit_code(f'{L}_α:',        f'', f'goto {E1}_α;')
+            emit_code(f'{L}_β:',        f'', f'goto {E2}_β;')
+            emit_code(f'{E1}_γ:',       f'', f'goto {E2}_α;')
+            emit_code(f'{E1}_ω:',       f'', f'goto {L}_ω;')
+            emit_code(f'{E2}_γ:',       f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
+            emit_code(f'{E2}_ω:',       f'', f'goto {E1}_β;')
         case '<'|'>'|'=='|'<='|'>='|'!=':
             op = t[0]
             if op == '<':  L = f'lt{counter}'; nop = '>='
@@ -649,27 +649,27 @@ def genc(t):
             if op == '!=': L = f'ne{counter}'; nop = '=='
             E1 = genc(t[1])
             E2 = genc(t[2])
-            emit_decl(f'int',         f'{L};')
-            emit_code(f'{L}_α:',      f'', f'goto {E1}_α;')
-            emit_code(f'{L}_β:',      f'', f'goto {E2}_β;')
-            emit_code(f'{E1}_γ:',     f'', f'goto {E2}_α;')
-            emit_code(f'{E1}_ω:',     f'', f'goto {L}_ω;')
-            emit_code(f'{E2}_γ:',     f'if ({E1} {nop} {E2})', f'goto {E2}_β;')
-            emit_code(f'',            f'{L} = {E2};', f'goto {L}_γ;')
-            emit_code(f'{E2}_ω:',     f'', f'goto {E1}_β;')
+            emit_decl(f'int',           f'{L};')
+            emit_code(f'{L}_α:',        f'', f'goto {E1}_α;')
+            emit_code(f'{L}_β:',        f'', f'goto {E2}_β;')
+            emit_code(f'{E1}_γ:',       f'', f'goto {E2}_α;')
+            emit_code(f'{E1}_ω:',       f'', f'goto {L}_ω;')
+            emit_code(f'{E2}_γ:',       f'if ({E1} {nop} {E2})', f'goto {E2}_β;')
+            emit_code(f'',              f'{L} = {E2};', f'goto {L}_γ;')
+            emit_code(f'{E2}_ω:',       f'', f'goto {E1}_β;')
         case '..':
             L = f'seq{counter}'
             Es = [genc(c) for c in t[1:]]
-            emit_decl(f'str_t', f'{L};')
-            emit_code(f'{L}_α:', f'{L} = str(Σ+Δ,0);', f'goto {Es[0]}_α;')
-            emit_code(f'{L}_β:', f'', f'goto {Es[-1]}_β;')
+            emit_decl(f'str_t',                 f'{L};')
+            emit_code(f'{L}_α:',                f'{L} = str(Σ+Δ,0);', f'goto {Es[0]}_α;')
+            emit_code(f'{L}_β:',                f'', f'goto {Es[-1]}_β;')
             for i in range(len(Es)):
                 if i < len(Es)-1:
-                    emit_code(f'{Es[i]}_γ:', f'{L} = cat({L}, {Es[i]});', f'goto {Es[i+1]}_α;')
-                else: emit_code(f'{Es[i]}_γ:', f'{L} = cat({L}, {Es[i]});', f'goto {L}_γ;')
+                    emit_code(f'{Es[i]}_γ:',    f'{L} = cat({L}, {Es[i]});', f'goto {Es[i+1]}_α;')
+                else: emit_code(f'{Es[i]}_γ:',  f'{L} = cat({L}, {Es[i]});', f'goto {L}_γ;')
                 if i == 0:
-                    emit_code(f'{Es[i]}_ω:', f'', f'goto {L}_ω;')
-                else: emit_code(f'{Es[i]}_ω:', f'', f'goto {Es[i-1]}_β;')
+                    emit_code(f'{Es[i]}_ω:',    f'', f'goto {L}_ω;')
+                else: emit_code(f'{Es[i]}_ω:',  f'', f'goto {Es[i-1]}_β;')
         case '|':
             L = f'alt{counter}'
             Es = [genc(c) for c in t[1:]]
@@ -693,6 +693,8 @@ def genc(t):
 TRACE(40)
 GLOBALS(globals())
 snobol4_source = ''' "SNOBOL4" POS(0) ARB $ OUTPUT RPOS(0)\n'''
+snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO('Bird' | 'Blue' | LEN(1)) $ OUTPUT RPOS(0)\n'''
+snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO(LEN(1)) $ OUTPUT RPOS(0)\n'''
 if snobol4_source in Parse:
     pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
