@@ -106,7 +106,6 @@ __kernel void snobol(
                 BLUE = str(Σ+Δ, 4);
                 Δ += 4;                             goto BLUE_γ;
     BLUE_β:     Δ -= 4;                             goto BLUE_ω;
-
     /*------------------------------------------------------------------------*/
     str_t       LEN1;
     LEN1_α:     if (Δ+1 > Ω)                        goto LEN1_ω;
