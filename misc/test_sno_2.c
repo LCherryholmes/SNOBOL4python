@@ -60,41 +60,39 @@ void    write_flush(output_t * out) {}
 #endif
 #endif
 /*----------------------------------------------------------------------------*/
-__kernel void snobol(
-    __global const char * in,
-    __global       char * buffer,
-             const int    num_chars) {
-    /*------------------------------------------------------------------------*/
-    const char cszFailure[9] = "Failure.";
-    const char cszSuccess[10] = "Success: ";
-    output_t output = {0, buffer};
-    output_t * out = &output;
-    for (int i = 0; i < num_chars; i++)
-        buffer[i] = 0;
-    /*------------------------------------------------------------------------*/
-    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
-    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
-    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
-    /*------------------------------------------------------------------------*/
-    int Δ = 0;
-    int Ω = 0;
-    const char * Σ = (const char *) 0;
+static int Δ = 0;
+static int Ω = 0;
+static const char * Σ = (const char *) 0;
+static const int α = 0;
+static const int β = 1;
+static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
+static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
+static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
+static str_t empty = (str_t) {(const char *) 0, 0};
+/*============================================================================*/
+str_t delim() {
+    if (entry == α) goto delim_α;
+    if (entry == β) goto delim_β;
     /*------------------------------------------------------------------------*/
     str_t         SPAN3;
     int           SPAN3_δ;
     SPAN3_α:      for (SPAN3_δ = 0; Σ[Δ+SPAN3_δ]; SPAN3_δ++) {
-                      if (Σ[Δ+SPAN3_δ] == ' ') continue;    
-                      break;                                
-                  }                                         
+                      if (Σ[Δ+SPAN3_δ] == ' ') continue;
+                      break;
+                  }
                   if (SPAN3_δ <= 0)                         goto SPAN3_ω;
                   SPAN3 = str(Σ+Δ,SPAN3_δ); Δ+=SPAN3_δ;     goto SPAN3_γ;
     SPAN3_β:      Δ-=SPAN3_δ;                               goto SPAN3_ω;
     /*------------------------------------------------------------------------*/
-    str_t         delim;
     delim_α:                                                goto SPAN3_α;
     delim_β:                                                goto SPAN3_β;
-    SPAN3_γ:      delim = SPAN3;                            goto delim_γ;
-    SPAN3_ω:                                                goto delim_ω;
+    SPAN3_γ:      return SPAN3;
+    SPAN3_ω:      return empty;
+}
+/*============================================================================*/
+str_t word() {
+    if (entry == α) goto word_α;
+    if (entry == β) goto word_β;
     /*------------------------------------------------------------------------*/
     str_t         NOTANY7;
     NOTANY7_α:    if (Σ[Δ] != '(')                          goto NOTANY7_αγ;
@@ -107,11 +105,11 @@ __kernel void snobol(
     str_t         BREAK8;
     int           BREAK8_δ;
     BREAK8_α:     for (BREAK8_δ = 0; Σ[Δ+BREAK8_δ]; BREAK8_δ++) {
-                      if (Σ[Δ+BREAK8_δ] != '(') continue;   
-                      if (Σ[Δ+BREAK8_δ] != ' ') continue;   
-                      if (Σ[Δ+BREAK8_δ] != ')') continue;   
-                      break;                                
-                  }                                         
+                      if (Σ[Δ+BREAK8_δ] != '(') continue;
+                      if (Σ[Δ+BREAK8_δ] != ' ') continue;
+                      if (Σ[Δ+BREAK8_δ] != ')') continue;
+                      break;
+                  }
                   if (Δ+BREAK8_δ >= Ω)                      goto BREAK8_ω;
                   BREAK8 = str(Σ+Δ,BREAK8_δ); Δ+=BREAK8_δ;  goto BREAK8_γ;
     BREAK8_β:     Δ-=BREAK8_δ;                              goto BREAK8_ω;
@@ -127,15 +125,19 @@ __kernel void snobol(
     str_t         immed8;
     immed8_α:                                               goto seq6_α;
     immed8_β:                                               goto seq6_β;
-    seq6_γ:       immed8 = write_str(out, seq6);            
+    seq6_γ:       immed8 = write_str(out, seq6);
                   write_nl(out);                            goto immed8_γ;
     seq6_ω:                                                 goto immed8_ω;
     /*------------------------------------------------------------------------*/
-    str_t         word;
     word_α:                                                 goto immed8_α;
     word_β:                                                 goto immed8_β;
-    immed8_γ:     word = immed8;                            goto word_γ;
-    immed8_ω:                                               goto word_ω;
+    immed8_γ:     return immed8;
+    immed8_ω:     return empty;
+}
+/*============================================================================*/
+str_t group(int entry) {
+    if (entry == α) goto group_α;
+    if (entry == β) goto group_β;
     /*------------------------------------------------------------------------*/
     str_t         s11;
     s11_α:        if (Σ[Δ+0] != '(')                        goto s11_ω;
@@ -143,22 +145,22 @@ __kernel void snobol(
     s11_β:        Δ-=1;                                     goto s11_ω;
     /*------------------------------------------------------------------------*/
     str_t         word12;
-    word12_α:                                               goto word_α;
-    word12_β:                                               goto word_β;
-    word_γ:       word12 = word;                            goto word12_γ;
-    word_ω:                                                 goto word12_ω;
+    word12_α:     word12 = word(α);                         goto word12_λ;
+    word12_β:     word12 = word(β);                         goto word12_λ;
+    word12_λ:     if (defer17 == empty)                     goto word12_ω;
+                  else                                      goto word12_γ;
     /*------------------------------------------------------------------------*/
     str_t         delim16;
-    delim16_α:                                              goto delim_α;
-    delim16_β:                                              goto delim_β;
-    delim_γ:      delim16 = delim;                          goto delim16_γ;
-    delim_ω:                                                goto delim16_ω;
+    delim16_α:    delim16 = delim(α);                       goto delim16_λ;
+    delim16_β:    delim16 = delim(β);                       goto delim16_λ;
+    delim16_λ:    if (delim16 == empty)                     goto delim16_ω;
+                  else                                      goto delim16_γ;
     /*------------------------------------------------------------------------*/
     str_t         defer17;
-    defer17_α:                                              goto group_α;
-    defer17_β:                                              goto group_β;
-    group_γ:      defer17 = lookup("group");                goto defer17_γ;
-    group_ω:                                                goto defer17_ω;
+    defer17_α:    defer17 = call("group", α);               goto defer17_λ;
+    defer17_β:    defer17 = call("group", β);               goto defer17_λ;
+    defer17_λ:    if (defer17 == empty)                     goto defer17_ω;
+                  else                                      goto defer17_γ;
     /*------------------------------------------------------------------------*/
     str_t         seq15;
     seq15_α:      seq15 = str(Σ+Δ,0);                       goto delim16_α;
@@ -169,10 +171,10 @@ __kernel void snobol(
     defer17_ω:                                              goto delim16_β;
     /*------------------------------------------------------------------------*/
     str_t         word18;
-    word18_α:                                               goto word_α;
-    word18_β:                                               goto word_β;
-    word_γ:       word18 = word;                            goto word18_γ;
-    word_ω:                                                 goto word18_ω;
+    word18_α:     word18 = word(α);                         goto word18_λ;
+    word18_β:     word18 = word(β);                         goto word18_λ;
+    word18_λ:     if (word18 == empty)                      goto word18_ω;
+                  else                                      goto word18_γ;
     /*------------------------------------------------------------------------*/
     int           alt14_i;
     str_t         alt14;
@@ -187,9 +189,9 @@ __kernel void snobol(
     /*------------------------------------------------------------------------*/
     str_t         ARBNO13;
     int           ARBNO13_i;
-    ARBNO13_α:    ζ = &z[ARBNO13_i=0];                      
+    ARBNO13_α:    ζ = &z[ARBNO13_i=0];
                   ζ->ARBNO13 = str(Σ+Δ, 0);                 goto alt14_α;
-    ARBNO13_β:    ζ = &z[++ARBNO13_i];                      
+    ARBNO13_β:    ζ = &z[++ARBNO13_i];
                   ζ->ARBNO13 = ARBNO13;                     goto alt14_α;
     alt14_γ:      ARBNO13 = cat(ζ->ARBNO13, ζ->alt14);      goto ARBNO13_γ;
     alt14_ω:      if (ARBNO13_i <= 0)                       goto ARBNO13_ω;
@@ -212,11 +214,15 @@ __kernel void snobol(
     s19_γ:        seq10 = cat(seq10, s19);                  goto seq10_γ;
     s19_ω:                                                  goto ARBNO13_β;
     /*------------------------------------------------------------------------*/
-    str_t         group;
     group_α:                                                goto seq10_α;
     group_β:                                                goto seq10_β;
-    seq10_γ:      group = seq10;                            goto group_γ;
-    seq10_ω:                                                goto group_ω;
+    seq10_γ:      return seq10;
+    seq10_ω:      return empty;
+}
+/*============================================================================*/
+str_t treebank(int entry) {
+    if (entry == α) goto treebank_α;
+    if (entry == β) goto treebank_β;
     /*------------------------------------------------------------------------*/
     str_t         POS22;
     POS22_α:      if (Δ != 0)                               goto POS22_ω;
@@ -224,26 +230,26 @@ __kernel void snobol(
     POS22_β:                                                goto POS22_ω;
     /*------------------------------------------------------------------------*/
     str_t         group26;
-    group26_α:                                              goto group_α;
-    group26_β:                                              goto group_β;
-    group_γ:      group26 = group;                          goto group26_γ;
-    group_ω:                                                goto group26_ω;
+    group26_α:    group26 = group(α);                       goto group26_λ;
+    group26_β:    group26 = group(β);                       goto group26_λ;
+    group26_λ:    if (group26 == empty)                     goto group26_ω;
+                  else                                      goto group26_γ;
     /*------------------------------------------------------------------------*/
     str_t         ARBNO25;
     int           ARBNO25_i;
-    ARBNO25_α:    ζ = &z[ARBNO25_i=0];                      
+    ARBNO25_α:    ζ = &z[ARBNO25_i=0];
                   ζ->ARBNO25 = str(Σ+Δ, 0);                 goto group26_α;
-    ARBNO25_β:    ζ = &z[++ARBNO25_i];                      
+    ARBNO25_β:    ζ = &z[++ARBNO25_i];
                   ζ->ARBNO25 = ARBNO25;                     goto group26_α;
     group26_γ:    ARBNO25 = cat(ζ->ARBNO25, ζ->group26);    goto ARBNO25_γ;
     group26_ω:    if (ARBNO25_i <= 0)                       goto ARBNO25_ω;
                   ARBNO25_i--; ζ = &z[ARBNO25_i];           goto group26_β;
     /*------------------------------------------------------------------------*/
     str_t         delim27;
-    delim27_α:                                              goto delim_α;
-    delim27_β:                                              goto delim_β;
-    delim_γ:      delim27 = delim;                          goto delim27_γ;
-    delim_ω:                                                goto delim27_ω;
+    delim27_α:    delim27 = delim(α);                       goto delim27_λ;
+    delim27_β:    delim27 = delim(β);                       goto delim27_λ;
+    delim27_λ:    if (delim27 == empty)                     goto delim27_ω;
+                  else                                      goto delim27_γ;
     /*------------------------------------------------------------------------*/
     str_t         seq24;
     seq24_α:      seq24 = str(Σ+Δ,0);                       goto ARBNO25_α;
@@ -255,9 +261,9 @@ __kernel void snobol(
     /*------------------------------------------------------------------------*/
     str_t         ARBNO23;
     int           ARBNO23_i;
-    ARBNO23_α:    ζ = &z[ARBNO23_i=0];                      
+    ARBNO23_α:    ζ = &z[ARBNO23_i=0];
                   ζ->ARBNO23 = str(Σ+Δ, 0);                 goto seq24_α;
-    ARBNO23_β:    ζ = &z[++ARBNO23_i];                      
+    ARBNO23_β:    ζ = &z[++ARBNO23_i];
                   ζ->ARBNO23 = ARBNO23;                     goto seq24_α;
     seq24_γ:      ARBNO23 = cat(ζ->ARBNO23, ζ->seq24);      goto ARBNO23_γ;
     seq24_ω:      if (ARBNO23_i <= 0)                       goto ARBNO23_ω;
@@ -278,11 +284,23 @@ __kernel void snobol(
     RPOS28_γ:     seq21 = cat(seq21, RPOS28);               goto seq21_γ;
     RPOS28_ω:                                               goto ARBNO23_β;
     /*------------------------------------------------------------------------*/
-    str_t         treebank;
     treebank_α:                                             goto seq21_α;
     treebank_β:                                             goto seq21_β;
-    seq21_γ:      treebank = seq21;                         goto treebank_γ;
-    seq21_ω:                                                goto treebank_ω;
+    seq21_γ:      return seq21;
+    seq21_ω:      return empty;
+}
+/*============================================================================*/
+__kernel void snobol(
+    __global const char * in,
+    __global       char * buffer,
+             const int    num_chars) {
+    /*------------------------------------------------------------------------*/
+    const char cszFailure[9] = "Failure.";
+    const char cszSuccess[10] = "Success: ";
+    output_t output = {0, buffer};
+    output_t * out = &output;
+    for (int i = 0; i < num_chars; i++)
+        buffer[i] = 0;
     /*------------------------------------------------------------------------*/
     str_t         subj30;
     subj30_α:     Δ = 0; Σ = "(S (NP (FW i)) (VP (VBP am)) (.  .)) ";
@@ -290,10 +308,10 @@ __kernel void snobol(
     subj30_β:                                               goto subj30_ω;
     /*------------------------------------------------------------------------*/
     str_t         treebank31;
-    treebank31_α:                                           goto treebank_α;
-    treebank31_β:                                           goto treebank_β;
-    treebank_γ:   treebank31 = treebank;                    goto treebank31_γ;
-    treebank_ω:                                             goto treebank31_ω;
+    treebank31_α: treebank31 = treebank(α);                 goto treebank31_λ;
+    treebank31_β: treebank31 = treebank(β);                 goto treebank31_λ;
+    treebank31_λ: if (treebank31 == empty)                  goto treebank31_ω;
+                  else                                      goto treebank31_γ;
     /*------------------------------------------------------------------------*/
     str_t         match29;
     match29_α:                                              goto subj30_α;
