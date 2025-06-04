@@ -1,0 +1,144 @@
+*=======================================================================================================================
+*           ELIZA in SNOBOL4
+*
+*           The original ELIZA was written by Professor Joseph Weizenbaum in
+*           FORTRAN with the SLIP list processing extensions.  The first
+*           article describing ELIZA was published in Vol 9, No. 1 (Jan., 1966)
+*           of the Communications of the ACM (pp.36-45).  It was recast in SNOBOL4
+*           by Robert Duquet to provide a shorter and simpler program for an
+*           introductory course in artificial intelligence.  His description of
+*           this package appears in SIGPLAN Notices, Vol 5, No. 12 (Dec., 1970),
+*           (pp. 50-60), and is included here in file ELIZA.txt.
+*
+*           Later extensions made to ELIZA are not included here.  Consult
+*           CONTEXTUAL UNDERSTANDING BY COMPUTERS, Communications of the ACM,
+*           Volume 10, No. 8 (August 1967  (474-480)
+*
+*           Note: This program decomposes the script using blanks for white space.
+*           Don't use tabs in any modifications you make to the script
+*           without changing the program appropriately.
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+            &ANCHOR         =   1
+            &TRIM           =   1
+            UPPERS          =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            LOWERS          =   "abcdefghijklmnopqrstuvwxyz"
+            PRE_TRIM        =   SPAN(' ') | NULL
+            P_0             =   *KEY
+            P_1             =   PRE_TRIM BREAK(' ') . WORD ' '
+            P_2             =   POS(0) RTAB(1) '/'
+            P_3             =   BREAK(':') . CONTENT ':'
+            P_4             =   PRE_TRIM REM . CONTENT
+            P_5             =   PRE_TRIM ANY('SLD') . WORD ' '
+            SHORTEN         =   BREAK('.,?') . PHRASE ANY('.,?') REM . TRAILER
+            X_REF           =   PRE_TRIM 'CF'
+            BUMP            =   PRE_TRIM 'NEWKEY'
+            PAREN           =   PRE_TRIM '/' BREAK('/') . CONTENT '/'
+            STASH           =   PRE_TRIM '/' BREAK('/') . *$STORE '/'
+            CALL_TO_SNOBOL  =   PRE_TRIM 'SNOBOL'
+            LAST_SCRIPT     =   PRE_TRIM 'END'
+            ATTENTION       =   PRE_TRIM '*'
+            INTRODUCTION    =   'HOW DO YOU DO.'
+            CLUELESS        =   "VERY INTERESTING:I'M NOT SURE I UNDERSTAND YOU FULLY:"
++                               "PLEASE GO ON:WHAT DOES THAT SUGGEST TO YOU:"
++                               "DO YOU FEEL STRONGLY ABOUT DISCUSSING SUCH THINGS?:"
+            RETAIN          =   'MY'
+            GOODBYE         =
+            KEYWORDS        =   '_'
+*=======================================================================================================================
+            ;* We now read the script(s) and form strings as follows:
+            ;* For each key word 'XXXX' we form the following variables:
+            ;*     S_XXXX      is a substitute word. (Optional)
+            ;*     L_XXXX      is a level number (if absent, key is ignored)
+            ;*     N_XXXX      a count of the number of decompositions
+            ;*     D_I_XXXX    is the I'th decomposition pattern
+            ;*     R_I_XXXX    is a string of recomposition rules for the I'th decomposition. Rules are separated by ':'.
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+            INPUT(.SFILE, 2, "eliza.scr")                               :S(HIGGINS)
+            OUTPUT          =   'Cannot open script "eliza.scr"'        :(END)
+HIGGINS     SCRIPT          =   SFILE                                   :F(START)
+            SCRIPT          ?   ATTENTION =                             :S(FLAG)
+            SCRIPT          ?   P_1 =                                   :F(HIGGINS) ;* Get keyword on beginning of line to WORD
+            KEY             =   '_' WORD
+            KEYWORDS        ?   P_0                                     :S(LESSON) ;* If it is not already defined, append it to the KEYWORDS list
+            KEYWORDS        =   KEY KEYWORDS
+LESSON      SCRIPT          ?   P_5 =                                   :F(HIGGINS)S($WORD) ;* Look for S, L or D command, store command in WORD and branch indirect.
+ERR         OUTPUT          =   'SCRIPT ERROR: ' WORD ' ' SCRIPT        :(HIGGINS)
+S           STORE           =   'S' KEY                                 ;* Substitute word.  Create indirect pointer to S_XXXX, then fetch the substitute and stash it away.
+            SCRIPT          ?   STASH =                                 :F(ERR)S(LESSON)
+L           SCRIPT          ?   PAREN =                                 :F(ERR) ;* Keyword level number.  Get number to CONTENT and store in L_XXXX
+            $('L' KEY)      =   INTEGER(CONTENT) +CONTENT               :(LESSON)
+D           N_N             =   $('N' KEY) + 1                          ;* Decomposition rule.  Increment (possibly creating) N_XXXX for number of rules seen so far for this keyword.  Keep around in temp N_N
+            $('N' KEY)      =   N_N
+            SCRIPT          ?   PAREN  =                                :F(ERR) ;* Get the decomposition rule:
+            CONTENT         ?   CALL_TO_SNOBOL =                        :S(SPECIAL) ;* Is it a SNOBOL4 pattern or just text substitution?
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+                                                                        ;* Define this rule as D_I_XXXX = ARB <rule> REM . POST
+                                                                        ;* Most recompositions simply use the text following the matching decomposition, and REM . POST will isolate it later.
+            $('D_' N_N KEY) =   ARB CONTENT REM . POST
+RULES       STORE           =   'R_' N_N KEY                            ;* Now get all the recomposition rules for this particular decomposition. They will be stored as a long string separated by ':'s, with name R_I_XXXX
+            $STORE          =   DIFFER(SCRIPT) SCRIPT                   :F(NEW_LINE) ;* Store away the first one if it is on the same line as the D /.../ rule.
+LOOP        $STORE          ?   P_2                                     :S(HIGGINS) ;* Keep reading recomposition strings until a '/' appears at the end of line
+NEW_LINE    $STORE          =   $STORE SFILE                            :F(NEXTS)S(LOOP)
+                                                                        ;* The following are special script-handling statements
+SPECIAL     $('D_' N_N KEY) =   EVAL(CONTENT)                           :(RULES) ;* This decomposition rule is an explicit SNOBOL4 statement.
+ENCODE      SCRIPT          =   CODE(SCRIPT ' :(HIGGINS);')             :S<SCRIPT>
+            OUTPUT          =   &ERRTEXT SCRIPT                         :(HIGGINS)
+FLAG        SCRIPT          ?   CALL_TO_SNOBOL =                        :S(ENCODE) ;* This script line is an explicit call to SNOBOL4.
+            SCRIPT          ?   LAST_SCRIPT                             :S(START) ;* Check for the end-of-script line.
+            OUTPUT          =   'Illegal special statement: ' SCRIPT    :(HIGGINS)
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+                                                                        ;* We now hold a conversation.  First, we read a sentence, and
+                                                                        ;*  search for key words replacing appropriate ones and stacking the
+                                                                        ;*   keys in a quasi-ordered list (strings).  If a keyword is found with
+                                                                        ;*    a higher level number than any seen so far, it is prepended to the
+                                                                        ;*     string CUES, otherwise it is appended.
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+START       ENDFILE(2)
+            OUTPUT          =   INTRODUCTION
+HEAR        PHRASE          =   REPLACE(INPUT, LOWERS, UPPERS) '.'      :F(END) ;* Read an input line, and convert to upper case
+HEARLESS    PHRASE          ?   SHORTEN                                 ;* Break apart at any punctuation into PHRASE and TRAILER
+            PHRASE          =   PHRASE ' '                              ;* Append a blank to make word matching easier.
+            COPY            =                                           ;* COPY will contain the input sentence after any substitutions
+            CUES            =                                           ;* CUES will act as a stack of keywords encountered.
+            CUE_LEVEL       =   0                                       ;* Initialize for highest keyword level seen so far.
+SPLIT       &ANCHOR         =   1
+            PHRASE          ?   P_1   =                                 :F(REPLY) ;* Get next input word to WORD, and remove from PHRASE  If no more words, go form a reply.
+            &ANCHOR         =   0
+            KEYWORDS        ?   WORD                                    :F(KEEP) ;* Is it a keyword?
+            NEW_WORD        =   DIFFER($('S_' WORD)) $('S_' WORD)       :S(REPLACE) ;* Keyword found.  If there is a substitute, use it.
+            COPY            =   COPY WORD ' '                           :(STACK) ;* Otherwise append to copy without substitution.
+REPLACE     COPY            =   COPY NEW_WORD ' '
+STACK       NEW_LEVEL       =   DIFFER($('L_' WORD)) $('L_' WORD)       :F(SPLIT)
+            CUE_LEVEL       =   GT(NEW_LEVEL, CUE_LEVEL) NEW_LEVEL      :F(LOCUE) ;* Put the keyword correctly on the stack if it has an associated level number
+            CUES            =   WORD ':' CUES                           :(SPLIT) ;* High priority.  Put on top of stack.
+LOCUE       CUES            =   CUES WORD ':'                           :(SPLIT) ;* Low priority.  Put on end of stack.
+KEEP        COPY            =   COPY WORD ' '                           :(SPLIT) ;* Here if it wasn't a keyword.  Just append it to the copy.
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+                                                                        ;* This part forms our reply to the input sentence after searching for keywords.
+REPLY       CUES            ?   P_3 =                                   :F(NOCUE) ;* Pop the top keyword from the stack to CONTENT
+NEXTCUE     CUE             =   '_' CONTENT                             ;* Create _XXXX in CUE
+            N_N             =   0
+            NMAX            =   $('N' CUE)                              ;* Get number of decomposition rules associated with this keyword to NMAX
+ANALYSE     N_N             =   LT(N_N, NMAX) N_N + 1                   :F(NOCUE) ;* Index through the rules with N_N.
+            COPY            ?   $('D_' N_N CUE)                         :F(ANALYSE) ;* Apply next decomposition rule to COPY.  Loop if no match.
+            $('R_' N_N CUE) ?   P_3 =                                   ;* This keyword found in COPY.  Get the current top recomposition rule from the circular list in R_I_XXXX to CONTENT
+            CONTENT         ?   '/'  =                                  ;* House keep stray '/' from original input script.
+            $('R_' N_N CUE) =   $('R_' N_N CUE) CONTENT ':'             ;* Maintain circular list by putting current recomp rule on end of R_I_XXXX
+            CONTENT         ?   X_REF    =                              :S(NEWCUE) ;* Does this recomp rule say we should CF another keyword?
+            CONTENT         ?   BUMP                                    :S(REPLY) ;* Does recomp rule say we should pop the CUES stack and try another keyword?
+            OUTPUT          =   '.. ' EVAL(CONTENT)                     ;* Just evaluate the recomposition rule to produce the reply.  What could be simpler?
+            DIFFER(GOODBYE)                                             :S(END) ;* Check for end of dialogue variable getting set in script
+            MEMORY          =   IDENT(CUE, '.' RETAIN)
++                               LT(SIZE(MEMORY), 200)
++                               MEMORY COPY ':'                         :(HEAR) ;* Is the keyword a special one to say we should retain the COPY for later use in case we get stuck?
+NEWCUE      CONTENT         ?   P_4                                     :(NEXTCUE) ;* Here if recomp rule said to CF another keyword.  Get the new keyword to CONTENT, and go apply its decomposition rules.
+*---------- --------------- --- --------------------------------------- :-----------------------------------------------
+                                                                        ;* This is what we do if there are no key words in the input.
+NOCUE       PHRASE          =   DIFFER(TRAILER) TRAILER                 :S(HEARLESS) ;* If the input consisted of several punctuation separated phrases, discard the current phrase and try the next one.
+            MEMORY          ?   P_3   =                                 :F(ER_AH_UM) ;* That didn't work.  Can we dredge up something from our memory?
+            OUTPUT          =   '.. EARLIER YOU SAID ' CONTENT          :(HEAR)
+ER_AH_UM    CLUELESS        ?   P_3 =                                   ;* Out of ideas.  Give next lame response and shift CLUELESS circularly.
+            CLUELESS        =   CLUELESS CONTENT ':'
+            OUTPUT          =   CONTENT                                :(HEAR)
+*=======================================================================================================================
+END

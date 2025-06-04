@@ -1,0 +1,51 @@
+<Sentence> ::= <DeclarativeSentence>
+             | <InterrogativeSentence>
+             | <ImperativeSentence>
+
+<DeclarativeSentence> ::= <SimpleSentence> { <Coordinator> <SimpleSentence> } [ <SubordinateClause> ]
+<SimpleSentence>      ::= <NounPhrase> <VerbPhrase> <SentenceEnd>
+
+<InterrogativeSentence> ::= <InterroWord> <SimpleSentence> "?"
+<ImperativeSentence>    ::= <VerbPhraseImperative> <SentenceEnd>
+
+<SubordinateClause> ::= <Subordinator> <SimpleSentence>
+
+<NounPhrase> ::= [ <Determiner> ]
+                  { <Adjective> }
+                  <Noun> [ <RelativeClause> ]
+               | <ProperNoun> [ <RelativeClause> ]
+               | <NounPhrase> <Conjunction> <NounPhrase>
+
+<RelativeClause> ::= <RelativePronoun> <VerbPhrase>
+
+<VerbPhrase> ::= <Verb>
+                 [ <NounPhrase> ]
+                 [ <AdverbPhrase> ]
+                 [ <PrepositionalPhraseList> ]
+              | { <Auxiliary> } <Verb>
+                 [ <NounPhrase> ]
+                 [ <PrepositionalPhraseList> ]
+
+<VerbPhraseImperative> ::= <Verb> [ <NounPhrase> ] [ <PrepositionalPhraseList> ]
+
+<AdverbPhrase> ::= <Adverb> { <Adverb> }
+
+<PrepositionalPhraseList> ::= <PrepositionalPhrase> { <PrepositionalPhrase> }
+<PrepositionalPhrase>     ::= <Preposition> <NounPhrase>
+
+<Coordinator>     ::= "and" | "or" | "but"
+<Conjunction>     ::= "and" | "or"
+<Subordinator>    ::= "because" | "since" | "when" | "although"
+<RelativePronoun> ::= "who" | "whom" | "which" | "that"
+<InterroWord>     ::= "what" | "who" | "where" | "when" | "why" | "how"
+
+<Determiner>  ::= "the" | "a" | "an" | "this" | "that" | "these" | "those"
+<Noun>        ::= "dog" | "cat" | "man" | "woman" | "city" | "car" | "book" | "tree" | "child"
+<ProperNoun>  ::= "John" | "Mary" | "Paris" | "London" | "Alice"
+<Verb>        ::= "sees" | "likes" | "chases" | "finds" | "eats" | "drives" | "reads" | "walks" | "runs"
+<Auxiliary>   ::= "can" | "could" | "will" | "would" | "should" | "may" | "might"
+<Adjective>   ::= "big" | "small" | "red" | "quick" | "happy" | "sad"
+<Adverb>      ::= "quickly" | "silently" | "eagerly" | "loudly" | "gracefully"
+<Preposition> ::= "in" | "on" | "at" | "by" | "with" | "under" | "over" | "through"
+
+<SentenceEnd> ::= "." | "!" | "?"

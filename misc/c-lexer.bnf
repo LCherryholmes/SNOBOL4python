@@ -1,0 +1,304 @@
+A. ID
+B. NUMCONST
+C. CHARCONST
+D. STRINGCONST
+E. C_COMMENT
+F. CPP_COMMENT
+G. RESERVED_WORD → "static"
+                 | "int" | "bool" | "char"
+                 | "if" | "then" | "else"
+                 | "while" | "do" | "for"
+                 | "to" | "by"
+                 | "return" | "break"
+                 | "or" | "and" | "not"
+                 | "true" | "false"
+
+Binary Operator Operands Return Type
+and bool,bool bool
+or bool,bool bool
+== equal types + arrays bool
+! = equal types + arrays bool
+<= equal types + arrays bool
+< equal types + arrays bool
+>= equal types + arrays bool
+> equal types + arrays bool
+= equal types + arrays type of lhs
++= int,int int
+−= int,int int
+∗= int,int int
+/= int,int int
+:>: int,int int
+:<: int,int int
+∗ int,int int
++ int,int int
+− int,int int
+/ int,int int
+% int,int int
+
+[ ] array,int type of lhs
+Unary Operator Operands Return Type
+−− int int
+++ int int
+not bool bool
+∗ array int
+− int int
+? int int
+
+Tokens
+token:
+ keyword
+ identifier
+ constant
+ string-literal
+ punctuator
+
+preprocessing-token:
+ header-name
+ identifier
+ pp-number
+ character-constant
+ string-literal
+ punctuator
+ each non-whitespace character that can't be one of the above
+
+Keywords
+keyword: one of
+ auto break case char const continue
+ default do double else enum extern
+ float for goto if inline int long
+ register restrict return short signed
+ sizeof static struct switch typedef union
+ unsigned void volatile while _Alignas
+ _Alignof _Atomic _Bool _Complex _Generic
+ _Imaginary _Noreturn _Static_assert
+ _Thread_local
+
+For a list of additional Microsoft-specific keywords, see C keywords.
+
+Identifiers
+identifier:
+ identifier-nondigit
+ identifier identifier-nondigit
+ identifier digit
+
+identifier-nondigit:
+ nondigit
+ universal-character-name
+ other implementation-defined characters
+
+nondigit: one of
+ _ a b c d e f g h i j k l m
+ n o p q r s t u v w x y z
+ A B C D E F G H I J K L M
+ N O P Q R S T U V W X Y Z
+
+digit: one of
+ 0 1 2 3 4 5 6 7 8 9
+
+universal-character-name:
+ \u hex-quad
+ \U hex-quad hex-quad
+
+hex-quad:
+ hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+
+Constants
+constant:
+ integer-constant
+ floating-constant
+ enumeration-constant
+ character-constant
+
+integer-constant:
+ decimal-constant integer-suffixopt
+ binary-constant1 integer-suffixopt
+ octal-constant integer-suffixopt
+ hexadecimal-constant integer-suffixopt
+
+decimal-constant:
+ nonzero-digit
+ decimal-constant digit
+
+binary-constant:1
+ binary-prefix binary-digit
+ binary-constant binary-digit
+
+binary-prefix1: one of
+ 0b 0B
+
+binary-digit1: one of
+ 0 1
+
+octal-constant:
+ 0
+ octal-constant octal-digit
+
+hexadecimal-constant:
+ hexadecimal-prefix hexadecimal-digit
+ hexadecimal-constant hexadecimal-digit
+
+hexadecimal-prefix: one of
+ 0x 0X
+
+nonzero-digit: one of
+ 1 2 3 4 5 6 7 8 9
+
+octal-digit: one of
+ 0 1 2 3 4 5 6 7
+
+hexadecimal-digit: one of
+ 0 1 2 3 4 5 6 7 8 9
+ a b c d e f
+ A B C D E F
+
+integer-suffix:
+ unsigned-suffix long-suffixopt
+ unsigned-suffix long-long-suffixopt
+ long-suffix unsigned-suffixopt
+ long-long-suffix unsigned-suffixopt
+
+unsigned-suffix: one of
+ u U
+
+long-suffix: one of
+ l L
+
+long-long-suffix: one of
+ ll LL
+
+floating-constant:
+ decimal-floating-constant
+ hexadecimal-floating-constant
+
+decimal-floating-constant:
+ fractional-constant exponent-partopt floating-suffixopt
+ digit-sequence exponent-part floating-suffixopt
+
+hexadecimal-floating-constant:
+ hexadecimal-prefix hexadecimal-fractional-constant binary-exponent-partopt floating-suffixopt
+ hexadecimal-prefix hexadecimal-digit-sequence binary-exponent-part floating-suffixopt
+
+fractional-constant:
+ digit-sequenceopt . digit-sequence
+ digit-sequence .
+
+exponent-part:
+ e signopt digit-sequence
+ E signopt digit-sequence
+
+sign: one of
+ + -
+
+digit-sequence:
+ digit
+ digit-sequence digit
+
+hexadecimal-fractional-constant:
+ hexadecimal-digit-sequenceopt . hexadecimal-digit-sequence
+ hexadecimal-digit-sequence .
+
+binary-exponent-part:
+ p signopt digit-sequence
+ P signopt digit-sequence
+
+hexadecimal-digit-sequence:
+ hexadecimal-digit
+ hexadecimal-digit-sequence hexadecimal-digit
+
+floating-suffix: one of
+ f l F L
+
+enumeration-constant:
+ identifier
+
+character-constant:
+ ' c-char-sequence '
+ L' c-char-sequence '
+
+c-char-sequence:
+ c-char
+ c-char-sequence c-char
+
+c-char:
+ Any member of the source character set except the single quotation mark ('), backslash (\), or new-line character
+ escape-sequence
+
+escape-sequence:
+ simple-escape-sequence
+ octal-escape-sequence
+ hexadecimal-escape-sequence
+ universal-character-name
+
+simple-escape-sequence: one of
+ \a \b \f \n \r \t \v
+ \' \" \\ \?
+
+octal-escape-sequence:
+ \ octal-digit
+ \ octal-digit octal-digit
+ \ octal-digit octal-digit octal-digit
+
+hexadecimal-escape-sequence:
+ \x hexadecimal-digit
+ hexadecimal-escape-sequence hexadecimal-digit
+
+String literals
+string-literal:
+ encoding-prefix " s-char-sequenceopt "
+
+encoding-prefix:
+ u8
+ u
+ U
+ L
+
+s-char-sequence:
+ s-char
+ s-char-sequence s-char
+
+s-char:
+ any member of the source character set except the double-quotation mark ("), backslash (\), or new-line character
+ escape-sequence
+
+Punctuators
+punctuator: one of
+ [ ] ( ) { } . ->
+ ++ -- & * + - ~ !
+ / % << >> < > <= >= ==
+ != ^ | && || ? : ; ...
+ = *= /= %= += -= <<= >>=
+ &= ^= |= , # ##
+ <: :> <% %> %: %:%:
+
+Header names
+header-name:
+ < h-char-sequence >
+ " q-char-sequence "
+
+h-char-sequence:
+ h-char
+ h-char-sequence h-char
+
+h-char:
+ any member of the source character set except the new-line character and >
+
+q-char-sequence:
+ q-char
+ q-char-sequence q-char
+
+q-char:
+ any member of the source character set except the new-line character and "
+
+Preprocessing numbers
+pp-number:
+ digit
+ . digit
+ pp-number digit
+ pp-number identifier-nondigit
+ pp-number e sign
+ pp-number E sign
+ pp-number p sign
+ pp-number P sign
+ pp-number .
+
+1 binary-constant, binary-prefix, and binary-digit are Microsoft-specific extensions.
