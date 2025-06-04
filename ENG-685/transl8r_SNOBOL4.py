@@ -530,7 +530,7 @@ def genc(t):
                 case 'LEN':
                     emit_code(f'{L}_α:',    f'if (Δ+{length} > Ω)', f'goto {L}_ω;')
                     emit_code(f'',          f'{L} = str(Σ+Δ,{length}); Δ+={length};', f'goto {L}_γ;')
-                    emit_code(f'{L}_β:',    f'Δ-={length}', f'goto {L}_ω;')
+                    emit_code(f'{L}_β:',    f'Δ-={length};', f'goto {L}_ω;')
                 case 'ANY'|'NOTANY':
                     label = f'{L}_α:'
                     for c in chars:
@@ -695,6 +695,8 @@ GLOBALS(globals())
 snobol4_source = ''' "SNOBOL4" POS(0) ARB $ OUTPUT RPOS(0)\n'''
 snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO('Bird' | 'Blue' | LEN(1)) $ OUTPUT RPOS(0)\n'''
 snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO(LEN(1)) $ OUTPUT RPOS(0)\n'''
+snobol4_source = ''' "BlueBirdGoldFish" (BIRD | BLUE | LEN(1)) $ OUTPUT\n'''
+snobol4_source = ''' "BlueBirdGoldFish" ARB\n'''
 if snobol4_source in Parse:
     pprint(SNOBOL4_tree)
     kernel_source = genc(SNOBOL4_tree)
