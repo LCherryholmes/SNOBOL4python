@@ -130,13 +130,13 @@ __kernel void snobol(
     /*------------------------------------------------------------------------*/
     str_t       ARBNO;
     int         ARBNO_i;
-    ARBNO_α:    ζ = &z[ARBNO_i=0];
+    ARBNO_α:    ζ = &_1[ARBNO_i=0];
                 ζ->ARBNO = str(Σ+Δ, 0);             goto alt_α;
-    ARBNO_β:    ζ = &z[++ARBNO_i];
+    ARBNO_β:    ζ = &_1[++ARBNO_i];
                 ζ->ARBNO = ARBNO;                   goto alt_α;
     alt_γ:      ARBNO = cat(ζ->ARBNO, ζ->alt);      goto ARBNO_γ;
     alt_ω:      if (ARBNO_i <= 0)                   goto ARBNO_ω;
-                ARBNO_i--; ζ = &z[ARBNO_i];         goto alt_β;
+                ARBNO_i--; ζ = &_1[ARBNO_i];        goto alt_β;
     /*------------------------------------------------------------------------*/
     str_t       assign;
     assign_α:                                       goto ARBNO_α;
