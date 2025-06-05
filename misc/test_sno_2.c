@@ -81,6 +81,7 @@ str_t delim(void * ζ, int entry) {
     int           SPAN3_δ;
     SPAN3_α:      for (SPAN3_δ = 0; Σ[Δ+SPAN3_δ]; SPAN3_δ++) {
                       if (Σ[Δ+SPAN3_δ] == ' ') continue;
+                      if (Σ[Δ+SPAN3_δ] == '\n') continue;
                       break;
                   }
                   if (SPAN3_δ <= 0)                         goto SPAN3_ω;
