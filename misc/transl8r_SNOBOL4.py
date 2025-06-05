@@ -8,7 +8,7 @@ from SNOBOL4python import RTAB, SPAN, SUCCEED, TAB
 from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
 from SNOBOL4python import PATTERN, STRING, NULL
 from SNOBOL4python import nPush, nInc, nPop, Shift, Reduce, Pop
-from pprint import pprint
+from pprint import pformat, pprint
 #-----------------------------------------------------------------------------------------------------------------------
 str_SorF = None
 str_Brackets = None
@@ -490,12 +490,33 @@ def eParse(ctx, t):
     T = []
     C = []
     module_head(C)
+    ctx[1] = dict()
     Es = [emit(ctx, c) for c in t]
+    for sid in ctx[1]:
+        temps = ctx[1][sid]
+        if len(temps) > 0:
+            verb(C, "/*----------------------------------------------------------------------------*/")
+            verb(C, f'typedef struct _{sid} {lcurly}')
+            for temp in temps:
+                    verb(C, f'    {temp[0]} {temp[1]};')
+            verb(C, f'{rcurly} _{sid}_t;')
+    for LTC in Es[:-1]:
+        EL = LTC[0]
+        ET = LTC[1]
+        verb(C, "/*----------------------------------------------------------------------------*/")
+        verb(C, f'typedef struct _{EL} {lcurly}')
+        for temp in ET:
+            verb(C, f'    {temp[0]} {temp[1]};')
+        verb(C, f'{rcurly} {EL}_t;')
+    verb(C, "/*----------------------------------------------------------------------------*/")
+    for LTC in Es[:-1]:
+        EL = LTC[0]
+        verb(C, f'str_t {EL}({EL}_t *, int);')
     for LTC in Es[:-1]: C += LTC[2]
     program_head(C)
+    code(C, f'',              f'', f'goto {L}_α;')
     E = Es[-1][0]
     C += Es[-1][2]
-    code(C, f'',              f'', f'goto {L}_α;')
     code(C, f'{L}_α:',        f'', f'goto {E}_α;')
     code(C, f'{L}_β:',        f'', f'return;')
     code(C, f'{E}_γ:',        f'write_sz(out, cszSuccess);', f'')
@@ -511,22 +532,8 @@ def eStmt(ctx, subject, pattern, equals, predicate):
     C = []
     if equals[0] == '=':
         L = f'{subject[1][1]}'
-        ctx[1] = dict()
         P, PT, PC = emit(ctx, predicate); T += PT
         verb(C, f'/*============================================================================*/')
-        for sid in ctx[1]:
-            temps = ctx[1][sid]
-            if len(temps) > 0:
-                verb(C, f'typedef struct _{sid} {lcurly}')
-                for temp in temps:
-                        decl(C, temp[0], f'{temp[1]};')
-                verb(C, f'{rcurly} _{sid}_t;')
-                verb(C, "/*----------------------------------------------------------------------------*/")
-        verb(C, f'typedef struct _{L} {lcurly}')
-        for temp in T:
-            decl(C, temp[0], f'{temp[1]};')
-        verb(C, f'{rcurly} {L}_t;')
-        verb(C, f'/*----------------------------------------------------------------------------*/')
         verb(C, f'str_t {L}({L}_t * ζ, int entry) {lcurly}')
         verb(C, f'    if (entry == α) goto {L}_α;')
         verb(C, f'    if (entry == β) goto {L}_β;')
@@ -727,7 +734,7 @@ def eImmediate_assign(ctx, pattern, V):
 def eUnop(ctx, op, E):
     if   op == '+': L = f'uplus{counter}'; E, ET, EC = emit(ctx, E);  T += ET; C += EC
     elif op == '-': L = f'uminus{counter}'; E, ET, EC = emit(ctx, E); T += ET; C += EC
-    elif op == '*': L = f'{E[1][1]}{counter}'; return eId(ctx, E[1])
+    elif op == '*': return eId(ctx, E[1])
     else: raise Exception(f'eUnop: {op}')
     T = []
     C = []
@@ -814,16 +821,17 @@ def eAlt(ctx, t):
         Es.append(E)
         T += ET
         C += EC
+    deref = ctx[0] if ctx[0] != '' else 'ζ->'
     decl(C, f'str_t',                 f'{L};')
-    code(C, f'{L}_α:',                f'{ctx[0]}{L}_i = 1;', f'goto {Es[0]}_α;')
+    code(C, f'{L}_α:',                f'{deref}{L}_i = 1;', f'goto {Es[0]}_α;')
     label = f'{L}_β:'
     for i in range(len(Es)):
-        code(C, label,                f'if ({ctx[0]}{L}_i == {i+1})', f'goto {Es[i]}_β;')
+        code(C, label,                f'if ({deref}{L}_i == {i+1})', f'goto {Es[i]}_β;')
         label = ''
     code(C, f'',                      f'', f'goto {L}_ω;')
     for i in range(len(Es)-1):
         code(C, f'{Es[i]}_γ:',        f'{L} = {Es[i]};', f'goto {L}_γ;')
-        code(C, f'{Es[i]}_ω:',        f'{ctx[0]}{L}_i++;', f'goto {Es[i+1]}_α;')
+        code(C, f'{Es[i]}_ω:',        f'{deref}{L}_i++;', f'goto {Es[i+1]}_α;')
     code(C, f'{Es[-1]}_γ:',           f'{L} = {Es[-1]};', f'goto {L}_γ;')
     code(C, f'{Es[-1]}_ω:',           f'', f'goto {L}_ω;')
     return (L, T, C)
@@ -837,7 +845,7 @@ def emit(ctx, t):
     C = None
     match t[0]:
         case 'Parse':           L, T, C = eParse(ctx, t[1:])
-        case 'Stmt':            L, T, C = eStmt(ctx, t[2], t[3], t[4], t[5])
+        case 'Stmt':            return eStmt(ctx, t[2], t[3], t[4], t[5])
         case 'Subject':         L, T, C = eSubject(ctx, t[1])
         case 'Call':            L, T, C = eCall(ctx, t[1][1], t[2][1])
         case 'Integer':         L, T, C = eInteger(ctx, t[1])
@@ -856,7 +864,7 @@ def emit(ctx, t):
         case '..':              L, T, C = eSeq(ctx, t[1:])
         case '|':               L, T, C = eAlt(ctx, t[1:])
         case '()':              return emit(ctx, t[1])
-        case _:                 raise Exception(f'emit: {t[0]}')
+        case _:                 raise Exception(f'emit: {pformat(t)}')
     verb(C, "    /*------------------------------------------------------------------------*/")
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
@@ -869,12 +877,29 @@ snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO('Bird' | 'Blue' | LEN(1)) $
 snobol4_source = ''' "BlueBirdGoldFish" POS(0) ARBNO(LEN(1)) $ OUTPUT RPOS(0)\n'''
 snobol4_source = ''' "BlueBirdGoldFish" (BIRD | BLUE | LEN(1)) $ OUTPUT\n'''
 snobol4_source = ''' "BlueBirdGoldFish" ARB\n'''
+#-----------------------------------------------------------------------------------------------------------------------
 snobol4_source = """\
  delim      =   SPAN(" ")
  word       =   (NOTANY("( )") BREAK("( )")) $ OUTPUT
  group      =   '(' word ARBNO(delim *group | word) ')'
  treebank   =   POS(0) ARBNO(ARBNO(group) delim) RPOS(0)
  '(S (NP (FW i)) (VP (VBP am)) (.  .)) ' treebank
+"""
+#-----------------------------------------------------------------------------------------------------------------------
+snobol4_source = """\
+  V = ANY('abcdefghijklmnopqrstuvwxyz')
+  I = SPAN('0123456789')
+  E = V | I | "(" *X ")"
+  X = ( E "+" *X
++     | E "-" *X
++     | E "*" *X
++     | E "/" *X
++     | "+" *X
++     | "-" *X
++     | E
++     )
+  C = POS(0) X RPOS(0)
+  "x+y*z" C
 """
 if snobol4_source in Parse:
     counter = 0
