@@ -148,6 +148,7 @@ typedef struct _13 {
     int           alt14_i;
     str_t         ARBNO;
 } _13_t;
+/*----------------------------------------------------------------------------*/
 typedef struct _group {
     int           _13_i;
     _13_t         _13_a[64];
@@ -247,6 +248,7 @@ typedef struct _23 {
     str_t         _25_s;
     str_t         ARBNO;
 } _23_t;
+/*----------------------------------------------------------------------------*/
 typedef struct _treebank {
     int           _23_i;
     _23_t         _23_a[64];
@@ -335,14 +337,6 @@ __kernel void snobol(
     output_t * out = &output;
     for (int i = 0; i < num_chars; i++)
         buffer[i] = 0;
-    /*------------------------------------------------------------------------*/
-    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
-    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
-    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
-    /*------------------------------------------------------------------------*/
-    int Δ = 0;
-    int Ω = 0;
-    const char * Σ = (const char *) 0;
     /*------------------------------------------------------------------------*/
     str_t         subj30;
     subj30_α:     Δ = 0; Σ = "(S (NP (FW i)) (VP (VBP am)) (.  .)) ";
