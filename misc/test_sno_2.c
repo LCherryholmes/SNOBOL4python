@@ -145,7 +145,7 @@ typedef struct _group { int _13_i; _13_t _13_a[128]; } group_t;
 str_t group(group_t * ζ, int entry) {
     if (entry == α) goto group_α;
     if (entry == β) goto group_β;
-    _13_t * ψ13 = 0;
+    _13_t * ψ13;
     /*------------------------------------------------------------------------*/
     str_t         s11;
     s11_α:        if (Σ[Δ+0] != '(')                        goto s11_ω;
@@ -165,8 +165,9 @@ str_t group(group_t * ζ, int entry) {
                   else                                      goto delim16_γ;
     /*------------------------------------------------------------------------*/
     str_t         defer17;
-    defer17_α:    defer17 = group((group_t *) 0, α);        goto defer17_λ;
-    defer17_β:    defer17 = group((group_t *) 0, β);        goto defer17_λ;
+    group_t       defer17_ζ;
+    defer17_α:    defer17 = group(&defer17_ζ, α);           goto defer17_λ;
+    defer17_β:    defer17 = group(&defer17_ζ, β);           goto defer17_λ;
     defer17_λ:    if (is_empty(defer17))                    goto defer17_ω;
                   else                                      goto defer17_γ;
     /*------------------------------------------------------------------------*/
@@ -233,7 +234,7 @@ typedef struct _treebank { int _23_i; _23_t _23_a[128]; } treebank_t;
 str_t treebank(treebank_t * ζ, int entry) {
     if (entry == α) goto treebank_α;
     if (entry == β) goto treebank_β;
-    _23_t * ψ23 = 0;
+    _23_t * ψ23;
     /*------------------------------------------------------------------------*/
     str_t         POS22;
     POS22_α:      if (Δ != 0)                               goto POS22_ω;
@@ -241,8 +242,9 @@ str_t treebank(treebank_t * ζ, int entry) {
     POS22_β:                                                goto POS22_ω;
     /*------------------------------------------------------------------------*/
     str_t         group26;
-    group26_α:    group26 = group(0, α);                    goto group26_λ;
-    group26_β:    group26 = group(0, β);                    goto group26_λ;
+    group_t       group26_ζ;
+    group26_α:    group26 = group(&group26_ζ, α);           goto group26_λ;
+    group26_β:    group26 = group(&group26_ζ, β);           goto group26_λ;
     group26_λ:    if (is_empty(group26))                    goto group26_ω;
                   else                                      goto group26_γ;
     /*------------------------------------------------------------------------*/
@@ -252,8 +254,7 @@ str_t treebank(treebank_t * ζ, int entry) {
     ARBNO25_β:    ψ23->_25_i++;
                   ψ23->_25_s = ARBNO25;                     goto group26_α;
     group26_γ:    ARBNO25 = cat(ψ23->_25_s, group26);       goto ARBNO25_γ;
-    group26_ω:    ψ23->_25_i--;
-                  if (ψ23->_25_i < 0)                       goto ARBNO25_ω;
+    group26_ω:    if (--ψ23->_25_i < 0)                     goto ARBNO25_ω;
                   else                                      goto group26_β;
     /*------------------------------------------------------------------------*/
     str_t         delim27;
@@ -318,8 +319,9 @@ __kernel void snobol(
     subj30_β:                                               goto subj30_ω;
     /*------------------------------------------------------------------------*/
     str_t         treebank31;
-    treebank31_α: treebank31 = treebank(0, α);              goto treebank31_λ;
-    treebank31_β: treebank31 = treebank(0, β);              goto treebank31_λ;
+    treebank_t    treebank31_ζ;
+    treebank31_α: treebank31 = treebank(&treebank31_ζ, α);  goto treebank31_λ;
+    treebank31_β: treebank31 = treebank(&treebank31_ζ, β);  goto treebank31_λ;
     treebank31_λ: if (is_empty(treebank31))                 goto treebank31_ω;
                   else                                      goto treebank31_γ;
     /*------------------------------------------------------------------------*/
