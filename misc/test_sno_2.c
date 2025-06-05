@@ -98,20 +98,19 @@ str_t word(void * ζ, int entry) {
     if (entry == β) goto word_β;
     /*------------------------------------------------------------------------*/
     str_t         NOTANY7;
-    NOTANY7_α:    if (Σ[Δ] != '(')                          goto NOTANY7_αγ;
-                  if (Σ[Δ] != ' ')                          goto NOTANY7_αγ;
-                  if (Σ[Δ] != ')')                          goto NOTANY7_αγ;
-                                                            goto NOTANY7_ω;
-    NOTANY7_αγ:   NOTANY7 = str(Σ+Δ,1); Δ+=1;               goto NOTANY7_γ;
+    NOTANY7_α:    if (Σ[Δ] == '(')                          goto NOTANY7_αω;
+                  if (Σ[Δ] == ' ')                          goto NOTANY7_αω;
+                  if (Σ[Δ] == ')')                          goto NOTANY7_αω;
+                  NOTANY7 = str(Σ+Δ,1); Δ+=1;               goto NOTANY7_γ;
+    NOTANY7_αω:                                             goto NOTANY7_ω;
     NOTANY7_β:    Δ-=1;                                     goto NOTANY7_ω;
     /*------------------------------------------------------------------------*/
     str_t         BREAK8;
     int           BREAK8_δ;
     BREAK8_α:     for (BREAK8_δ = 0; Σ[Δ+BREAK8_δ]; BREAK8_δ++) {
-                      if (Σ[Δ+BREAK8_δ] != '(') continue;
-                      if (Σ[Δ+BREAK8_δ] != ' ') continue;
-                      if (Σ[Δ+BREAK8_δ] != ')') continue;
-                      break;
+                      if (Σ[Δ+BREAK8_δ] == '(') break;
+                      if (Σ[Δ+BREAK8_δ] == ' ') break;
+                      if (Σ[Δ+BREAK8_δ] == ')') break;
                   }
                   if (Δ+BREAK8_δ >= Ω)                      goto BREAK8_ω;
                   BREAK8 = str(Σ+Δ,BREAK8_δ); Δ+=BREAK8_δ;  goto BREAK8_γ;
