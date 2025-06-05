@@ -370,9 +370,9 @@ def process_file():
             else: print("ERROR:", src)
             stmtno += 1
 #------------------------------------------------------------------------------
+lcurly = '{'
+rcurly = '}'
 c_source = []
-left_curly = '{'
-right_curly = '}'
 #------------------------------------------------------------------------------
 def verbatim(line=''):       c_source.append(line)
 def decl(type, var):         c_source.append("    %-14s%s" % (type, var))
@@ -531,10 +531,10 @@ def eCall(func, arg):
     elif func == 'TAB':    L = f'TAB{counter}';     pos = f'{int(arg[1])}'
     elif func == 'RTAB':   L = f'RTAB{counter}';    pos = f'Ω-{int(arg[1])}'
     elif func == 'LEN':    L = f'LEN{counter}';     length = f'{int(arg[1])}'
-    elif func == 'ANY':    L = f'ANY{counter}';     chars = eval(str(arg[1])); op = '=='
-    elif func == 'NOTANY': L = f'NOTANY{counter}';  chars = eval(str(arg[1])); op = '!='
-    elif func == 'SPAN':   L = f'SPAN{counter}';    chars = eval(str(arg[1])); op = '=='
-    elif func == 'BREAK':  L = f'BREAK{counter}';   chars = eval(str(arg[1])); op = '!='
+    elif func == 'ANY':    L = f'ANY{counter}';     chars = eval(str(arg[1]))
+    elif func == 'NOTANY': L = f'NOTANY{counter}';  chars = eval(str(arg[1]))
+    elif func == 'SPAN':   L = f'SPAN{counter}';    chars = eval(str(arg[1]))
+    elif func == 'BREAK':  L = f'BREAK{counter}';   chars = eval(str(arg[1]))
     elif func == 'ARBNO':  L = f'ARBNO{counter}';   E = emit(arg)
     else: raise Exception(f'eCall: {func} {arg}')
     decl(f'str_t', f'{L};')
@@ -550,47 +550,46 @@ def eCall(func, arg):
         case 'ANY':
             label = f'{L}_α:'
             for c in chars:
-                code(label,    f"if (Σ[Δ] {op} '{c}')", f'goto {L}_αγ;')
+                code(label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αγ;')
                 label = ''
-            code(f'',          f'', f'goto {L}_ω;')
-            code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-=1;', f'goto {L}_ω;')
-        case 'NOTANY': # Wrong, needs fixing!!!
+            code(f'',          f'',                                 f'goto {L}_ω;')
+            code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
+            code(f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
+        case 'NOTANY':
             label = f'{L}_α:'
             for c in chars:
-                code(label,    f"if (Σ[Δ] {op} '{c}')", f'goto {L}_αγ;')
+                code(label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αω;')
                 label = ''
-            code(f'',          f'', f'goto {L}_ω;')
-            code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-=1;', f'goto {L}_ω;')
+            code(f'',          f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
+            code(f'{L}_αω:',   f'',                                 f'goto {L}_ω;')
+            code(f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
         case 'SPAN':
             label = f'{L}_α:'
             decl(f'int',       f'{L}_δ;')
-            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {left_curly}", f'')
+            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(f'',      f"    if (Σ[Δ+{L}_δ] {op} '{c}') continue;", f'')
+                code(f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') continue;", f'')
             code(f'',          f'    break;', f'')
-            code(f'',          f"{right_curly}", f'')
+            code(f'',          f"{rcurly}", f'')
             if func == 'SPAN':
-                code(f'',      f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+                code(f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
             if func == 'BREAK':
-                code(f'',      f'if (Δ+{L}_δ >= Ω)', f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-={L}_δ;', f'goto {L}_ω;')
-        case 'BREAK': # Wrong, needs fixing!!!
+                code(f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
+            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
+            code(f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
+        case 'BREAK':
             label = f'{L}_α:'
             decl(f'int',       f'{L}_δ;')
-            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {left_curly}", f'')
+            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(f'',      f"    if (Σ[Δ+{L}_δ] {op} '{c}') continue;", f'')
-            code(f'',          f'    break;', f'')
-            code(f'',          f"{right_curly}", f'')
+                code(f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') break;", f'')
+            code(f'',          f"{rcurly}", f'')
             if func == 'SPAN':
-                code(f'',      f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+                code(f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
             if func == 'BREAK':
-                code(f'',      f'if (Δ+{L}_δ >= Ω)', f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-={L}_δ;', f'goto {L}_ω;')
+                code(f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
+            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
+            code(f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
         case 'ARBNO':
             decl(f'int',       f'{L}_i;')
             code(f'{L}_α:',    f'ζ = &z[{L}_i=0];', f'')

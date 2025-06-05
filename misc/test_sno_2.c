@@ -81,7 +81,6 @@ str_t delim(void * ζ, int entry) {
     int           SPAN3_δ;
     SPAN3_α:      for (SPAN3_δ = 0; Σ[Δ+SPAN3_δ]; SPAN3_δ++) {
                       if (Σ[Δ+SPAN3_δ] == ' ') continue;
-                      if (Σ[Δ+SPAN3_δ] == '\n') continue;
                       break;
                   }
                   if (SPAN3_δ <= 0)                         goto SPAN3_ω;
@@ -140,7 +139,11 @@ str_t word(void * ζ, int entry) {
 /*============================================================================*/
 typedef struct _13 { str_t ARBNO; int alt14_i; } _13_t;
 /*----------------------------------------------------------------------------*/
-typedef struct _group { int _13_i; _13_t _13_a[128]; } group_t;
+typedef struct _group group_t;
+typedef struct _group {
+           int _13_i;
+         _13_t _13_a[64];
+} group_t;
 /*----------------------------------------------------------------------------*/
 str_t group(group_t * ζ, int entry) {
     if (entry == α) goto group_α;
@@ -229,7 +232,10 @@ str_t group(group_t * ζ, int entry) {
 /*============================================================================*/
 typedef struct _23 { str_t ARBNO; int _25_i; str_t _25_s; } _23_t;
 /*----------------------------------------------------------------------------*/
-typedef struct _treebank { int _23_i; _23_t _23_a[128]; } treebank_t;
+typedef struct _treebank {
+           int _23_i;
+         _23_t _23_a[64];
+} treebank_t;
 /*----------------------------------------------------------------------------*/
 str_t treebank(treebank_t * ζ, int entry) {
     if (entry == α) goto treebank_α;
