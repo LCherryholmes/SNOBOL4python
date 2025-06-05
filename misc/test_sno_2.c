@@ -1,7 +1,6 @@
 #ifdef __GNUC__
 #define __kernel
 #define __global
-#define NULL (void *) 0
 extern int printf(char *, ...);
 extern void assert(int a);
 #endif
@@ -66,23 +65,26 @@ static int Ω = 0;
 static const char * Σ = (const char *) 0;
 static const int α = 0;
 static const int β = 1;
-static str_t empty = (str_t) {(const char *) 0, 0};
+static const str_t empty = (str_t) {(const char *) 0, 0};
 static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }
 static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
 static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
 static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
 static output_t * out = (output_t *) 0;
 /*============================================================================*/
-str_t delim(void * ζ, int entry) {
+typedef struct _delim {
+} delim_t;
+/*----------------------------------------------------------------------------*/
+str_t delim(delim_t * ζ, int entry) {
     if (entry == α) goto delim_α;
     if (entry == β) goto delim_β;
     /*------------------------------------------------------------------------*/
     str_t         SPAN3;
     int           SPAN3_δ;
     SPAN3_α:      for (SPAN3_δ = 0; Σ[Δ+SPAN3_δ]; SPAN3_δ++) {
-                      if (Σ[Δ+SPAN3_δ] == ' ') continue;
-                      break;
-                  }
+                      if (Σ[Δ+SPAN3_δ] == ' ') continue;    
+                      break;                                
+                  }                                         
                   if (SPAN3_δ <= 0)                         goto SPAN3_ω;
                   SPAN3 = str(Σ+Δ,SPAN3_δ); Δ+=SPAN3_δ;     goto SPAN3_γ;
     SPAN3_β:      Δ-=SPAN3_δ;                               goto SPAN3_ω;
@@ -92,8 +94,12 @@ str_t delim(void * ζ, int entry) {
     SPAN3_γ:      return SPAN3;
     SPAN3_ω:      return empty;
 }
+    /*------------------------------------------------------------------------*/
 /*============================================================================*/
-str_t word(void * ζ, int entry) {
+typedef struct _word {
+} word_t;
+/*----------------------------------------------------------------------------*/
+str_t word(word_t * ζ, int entry) {
     if (entry == α) goto word_α;
     if (entry == β) goto word_β;
     /*------------------------------------------------------------------------*/
@@ -108,10 +114,10 @@ str_t word(void * ζ, int entry) {
     str_t         BREAK8;
     int           BREAK8_δ;
     BREAK8_α:     for (BREAK8_δ = 0; Σ[Δ+BREAK8_δ]; BREAK8_δ++) {
-                      if (Σ[Δ+BREAK8_δ] == '(') break;
-                      if (Σ[Δ+BREAK8_δ] == ' ') break;
-                      if (Σ[Δ+BREAK8_δ] == ')') break;
-                  }
+                      if (Σ[Δ+BREAK8_δ] == '(') break;      
+                      if (Σ[Δ+BREAK8_δ] == ' ') break;      
+                      if (Σ[Δ+BREAK8_δ] == ')') break;      
+                  }                                         
                   if (Δ+BREAK8_δ >= Ω)                      goto BREAK8_ω;
                   BREAK8 = str(Σ+Δ,BREAK8_δ); Δ+=BREAK8_δ;  goto BREAK8_γ;
     BREAK8_β:     Δ-=BREAK8_δ;                              goto BREAK8_ω;
@@ -124,31 +130,32 @@ str_t word(void * ζ, int entry) {
     BREAK8_γ:     seq6 = cat(seq6, BREAK8);                 goto seq6_γ;
     BREAK8_ω:                                               goto NOTANY7_β;
     /*------------------------------------------------------------------------*/
-    str_t         immed8;
-    immed8_α:                                               goto seq6_α;
-    immed8_β:                                               goto seq6_β;
-    seq6_γ:       immed8 = write_str(out, seq6);
-                  write_nl(out);                            goto immed8_γ;
-    seq6_ω:                                                 goto immed8_ω;
+    str_t         OUTPUT5;
+    OUTPUT5_α:                                              goto seq6_α;
+    OUTPUT5_β:                                              goto seq6_β;
+    seq6_γ:       OUTPUT5 = write_str(out, seq6);           
+                  write_nl(out);                            goto OUTPUT5_γ;
+    seq6_ω:                                                 goto OUTPUT5_ω;
     /*------------------------------------------------------------------------*/
-    word_α:                                                 goto immed8_α;
-    word_β:                                                 goto immed8_β;
-    immed8_γ:     return immed8;
-    immed8_ω:     return empty;
+    word_α:                                                 goto OUTPUT5_α;
+    word_β:                                                 goto OUTPUT5_β;
+    OUTPUT5_γ:    return OUTPUT5;
+    OUTPUT5_ω:    return empty;
 }
+    /*------------------------------------------------------------------------*/
 /*============================================================================*/
-typedef struct _13 { str_t ARBNO; int alt14_i; } _13_t;
-/*----------------------------------------------------------------------------*/
-typedef struct _group group_t;
+typedef struct _13 {
+    int           alt14_i;
+    str_t         ARBNO;
+} _13_t;
 typedef struct _group {
-           int _13_i;
-         _13_t _13_a[64];
+    int           _13_i;
+    _13_t         _13_a[64];
 } group_t;
 /*----------------------------------------------------------------------------*/
 str_t group(group_t * ζ, int entry) {
     if (entry == α) goto group_α;
     if (entry == β) goto group_β;
-    _13_t * ψ13;
     /*------------------------------------------------------------------------*/
     str_t         s11;
     s11_α:        if (Σ[Δ+0] != '(')                        goto s11_ω;
@@ -156,35 +163,39 @@ str_t group(group_t * ζ, int entry) {
     s11_β:        Δ-=1;                                     goto s11_ω;
     /*------------------------------------------------------------------------*/
     str_t         word12;
-    word12_α:     word12 = word(0, α);                      goto word12_λ;
-    word12_β:     word12 = word(0, β);                      goto word12_λ;
+    word_t        word12_ζ;
+    word12_α:     word12 = word(&word12_ζ, α);              goto word12_λ;
+    word12_β:     word12 = word(&word12_ζ, β);              goto word12_λ;
     word12_λ:     if (is_empty(word12))                     goto word12_ω;
                   else                                      goto word12_γ;
     /*------------------------------------------------------------------------*/
+    _13_t *       ψ13;
     str_t         delim16;
-    delim16_α:    delim16 = delim(0, α);                    goto delim16_λ;
-    delim16_β:    delim16 = delim(0, β);                    goto delim16_λ;
+    delim_t       delim16_ζ;
+    delim16_α:    delim16 = delim(&delim16_ζ, α);           goto delim16_λ;
+    delim16_β:    delim16 = delim(&delim16_ζ, β);           goto delim16_λ;
     delim16_λ:    if (is_empty(delim16))                    goto delim16_ω;
                   else                                      goto delim16_γ;
     /*------------------------------------------------------------------------*/
-    str_t         defer17;
-    group_t       defer17_ζ;
-    defer17_α:    defer17 = group(&defer17_ζ, α);           goto defer17_λ;
-    defer17_β:    defer17 = group(&defer17_ζ, β);           goto defer17_λ;
-    defer17_λ:    if (is_empty(defer17))                    goto defer17_ω;
-                  else                                      goto defer17_γ;
+    str_t         group17;
+    group_t       group17_ζ;
+    group17_α:    group17 = group(&group17_ζ, α);           goto group17_λ;
+    group17_β:    group17 = group(&group17_ζ, β);           goto group17_λ;
+    group17_λ:    if (is_empty(group17))                    goto group17_ω;
+                  else                                      goto group17_γ;
     /*------------------------------------------------------------------------*/
     str_t         seq15;
     seq15_α:      seq15 = str(Σ+Δ,0);                       goto delim16_α;
-    seq15_β:                                                goto defer17_β;
-    delim16_γ:    seq15 = cat(seq15, delim16);              goto defer17_α;
+    seq15_β:                                                goto group17_β;
+    delim16_γ:    seq15 = cat(seq15, delim16);              goto group17_α;
     delim16_ω:                                              goto seq15_ω;
-    defer17_γ:    seq15 = cat(seq15, defer17);              goto seq15_γ;
-    defer17_ω:                                              goto delim16_β;
+    group17_γ:    seq15 = cat(seq15, group17);              goto seq15_γ;
+    group17_ω:                                              goto delim16_β;
     /*------------------------------------------------------------------------*/
     str_t         word18;
-    word18_α:     word18 = word(0, α);                      goto word18_λ;
-    word18_β:     word18 = word(0, β);                      goto word18_λ;
+    word_t        word18_ζ;
+    word18_α:     word18 = word(&word18_ζ, α);              goto word18_λ;
+    word18_β:     word18 = word(&word18_ζ, β);              goto word18_λ;
     word18_λ:     if (is_empty(word18))                     goto word18_ω;
                   else                                      goto word18_γ;
     /*------------------------------------------------------------------------*/
@@ -229,24 +240,28 @@ str_t group(group_t * ζ, int entry) {
     seq10_γ:      return seq10;
     seq10_ω:      return empty;
 }
+    /*------------------------------------------------------------------------*/
 /*============================================================================*/
-typedef struct _23 { str_t ARBNO; int _25_i; str_t _25_s; } _23_t;
-/*----------------------------------------------------------------------------*/
+typedef struct _23 {
+    int           _25_i;
+    str_t         _25_s;
+    str_t         ARBNO;
+} _23_t;
 typedef struct _treebank {
-           int _23_i;
-         _23_t _23_a[64];
+    int           _23_i;
+    _23_t         _23_a[64];
 } treebank_t;
 /*----------------------------------------------------------------------------*/
 str_t treebank(treebank_t * ζ, int entry) {
     if (entry == α) goto treebank_α;
     if (entry == β) goto treebank_β;
-    _23_t * ψ23;
     /*------------------------------------------------------------------------*/
     str_t         POS22;
     POS22_α:      if (Δ != 0)                               goto POS22_ω;
                   POS22 = str(Σ+Δ,0);                       goto POS22_γ;
     POS22_β:                                                goto POS22_ω;
     /*------------------------------------------------------------------------*/
+    _23_t *       ψ23;
     str_t         group26;
     group_t       group26_ζ;
     group26_α:    group26 = group(&group26_ζ, α);           goto group26_λ;
@@ -264,8 +279,9 @@ str_t treebank(treebank_t * ζ, int entry) {
                   else                                      goto group26_β;
     /*------------------------------------------------------------------------*/
     str_t         delim27;
-    delim27_α:    delim27 = delim(0, α);                    goto delim27_λ;
-    delim27_β:    delim27 = delim(0, β);                    goto delim27_λ;
+    delim_t       delim27_ζ;
+    delim27_α:    delim27 = delim(&delim27_ζ, α);           goto delim27_λ;
+    delim27_β:    delim27 = delim(&delim27_ζ, β);           goto delim27_λ;
     delim27_λ:    if (is_empty(delim27))                    goto delim27_ω;
                   else                                      goto delim27_γ;
     /*------------------------------------------------------------------------*/
@@ -306,6 +322,7 @@ str_t treebank(treebank_t * ζ, int entry) {
     seq21_γ:      return seq21;
     seq21_ω:      return empty;
 }
+    /*------------------------------------------------------------------------*/
 /*============================================================================*/
 __kernel void snobol(
     __global const char * in,
@@ -318,6 +335,14 @@ __kernel void snobol(
     output_t * out = &output;
     for (int i = 0; i < num_chars; i++)
         buffer[i] = 0;
+    /*------------------------------------------------------------------------*/
+    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
+    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
+    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
+    /*------------------------------------------------------------------------*/
+    int Δ = 0;
+    int Ω = 0;
+    const char * Σ = (const char *) 0;
     /*------------------------------------------------------------------------*/
     str_t         subj30;
     subj30_α:     Δ = 0; Σ = "(S (NP (FW i)) (VP (VBP am)) (.  .)) ";

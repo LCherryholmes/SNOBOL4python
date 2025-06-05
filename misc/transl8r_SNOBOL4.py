@@ -372,160 +372,205 @@ def process_file():
 #------------------------------------------------------------------------------
 lcurly = '{'
 rcurly = '}'
-c_source = []
 #------------------------------------------------------------------------------
-def verbatim(line=''):       c_source.append(line)
-def decl(type, var):         c_source.append("    %-14s%s" % (type, var))
-def code(label, body, goto): c_source.append("    %-14s%-42s%s" % (label, body, goto))
+def verb(C, line=''): C.append(line) # verbatim
+def decl(C, type, var): # declare
+    C.append("    %-14s%s" % (type, var))
+def code(C, label=None, body=None, goto=None):
+    if goto is None:
+        C.append("    %-14s%s" % (label, body))
+    else: C.append("    %-14s%-42s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
-def program_head():
-    verbatim('#ifdef __GNUC__')
-    verbatim('#define __kernel')
-    verbatim('#define __global')
-    verbatim('extern int printf(char *, ...);')
-    verbatim('extern void assert(int a);')
-    verbatim('#endif')
-    verbatim('/*----------------------------------------------------------------------------*/')
-    verbatim('typedef struct { const char * σ; int δ; } str_t;')
-    verbatim('typedef struct { unsigned int pos; __global char * buffer; } output_t;')
-    verbatim('/*----------------------------------------------------------------------------*/')
-    verbatim('#if 0')
-    verbatim('void write_nl(output_t * out) {}')
-    verbatim('int  write_int(output_t * out, int v) {}')
-    verbatim('void write_sz(output_t * out, const char * s) {}')
-    verbatim('void write_flush(output_t * out) {}')
-    verbatim('#else')
-    verbatim('#if 1')
-    verbatim('extern int printf(char *, ...);')
-    verbatim('void    write_nl(output_t * out)                 { printf("%s", "\\n"); }')
-    verbatim('int     write_int(output_t * out, int v)         { printf("%d", v); return v; }')
-    verbatim('void    write_sz(output_t * out, const char * s) { printf("%s", s); }')
-    verbatim('str_t   write_str(output_t * out, str_t str) {')
-    verbatim('            printf("%.*s", str.δ, str.σ);')
-    verbatim('            return str;')
-    verbatim('        }')
-    verbatim('void    write_flush(output_t * out) {}')
-    verbatim('#else')
-    verbatim('    void write_nl(output_t * out) {')
-    verbatim("        out->buffer[out->pos++] = '\\n';")
-    verbatim('        out->buffer[out->pos] = 0;')
-    verbatim('    }')
-    verbatim('')
-    verbatim('    int write_int(output_t * out, int v) {')
-    verbatim('        int n = v;')
-    verbatim("        if (v < 0) { out->buffer[out->pos++] = '-'; n = -v; }")
-    verbatim("        if (n == 0) out->buffer[out->pos++] = '0';")
-    verbatim('        else {')
-    verbatim('            int i = 0;')
-    verbatim('            char temp[16] = "";')
-    verbatim("            while (n > 0) { temp[i++] = '0' + (n % 10); n /= 10; }")
-    verbatim('            while (i > 0) out->buffer[out->pos++] = temp[--i];')
-    verbatim('        }')
-    verbatim("        out->buffer[out->pos++] = '\\n';")
-    verbatim("        out->buffer[out->pos] = '\\0';")
-    verbatim('        return v;')
-    verbatim('    }')
-    verbatim('')
-    verbatim('    void write_sz(output_t * out, const char * s) {')
-    verbatim('        for (int i = 0; s[i]; i++)')
-    verbatim('            out->buffer[out->pos++] = s[i];')
-    verbatim("        out->buffer[out->pos++] = '\\n';")
-    verbatim('        out->buffer[out->pos] = 0;')
-    verbatim('    }')
-    verbatim('')
-    verbatim('    void write_flush(output_t * out) {')
-    verbatim('#   ifdef __GNUC__')
-    verbatim('        printf("%s", out->buffer);')
-    verbatim('#   endif')
-    verbatim('    }')
-    verbatim('#endif')
-    verbatim('#endif')
-    verbatim('/*----------------------------------------------------------------------------*/')
-    verbatim('__kernel void snobol(')
-    verbatim('    __global const char * in,')
-    verbatim('    __global       char * buffer,')
-    verbatim('             const int    num_chars) {')
-    verbatim('    /*------------------------------------------------------------------------*/')
-    verbatim('    const char cszFailure[9] = "Failure.";')
-    verbatim('    const char cszSuccess[10] = "Success: ";')
-    verbatim('    output_t output = {0, buffer};')
-    verbatim('    output_t * out = &output;')
-    verbatim('    for (int i = 0; i < num_chars; i++)')
-    verbatim('        buffer[i] = 0;')
-    verbatim('    /*------------------------------------------------------------------------*/')
-    verbatim('    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
-    verbatim('    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
-    verbatim('    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
-    verbatim('    /*------------------------------------------------------------------------*/')
-    verbatim('    int Δ = 0;')
-    verbatim('    int Ω = 0;')
-    verbatim('    const char * Σ = (const char *) 0;')
-    verbatim("    /*------------------------------------------------------------------------*/")
+def module_head(C):
+    verb(C, '#ifdef __GNUC__')
+    verb(C, '#define __kernel')
+    verb(C, '#define __global')
+    verb(C, 'extern int printf(char *, ...);')
+    verb(C, 'extern void assert(int a);')
+    verb(C, '#endif')
+    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, 'typedef struct { const char * σ; int δ; } str_t;')
+    verb(C, 'typedef struct { unsigned int pos; __global char * buffer; } output_t;')
+    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, '#if 0')
+    verb(C, 'void write_nl(output_t * out) {}')
+    verb(C, 'int  write_int(output_t * out, int v) {}')
+    verb(C, 'void write_sz(output_t * out, const char * s) {}')
+    verb(C, 'void write_flush(output_t * out) {}')
+    verb(C, '#else')
+    verb(C, '#if 1')
+    verb(C, 'extern int printf(char *, ...);')
+    verb(C, 'void    write_nl(output_t * out)                 { printf("%s", "\\n"); }')
+    verb(C, 'int     write_int(output_t * out, int v)         { printf("%d", v); return v; }')
+    verb(C, 'void    write_sz(output_t * out, const char * s) { printf("%s", s); }')
+    verb(C, 'str_t   write_str(output_t * out, str_t str) {')
+    verb(C, '            printf("%.*s", str.δ, str.σ);')
+    verb(C, '            return str;')
+    verb(C, '        }')
+    verb(C, 'void    write_flush(output_t * out) {}')
+    verb(C, '#else')
+    verb(C, '    void write_nl(output_t * out) {')
+    verb(C, "        out->buffer[out->pos++] = '\\n';")
+    verb(C, '        out->buffer[out->pos] = 0;')
+    verb(C, '    }')
+    verb(C, '')
+    verb(C, '    int write_int(output_t * out, int v) {')
+    verb(C, '        int n = v;')
+    verb(C, "        if (v < 0) { out->buffer[out->pos++] = '-'; n = -v; }")
+    verb(C, "        if (n == 0) out->buffer[out->pos++] = '0';")
+    verb(C, '        else {')
+    verb(C, '            int i = 0;')
+    verb(C, '            char temp[16] = "";')
+    verb(C, "            while (n > 0) { temp[i++] = '0' + (n % 10); n /= 10; }")
+    verb(C, '            while (i > 0) out->buffer[out->pos++] = temp[--i];')
+    verb(C, '        }')
+    verb(C, "        out->buffer[out->pos++] = '\\n';")
+    verb(C, "        out->buffer[out->pos] = '\\0';")
+    verb(C, '        return v;')
+    verb(C, '    }')
+    verb(C, '')
+    verb(C, '    void write_sz(output_t * out, const char * s) {')
+    verb(C, '        for (int i = 0; s[i]; i++)')
+    verb(C, '            out->buffer[out->pos++] = s[i];')
+    verb(C, "        out->buffer[out->pos++] = '\\n';")
+    verb(C, '        out->buffer[out->pos] = 0;')
+    verb(C, '    }')
+    verb(C, '')
+    verb(C, '    void write_flush(output_t * out) {')
+    verb(C, '#   ifdef __GNUC__')
+    verb(C, '        printf("%s", out->buffer);')
+    verb(C, '#   endif')
+    verb(C, '    }')
+    verb(C, '#endif')
+    verb(C, '#endif')
+    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, 'static int Δ = 0;')
+    verb(C, 'static int Ω = 0;')
+    verb(C, 'static const char * Σ = (const char *) 0;')
+    verb(C, 'static const int α = 0;')
+    verb(C, 'static const int β = 1;')
+    verb(C, 'static const str_t empty = (str_t) {(const char *) 0, 0};')
+    verb(C, 'static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }')
+    verb(C, 'static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
+    verb(C, 'static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
+    verb(C, 'static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
+    verb(C, 'static output_t * out = (output_t *) 0;')
 #-----------------------------------------------------------------------------------------------------------------------
-def program_tail():
-    verbatim('}')
-    verbatim('')
-    verbatim('#ifdef __GNUC__')
-    verbatim('static char szOutput[1024] = {0};')
-    verbatim('int main() {')
-    verbatim('    snobol((const char *) 0, szOutput, sizeof(szOutput));')
-    verbatim('    return 0;')
-    verbatim('}')
-    verbatim('#endif')
+def program_head(C):
+    verb(C, '/*============================================================================*/')
+
+    verb(C, '__kernel void snobol(')
+    verb(C, '    __global const char * in,')
+    verb(C, '    __global       char * buffer,')
+    verb(C, '             const int    num_chars) {')
+    verb(C, '    /*------------------------------------------------------------------------*/')
+    verb(C, '    const char cszFailure[9] = "Failure.";')
+    verb(C, '    const char cszSuccess[10] = "Success: ";')
+    verb(C, '    output_t output = {0, buffer};')
+    verb(C, '    output_t * out = &output;')
+    verb(C, '    for (int i = 0; i < num_chars; i++)')
+    verb(C, '        buffer[i] = 0;')
+    verb(C, '    /*------------------------------------------------------------------------*/')
+    verb(C, '    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
+    verb(C, '    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
+    verb(C, '    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
+    verb(C, '    /*------------------------------------------------------------------------*/')
+    verb(C, '    int Δ = 0;')
+    verb(C, '    int Ω = 0;')
+    verb(C, '    const char * Σ = (const char *) 0;')
+    verb(C, "    /*------------------------------------------------------------------------*/")
+#-----------------------------------------------------------------------------------------------------------------------
+def program_tail(C):
+    verb(C, '}')
+    verb(C, '')
+    verb(C, '#ifdef __GNUC__')
+    verb(C, 'static char szOutput[1024] = {0};')
+    verb(C, 'int main() {')
+    verb(C, '    snobol((const char *) 0, szOutput, sizeof(szOutput));')
+    verb(C, '    return 0;')
+    verb(C, '}')
+    verb(C, '#endif')
 #-----------------------------------------------------------------------------------------------------------------------
 counter = 0
 #-----------------------------------------------------------------------------------------------------------------------
-def eParse(t):
+def eParse(ctx, t):
     L = f'main{counter}'
-    program_head()
-    for c in t[1:]:
-        E = emit(c)
-    code(f'',              f'', f'goto {L}_α;')
-    code(f'{L}_α:',        f'', f'goto {E}_α;')
-    code(f'{L}_β:',        f'', f'return;')
-    code(f'{E}_γ:',        f'write_sz(out, cszSuccess);', f'')
-    code(f'',              f'write_str(out, {E});', f'')
-    code(f'',              f'write_nl(out);', f'goto {E}_β;')
-    code(f'{E}_ω:',        f'write_sz(out, cszFailure);', f'')
-    code(f'',              f'write_nl(out);', f'return;')
-    program_tail()
-    return L
+    T = []
+    C = []
+    module_head(C)
+    Es = [emit(ctx, c) for c in t]
+    for LTC in Es[:-1]: C += LTC[2]
+    program_head(C)
+    E = Es[-1][0]
+    C += Es[-1][2]
+    code(C, f'',              f'', f'goto {L}_α;')
+    code(C, f'{L}_α:',        f'', f'goto {E}_α;')
+    code(C, f'{L}_β:',        f'', f'return;')
+    code(C, f'{E}_γ:',        f'write_sz(out, cszSuccess);', f'')
+    code(C, f'',              f'write_str(out, {E});', f'')
+    code(C, f'',              f'write_nl(out);', f'goto {E}_β;')
+    code(C, f'{E}_ω:',        f'write_sz(out, cszFailure);', f'')
+    code(C, f'',              f'write_nl(out);', f'return;')
+    program_tail(C)
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eStmt(subject, pattern, equals, predicate):
+def eStmt(ctx, subject, pattern, equals, predicate):
+    T = []
+    C = []
     if equals[0] == '=':
-        V = subject[1][1]
-        L = f'{V}'
-        P = emit(predicate) # any object or pattern
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'', f'goto {P}_α;')
-        code(f'{L}_β:',    f'', f'goto {P}_β;')
-        code(f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
-        code(f'{P}_ω:',    f'', f'goto {L}_ω;')
+        L = f'{subject[1][1]}'
+        ctx[1] = dict()
+        P, PT, PC = emit(ctx, predicate); T += PT
+        verb(C, f'/*============================================================================*/')
+        for sid in ctx[1]:
+            temps = ctx[1][sid]
+            if len(temps) > 0:
+                verb(C, f'typedef struct _{sid} {lcurly}')
+                for temp in temps:
+                        decl(C, temp[0], f'{temp[1]};')
+                verb(C, f'{rcurly} _{sid}_t;')
+        verb(C, f'typedef struct _{L} {lcurly}')
+        for temp in T:
+            decl(C, temp[0], f'{temp[1]};')
+        verb(C, f'{rcurly} {L}_t;')
+        verb(C, f'/*----------------------------------------------------------------------------*/')
+        verb(C, f'str_t {L}({L}_t * ζ, int entry) {lcurly}')
+        verb(C, f'    if (entry == α) goto {L}_α;')
+        verb(C, f'    if (entry == β) goto {L}_β;')
+        verb(C, f'    /*------------------------------------------------------------------------*/')
+        C += PC
+        code(C, f'{L}_α:',    f'', f'goto {P}_α;')
+        code(C, f'{L}_β:',    f'', f'goto {P}_β;')
+        code(C, f'{P}_γ:',    f'return {P};')
+        code(C, f'{P}_ω:',    f'return empty;')
+        verb(C, f'{rcurly}')
     else:
         L = f'match{counter}'
-        S = emit(subject)
-        P = emit(pattern)
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'', f'goto {S}_α;')
-        code(f'{L}_β:',    f'', f'goto {L}_ω;')
-        code(f'{S}_γ:',    f'', f'goto {P}_α;')
-        code(f'{S}_ω:',    f'', f'goto {L}_ω;')
-        code(f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
-        code(f'{P}_ω:',    f'', f'goto {L}_ω;')
-    return L
+        S, ST, SC = emit(ctx, subject); T += ST; C += SC
+        P, PT, PC = emit(ctx, pattern); T += PT; C += PC
+        decl(C, f'str_t',     f'{L};')
+        code(C, f'{L}_α:',    f'', f'goto {S}_α;')
+        code(C, f'{L}_β:',    f'', f'goto {L}_ω;')
+        code(C, f'{S}_γ:',    f'', f'goto {P}_α;')
+        code(C, f'{S}_ω:',    f'', f'goto {L}_ω;')
+        code(C, f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
+        code(C, f'{P}_ω:',    f'', f'goto {L}_ω;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eSubject(subject):
+def eSubject(ctx, subject):
+    C = []
     if subject[0] == 'String':
         L = f'subj{counter}'
-        decl(f'str_t',         f'{L};')
-        code(f'{L}_α:',        f'Δ = 0; Σ = "{eval(subject[1])}";', f'')
-        code(f'',              f'Ω = len(Σ); {L} = str(Σ,Ω);', f'goto {L}_γ;')
-        code(f'{L}_β:',        f'', f'goto {L}_ω;')
+        decl(C, f'str_t',         f'{L};')
+        code(C, f'{L}_α:',        f'Δ = 0; Σ = "{eval(subject[1])}";', f'')
+        code(C, f'',              f'Ω = len(Σ); {L} = str(Σ,Ω);', f'goto {L}_γ;')
+        code(C, f'{L}_β:',        f'', f'goto {L}_ω;')
     else: raise Exception(f'eSubject: {subject[0]}')
-    return L
+    return (L, [], C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eCall(func, arg):
-    L = None
+def eCall(ctx, func, arg):
+    T = []
+    C = []
     if   func == 'POS':    L = f'POS{counter}';     pos = f'{int(arg[1])}'
     elif func == 'RPOS':   L = f'RPOS{counter}';    pos = f'Ω-{int(arg[1])}'
     elif func == 'TAB':    L = f'TAB{counter}';     pos = f'{int(arg[1])}'
@@ -535,237 +580,294 @@ def eCall(func, arg):
     elif func == 'NOTANY': L = f'NOTANY{counter}';  chars = eval(str(arg[1]))
     elif func == 'SPAN':   L = f'SPAN{counter}';    chars = eval(str(arg[1]))
     elif func == 'BREAK':  L = f'BREAK{counter}';   chars = eval(str(arg[1]))
-    elif func == 'ARBNO':  L = f'ARBNO{counter}';   E = emit(arg)
+    elif func == 'ARBNO':
+        n = counter
+        L = f'ARBNO{n}'
+        E, ET, EC = emit([f'ψ{n}->', ctx[1]], arg)
+        if len(ET) > 0:
+            ET.append(('str_t', f'ARBNO'))
+            decl(C, f'_{n}_t *', f'ψ{n};')
+        ctx[1][n] = ET
+        C += EC
     else: raise Exception(f'eCall: {func} {arg}')
-    decl(f'str_t', f'{L};')
+    decl(C, f'str_t', f'{L};')
     match func:
         case 'POS'|'RPOS':
-            code(f'{L}_α:',    f'if (Δ != {pos})', f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,0);', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'', f'goto {L}_ω;')
+            code(C, f'{L}_α:',    f'if (Δ != {pos})', f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,0);', f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'', f'goto {L}_ω;')
         case 'LEN':
-            code(f'{L}_α:',    f'if (Δ+{length} > Ω)', f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,{length}); Δ+={length};', f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-={length};', f'goto {L}_ω;')
+            code(C, f'{L}_α:',    f'if (Δ+{length} > Ω)', f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,{length}); Δ+={length};', f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-={length};', f'goto {L}_ω;')
         case 'ANY':
             label = f'{L}_α:'
             for c in chars:
-                code(label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αγ;')
+                code(C, label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αγ;')
                 label = ''
-            code(f'',          f'',                                 f'goto {L}_ω;')
-            code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
+            code(C, f'',          f'',                                 f'goto {L}_ω;')
+            code(C, f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
         case 'NOTANY':
             label = f'{L}_α:'
             for c in chars:
-                code(label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αω;')
+                code(C, label,    f"if (Σ[Δ] == '{c}')",               f'goto {L}_αω;')
                 label = ''
-            code(f'',          f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
-            code(f'{L}_αω:',   f'',                                 f'goto {L}_ω;')
-            code(f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,1); Δ+=1;',          f'goto {L}_γ;')
+            code(C, f'{L}_αω:',   f'',                                 f'goto {L}_ω;')
+            code(C, f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
         case 'SPAN':
             label = f'{L}_α:'
-            decl(f'int',       f'{L}_δ;')
-            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
+            decl(C, f'int',       f'{L}_δ;')
+            code(C, label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') continue;", f'')
-            code(f'',          f'    break;', f'')
-            code(f'',          f"{rcurly}", f'')
+                code(C, f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') continue;", f'')
+            code(C, f'',          f'    break;', f'')
+            code(C, f'',          f"{rcurly}", f'')
             if func == 'SPAN':
-                code(f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
+                code(C, f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
             if func == 'BREAK':
-                code(f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
+                code(C, f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
         case 'BREAK':
             label = f'{L}_α:'
-            decl(f'int',       f'{L}_δ;')
-            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
+            decl(C, f'int',       f'{L}_δ;')
+            code(C, label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') break;", f'')
-            code(f'',          f"{rcurly}", f'')
+                code(C, f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') break;", f'')
+            code(C, f'',          f"{rcurly}", f'')
             if func == 'SPAN':
-                code(f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
+                code(C, f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
             if func == 'BREAK':
-                code(f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
-            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
-            code(f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
-        case 'ARBNO':
-            decl(f'int',       f'{L}_i;')
-            code(f'{L}_α:',    f'ζ = &z[{L}_i=0];', f'')
-            code(f'',          f'ζ->{L} = str(Σ+Δ, 0);',      f'goto {E}_α;')
-            code(f'{L}_β:',    f'ζ = &z[++{L}_i];', f'')
-            code(f'',          f'ζ->{L} = {L};',              f'goto {E}_α;')
-            code(f'{E}_γ:',    f'{L} = cat(ζ->{L}, ζ->{E});', f'goto {L}_γ;')
-            code(f'{E}_ω:',    f'if ({L}_i <= 0)',            f'goto {L}_ω;')
-            code(f'',          f'{L}_i--; ζ = &z[{L}_i];',    f'goto {E}_β;')
-    return L
+                code(C, f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
+        case 'ARBNO': # Wrong, Fix ARBNO to handle epsilon first
+            if len(ET) > 0:
+                T.append(('int', f'_{n}_i'))
+                T.append((f'_{n}_t', f'_{n}_a[64]'))
+                code(C, f'{L}_α:',     f'ψ{n} = &ζ->_{n}_a[ζ->_{n}_i=0];')
+                code(C, f'',           f'ψ{n}->ARBNO = str(Σ+Δ, 0);',        f'goto {E}_α;')
+                code(C, f'{L}_β:',     f'ψ{n} = &ζ->_{n}_a[++ζ->_{n}_i];')
+                code(C, f'',           f'ψ{n}->ARBNO = {L};',                f'goto {E}_α;')
+                code(C, f'{E}_γ:',     f'{L} = cat(ψ{n}->ARBNO, {E});',      f'goto {L}_γ;')
+                code(C, f'{E}_ω:',     f'if (--ζ->_{n}_i < 0)',              f'goto {L}_ω;')
+                code(C, f'',           f'ψ{n} = &ζ->_{n}_a[ζ->_{n}_i];',     f'goto {E}_β;')
+            else:
+                T.append(('int', f'_{n}_i'))
+                T.append(('str_t', f'_{n}_s'))
+                code(C, f'{L}_α:',     f'{ctx[0]}_{n}_i = 0;')
+                code(C, f'',           f'{ctx[0]}_{n}_s = str(Σ+Δ, 0);',     f'goto {E}_α;')
+                code(C, f'{L}_β:',     f'{ctx[0]}_{n}_i++;')
+                code(C, f'',           f'{ctx[0]}_{n}_s = {L};',             f'goto {E}_α;')
+                code(C, f'{E}_γ:',     f'{L} = cat({ctx[0]}_{n}_s, {E});',   f'goto {L}_γ;')
+                code(C, f'{E}_ω:',     f'if (--{ctx[0]}_{n}_i < 0)',         f'goto {L}_ω;')
+                code(C, f'',           f'else',                              f'goto {E}_β;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eInteger(i):
+def eInteger(ctx, i):
     L = f'i{counter}_{t[1]}'
-    decl(f'int',           f'{L};')
-    code(f'{L}_α:',        f'{L} = {i};', f'goto {L}_γ;')
-    code(f'{L}_β:',        f'', f'goto {L}_ω;')
-    return L
+    C = []
+    decl(C, f'int',           f'{L};')
+    code(C, f'{L}_α:',        f'{L} = {i};', f'goto {L}_γ;')
+    code(C, f'{L}_β:',        f'', f'goto {L}_ω;')
+    return (L, [], C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eString(s):
+def eString(ctx, s):
     L = f's{counter}'
-    decl(f'str_t',         f'{L};')
+    C = []
+    decl(C, f'str_t',         f'{L};')
     label = f'{L}_α:'
     for i, c in enumerate(s):
-        code(label,        f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
+        code(C, label,        f"if (Σ[Δ+{i}] != '{c}')", f'goto {L}_ω;')
         label = ''
-    code(f'',              f'{L} = str(Σ+Δ,{len(s)}); Δ+={len(s)};', f'goto {L}_γ;')
-    code(f'{L}_β:',        f'Δ-={len(s)};', f'goto {L}_ω;')
-    return L
+    code(C, f'',              f'{L} = str(Σ+Δ,{len(s)}); Δ+={len(s)};', f'goto {L}_γ;')
+    code(C, f'{L}_β:',        f'Δ-={len(s)};', f'goto {L}_ω;')
+    return (L, [], C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eId(var):
+def eId(ctx, var):
     L = f'{var}{counter}'
+    C = []
     if (var in ["NULL", "null", "epsilon"]):
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'{L} = str(Σ+Δ,0);',    f'goto {L}_γ;')
-        code(f'{L}_β:',    f'',                     f'goto {L}_ω;')
+        decl(C, f'str_t',      f'{L};')
+        code(C, f'{L}_α:',     f'{L} = str(Σ+Δ,0);',       f'goto {L}_γ;')
+        code(C, f'{L}_β:',     f'',                        f'goto {L}_ω;')
     else:
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'',                     f'goto {var}_α;')
-        code(f'{L}_β:',    f'',                     f'goto {var}_β;')
-        code(f'{var}_γ:',  f'{L} = {var};',         f'goto {L}_γ;')
-        code(f'{var}_ω:',  f'',                     f'goto {L}_ω;')
-    return L
+        decl(C, f'str_t',      f'{L};')
+        decl(C, f'{var}_t',    f'{L}_ζ;')
+        code(C, f'{L}_α:',     f'{L} = {var}(&{L}_ζ, α);', f'goto {L}_λ;')
+        code(C, f'{L}_β:',     f'{L} = {var}(&{L}_ζ, β);', f'goto {L}_λ;')
+        code(C, f'{L}_λ:',     f'if (is_empty({L}))',      f'goto {L}_ω;')
+        code(C, f'',           f'else',                    f'goto {L}_γ;')
+    return (L, [], C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eBuiltinVar(variable):
+def eBuiltinVar(ctx, variable):
     L = f'ARB{counter}'
+    T = []
+    C = []
     if t[1] == 'ARB':
-        decl(f'int',       f'{L}_i;')
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'{L}_i = 0;', f'goto {L}_λ;')
-        code(f'{L}_β:',    f'{L}_i++;', f'goto {L}_λ;')
-        code(f'{L}_λ:',    f'if (Δ+{L}_i >= Ω)', f'goto {L}_ω;')
-        code(f'',          f'{L} = str(Σ+Δ,{L}_i);', f'goto {L}_γ;')
-    return L
+        T.append(('int', f'{L}_i'))
+        decl(C, f'int',       f'{L}_i;')
+        decl(C, f'str_t',     f'{L};')
+        code(C, f'{L}_α:',    f'{L}_i = 0;', f'goto {L}_λ;')
+        code(C, f'{L}_β:',    f'{L}_i++;', f'goto {L}_λ;')
+        code(C, f'{L}_λ:',    f'if (Δ+{L}_i >= Ω)', f'goto {L}_ω;')
+        code(C, f'',          f'{L} = str(Σ+Δ,{L}_i);', f'goto {L}_γ;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eImmediate_assign(E, V):
-    L = f'immed{counter}'
+def eImmediate_assign(ctx, pattern, V):
+    L = f'OUTPUT{counter}'
+    T = []
+    C = []
+    E, ET, EC = emit(ctx, pattern); T += ET; C += EC
     if (V == "OUTPUT"):
-        decl(f'str_t',     f'{L};')
-        code(f'{L}_α:',    f'', f'goto {E}_α;')
-        code(f'{L}_β:',    f'', f'goto {E}_β;')
-        code(f'{E}_γ:',    f'{L} = write_str(out, {E});', f'')
-        code(f'',          f'write_nl(out);', f'goto {L}_γ;')
-        code(f'{E}_ω:',    f'', f'goto {L}_ω;')
+        decl(C, f'str_t',     f'{L};')
+        code(C, f'{L}_α:',    f'', f'goto {E}_α;')
+        code(C, f'{L}_β:',    f'', f'goto {E}_β;')
+        code(C, f'{E}_γ:',    f'{L} = write_str(out, {E});', f'')
+        code(C, f'',          f'write_nl(out);', f'goto {L}_γ;')
+        code(C, f'{E}_ω:',    f'', f'goto {L}_ω;')
     else: raise Exception("OUTPUT is the only variable.")
-    return L
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eUnop(op, E):
-#   if   op == '*': return emit(E)
-    if   op == '+': L = f'uplus{counter}'; emit(E)
-    elif op == '-': L = f'uminus{counter}'; emit(E)
-    elif op == '*': L = f'defer{counter}'; E = E[1];
+def eUnop(ctx, op, E):
+    if   op == '+': L = f'uplus{counter}'; E, ET, EC = emit(ctx, E);  T += ET; C += EC
+    elif op == '-': L = f'uminus{counter}'; E, ET, EC = emit(ctx, E); T += ET; C += EC
+    elif op == '*': L = f'{E[1][1]}{counter}'; return eId(ctx, E[1])
     else: raise Exception(f'eUnop: {op}')
-    if op == '*':
-        decl(f'str_t',     f'{L};')
-    else: decl(f'int',     f'{L};')
-    code(f'{L}_α:',        f'', f'goto {E}_α;')
-    code(f'{L}_β:',        f'', f'goto {E}_β;')
-    if op == '*':
-        code(f'{E}_γ:',    f'{L} = lookup("{E}");', f'goto {L}_γ;')
-    else: code(f'{E}_γ:',  f'{L} = {op}{E};', f'goto {L}_γ;')
-    code(f'{E}_ω:',        f'', f'goto {L}_ω;')
-    return L
+    T = []
+    C = []
+    if op == '*': # currently unused
+        decl(C, f'str_t',     f'{L};')
+    else: decl(C, f'int',     f'{L};')
+    code(C, f'{L}_α:',        f'', f'goto {E}_α;')
+    code(C, f'{L}_β:',        f'', f'goto {E}_β;')
+    if op == '*': # currently unused
+        code(C, f'{E}_γ:',    f'{L} = lookup("{E}");', f'goto {L}_γ;')
+    else: code(C, f'{E}_γ:',  f'{L} = {op}{E};', f'goto {L}_γ;')
+    code(C, f'{E}_ω:',        f'', f'goto {L}_ω;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eBinop(op, E1, E2):
+def eBinop(ctx, op, E1, E2):
     if   op == '+': L = f'plus{counter}'
     elif op == '-': L = f'minus{counter}'
     elif op == '*': L = f'mult{counter}'
     elif op == '/': L = f'divide{counter}'
     else: raise Exception(f'eBinop: {op}')
-    decl(f'int',           f'{L};')
-    code(f'{L}_α:',        f'', f'goto {E1}_α;')
-    code(f'{L}_β:',        f'', f'goto {E2}_β;')
-    code(f'{E1}_γ:',       f'', f'goto {E2}_α;')
-    code(f'{E1}_ω:',       f'', f'goto {L}_ω;')
-    code(f'{E2}_γ:',       f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
-    code(f'{E2}_ω:',       f'', f'goto {E1}_β;')
-    return L
+    T = []
+    C = []
+    E1, E1T, E1C = emit(ctx, E1); T += E1T; C += E1C
+    E2, E2T, E2C = emit(ctx, E2); T += E2T; C += E2C
+    decl(C, f'int',           f'{L};')
+    code(C, f'{L}_α:',        f'', f'goto {E1}_α;')
+    code(C, f'{L}_β:',        f'', f'goto {E2}_β;')
+    code(C, f'{E1}_γ:',       f'', f'goto {E2}_α;')
+    code(C, f'{E1}_ω:',       f'', f'goto {L}_ω;')
+    code(C, f'{E2}_γ:',       f'{L} = {E1} {op} {E2};', f'goto {L}_γ;')
+    code(C, f'{E2}_ω:',       f'', f'goto {E1}_β;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eComparison(op, E1, E2):
+def eComparison(ctx, op, E1, E2):
     if op == '<':  L = f'lt{counter}'; negop = '>='
     if op == '>':  L = f'gt{counter}'; negop = '<='
     if op == '==': L = f'eq{counter}'; negop = '!='
     if op == '<=': L = f'le{counter}'; negop = '>'
     if op == '>=': L = f'ge{counter}'; negop = '<'
     if op == '!=': L = f'ne{counter}'; negop = '=='
-    decl(f'int',           f'{L};')
-    code(f'{L}_α:',        f'', f'goto {E1}_α;')
-    code(f'{L}_β:',        f'', f'goto {E2}_β;')
-    code(f'{E1}_γ:',       f'', f'goto {E2}_α;')
-    code(f'{E1}_ω:',       f'', f'goto {L}_ω;')
-    code(f'{E2}_γ:',       f'if ({E1} {negop} {E2})', f'goto {E2}_β;')
-    code(f'',              f'{L} = {E2};', f'goto {L}_γ;')
-    code(f'{E2}_ω:',       f'', f'goto {E1}_β;')
-    return L
+    T = []
+    C = []
+    E1, E1T, E1C = emit(ctx, E1); T += E1T; C += E1C
+    E2, E2T, E2C = emit(ctx, E2); T += E2T; C += E2C
+    decl(C, f'int',           f'{L};')
+    code(C, f'{L}_α:',        f'', f'goto {E1}_α;')
+    code(C, f'{L}_β:',        f'', f'goto {E2}_β;')
+    code(C, f'{E1}_γ:',       f'', f'goto {E2}_α;')
+    code(C, f'{E1}_ω:',       f'', f'goto {L}_ω;')
+    code(C, f'{E2}_γ:',       f'if ({E1} {negop} {E2})', f'goto {E2}_β;')
+    code(C, f'',              f'{L} = {E2};', f'goto {L}_γ;')
+    code(C, f'{E2}_ω:',       f'', f'goto {E1}_β;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eSeq(t):
+def eSeq(ctx, t):
     L = f'seq{counter}'
-    Es = [emit(c) for c in t[1:]]
-    decl(f'str_t',                 f'{L};')
-    code(f'{L}_α:',                f'{L} = str(Σ+Δ,0);', f'goto {Es[0]}_α;')
-    code(f'{L}_β:',                f'', f'goto {Es[-1]}_β;')
+    T = []
+    C = []
+    Es = []
+    for c in t:
+        E, ET, EC = emit(ctx, c)
+        Es.append(E)
+        T += ET
+        C += EC
+    decl(C, f'str_t',                 f'{L};')
+    code(C, f'{L}_α:',                f'{L} = str(Σ+Δ,0);', f'goto {Es[0]}_α;')
+    code(C, f'{L}_β:',                f'', f'goto {Es[-1]}_β;')
     for i in range(len(Es)):
         if i < len(Es)-1:
-            code(f'{Es[i]}_γ:',    f'{L} = cat({L}, {Es[i]});', f'goto {Es[i+1]}_α;')
-        else: code(f'{Es[i]}_γ:',  f'{L} = cat({L}, {Es[i]});', f'goto {L}_γ;')
+            code(C, f'{Es[i]}_γ:',    f'{L} = cat({L}, {Es[i]});', f'goto {Es[i+1]}_α;')
+        else: code(C, f'{Es[i]}_γ:',  f'{L} = cat({L}, {Es[i]});', f'goto {L}_γ;')
         if i == 0:
-            code(f'{Es[i]}_ω:',    f'', f'goto {L}_ω;')
-        else: code(f'{Es[i]}_ω:',  f'', f'goto {Es[i-1]}_β;')
-    return L
+            code(C, f'{Es[i]}_ω:',    f'', f'goto {L}_ω;')
+        else: code(C, f'{Es[i]}_ω:',  f'', f'goto {Es[i-1]}_β;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def eAlt(t):
+def eAlt(ctx, t):
     L = f'alt{counter}'
-    Es = [emit(c) for c in t[1:]]
-    decl(f'int',                   f'{L}_i;')
-    decl(f'str_t',                 f'{L};')
-    code(f'{L}_α:',                f'{L}_i = 1;', f'goto {Es[0]}_α;')
+    T = [('int', f'{L}_i')]
+    C = []
+    Es = []
+    for c in t:
+        E, ET, EC = emit(ctx, c)
+        Es.append(E)
+        T += ET
+        C += EC
+    decl(C, f'str_t',                 f'{L};')
+    code(C, f'{L}_α:',                f'{ctx[0]}{L}_i = 1;', f'goto {Es[0]}_α;')
     label = f'{L}_β:'
     for i in range(len(Es)):
-        code(label,                f'if ({L}_i == {i+1})', f'goto {Es[i]}_β;')
+        code(C, label,                f'if ({ctx[0]}{L}_i == {i+1})', f'goto {Es[i]}_β;')
         label = ''
-    code(f'',                      f'', f'goto {L}_ω;')
+    code(C, f'',                      f'', f'goto {L}_ω;')
     for i in range(len(Es)-1):
-        code(f'{Es[i]}_γ:',        f'{L} = {Es[i]};', f'goto {L}_γ;')
-        code(f'{Es[i]}_ω:',        f'{L}_i++;', f'goto {Es[i+1]}_α;')
-    code(f'{Es[-1]}_γ:',           f'{L} = {Es[-1]};', f'goto {L}_γ;')
-    code(f'{Es[-1]}_ω:',           f'', f'goto {L}_ω;')
-    return L
+        code(C, f'{Es[i]}_γ:',        f'{L} = {Es[i]};', f'goto {L}_γ;')
+        code(C, f'{Es[i]}_ω:',        f'{ctx[0]}{L}_i++;', f'goto {Es[i+1]}_α;')
+    code(C, f'{Es[-1]}_γ:',           f'{L} = {Es[-1]};', f'goto {L}_γ;')
+    code(C, f'{Es[-1]}_ω:',           f'', f'goto {L}_ω;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
-def emit(t):
-    L = None
+def emit(ctx, t):
     global counter
     if t is None: return
     if t[0] != '()': counter += 1
+    L = None
+    T = None
+    C = None
     match t[0]:
-        case 'Parse':       L = eParse(t)
-        case 'Stmt':        L = eStmt(t[2], t[3], t[4], t[5])
-        case 'Subject':     L = eSubject(t[1])
-        case 'Call':        L = eCall(t[1][1], t[2][1])
-        case 'Integer':     L = eInteger(t[1])
-        case 'String':      L = eString(eval(t[1]))
-        case 'Id':          L = eId(t[1])
-        case 'BuiltinVar':  L = eBuiltinVar(t[1])
-        case '$':           L = eImmediate_assign(emit(t[1]), t[2][1])
+        case 'Parse':           L, T, C = eParse(ctx, t[1:])
+        case 'Stmt':            L, T, C = eStmt(ctx, t[2], t[3], t[4], t[5])
+        case 'Subject':         L, T, C = eSubject(ctx, t[1])
+        case 'Call':            L, T, C = eCall(ctx, t[1][1], t[2][1])
+        case 'Integer':         L, T, C = eInteger(ctx, t[1])
+        case 'String':          L, T, C = eString(ctx, eval(t[1]))
+        case 'Id':              L, T, C = eId(ctx, t[1])
+        case 'BuiltinVar':      L, T, C = eBuiltinVar(ctx, t[1])
+        case '$':               L, T, C = eImmediate_assign(ctx, t[1], t[2][1])
         case '+'|'-'|\
-             '*'|'/':       # unary and binary operators
-                            if len(t) == 2: L = eUnop(t[0], t[1])
-                            elif len(t) == 3: L = eBinop(t[0], emit(t[1]), emit(t[2]))
-                            else: raise Exception(f'emit: "{t[0]}"')
+             '*'|'/':
+             if len(t) == 2:    L, T, C = eUnop(ctx, t[0], t[1])
+             elif len(t) == 3:  L, T, C = eBinop(ctx, t[0], t[1], t[2])
+             else:              raise Exception(f'emit: "{t[0]} {len(t)}"')
         case '<'|'<='|\
              '>'|'>='|\
-             '=='|'!=':     L = eComparison(t[0], emit(t[1]), emit(t[2]))
-        case '..':          L = eSeq(t)
-        case '|':           L = eAlt(t)
-        case '()':          return emit(t[1])
-    verbatim("    /*------------------------------------------------------------------------*/")
-    return L
+             '=='|'!=':         L, T, C = eComparison(ctx, t[0], t[1], t[2])
+        case '..':              L, T, C = eSeq(ctx, t[1:])
+        case '|':               L, T, C = eAlt(ctx, t[1:])
+        case '()':              return emit(ctx, t[1])
+        case _:                 raise Exception(f'emit: {t[0]}')
+    verb(C, "    /*------------------------------------------------------------------------*/")
+    return (L, T, C)
+#-----------------------------------------------------------------------------------------------------------------------
+def genc(C): return "\n".join(C)
 #-----------------------------------------------------------------------------------------------------------------------
 TRACE(40)
 GLOBALS(globals())
@@ -784,8 +886,9 @@ snobol4_source = """\
 if snobol4_source in Parse:
     counter = 0
 #   pprint(SNOBOL4_tree)
-    kernel_source = emit(SNOBOL4_tree)
-    for num, line in enumerate(c_source):
+    L, T, C, = emit(['', None], SNOBOL4_tree)
+    kernel_source = genc(C)
+    for num, line in enumerate(C):
         print(line)
 else: print("Boo!")
 #-----------------------------------------------------------------------------------------------------------------------
@@ -811,12 +914,11 @@ while True:
     snobol4_source += '\n'
     if snobol4_source in Parse:
         print("Translating SNOBOL4 to C ...")
-        c_source = []
-        kernel_source = emit(SNOBOL4_tree)
-        for num, line in enumerate(c_source):
+        L, T, C = emit(SNOBOL4_tree)
+        kernel_source = genc(C)
+        for num, line in kernel_source:
 #           print("%4d %s" % (num + 1, line))
             print(line)
-        kernel_source = "\n".join(c_source)
         if False:
             print("Compiling C ...")
             program = cl.Program(ctx, kernel_source).build()
