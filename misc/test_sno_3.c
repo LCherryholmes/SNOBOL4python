@@ -142,7 +142,6 @@ str_t I(I_t * ζ, int entry) {
     if (entry == β) goto I_β;
     /*------------------------------------------------------------------------*/
     str_t         SPAN5;
-    int           SPAN5_δ;
     SPAN5_α:      for (ζ->SPAN5_δ = 0; Σ[Δ+ζ->SPAN5_δ]; ζ->SPAN5_δ++) {
                       if (Σ[Δ+ζ->SPAN5_δ] == '0') continue;
                       if (Σ[Δ+ζ->SPAN5_δ] == '1') continue;
@@ -156,9 +155,9 @@ str_t I(I_t * ζ, int entry) {
                       if (Σ[Δ+ζ->SPAN5_δ] == '9') continue;
                       break;                                
                   }                                         
-                  if (SPAN5_δ <= 0)                         goto SPAN5_ω;
-                  SPAN5 = str(Σ+Δ,SPAN5_δ); Δ+=SPAN5_δ;     goto SPAN5_γ;
-    SPAN5_β:      Δ-=SPAN5_δ;                               goto SPAN5_ω;
+                  if (ζ->SPAN5_δ <= 0)                      goto SPAN5_ω;
+                  SPAN5 = str(Σ+Δ,ζ->SPAN5_δ); Δ+=ζ->SPAN5_δ;goto SPAN5_γ;
+    SPAN5_β:      Δ-=ζ->SPAN5_δ;                            goto SPAN5_ω;
     /*------------------------------------------------------------------------*/
     I_α:                                                    goto SPAN5_α;
     I_β:                                                    goto SPAN5_β;

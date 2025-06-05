@@ -625,12 +625,9 @@ def eCall(ctx, func, arg):
                 code(C, f'',      f"    if (Σ[Δ+{R}{L}_δ] == '{c}') continue;")
             code(C, f'',          f'    break;', f'')
             code(C, f'',          f"{rcurly}", f'')
-            if func == 'SPAN':
-                code(C, f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
-            if func == 'BREAK':
-                code(C, f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
-            code(C, f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
-            code(C, f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
+            code(C, f'',          f'if ({R}{L}_δ <= 0)',                     f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,{R}{L}_δ); Δ+={R}{L}_δ;',  f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-={R}{L}_δ;',                           f'goto {L}_ω;')
         case 'BREAK':
             T += [('int', f'{L}_δ')]
             R = ctx[0] if ctx[0] != '' else 'ζ->'
@@ -639,10 +636,7 @@ def eCall(ctx, func, arg):
             for c in chars:
                 code(C, f'',      f"    if (Σ[Δ+{R}{L}_δ] == '{c}') break;")
             code(C, f'',          f"{rcurly}", f'')
-            if func == 'SPAN':
-                code(C, f'',      f'if ({R}{L}_δ <= 0)',                     f'goto {L}_ω;')
-            if func == 'BREAK':
-                code(C, f'',      f'if (Δ+{R}{L}_δ >= Ω)',                   f'goto {L}_ω;')
+            code(C, f'',          f'if (Δ+{R}{L}_δ >= Ω)',                   f'goto {L}_ω;')
             code(C, f'',          f'{L} = str(Σ+Δ,{R}{L}_δ); Δ+={R}{L}_δ;',  f'goto {L}_γ;')
             code(C, f'{L}_β:',    f'Δ-={R}{L}_δ;',                           f'goto {L}_ω;')
         case 'ARBNO': # Wrong, Fix ARBNO to handle epsilon first
