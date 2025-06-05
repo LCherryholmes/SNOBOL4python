@@ -617,11 +617,12 @@ def eCall(ctx, func, arg):
             code(C, f'{L}_αω:',   f'',                                 f'goto {L}_ω;')
             code(C, f'{L}_β:',    f'Δ-=1;',                            f'goto {L}_ω;')
         case 'SPAN':
+            T += [('int', f'{L}_δ')]
+            R = ctx[0] if ctx[0] != '' else 'ζ->'
             label = f'{L}_α:'
-            decl(C, f'int',       f'{L}_δ;')
-            code(C, label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
+            code(C, label,        f"for ({R}{L}_δ = 0; Σ[Δ+{R}{L}_δ]; {R}{L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(C, f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') continue;", f'')
+                code(C, f'',      f"    if (Σ[Δ+{R}{L}_δ] == '{c}') continue;")
             code(C, f'',          f'    break;', f'')
             code(C, f'',          f"{rcurly}", f'')
             if func == 'SPAN':
@@ -631,18 +632,19 @@ def eCall(ctx, func, arg):
             code(C, f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
             code(C, f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
         case 'BREAK':
+            T += [('int', f'{L}_δ')]
+            R = ctx[0] if ctx[0] != '' else 'ζ->'
             label = f'{L}_α:'
-            decl(C, f'int',       f'{L}_δ;')
-            code(C, label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {lcurly}", f'')
+            code(C, label,        f"for ({R}{L}_δ = 0; Σ[Δ+{R}{L}_δ]; {R}{L}_δ++) {lcurly}", f'')
             for c in chars:
-                code(C, f'',      f"    if (Σ[Δ+{L}_δ] == '{c}') break;", f'')
+                code(C, f'',      f"    if (Σ[Δ+{R}{L}_δ] == '{c}') break;")
             code(C, f'',          f"{rcurly}", f'')
             if func == 'SPAN':
-                code(C, f'',      f'if ({L}_δ <= 0)',                  f'goto {L}_ω;')
+                code(C, f'',      f'if ({R}{L}_δ <= 0)',                     f'goto {L}_ω;')
             if func == 'BREAK':
-                code(C, f'',      f'if (Δ+{L}_δ >= Ω)',                f'goto {L}_ω;')
-            code(C, f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;',  f'goto {L}_γ;')
-            code(C, f'{L}_β:',    f'Δ-={L}_δ;',                        f'goto {L}_ω;')
+                code(C, f'',      f'if (Δ+{R}{L}_δ >= Ω)',                   f'goto {L}_ω;')
+            code(C, f'',          f'{L} = str(Σ+Δ,{R}{L}_δ); Δ+={R}{L}_δ;',  f'goto {L}_γ;')
+            code(C, f'{L}_β:',    f'Δ-={R}{L}_δ;',                           f'goto {L}_ω;')
         case 'ARBNO': # Wrong, Fix ARBNO to handle epsilon first
             if len(ET) > 0:
                 T.append(('int', f'_{n}_i'))
