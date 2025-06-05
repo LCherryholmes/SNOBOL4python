@@ -76,6 +76,7 @@ typedef struct _V {
 } V_t;
 /*----------------------------------------------------------------------------*/
 typedef struct _I {
+    int SPAN5_δ;
 } I_t;
 /*----------------------------------------------------------------------------*/
 typedef struct _E {
@@ -142,17 +143,17 @@ str_t I(I_t * ζ, int entry) {
     /*------------------------------------------------------------------------*/
     str_t         SPAN5;
     int           SPAN5_δ;
-    SPAN5_α:      for (SPAN5_δ = 0; Σ[Δ+SPAN5_δ]; SPAN5_δ++) {
-                      if (Σ[Δ+SPAN5_δ] == '0') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '1') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '2') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '3') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '4') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '5') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '6') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '7') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '8') continue;    
-                      if (Σ[Δ+SPAN5_δ] == '9') continue;    
+    SPAN5_α:      for (ζ->SPAN5_δ = 0; Σ[Δ+ζ->SPAN5_δ]; ζ->SPAN5_δ++) {
+                      if (Σ[Δ+ζ->SPAN5_δ] == '0') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '1') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '2') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '3') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '4') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '5') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '6') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '7') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '8') continue;
+                      if (Σ[Δ+ζ->SPAN5_δ] == '9') continue;
                       break;                                
                   }                                         
                   if (SPAN5_δ <= 0)                         goto SPAN5_ω;
