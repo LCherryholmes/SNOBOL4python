@@ -470,14 +470,6 @@ def program_head(C):
     verb(C, '    output_t * out = &output;')
     verb(C, '    for (int i = 0; i < num_chars; i++)')
     verb(C, '        buffer[i] = 0;')
-    verb(C, '    /*------------------------------------------------------------------------*/')
-    verb(C, '    inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
-    verb(C, '    inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
-    verb(C, '    inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
-    verb(C, '    /*------------------------------------------------------------------------*/')
-    verb(C, '    int Δ = 0;')
-    verb(C, '    int Ω = 0;')
-    verb(C, '    const char * Σ = (const char *) 0;')
     verb(C, "    /*------------------------------------------------------------------------*/")
 #-----------------------------------------------------------------------------------------------------------------------
 def program_tail(C):
@@ -529,6 +521,7 @@ def eStmt(ctx, subject, pattern, equals, predicate):
                 for temp in temps:
                         decl(C, temp[0], f'{temp[1]};')
                 verb(C, f'{rcurly} _{sid}_t;')
+                verb(C, "/*----------------------------------------------------------------------------*/")
         verb(C, f'typedef struct _{L} {lcurly}')
         for temp in T:
             decl(C, temp[0], f'{temp[1]};')
