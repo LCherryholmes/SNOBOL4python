@@ -547,7 +547,7 @@ def eCall(func, arg):
             code(f'{L}_α:',    f'if (Δ+{length} > Ω)', f'goto {L}_ω;')
             code(f'',          f'{L} = str(Σ+Δ,{length}); Δ+={length};', f'goto {L}_γ;')
             code(f'{L}_β:',    f'Δ-={length};', f'goto {L}_ω;')
-        case 'ANY'|'NOTANY':
+        case 'ANY':
             label = f'{L}_α:'
             for c in chars:
                 code(label,    f"if (Σ[Δ] {op} '{c}')", f'goto {L}_αγ;')
@@ -555,7 +555,29 @@ def eCall(func, arg):
             code(f'',          f'', f'goto {L}_ω;')
             code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;', f'goto {L}_γ;')
             code(f'{L}_β:',    f'Δ-=1;', f'goto {L}_ω;')
-        case 'SPAN'|'BREAK':
+        case 'NOTANY': # Wrong, needs fixing!!!
+            label = f'{L}_α:'
+            for c in chars:
+                code(label,    f"if (Σ[Δ] {op} '{c}')", f'goto {L}_αγ;')
+                label = ''
+            code(f'',          f'', f'goto {L}_ω;')
+            code(f'{L}_αγ:',   f'{L} = str(Σ+Δ,1); Δ+=1;', f'goto {L}_γ;')
+            code(f'{L}_β:',    f'Δ-=1;', f'goto {L}_ω;')
+        case 'SPAN':
+            label = f'{L}_α:'
+            decl(f'int',       f'{L}_δ;')
+            code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {left_curly}", f'')
+            for c in chars:
+                code(f'',      f"    if (Σ[Δ+{L}_δ] {op} '{c}') continue;", f'')
+            code(f'',          f'    break;', f'')
+            code(f'',          f"{right_curly}", f'')
+            if func == 'SPAN':
+                code(f'',      f'if ({L}_δ <= 0)', f'goto {L}_ω;')
+            if func == 'BREAK':
+                code(f'',      f'if (Δ+{L}_δ >= Ω)', f'goto {L}_ω;')
+            code(f'',          f'{L} = str(Σ+Δ,{L}_δ); Δ+={L}_δ;', f'goto {L}_γ;')
+            code(f'{L}_β:',    f'Δ-={L}_δ;', f'goto {L}_ω;')
+        case 'BREAK': # Wrong, needs fixing!!!
             label = f'{L}_α:'
             decl(f'int',       f'{L}_δ;')
             code(label,        f"for ({L}_δ = 0; Σ[Δ+{L}_δ]; {L}_δ++) {left_curly}", f'')
