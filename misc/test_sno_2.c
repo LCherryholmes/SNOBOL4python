@@ -1,6 +1,7 @@
 #ifdef __GNUC__
 #define __kernel
 #define __global
+#define NULL (void *) 0
 extern int printf(char *, ...);
 extern void assert(int a);
 #endif
@@ -70,10 +71,9 @@ static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }
 static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
 static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
 static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
-static inline str_t call(int entry, const char * name) { return empty; }
 static output_t * out = (output_t *) 0;
 /*============================================================================*/
-str_t delim(int entry) {
+str_t delim(void * ζ, int entry) {
     if (entry == α) goto delim_α;
     if (entry == β) goto delim_β;
     /*------------------------------------------------------------------------*/
@@ -93,7 +93,7 @@ str_t delim(int entry) {
     SPAN3_ω:      return empty;
 }
 /*============================================================================*/
-str_t word(int entry) {
+str_t word(void * ζ, int entry) {
     if (entry == α) goto word_α;
     if (entry == β) goto word_β;
     /*------------------------------------------------------------------------*/
@@ -138,9 +138,14 @@ str_t word(int entry) {
     immed8_ω:     return empty;
 }
 /*============================================================================*/
-str_t group(int entry) {
+typedef struct _13 { str_t ARBNO; int alt14_i; } _13_t;
+/*----------------------------------------------------------------------------*/
+typedef struct _group { int _13_i; _13_t _13_a[128]; } group_t;
+/*----------------------------------------------------------------------------*/
+str_t group(group_t * ζ, int entry) {
     if (entry == α) goto group_α;
     if (entry == β) goto group_β;
+    _13_t * ψ13 = 0;
     /*------------------------------------------------------------------------*/
     str_t         s11;
     s11_α:        if (Σ[Δ+0] != '(')                        goto s11_ω;
@@ -148,20 +153,20 @@ str_t group(int entry) {
     s11_β:        Δ-=1;                                     goto s11_ω;
     /*------------------------------------------------------------------------*/
     str_t         word12;
-    word12_α:     word12 = word(α);                         goto word12_λ;
-    word12_β:     word12 = word(β);                         goto word12_λ;
+    word12_α:     word12 = word(0, α);                      goto word12_λ;
+    word12_β:     word12 = word(0, β);                      goto word12_λ;
     word12_λ:     if (is_empty(word12))                     goto word12_ω;
                   else                                      goto word12_γ;
     /*------------------------------------------------------------------------*/
     str_t         delim16;
-    delim16_α:    delim16 = delim(α);                       goto delim16_λ;
-    delim16_β:    delim16 = delim(β);                       goto delim16_λ;
+    delim16_α:    delim16 = delim(0, α);                    goto delim16_λ;
+    delim16_β:    delim16 = delim(0, β);                    goto delim16_λ;
     delim16_λ:    if (is_empty(delim16))                    goto delim16_ω;
                   else                                      goto delim16_γ;
     /*------------------------------------------------------------------------*/
     str_t         defer17;
-    defer17_α:    defer17 = call(α, "group");               goto defer17_λ;
-    defer17_β:    defer17 = call(β, "group");               goto defer17_λ;
+    defer17_α:    defer17 = group((group_t *) 0, α);        goto defer17_λ;
+    defer17_β:    defer17 = group((group_t *) 0, β);        goto defer17_λ;
     defer17_λ:    if (is_empty(defer17))                    goto defer17_ω;
                   else                                      goto defer17_γ;
     /*------------------------------------------------------------------------*/
@@ -174,31 +179,29 @@ str_t group(int entry) {
     defer17_ω:                                              goto delim16_β;
     /*------------------------------------------------------------------------*/
     str_t         word18;
-    word18_α:     word18 = word(α);                         goto word18_λ;
-    word18_β:     word18 = word(β);                         goto word18_λ;
+    word18_α:     word18 = word(0, α);                      goto word18_λ;
+    word18_β:     word18 = word(0, β);                      goto word18_λ;
     word18_λ:     if (is_empty(word18))                     goto word18_ω;
                   else                                      goto word18_γ;
     /*------------------------------------------------------------------------*/
-    int           alt14_i;
     str_t         alt14;
-    alt14_α:      alt14_i = 1;                              goto seq15_α;
-    alt14_β:      if (alt14_i == 1)                         goto seq15_β;
-                  if (alt14_i == 2)                         goto word18_β;
+    alt14_α:      ψ13->alt14_i = 1;                         goto seq15_α;
+    alt14_β:      if (ψ13->alt14_i == 1)                    goto seq15_β;
+                  if (ψ13->alt14_i == 2)                    goto word18_β;
                                                             goto alt14_ω;
     seq15_γ:      alt14 = seq15;                            goto alt14_γ;
-    seq15_ω:      alt14_i++;                                goto word18_α;
+    seq15_ω:      ψ13->alt14_i++;                           goto word18_α;
     word18_γ:     alt14 = word18;                           goto alt14_γ;
     word18_ω:                                               goto alt14_ω;
     /*------------------------------------------------------------------------*/
     str_t         ARBNO13;
-    int           ARBNO13_i;
-    ARBNO13_α:    ζ = &z[ARBNO13_i=0];
-                  ζ->ARBNO13 = str(Σ+Δ, 0);                 goto alt14_α;
-    ARBNO13_β:    ζ = &z[++ARBNO13_i];
-                  ζ->ARBNO13 = ARBNO13;                     goto alt14_α;
-    alt14_γ:      ARBNO13 = cat(ζ->ARBNO13, ζ->alt14);      goto ARBNO13_γ;
-    alt14_ω:      if (ARBNO13_i <= 0)                       goto ARBNO13_ω;
-                  ARBNO13_i--; ζ = &z[ARBNO13_i];           goto alt14_β;
+    ARBNO13_α:    ψ13 = &ζ->_13_a[ζ->_13_i=0];
+                  ψ13->ARBNO = str(Σ+Δ, 0);                 goto alt14_α;
+    ARBNO13_β:    ψ13 = &ζ->_13_a[++ζ->_13_i];
+                  ψ13->ARBNO = ARBNO13;                     goto alt14_α;
+    alt14_γ:      ARBNO13 = cat(ψ13->ARBNO, alt14);         goto ARBNO13_γ;
+    alt14_ω:      if (--ζ->_13_i < 0)                       goto ARBNO13_ω;
+                  ψ13 = &ζ->_13_a[ζ->_13_i];                goto alt14_β;
     /*------------------------------------------------------------------------*/
     str_t         s19;
     s19_α:        if (Σ[Δ+0] != ')')                        goto s19_ω;
@@ -223,9 +226,14 @@ str_t group(int entry) {
     seq10_ω:      return empty;
 }
 /*============================================================================*/
-str_t treebank(int entry) {
+typedef struct _23 { str_t ARBNO; int _25_i; str_t _25_s; } _23_t;
+/*----------------------------------------------------------------------------*/
+typedef struct _treebank { int _23_i; _23_t _23_a[128]; } treebank_t;
+/*----------------------------------------------------------------------------*/
+str_t treebank(treebank_t * ζ, int entry) {
     if (entry == α) goto treebank_α;
     if (entry == β) goto treebank_β;
+    _23_t * ψ23 = 0;
     /*------------------------------------------------------------------------*/
     str_t         POS22;
     POS22_α:      if (Δ != 0)                               goto POS22_ω;
@@ -233,24 +241,24 @@ str_t treebank(int entry) {
     POS22_β:                                                goto POS22_ω;
     /*------------------------------------------------------------------------*/
     str_t         group26;
-    group26_α:    group26 = group(α);                       goto group26_λ;
-    group26_β:    group26 = group(β);                       goto group26_λ;
+    group26_α:    group26 = group(0, α);                    goto group26_λ;
+    group26_β:    group26 = group(0, β);                    goto group26_λ;
     group26_λ:    if (is_empty(group26))                    goto group26_ω;
                   else                                      goto group26_γ;
     /*------------------------------------------------------------------------*/
     str_t         ARBNO25;
-    int           ARBNO25_i;
-    ARBNO25_α:    ζ = &z[ARBNO25_i=0];
-                  ζ->ARBNO25 = str(Σ+Δ, 0);                 goto group26_α;
-    ARBNO25_β:    ζ = &z[++ARBNO25_i];
-                  ζ->ARBNO25 = ARBNO25;                     goto group26_α;
-    group26_γ:    ARBNO25 = cat(ζ->ARBNO25, ζ->group26);    goto ARBNO25_γ;
-    group26_ω:    if (ARBNO25_i <= 0)                       goto ARBNO25_ω;
-                  ARBNO25_i--; ζ = &z[ARBNO25_i];           goto group26_β;
+    ARBNO25_α:    ψ23->_25_i = 0;
+                  ψ23->_25_s = str(Σ+Δ, 0);                 goto group26_α;
+    ARBNO25_β:    ψ23->_25_i++;
+                  ψ23->_25_s = ARBNO25;                     goto group26_α;
+    group26_γ:    ARBNO25 = cat(ψ23->_25_s, group26);       goto ARBNO25_γ;
+    group26_ω:    ψ23->_25_i--;
+                  if (ψ23->_25_i < 0)                       goto ARBNO25_ω;
+                  else                                      goto group26_β;
     /*------------------------------------------------------------------------*/
     str_t         delim27;
-    delim27_α:    delim27 = delim(α);                       goto delim27_λ;
-    delim27_β:    delim27 = delim(β);                       goto delim27_λ;
+    delim27_α:    delim27 = delim(0, α);                    goto delim27_λ;
+    delim27_β:    delim27 = delim(0, β);                    goto delim27_λ;
     delim27_λ:    if (is_empty(delim27))                    goto delim27_ω;
                   else                                      goto delim27_γ;
     /*------------------------------------------------------------------------*/
@@ -263,14 +271,13 @@ str_t treebank(int entry) {
     delim27_ω:                                              goto ARBNO25_β;
     /*------------------------------------------------------------------------*/
     str_t         ARBNO23;
-    int           ARBNO23_i;
-    ARBNO23_α:    ζ = &z[ARBNO23_i=0];
-                  ζ->ARBNO23 = str(Σ+Δ, 0);                 goto seq24_α;
-    ARBNO23_β:    ζ = &z[++ARBNO23_i];
-                  ζ->ARBNO23 = ARBNO23;                     goto seq24_α;
-    seq24_γ:      ARBNO23 = cat(ζ->ARBNO23, ζ->seq24);      goto ARBNO23_γ;
-    seq24_ω:      if (ARBNO23_i <= 0)                       goto ARBNO23_ω;
-                  ARBNO23_i--; ζ = &z[ARBNO23_i];           goto seq24_β;
+    ARBNO23_α:    ψ23 = &ζ->_23_a[ζ->_23_i=0];
+                  ψ23->ARBNO = str(Σ+Δ, 0);                 goto seq24_α;
+    ARBNO23_β:    ψ23 = &ζ->_23_a[++ζ->_23_i];
+                  ψ23->ARBNO = ARBNO23;                     goto seq24_α;
+    seq24_γ:      ARBNO23 = cat(ψ23->ARBNO, seq24);         goto ARBNO23_γ;
+    seq24_ω:      if (--ζ->_23_i < 0)                       goto ARBNO23_ω;
+                  ψ23 = &ζ->_23_a[ζ->_23_i];                goto seq24_β;
     /*------------------------------------------------------------------------*/
     str_t         RPOS28;
     RPOS28_α:     if (Δ != Ω-0)                             goto RPOS28_ω;
@@ -311,8 +318,8 @@ __kernel void snobol(
     subj30_β:                                               goto subj30_ω;
     /*------------------------------------------------------------------------*/
     str_t         treebank31;
-    treebank31_α: treebank31 = treebank(α);                 goto treebank31_λ;
-    treebank31_β: treebank31 = treebank(β);                 goto treebank31_λ;
+    treebank31_α: treebank31 = treebank(0, α);              goto treebank31_λ;
+    treebank31_β: treebank31 = treebank(0, β);              goto treebank31_λ;
     treebank31_λ: if (is_empty(treebank31))                 goto treebank31_ω;
                   else                                      goto treebank31_γ;
     /*------------------------------------------------------------------------*/
