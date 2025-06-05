@@ -212,7 +212,7 @@ str_t group(group_t * ζ, int entry) {
     /*------------------------------------------------------------------------*/
     str_t         ARBNO13;
     ARBNO13_α:    ψ13 = &ζ->_13_a[ζ->_13_i=0];
-                  ψ13->ARBNO = str(Σ+Δ, 0);                 goto alt14_α;
+                  ψ13->ARBNO = str(Σ+Δ, 0);                 goto alt14_γ;
     ARBNO13_β:    ψ13 = &ζ->_13_a[++ζ->_13_i];
                   ψ13->ARBNO = ARBNO13;                     goto alt14_α;
     alt14_γ:      ARBNO13 = cat(ψ13->ARBNO, alt14);         goto ARBNO13_γ;
@@ -273,7 +273,7 @@ str_t treebank(treebank_t * ζ, int entry) {
     /*------------------------------------------------------------------------*/
     str_t         ARBNO25;
     ARBNO25_α:    ψ23->_25_i = 0;
-                  ψ23->_25_s = str(Σ+Δ, 0);                 goto group26_α;
+                  ψ23->_25_s = str(Σ+Δ, 0);                 goto group26_γ;
     ARBNO25_β:    ψ23->_25_i++;
                   ψ23->_25_s = ARBNO25;                     goto group26_α;
     group26_γ:    ARBNO25 = cat(ψ23->_25_s, group26);       goto ARBNO25_γ;
@@ -297,7 +297,7 @@ str_t treebank(treebank_t * ζ, int entry) {
     /*------------------------------------------------------------------------*/
     str_t         ARBNO23;
     ARBNO23_α:    ψ23 = &ζ->_23_a[ζ->_23_i=0];
-                  ψ23->ARBNO = str(Σ+Δ, 0);                 goto seq24_α;
+                  ψ23->ARBNO = str(Σ+Δ, 0);                 goto seq24_γ;
     ARBNO23_β:    ψ23 = &ζ->_23_a[++ζ->_23_i];
                   ψ23->ARBNO = ARBNO23;                     goto seq24_α;
     seq24_γ:      ARBNO23 = cat(ψ23->ARBNO, seq24);         goto ARBNO23_γ;
