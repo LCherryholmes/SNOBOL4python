@@ -375,11 +375,11 @@ rcurly = '}'
 #------------------------------------------------------------------------------
 def verb(C, line=''): C.append(line) # verbatim
 def decl(C, type, var): # declare
-    C.append("    %-14s%s" % (type, var))
+    C.append("    %-16s%s" % (type, var))
 def code(C, label=None, body=None, goto=None):
     if goto is None:
-        C.append("    %-14s%s" % (label, body))
-    else: C.append("    %-14s%-42s%s" % (label, body, goto))
+        C.append("    %-16s%s" % (label, body))
+    else: C.append("    %-16s%-50s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
 def module_head(C):
     verb(C, '#ifdef __GNUC__')
@@ -896,6 +896,19 @@ snobol4_source = """\
 +     )
   C = POS(0) X RPOS(0)
   "x+y*z" C
+"""
+snobol4_source = """\
+  Quantifier = "*" | "+" | "?"
+  Item       = ( "."
++              | ("//" ANY(".//(|*+?)"))
++              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
++              | ("(" *Expression ")")
++              )
+  Factor     = Item (Quantifier | epsilon)
+  Term       = ARBNO(Factor)
+  Expression = Term ARBNO("|" Term)
+  RegEx      = POS(0) Expression RPOS(0)
+  "x|yz"     RegEx
 """
 if snobol4_source in Parse:
     counter = 0
