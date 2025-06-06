@@ -87,6 +87,7 @@ typedef struct _I I_t;
 typedef struct _E E_t;
 typedef struct _X X_t;
 typedef struct _C C_t;
+typedef struct _match44 match44_t;
 /*----------------------------------------------------------------------------*/
 typedef struct _V {
 } V_t;
@@ -121,11 +122,16 @@ typedef struct _C {
     X_t * X42_ζ;
 } C_t;
 /*----------------------------------------------------------------------------*/
+typedef struct _match44 {
+    C_t * C46_ζ;
+} match44_t;
+/*----------------------------------------------------------------------------*/
 str_t V(V_t **, int);
 str_t I(I_t **, int);
 str_t E(E_t **, int);
 str_t X(X_t **, int);
 str_t C(C_t **, int);
+str_t match44(match44_t **, int);
 /*============================================================================*/
 str_t V(V_t ** ζζ, int entry) {
     V_t * ζ = *ζζ;
@@ -485,19 +491,11 @@ str_t C(C_t ** ζζ, int entry) {
     seq40_ω:      return empty;
 }
 /*============================================================================*/
-__kernel void snobol(
-    __global const char * in,
-    __global       char * buffer,
-             const int    num_chars) {
+str_t match44(match44_t ** ζζ, int entry) {
+    match44_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(match44_t));goto match44_α; }
+    if (entry == β){                                         goto match44_β; }
     /*------------------------------------------------------------------------*/
-    const char cszFailure[9] = "Failure.";
-    const char cszSuccess[10] = "Success: ";
-    output_t output = {0, buffer};
-    output_t * out = &output;
-    for (int i = 0; i < num_chars; i++)
-        buffer[i] = 0;
-    /*------------------------------------------------------------------------*/
-                                                            goto main1_α;
     str_t         subj45;
     subj45_α:     Δ = 0; Σ = "x+y*z";                       
                   Ω = len(Σ); subj45 = str(Σ,Ω);            goto subj45_γ;
@@ -511,17 +509,38 @@ __kernel void snobol(
     /*------------------------------------------------------------------------*/
     str_t         match44;
     match44_α:                                              goto subj45_α;
-    match44_β:                                              goto match44_ω;
+    match44_β:                                              goto C46_β;
     subj45_γ:                                               goto C46_α;
-    subj45_ω:                                               goto match44_ω;
-    C46_γ:        match44 = C46;                            goto match44_γ;
-    C46_ω:                                                  goto match44_ω;
-    main1_α:                                                goto match44_α;
-    main1_β:                                                return;
-    match44_γ:    write_sz(out, cszSuccess);                
-                  write_str(out, match44);                  
+    subj45_ω:     return empty;
+    C46_γ:        return C46;
+    C46_ω:        return empty;
+}
+/*============================================================================*/
+__kernel void snobol(
+    __global const char * in,
+    __global       char * buffer,
+             const int    num_chars) {
+    /*------------------------------------------------------------------------*/
+    const char cszFailure[9] = "Failure.";
+    const char cszSuccess[10] = "Success: ";
+    output_t output = {0, buffer};
+    output_t * out = &output;
+    for (int i = 0; i < num_chars; i++)
+        buffer[i] = 0;
+    /*------------------------------------------------------------------------*/
+    str_t         main1;
+    match44_t     match44_ζ;
+    match44_t *   match44_ζζ;
+                  match44_ζζ = &match44_ζ;
+                  main1 = match44(&match44_ζζ, α);          goto match44_λ;
+    match44_β:    main1 = match44(&match44_ζζ, β);          goto match44_λ;
+    match44_λ:    if (is_empty(main1))                      goto match44_ω;
+                  else                                      goto match44_γ;
+/*----------------------------------------------------------------------------*/
+    match44_γ:    write_sz(out, cszSuccess);
+                  write_str(out, main1);
                   write_nl(out);                            goto match44_β;
-    match44_ω:    write_sz(out, cszFailure);                
+    match44_ω:    write_sz(out, cszFailure);
                   write_nl(out);                            return;
 }
 
