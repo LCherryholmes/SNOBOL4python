@@ -128,9 +128,9 @@ str_t X(X_t **, int);
 str_t C(C_t **, int);
 /*============================================================================*/
 str_t V(V_t ** ζζ, int entry) {
-	V_t * ζ = *ζζ;
-    if (entry == α) { ζ = enter((void **) ζζ, sizeof(V_t)); goto V_α; }
-    if (entry == β) { 										goto V_β; }
+    V_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(V_t));   goto V_α; }
+    if (entry == β){                                         goto V_β; }
     /*------------------------------------------------------------------------*/
     str_t         ANY3;
     ANY3_α:       if (Σ[Δ] == 'a')                          goto ANY3_αγ;
@@ -170,9 +170,9 @@ str_t V(V_t ** ζζ, int entry) {
 }
 /*============================================================================*/
 str_t I(I_t ** ζζ, int entry) {
-	I_t * ζ = *ζζ;
-    if (entry == α) { ζ = enter((void **) ζζ, sizeof(I_t)); goto I_α; }
-    if (entry == β) { 										goto I_β; }
+    I_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(I_t));   goto I_α; }
+    if (entry == β){                                         goto I_β; }
     /*------------------------------------------------------------------------*/
     str_t         SPAN5;
     SPAN5_α:      for (ζ->SPAN5_δ = 0; Σ[Δ+ζ->SPAN5_δ]; ζ->SPAN5_δ++) {
@@ -186,10 +186,10 @@ str_t I(I_t ** ζζ, int entry) {
                       if (Σ[Δ+ζ->SPAN5_δ] == '7') continue;
                       if (Σ[Δ+ζ->SPAN5_δ] == '8') continue;
                       if (Σ[Δ+ζ->SPAN5_δ] == '9') continue;
-                      break;
-                  }
+                      break;                                
+                  }                                         
                   if (ζ->SPAN5_δ <= 0)                      goto SPAN5_ω;
-                  SPAN5 = str(Σ+Δ,ζ->SPAN5_δ); Δ+=ζ->SPAN5_δ; goto SPAN5_γ;
+                  SPAN5 = str(Σ+Δ,ζ->SPAN5_δ); Δ+=ζ->SPAN5_δ;goto SPAN5_γ;
     SPAN5_β:      Δ-=ζ->SPAN5_δ;                            goto SPAN5_ω;
     /*------------------------------------------------------------------------*/
     I_α:                                                    goto SPAN5_α;
@@ -199,9 +199,9 @@ str_t I(I_t ** ζζ, int entry) {
 }
 /*============================================================================*/
 str_t E(E_t ** ζζ, int entry) {
-	E_t * ζ = *ζζ;
-    if (entry == α) { ζ = enter((void **) ζζ, sizeof(E_t)); goto E_α; }
-    if (entry == β) { 										goto E_β; }
+    E_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(E_t));   goto E_α; }
+    if (entry == β){                                         goto E_β; }
     /*------------------------------------------------------------------------*/
     str_t         V8;
     V8_α:         V8 = V(&ζ->V8_ζ, α);                      goto V8_λ;
@@ -261,9 +261,9 @@ str_t E(E_t ** ζζ, int entry) {
 }
 /*============================================================================*/
 str_t X(X_t ** ζζ, int entry) {
-	X_t * ζ = *ζζ;
-    if (entry == α) { ζ = enter((void **) ζζ, sizeof(X_t)); goto X_α; }
-    if (entry == β) { 										goto X_β; }
+    X_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(X_t));   goto X_α; }
+    if (entry == β){                                         goto X_β; }
     /*------------------------------------------------------------------------*/
     str_t         E17;
     E17_α:        E17 = E(&ζ->E17_ζ, α);                    goto E17_λ;
@@ -449,9 +449,9 @@ str_t X(X_t ** ζζ, int entry) {
 }
 /*============================================================================*/
 str_t C(C_t ** ζζ, int entry) {
-	C_t * ζ = *ζζ;
-    if (entry == α) { ζ = enter((void **) ζζ, sizeof(C_t)); goto C_α; }
-    if (entry == β) { 										goto C_β; }
+    C_t * ζ = *ζζ;
+    if (entry == α){ ζ = enter((void **) ζζ, sizeof(C_t));   goto C_α; }
+    if (entry == β){                                         goto C_β; }
     /*------------------------------------------------------------------------*/
     str_t         POS41;
     POS41_α:      if (Δ != 0)                               goto POS41_ω;
@@ -499,16 +499,13 @@ __kernel void snobol(
     /*------------------------------------------------------------------------*/
                                                             goto main1_α;
     str_t         subj45;
-    subj45_α:     Δ = 0; Σ = "x+y*z";
+    subj45_α:     Δ = 0; Σ = "x+y*z";                       
                   Ω = len(Σ); subj45 = str(Σ,Ω);            goto subj45_γ;
     subj45_β:                                               goto subj45_ω;
     /*------------------------------------------------------------------------*/
     str_t         C46;
-    C_t           C46_ζ;
-    C_t *         C46_ζζ;
-    C46_α:        C46_ζζ = &C46_ζ;
-                  C46 = C(&C46_ζζ, α);                      goto C46_λ;
-    C46_β:        C46 = C(&C46_ζζ, β);                      goto C46_λ;
+    C46_α:        C46 = C(&ζ->C46_ζ, α);                    goto C46_λ;
+    C46_β:        C46 = C(&ζ->C46_ζ, β);                    goto C46_λ;
     C46_λ:        if (is_empty(C46))                        goto C46_ω;
                   else                                      goto C46_γ;
     /*------------------------------------------------------------------------*/
@@ -521,10 +518,10 @@ __kernel void snobol(
     C46_ω:                                                  goto match44_ω;
     main1_α:                                                goto match44_α;
     main1_β:                                                return;
-    match44_γ:    write_sz(out, cszSuccess);
-                  write_str(out, match44);
+    match44_γ:    write_sz(out, cszSuccess);                
+                  write_str(out, match44);                  
                   write_nl(out);                            goto match44_β;
-    match44_ω:    write_sz(out, cszFailure);
+    match44_ω:    write_sz(out, cszFailure);                
                   write_nl(out);                            return;
 }
 
