@@ -375,11 +375,11 @@ rcurly = '}'
 #------------------------------------------------------------------------------
 def verb(C, line=''): C.append(line) # verbatim
 def decl(C, type, var): # declare
-    C.append("    %-14s%s" % (type, var))
+    C.append("    %-20s%s" % (type, var))
 def code(C, label=None, body=None, goto=None):
     if goto is None:
-        C.append("    %-14s%s" % (label, body))
-    else: C.append("    %-14s%-42s%s" % (label, body, goto))
+        C.append("    %-20s%s" % (label, body))
+    else: C.append("    %-20s%-46s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
 def module_head(C):
     verb(C, '#ifdef __GNUC__')
@@ -391,10 +391,10 @@ def module_head(C):
     verb(C, 'extern int printf(const char *, ...);')
     verb(C, 'extern void assert(int a);')
     verb(C, '#endif')
-    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, '/*------------------------------------------------------------------------------------------------*/')
     verb(C, 'typedef struct { const char * σ; int δ; } str_t;')
     verb(C, 'typedef struct { unsigned int pos; __global char * buffer; } output_t;')
-    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, '/*------------------------------------------------------------------------------------------------*/')
     verb(C, '#if 0')
     verb(C, 'void write_nl(output_t * out) {}')
     verb(C, 'int  write_int(output_t * out, int v) {}')
@@ -445,7 +445,7 @@ def module_head(C):
     verb(C, '    }')
     verb(C, '#endif')
     verb(C, '#endif')
-    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, '/*------------------------------------------------------------------------------------------------*/')
     verb(C, 'static int Δ = 0;')
     verb(C, 'static int Ω = 0;')
     verb(C, 'static const char * Σ = (const char *) 0;')
@@ -456,8 +456,10 @@ def module_head(C):
     verb(C, 'static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
     verb(C, 'static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
     verb(C, 'static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
+    verb(C, 'static inline void Shift(const char * t, str_t v) { /**/ }')
     verb(C, 'static output_t * out = (output_t *) 0;')
-    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, '/*------------------------------------------------------------------------------------------------*/')
+    verb(C, '#define ENTER(ref, size) enter((void **) (ref), (size))')
     verb(C, 'static inline void * enter(void ** ζζ, size_t size) {')
     verb(C, '    void * ζ = *ζζ;')
     verb(C, '    if (size)')
@@ -467,20 +469,20 @@ def module_head(C):
     verb(C, '}')
 #-----------------------------------------------------------------------------------------------------------------------
 def program_head(C):
-    verb(C, '/*============================================================================*/')
+    verb(C, '/*================================================================================================*/')
 
     verb(C, '__kernel void snobol(')
     verb(C, '    __global const char * in,')
     verb(C, '    __global       char * buffer,')
     verb(C, '             const int    num_chars) {')
-    verb(C, '    /*------------------------------------------------------------------------*/')
+    verb(C, '    /*--------------------------------------------------------------------------------------------*/')
     verb(C, '    const char cszFailure[9] = "Failure.";')
     verb(C, '    const char cszSuccess[10] = "Success: ";')
     verb(C, '    output_t output = {0, buffer};')
     verb(C, '    output_t * out = &output;')
     verb(C, '    for (int i = 0; i < num_chars; i++)')
     verb(C, '        buffer[i] = 0;')
-    verb(C, "    /*------------------------------------------------------------------------*/")
+    verb(C, "    /*--------------------------------------------------------------------------------------------*/")
 #-----------------------------------------------------------------------------------------------------------------------
 def program_tail(C):
     verb(C, '}')
@@ -505,24 +507,24 @@ def eParse(ctx, t):
     for sid in ctx[1]:
         temps = ctx[1][sid]
         if len(temps) > 0:
-            verb(C, "/*----------------------------------------------------------------------------*/")
+            verb(C, "/*------------------------------------------------------------------------------------------------*/")
             verb(C, f'typedef struct _{sid} {lcurly}')
             for temp in temps:
                     verb(C, f'    {temp[0]} {temp[1]};')
             verb(C, f'{rcurly} _{sid}_t;')
-    verb(C, "/*----------------------------------------------------------------------------*/")
+    verb(C, "/*------------------------------------------------------------------------------------------------*/")
     for LTC in Es:
         EL = LTC[0]
         verb(C, f'typedef struct _{EL} {EL}_t;')
     for LTC in Es:
         EL = LTC[0]
         ET = LTC[1]
-        verb(C, "/*----------------------------------------------------------------------------*/")
+        verb(C, "/*------------------------------------------------------------------------------------------------*/")
         verb(C, f'typedef struct _{EL} {lcurly}')
         for temp in ET:
             verb(C, f'    {temp[0]} {temp[1]};')
         verb(C, f'{rcurly} {EL}_t;')
-    verb(C, "/*----------------------------------------------------------------------------*/")
+    verb(C, "/*------------------------------------------------------------------------------------------------*/")
     for LTC in Es:
         EL = LTC[0]
         verb(C, f'str_t {EL}({EL}_t **, int);')
@@ -538,7 +540,7 @@ def eParse(ctx, t):
     code(C, f'{E}_β:',      f'{L} = {E}(&{E}_ζζ, β);',      f'goto {E}_λ;')
     code(C, f'{E}_λ:',      f'if (is_empty({L}))',          f'goto {E}_ω;')
     code(C, f'',            f'else',                        f'goto {E}_γ;')
-    verb(C, "/*----------------------------------------------------------------------------*/")
+    verb(C, "/*------------------------------------------------------------------------------------------------*/")
     code(C, f'{E}_γ:',      f'write_sz(out, cszSuccess);')
     code(C, f'',            f'write_str(out, {L});')
     code(C, f'',            f'write_nl(out);',              f'goto {E}_β;') # Retry experiment
@@ -553,12 +555,12 @@ def eStmt(ctx, subject, pattern, equals, predicate):
     if equals[0] == '=':
         L = f'{subject[1][1]}'
     else: L = f'match{counter}'
-    verb(C, f'/*============================================================================*/')
+    verb(C, f'/*================================================================================================*/')
     verb(C, f'str_t {L}({L}_t ** ζζ, int entry) {lcurly}')
     verb(C, f'    {L}_t * ζ = *ζζ;')
-    code(C, f'if (entry == α)', f'{lcurly} ζ = enter((void **) ζζ, sizeof({L}_t));', f'goto {L}_α; {rcurly}')
+    code(C, f'if (entry == α)', f'{lcurly} ζ = ENTER(ζζ, sizeof({L}_t));', f'goto {L}_α; {rcurly}')
     code(C, f'if (entry == β)', f'{lcurly}', f'goto {L}_β; {rcurly}')
-    verb(C, f'    /*------------------------------------------------------------------------*/')
+    verb(C, f'    /*--------------------------------------------------------------------------------------------*/')
     if equals[0] == '=':
         P, PT, PC = emit(ctx, predicate); T += PT
         C += PC
@@ -682,6 +684,7 @@ def eCall(ctx, func, arg):
                 code(C, f'{E}_γ:',     f'{L} = cat({ctx[0]}_{n}_s, {E});',   f'goto {L}_γ;')
                 code(C, f'{E}_ω:',     f'if (--{ctx[0]}_{n}_i < 0)',         f'goto {L}_ω;')
                 code(C, f'',           f'else',                              f'goto {E}_β;')
+        case _: raise Exception(f"eCall: {func}")
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eInteger(ctx, i):
@@ -748,6 +751,65 @@ def eImmediate_assign(ctx, pattern, V):
         code(C, f'',          f'write_nl(out);', f'goto {L}_γ;')
         code(C, f'{E}_ω:',    f'', f'goto {L}_ω;')
     else: raise Exception("OUTPUT is the only variable.")
+    return (L, T, C)
+#-----------------------------------------------------------------------------------------------------------------------
+def eConditional_assign(ctx, pattern, V):
+    global counter
+    L = f'condition{counter}'
+    T = []
+    C = []
+    P, PT, PC = emit(ctx, pattern); T += PT; C += PC
+    if V[0] == '*':
+        func = None
+        if V[1][0] == 'Call':
+            if V[1][1][0] == 'Id':
+                if V[1][1][1] in ['Shift', 'Reduce', 'Pop', 'nPush', 'nTop', 'nPop']:
+                    func = V[1][1][1]
+                else: raise Exception(f'eConditional_assign: {V[1][1][1]}')
+            else: raise Exception(f'eConditional_assign: {V[1][1][0]}')
+            if V[1][2][0] == 'ExprList':
+                Xs = []
+                for x in V[1][2][1:]:
+                    if x[0] == 'String':
+                        counter += 1
+                        XL = f'csz{counter}'
+                        Xs.append(XL)
+                        decl(C, f'const char *', f'{XL};')
+                        code(C, f'{XL}_α:', f'{XL} = "{eval(x[1])}";',  f'goto {XL}_γ;')
+                    #   code(C, f'{XL}_β:', f'',                        f'goto {XL}_ω;')
+                        verb(C, "    /*--------------------------------------------------------------------------------------------*/")
+                    elif x[0] == 'Integer':
+                        counter += 1
+                        XL = f'i{counter}'
+                        Xs.append(XL)
+                        decl(C, f'int', f'{XL};')
+                        code(C, f'{XL}_α:', f'{XL} = {x[1]};',          f'goto {XL}_γ;')
+                    #   code(C, f'{XL}_β:', f'',                        f'goto {XL}_ω;')
+                        verb(C, "    /*--------------------------------------------------------------------------------------------*/")
+                    else:
+                        X, XT, XC = emit(ctx, x)
+                        Xs.append(X)
+                        C += XC
+                decl(C, f'str_t',                 f'{L};')
+                code(C, f'{L}_α:',                f'',                      f'goto {P}_α;')
+                code(C, f'{L}_β:',                f'',                      f'goto {P}_β;')
+                code(C, f'{P}_γ:',                f'',                      f'goto {Xs[0]}_α;')
+                code(C, f'{P}_ω:',                f'',                      f'goto {L}_ω;')
+                for i in range(len(Xs)):
+                    if i < len(Xs)-1:
+                        code(C, f'{Xs[i]}_γ:',    f'',                      f'goto {Xs[i+1]}_α;')
+                    else: code(C, f'{Xs[i]}_γ:',  f'{func}({Xs[i]}, {L});', f'goto {L}_γ;')
+                    if i == 0:
+                        code(C, f'{Xs[i]}_ω:',    f'',                      f'goto {L}_ω;')
+                    else: code(C, f'{Xs[i]}_ω:',  f'',                      f'goto {L}_ω;')
+            else: raise Exception(f'eConditional_assign: {V[1][2][0]}')
+        else: raise Exception(f'eConditional_assign: {V[1][0]}')
+    elif V[0] == 'Id':
+        decl(C, f'str_t',     f'{L};')
+        code(C, f'{L}_α:',    f'',                                      f'goto {P}_α;')
+        code(C, f'{L}_β:',    f'',                                      f'goto {P}_β;')
+        code(C, f'{P}_γ:',    f'printf("%d %d\\n", {P}.σ-Σ, {P}.δ);',   f'goto {L}_γ;')
+        code(C, f'{P}_ω:',    f'',                                      f'goto {L}_ω;')
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eUnop(ctx, op, E):
@@ -872,6 +934,7 @@ def emit(ctx, t):
         case 'Id':              L, T, C = eId(ctx, t[1])
         case 'BuiltinVar':      L, T, C = eBuiltinVar(ctx, t[1])
         case '$':               L, T, C = eImmediate_assign(ctx, t[1], t[2][1])
+        case '.':               L, T, C = eConditional_assign(ctx, t[1], t[2])
         case '+'|'-'|\
              '*'|'/':
              if len(t) == 2:    L, T, C = eUnop(ctx, t[0], t[1])
@@ -884,7 +947,7 @@ def emit(ctx, t):
         case '|':               L, T, C = eAlt(ctx, t[1:])
         case '()':              return emit(ctx, t[1])
         case _:                 raise Exception(f'emit: {pformat(t)}')
-    verb(C, "    /*------------------------------------------------------------------------*/")
+    verb(C, "    /*--------------------------------------------------------------------------------------------*/")
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def genc(C): return "\n".join(C)
@@ -906,19 +969,6 @@ snobol4_source = """\
 """
 #-----------------------------------------------------------------------------------------------------------------------
 snobol4_source = """\
-  Quantifier = "*" | "+" | "?"
-  Item       = ( "."
-+              | ("//" ANY(".//(|*+?)"))
-+              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-+              | ("(" *Expression ")")
-+              )
-  Factor     = Item (Quantifier | epsilon)
-  Term       = ARBNO(Factor)
-  Expression = Term ARBNO("|" Term)
-  RegEx      = POS(0) Expression RPOS(0)
-  "x|yz"     RegEx
-"""
-snobol4_source = """\
   V = ANY('abcdefghijklmnopqrstuvwxyz') $ OUTPUT
   I = SPAN('0123456789') $ OUTPUT
   E = (V | I | "(" *X ")") $ OUTPUT
@@ -932,6 +982,42 @@ snobol4_source = """\
 +     ) $ OUTPUT
   C = (POS(0) X RPOS(0)) $ OUTPUT
   "x+y*z" C
+"""
+snobol4_source = """\
+  Quantifier = "*" | "+" | "?"
+  Item       = ( "."
++              | ("//" ANY(".//(|*+?)"))
++              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
++              | ("(" *Expression ")")
++              )
+  Factor     = Item (Quantifier | epsilon)
+  Term       = ARBNO(Factor)
+  Expression = Term ARBNO("|" Term)
+  RegEx      = POS(0) Expression RPOS(0)
+  "x|yz"     RegEx
+"""
+snobol4_source = """\
+  re_Quantifier =   ( '*' . *Shift('*')
++                   | '+' . *Shift('+')
++                   | '?' . *Shift('?')
++                   )
+"""
+"""
+  re_Item       =   ( '.' . *Shift('.')
++                   | '//' ANY('.//(|*+?)') . tx . *Shift('σ', "tx")
++                   | ANY(&UCASE &LCASE "0123456789") . tx . *Shift('σ', "tx")
++                   | '(' *re_Expression ')'
++                   )
+  re_Factor     =   re_Item (re_Quantifier . *Reduce('ς', 2) | epsilon)
+  re_Term       =   epsilon . nPush()
++                   ARBNO(re_Factor . *nInc()) . *Reduce('Σ')
++                   epsilon . *nPop()
+  re_Expression =   epsilon . *nPush()
++                   re_Term . *nInc()
++                   ARBNO('|' re_Term . *nInc())
++                   epsilon . *Reduce('Π')
++                   epsilon . *nPop()
+re_RegEx        =   POS(0) re_Expression . *Pop('RE_tree') RPOS(0)
 """
 if snobol4_source in Parse:
     counter = 0
