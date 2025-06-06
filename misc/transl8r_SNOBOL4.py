@@ -375,17 +375,20 @@ rcurly = '}'
 #------------------------------------------------------------------------------
 def verb(C, line=''): C.append(line) # verbatim
 def decl(C, type, var): # declare
-    C.append("    %-16s%s" % (type, var))
+    C.append("    %-14s%s" % (type, var))
 def code(C, label=None, body=None, goto=None):
     if goto is None:
-        C.append("    %-16s%s" % (label, body))
-    else: C.append("    %-16s%-50s%s" % (label, body, goto))
+        C.append("    %-14s%s" % (label, body))
+    else: C.append("    %-14s%-42s%s" % (label, body, goto))
 #-----------------------------------------------------------------------------------------------------------------------
 def module_head(C):
     verb(C, '#ifdef __GNUC__')
     verb(C, '#define __kernel')
     verb(C, '#define __global')
-    verb(C, 'extern int printf(char *, ...);')
+    verb(C, '#include <malloc.h>')
+    verb(C, '#include <string.h>')
+    verb(C, '#include <stdbool.h>')
+    verb(C, 'extern int printf(const char *, ...);')
     verb(C, 'extern void assert(int a);')
     verb(C, '#endif')
     verb(C, '/*----------------------------------------------------------------------------*/')
@@ -399,7 +402,6 @@ def module_head(C):
     verb(C, 'void write_flush(output_t * out) {}')
     verb(C, '#else')
     verb(C, '#if 1')
-    verb(C, 'extern int printf(char *, ...);')
     verb(C, 'void    write_nl(output_t * out)                 { printf("%s", "\\n"); }')
     verb(C, 'int     write_int(output_t * out, int v)         { printf("%d", v); return v; }')
     verb(C, 'void    write_sz(output_t * out, const char * s) { printf("%s", s); }')
@@ -455,6 +457,14 @@ def module_head(C):
     verb(C, 'static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
     verb(C, 'static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
     verb(C, 'static output_t * out = (output_t *) 0;')
+    verb(C, '/*----------------------------------------------------------------------------*/')
+    verb(C, 'static inline void * enter(void ** ζζ, size_t size) {')
+    verb(C, '    void * ζ = *ζζ;')
+    verb(C, '    if (size)')
+    verb(C, '        if (ζ) memset(ζ, 0, size);')
+    verb(C, '        else ζ = *ζζ = calloc(1, size);')
+    verb(C, '    return ζ;')
+    verb(C, '}')
 #-----------------------------------------------------------------------------------------------------------------------
 def program_head(C):
     verb(C, '/*============================================================================*/')
@@ -500,6 +510,10 @@ def eParse(ctx, t):
             for temp in temps:
                     verb(C, f'    {temp[0]} {temp[1]};')
             verb(C, f'{rcurly} _{sid}_t;')
+    verb(C, "/*----------------------------------------------------------------------------*/")
+    for LTC in Es[:-1]:
+        EL = LTC[0]
+        verb(C, f'typedef struct _{EL} {EL}_t;')
     for LTC in Es[:-1]:
         EL = LTC[0]
         ET = LTC[1]
@@ -511,8 +525,9 @@ def eParse(ctx, t):
     verb(C, "/*----------------------------------------------------------------------------*/")
     for LTC in Es[:-1]:
         EL = LTC[0]
-        verb(C, f'str_t {EL}({EL}_t *, int);')
-    for LTC in Es[:-1]: C += LTC[2]
+        verb(C, f'str_t {EL}({EL}_t **, int);')
+    for LTC in Es[:-1]:
+        C += LTC[2]
     program_head(C)
     code(C, f'',              f'', f'goto {L}_α;')
     E = Es[-1][0]
@@ -534,9 +549,10 @@ def eStmt(ctx, subject, pattern, equals, predicate):
         L = f'{subject[1][1]}'
         P, PT, PC = emit(ctx, predicate); T += PT
         verb(C, f'/*============================================================================*/')
-        verb(C, f'str_t {L}({L}_t * ζ, int entry) {lcurly}')
-        verb(C, f'    if (entry == α) goto {L}_α;')
-        verb(C, f'    if (entry == β) goto {L}_β;')
+        verb(C, f'str_t {L}({L}_t ** ζζ, int entry) {lcurly}')
+        verb(C, f'    {L}_t * ζ = *ζζ;')
+        code(C, f'if (entry == α)', f'{lcurly} ζ = enter((void **) ζζ, sizeof({L}_t));', f'goto {L}_α; {rcurly}')
+        code(C, f'if (entry == β)', f'{lcurly}', f'goto {L}_β; {rcurly}')
         verb(C, f'    /*------------------------------------------------------------------------*/')
         C += PC
         code(C, f'{L}_α:',    f'', f'goto {P}_α;')
@@ -684,19 +700,20 @@ def eString(ctx, s):
 #-----------------------------------------------------------------------------------------------------------------------
 def eId(ctx, var):
     L = f'{var}{counter}'
+    T = [(f'{var}_t *', f'{L}_ζ')]
     C = []
+    deref = ctx[0] if ctx[0] != '' else 'ζ->'
     if (var in ["NULL", "null", "epsilon"]):
-        decl(C, f'str_t',      f'{L};')
-        code(C, f'{L}_α:',     f'{L} = str(Σ+Δ,0);',       f'goto {L}_γ;')
-        code(C, f'{L}_β:',     f'',                        f'goto {L}_ω;')
+        decl(C, f'str_t',       f'{L};')
+        code(C, f'{L}_α:',      f'{L} = str(Σ+Δ,0);',               f'goto {L}_γ;')
+        code(C, f'{L}_β:',      f'',                                f'goto {L}_ω;')
     else:
-        decl(C, f'str_t',      f'{L};')
-        decl(C, f'{var}_t',    f'{L}_ζ;')
-        code(C, f'{L}_α:',     f'{L} = {var}(&{L}_ζ, α);', f'goto {L}_λ;')
-        code(C, f'{L}_β:',     f'{L} = {var}(&{L}_ζ, β);', f'goto {L}_λ;')
-        code(C, f'{L}_λ:',     f'if (is_empty({L}))',      f'goto {L}_ω;')
-        code(C, f'',           f'else',                    f'goto {L}_γ;')
-    return (L, [], C)
+        decl(C, f'str_t',       f'{L};')
+        code(C, f'{L}_α:',      f'{L} = {var}(&{deref}{L}_ζ, α);',  f'goto {L}_λ;')
+        code(C, f'{L}_β:',      f'{L} = {var}(&{deref}{L}_ζ, β);',  f'goto {L}_λ;')
+        code(C, f'{L}_λ:',      f'if (is_empty({L}))',              f'goto {L}_ω;')
+        code(C, f'',            f'else',                            f'goto {L}_γ;')
+    return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eBuiltinVar(ctx, variable):
     L = f'ARB{counter}'
@@ -883,6 +900,19 @@ snobol4_source = """\
 """
 #-----------------------------------------------------------------------------------------------------------------------
 snobol4_source = """\
+  Quantifier = "*" | "+" | "?"
+  Item       = ( "."
++              | ("//" ANY(".//(|*+?)"))
++              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
++              | ("(" *Expression ")")
++              )
+  Factor     = Item (Quantifier | epsilon)
+  Term       = ARBNO(Factor)
+  Expression = Term ARBNO("|" Term)
+  RegEx      = POS(0) Expression RPOS(0)
+  "x|yz"     RegEx
+"""
+snobol4_source = """\
   V = ANY('abcdefghijklmnopqrstuvwxyz')
   I = SPAN('0123456789')
   E = V | I | "(" *X ")"
@@ -896,19 +926,6 @@ snobol4_source = """\
 +     )
   C = POS(0) X RPOS(0)
   "x+y*z" C
-"""
-snobol4_source = """\
-  Quantifier = "*" | "+" | "?"
-  Item       = ( "."
-+              | ("//" ANY(".//(|*+?)"))
-+              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-+              | ("(" *Expression ")")
-+              )
-  Factor     = Item (Quantifier | epsilon)
-  Term       = ARBNO(Factor)
-  Expression = Term ARBNO("|" Term)
-  RegEx      = POS(0) Expression RPOS(0)
-  "x|yz"     RegEx
 """
 if snobol4_source in Parse:
     counter = 0
