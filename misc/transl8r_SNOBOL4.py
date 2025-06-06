@@ -511,10 +511,10 @@ def eParse(ctx, t):
                     verb(C, f'    {temp[0]} {temp[1]};')
             verb(C, f'{rcurly} _{sid}_t;')
     verb(C, "/*----------------------------------------------------------------------------*/")
-    for LTC in Es[:-1]:
+    for LTC in Es:
         EL = LTC[0]
         verb(C, f'typedef struct _{EL} {EL}_t;')
-    for LTC in Es[:-1]:
+    for LTC in Es:
         EL = LTC[0]
         ET = LTC[1]
         verb(C, "/*----------------------------------------------------------------------------*/")
@@ -523,22 +523,27 @@ def eParse(ctx, t):
             verb(C, f'    {temp[0]} {temp[1]};')
         verb(C, f'{rcurly} {EL}_t;')
     verb(C, "/*----------------------------------------------------------------------------*/")
-    for LTC in Es[:-1]:
+    for LTC in Es:
         EL = LTC[0]
         verb(C, f'str_t {EL}({EL}_t **, int);')
-    for LTC in Es[:-1]:
+    for LTC in Es:
         C += LTC[2]
     program_head(C)
-    code(C, f'',              f'', f'goto {L}_α;')
     E = Es[-1][0]
-    C += Es[-1][2]
-    code(C, f'{L}_α:',        f'', f'goto {E}_α;')
-    code(C, f'{L}_β:',        f'', f'return;')
-    code(C, f'{E}_γ:',        f'write_sz(out, cszSuccess);', f'')
-    code(C, f'',              f'write_str(out, {E});', f'')
-    code(C, f'',              f'write_nl(out);', f'goto {E}_β;')
-    code(C, f'{E}_ω:',        f'write_sz(out, cszFailure);', f'')
-    code(C, f'',              f'write_nl(out);', f'return;')
+    decl(C, f'str_t',       f'{L};')
+    code(C, f'{E}_t',       f'{E}_ζ;')
+    code(C, f'{E}_t *',     f'{E}_ζζ;')
+    code(C, f'',            f'{E}_ζζ = &{E}_ζ;')
+    code(C, f'',            f'{L} = {E}(&{E}_ζζ, α);',      f'goto {E}_λ;')
+    code(C, f'{E}_β:',      f'{L} = {E}(&{E}_ζζ, β);',      f'goto {E}_λ;')
+    code(C, f'{E}_λ:',      f'if (is_empty({L}))',          f'goto {E}_ω;')
+    code(C, f'',            f'else',                        f'goto {E}_γ;')
+    verb(C, "/*----------------------------------------------------------------------------*/")
+    code(C, f'{E}_γ:',      f'write_sz(out, cszSuccess);')
+    code(C, f'',            f'write_str(out, {L});')
+    code(C, f'',            f'write_nl(out);',              f'goto {E}_β;') # Retry experiment
+    code(C, f'{E}_ω:',      f'write_sz(out, cszFailure);')
+    code(C, f'',            f'write_nl(out);',              f'return;')
     program_tail(C)
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
@@ -547,30 +552,31 @@ def eStmt(ctx, subject, pattern, equals, predicate):
     C = []
     if equals[0] == '=':
         L = f'{subject[1][1]}'
+    else: L = f'match{counter}'
+    verb(C, f'/*============================================================================*/')
+    verb(C, f'str_t {L}({L}_t ** ζζ, int entry) {lcurly}')
+    verb(C, f'    {L}_t * ζ = *ζζ;')
+    code(C, f'if (entry == α)', f'{lcurly} ζ = enter((void **) ζζ, sizeof({L}_t));', f'goto {L}_α; {rcurly}')
+    code(C, f'if (entry == β)', f'{lcurly}', f'goto {L}_β; {rcurly}')
+    verb(C, f'    /*------------------------------------------------------------------------*/')
+    if equals[0] == '=':
         P, PT, PC = emit(ctx, predicate); T += PT
-        verb(C, f'/*============================================================================*/')
-        verb(C, f'str_t {L}({L}_t ** ζζ, int entry) {lcurly}')
-        verb(C, f'    {L}_t * ζ = *ζζ;')
-        code(C, f'if (entry == α)', f'{lcurly} ζ = enter((void **) ζζ, sizeof({L}_t));', f'goto {L}_α; {rcurly}')
-        code(C, f'if (entry == β)', f'{lcurly}', f'goto {L}_β; {rcurly}')
-        verb(C, f'    /*------------------------------------------------------------------------*/')
         C += PC
         code(C, f'{L}_α:',    f'', f'goto {P}_α;')
         code(C, f'{L}_β:',    f'', f'goto {P}_β;')
         code(C, f'{P}_γ:',    f'return {P};')
         code(C, f'{P}_ω:',    f'return empty;')
-        verb(C, f'{rcurly}')
     else:
-        L = f'match{counter}'
         S, ST, SC = emit(ctx, subject); T += ST; C += SC
         P, PT, PC = emit(ctx, pattern); T += PT; C += PC
         decl(C, f'str_t',     f'{L};')
         code(C, f'{L}_α:',    f'', f'goto {S}_α;')
-        code(C, f'{L}_β:',    f'', f'goto {L}_ω;')
+        code(C, f'{L}_β:',    f'', f'goto {P}_β;') # Retry experiment, "return empty;"
         code(C, f'{S}_γ:',    f'', f'goto {P}_α;')
-        code(C, f'{S}_ω:',    f'', f'goto {L}_ω;')
-        code(C, f'{P}_γ:',    f'{L} = {P};', f'goto {L}_γ;')
-        code(C, f'{P}_ω:',    f'', f'goto {L}_ω;')
+        code(C, f'{S}_ω:',    f'return empty;')
+        code(C, f'{P}_γ:',    f'return {P};')
+        code(C, f'{P}_ω:',    f'return empty;')
+    verb(C, f'{rcurly}')
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eSubject(ctx, subject):
