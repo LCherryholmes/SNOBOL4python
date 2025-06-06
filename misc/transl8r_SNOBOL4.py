@@ -919,9 +919,9 @@ snobol4_source = """\
   "x|yz"     RegEx
 """
 snobol4_source = """\
-  V = ANY('abcdefghijklmnopqrstuvwxyz')
-  I = SPAN('0123456789')
-  E = V | I | "(" *X ")"
+  V = ANY('abcdefghijklmnopqrstuvwxyz') $ OUTPUT
+  I = SPAN('0123456789') $ OUTPUT
+  E = (V | I | "(" *X ")") $ OUTPUT
   X = ( E "+" *X
 +     | E "-" *X
 +     | E "*" *X
@@ -929,8 +929,8 @@ snobol4_source = """\
 +     | "+" *X
 +     | "-" *X
 +     | E
-+     )
-  C = POS(0) X RPOS(0)
++     ) $ OUTPUT
+  C = (POS(0) X RPOS(0)) $ OUTPUT
   "x+y*z" C
 """
 if snobol4_source in Parse:
