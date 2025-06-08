@@ -186,8 +186,8 @@ Target          =   ( τ('(') + Λ(lambda: set_Brackets('()')) + Expr + τ(')')
 Goto            =   ( η + σ(':')
                     + η
                     + FENCE(
-                        Target                      + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
-                      | SorF + Target               + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
+                        Target                   + Reduce(lambda: f"{str_Brackets}", 1) + Shift()
+                      | SorF + Target            + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1)
                       + FENCE(η + SorF + Target  + Reduce(lambda: f"{str_SorF}{str_Brackets}", 1) | Shift())
                       )
                     )
@@ -452,7 +452,7 @@ def module_head(C):
     verb(C, 'static const int α = 0;')
     verb(C, 'static const int β = 1;')
     verb(C, 'static const str_t empty = (str_t) {(const char *) 0, 0};')
-    verb(C, 'static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }')
+    verb(C, 'static inline bool not_null(str_t x) { return x.σ != (const char *) 0; }')
     verb(C, 'static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }')
     verb(C, 'static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }')
     verb(C, 'static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }')
@@ -504,6 +504,11 @@ def eParse(ctx, t):
     module_head(C)
     ctx[1] = dict()
     Es = [emit(ctx, c) for c in t]
+    verb(C, "/*------------------------------------------------------------------------------------------------*/")
+    for LTC in Es:
+        EL = LTC[0]
+        verb(C, f'typedef struct _{EL} {EL}_t;')
+    verb(C, "/*------------------------------------------------------------------------------------------------*/")
     for sid in ctx[1]:
         temps = ctx[1][sid]
         if len(temps) > 0:
@@ -513,9 +518,6 @@ def eParse(ctx, t):
                     verb(C, f'    {temp[0]} {temp[1]};')
             verb(C, f'{rcurly} _{sid}_t;')
     verb(C, "/*------------------------------------------------------------------------------------------------*/")
-    for LTC in Es:
-        EL = LTC[0]
-        verb(C, f'typedef struct _{EL} {EL}_t;')
     for LTC in Es:
         EL = LTC[0]
         ET = LTC[1]
@@ -538,8 +540,8 @@ def eParse(ctx, t):
     code(C, f'',            f'{E}_ζζ = &{E}_ζ;')
     code(C, f'',            f'{L} = {E}(&{E}_ζζ, α);',      f'goto {E}_λ;')
     code(C, f'{E}_β:',      f'{L} = {E}(&{E}_ζζ, β);',      f'goto {E}_λ;')
-    code(C, f'{E}_λ:',      f'if (is_empty({L}))',          f'goto {E}_ω;')
-    code(C, f'',            f'else',                        f'goto {E}_γ;')
+    code(C, f'{E}_λ:',      f'if (not_null({L}))',          f'goto {E}_γ;')
+    code(C, f'',            f'else',                        f'goto {E}_ω;')
     verb(C, "/*------------------------------------------------------------------------------------------------*/")
     code(C, f'{E}_γ:',      f'write_sz(out, cszSuccess);')
     code(C, f'',            f'write_str(out, {L});')
@@ -709,7 +711,7 @@ def eString(ctx, s):
 #-----------------------------------------------------------------------------------------------------------------------
 def eId(ctx, var):
     L = f'{var}{counter}'
-    T = [(f'{var}_t *', f'{L}_ζ')]
+    T = []
     C = []
     deref = ctx[0] if ctx[0] != '' else 'ζ->'
     if (var in ["NULL", "null", "epsilon"]):
@@ -717,11 +719,12 @@ def eId(ctx, var):
         code(C, f'{L}_α:',      f'{L} = str(Σ+Δ,0);',               f'goto {L}_γ;')
         code(C, f'{L}_β:',      f'',                                f'goto {L}_ω;')
     else:
+        T.append((f'{var}_t *', f'{L}_ζ'))
         decl(C, f'str_t',       f'{L};')
         code(C, f'{L}_α:',      f'{L} = {var}(&{deref}{L}_ζ, α);',  f'goto {L}_λ;')
         code(C, f'{L}_β:',      f'{L} = {var}(&{deref}{L}_ζ, β);',  f'goto {L}_λ;')
-        code(C, f'{L}_λ:',      f'if (is_empty({L}))',              f'goto {L}_ω;')
-        code(C, f'',            f'else',                            f'goto {L}_γ;')
+        code(C, f'{L}_λ:',      f'if (not_null({L}))',              f'goto {L}_γ;')
+        code(C, f'',            f'else',                            f'goto {L}_ω;')
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eBuiltinVar(ctx, variable):
@@ -763,14 +766,15 @@ def eConditional_assign(ctx, pattern, V):
         func = None
         if V[1][0] == 'Call':
             if V[1][1][0] == 'Id':
-                if V[1][1][1] in ['Shift', 'Reduce', 'Pop', 'nPush', 'nTop', 'nPop']:
+                if V[1][1][1] in ['Shift', 'Reduce', 'Pop', 'nPush', 'nInc', 'nPop']:
                     func = V[1][1][1]
                 else: raise Exception(f'eConditional_assign: {V[1][1][1]}')
             else: raise Exception(f'eConditional_assign: {V[1][1][0]}')
             if V[1][2][0] == 'ExprList':
                 Xs = []
                 for x in V[1][2][1:]:
-                    if x[0] == 'String':
+                    if x[0] == '': pass
+                    elif x[0] == 'String':
                         counter += 1
                         XL = f'csz{counter}'
                         Xs.append(XL)
@@ -786,30 +790,58 @@ def eConditional_assign(ctx, pattern, V):
                         code(C, f'{XL}_α:', f'{XL} = {x[1]};',          f'goto {XL}_γ;')
                     #   code(C, f'{XL}_β:', f'',                        f'goto {XL}_ω;')
                         verb(C, "    /*--------------------------------------------------------------------------------------------*/")
-                    else:
-                        X, XT, XC = emit(ctx, x)
-                        Xs.append(X)
-                        C += XC
-                decl(C, f'str_t',                 f'{L};')
-                code(C, f'{L}_α:',                f'',                      f'goto {P}_α;')
-                code(C, f'{L}_β:',                f'',                      f'goto {P}_β;')
-                code(C, f'{P}_γ:',                f'',                      f'goto {Xs[0]}_α;')
-                code(C, f'{P}_ω:',                f'',                      f'goto {L}_ω;')
-                for i in range(len(Xs)):
-                    if i < len(Xs)-1:
-                        code(C, f'{Xs[i]}_γ:',    f'',                      f'goto {Xs[i+1]}_α;')
-                    else: code(C, f'{Xs[i]}_γ:',  f'{func}({Xs[i]}, {L});', f'goto {L}_γ;')
-                    if i == 0:
-                        code(C, f'{Xs[i]}_ω:',    f'',                      f'goto {L}_ω;')
-                    else: code(C, f'{Xs[i]}_ω:',  f'',                      f'goto {L}_ω;')
+                    else: raise Exception(f"eConditional_assign: {x}")
+#                       X, XT, XC = emit(ctx, x)
+#                       Xs.append(X)
+#                       C += XC
+                decl(C, f'str_t',           f'{L};')
+                code(C, f'{L}_α:',          f'',                        f'goto {P}_α;')
+                code(C, f'{L}_β:',          f'',                        f'goto {P}_β;')
+                if len(Xs) == 0:
+                    code(C, f'{P}_γ:',      f'{func}(); {L} = {P};',    f'goto {L}_γ;')
+                    code(C, f'{P}_ω:',      f'',                        f'goto {L}_ω;')
+                else:
+                    code(C, f'{P}_γ:',      f'',                        f'goto {Xs[0]}_α;')
+                    code(C, f'{P}_ω:',      f'',                        f'goto {L}_ω;')
+                    for i in range(len(Xs)):
+                        if i < len(Xs)-1:
+                            code(C, f'{Xs[i]}_γ:',  f'',                f'goto {Xs[i+1]}_α;')
+                        code(C, f'{Xs[i]}_ω:',      f'',                f'goto {L}_ω;')
+                    args = ''
+                    if func == 'Shift':
+                        match len(Xs):
+                            case 0: args = f''
+                            case 1: args = f'{Xs[0]}, empty'
+                            case 2: args = f'{Xs[0]}, {P}'
+                    elif func == 'Reduce':
+                        match len(Xs):
+                            case 0: args = f''
+                            case 1: args = f'{Xs[0]}, -1'
+                            case 2: args = f'{Xs[0]}, {Xs[1]}'
+                    elif func in ['Pop', 'nPush', 'nInc', 'nPop']:
+                        match len(Xs):
+                            case 0: args = f''
+                            case 1: args = f'{Xs[0]}'
+                            case 2: args = f'{Xs[0]}, {Xs[1]}'
+                    code(C, f'{Xs[-1]}_γ:', f'{func}({args}); {L} = {P};', f'goto {L}_γ;')
             else: raise Exception(f'eConditional_assign: {V[1][2][0]}')
         else: raise Exception(f'eConditional_assign: {V[1][0]}')
     elif V[0] == 'Id':
         decl(C, f'str_t',     f'{L};')
         code(C, f'{L}_α:',    f'',                                      f'goto {P}_α;')
         code(C, f'{L}_β:',    f'',                                      f'goto {P}_β;')
-        code(C, f'{P}_γ:',    f'printf("%d %d\\n", {P}.σ-Σ, {P}.δ);',   f'goto {L}_γ;')
+        code(C, f'{P}_γ:',    f'{L} = {P};')
+        code(C, f'',          f'printf("%d %d\\n", {L}.σ-Σ, {L}.δ);',   f'goto {L}_γ;')
         code(C, f'{P}_ω:',    f'',                                      f'goto {L}_ω;')
+    elif V[0] == '.':
+        P, PT, PC = emit(ctx, V[1]); T += PT; C += PC
+        decl(C, f'str_t',     f'{L};')
+        code(C, f'{L}_α:',    f'',                                      f'goto {P}_α;')
+        code(C, f'{L}_β:',    f'',                                      f'goto {P}_β;')
+        code(C, f'{P}_γ:',    f'{L} = {P};')
+        code(C, f'',          f'printf("%d %d\\n", {P}.σ-Σ, {P}.δ);',   f'goto {L}_γ;')
+        code(C, f'{P}_ω:',    f'',                                      f'goto {L}_ω;')
+    else: raise Exception(f'eConditional_assign: {V[0]}')
     return (L, T, C)
 #-----------------------------------------------------------------------------------------------------------------------
 def eUnop(ctx, op, E):
@@ -983,45 +1015,34 @@ snobol4_source = """\
   C = (POS(0) X RPOS(0)) $ OUTPUT
   "x+y*z" C
 """
+# The @ sign is kludge for backslash manual replacement
 snobol4_source = """\
-  Quantifier = "*" | "+" | "?"
-  Item       = ( "."
-+              | ("//" ANY(".//(|*+?)"))
-+              | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-+              | ("(" *Expression ")")
-+              )
-  Factor     = Item (Quantifier | epsilon)
-  Term       = ARBNO(Factor)
-  Expression = Term ARBNO("|" Term)
-  RegEx      = POS(0) Expression RPOS(0)
-  "x|yz"     RegEx
-"""
-snobol4_source = """\
-  re_Quantifier =   ( '*' . *Shift('*')
-+                   | '+' . *Shift('+')
-+                   | '?' . *Shift('?')
-+                   )
+  'SUBJECT' 'J' . a . b . c . tx . *f(tx)
 """
 """
-  re_Item       =   ( '.' . *Shift('.')
-+                   | '//' ANY('.//(|*+?)') . tx . *Shift('σ', "tx")
-+                   | ANY(&UCASE &LCASE "0123456789") . tx . *Shift('σ', "tx")
-+                   | '(' *re_Expression ')'
-+                   )
-  re_Factor     =   re_Item (re_Quantifier . *Reduce('ς', 2) | epsilon)
-  re_Term       =   epsilon . nPush()
-+                   ARBNO(re_Factor . *nInc()) . *Reduce('Σ')
-+                   epsilon . *nPop()
-  re_Expression =   epsilon . *nPush()
-+                   re_Term . *nInc()
-+                   ARBNO('|' re_Term . *nInc())
-+                   epsilon . *Reduce('Π')
-+                   epsilon . *nPop()
-re_RegEx        =   POS(0) re_Expression . *Pop('RE_tree') RPOS(0)
+  Qfactor =   ( '*' . *Shift('*')
++             | '+' . *Shift('+')
++             | '?' . *Shift('?')
++             )
+  Item    =   ( '.' . *Shift(".")
++             | '@' ANY('.@(|*+?)') . tx . *Shift("σ", tx)
++             | ANY("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz") . tx . *Shift("σ", tx)
++             | '(' *Expr ')'
++             )
+  Factor  =   Item (Qfactor . *Reduce('ς', 2) | epsilon)
+  Term    =   epsilon . *nPush()
++             ARBNO(Factor . *nInc()) . *Reduce('Σ')
++             epsilon . *nPop()
+  Expr    =   epsilon . *nPush()
++             Term . *nInc()
++             ARBNO('|' Term . *nInc())
++             epsilon . *Reduce('Π')
++             epsilon . *nPop()
+  RegEx   =   POS(0) Expr . *Pop('RE_tree') RPOS(0)
 """
 if snobol4_source in Parse:
     counter = 0
-#   pprint(SNOBOL4_tree)
+    pprint(SNOBOL4_tree)
     L, T, C, = emit(['', None], SNOBOL4_tree)
     kernel_source = genc(C)
     for num, line in enumerate(C):
