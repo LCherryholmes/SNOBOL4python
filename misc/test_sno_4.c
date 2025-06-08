@@ -68,7 +68,7 @@ static const char * Σ = (const char *) 0;
 static const int α = 0;
 static const int β = 1;
 static const str_t empty = (str_t) {(const char *) 0, 0};
-static inline bool is_empty(str_t x) { return x.σ == (const char *) 0; }
+static inline bool not_null(str_t x) { return x.σ != (const char *) 0; }
 static inline int len(const char * s) { int δ = 0; for (; *s; δ++) s++; return δ; }
 static inline str_t str(const char * σ, int δ) { return (str_t) {σ, δ}; }
 static inline str_t cat(str_t x, str_t y) { return (str_t) {x.σ, x.δ + y.δ}; }
@@ -84,84 +84,51 @@ static inline void * enter(void ** ζζ, size_t size) {
     return ζ;
 }
 /*------------------------------------------------------------------------------------------------*/
-typedef struct _re_Quantifier re_Quantifier_t;
+typedef struct _match2 match2_t;
 /*------------------------------------------------------------------------------------------------*/
-typedef struct _re_Quantifier {
-    int alt3_i;
-} re_Quantifier_t;
 /*------------------------------------------------------------------------------------------------*/
-str_t re_Quantifier(re_Quantifier_t **, int);
+/*------------------------------------------------------------------------------------------------*/
+typedef struct _match2 {
+    a_t * a6_ζ;
+} match2_t;
+/*------------------------------------------------------------------------------------------------*/
+str_t match2(match2_t **, int);
 /*================================================================================================*/
-str_t re_Quantifier(re_Quantifier_t ** ζζ, int entry) {
-    re_Quantifier_t * ζ = *ζζ;
-    if (entry == α)     { ζ = ENTER(ζζ, sizeof(re_Quantifier_t));     goto re_Quantifier_α; }
-    if (entry == β)     {                                             goto re_Quantifier_β; }
+str_t match2(match2_t ** ζζ, int entry) {
+    match2_t * ζ = *ζζ;
+    if (entry == α)     { ζ = ENTER(ζζ, sizeof(match2_t));            goto match2_α; }
+    if (entry == β)     {                                             goto match2_β; }
+    /*--------------------------------------------------------------------------------------------*/
+    str_t               subj3;
+    subj3_α:            Δ = 0; Σ = "SUBJECT";
+                        Ω = len(Σ); subj3 = str(Σ,Ω);                 goto subj3_γ;
+    subj3_β:                                                          goto subj3_ω;
     /*--------------------------------------------------------------------------------------------*/
     str_t               s5;
-    s5_α:               if (Σ[Δ+0] != '*')                            goto s5_ω;
+    s5_α:               if (Σ[Δ+0] != 'J')                            goto s5_ω;
                         s5 = str(Σ+Δ,1); Δ+=1;                        goto s5_γ;
     s5_β:               Δ-=1;                                         goto s5_ω;
     /*--------------------------------------------------------------------------------------------*/
-    const char *        csz6;
-    csz6_α:             csz6 = "*";                                   goto csz6_γ;
+    str_t               a6;
+    a6_α:               a6 = a(&ζ->a6_ζ, α);                          goto a6_λ;
+    a6_β:               a6 = a(&ζ->a6_ζ, β);                          goto a6_λ;
+    a6_λ:               if (not_null(a6))                             goto a6_γ;
+                        else                                          goto a6_ω;
     /*--------------------------------------------------------------------------------------------*/
     str_t               condition4;
-    condition4_α:                                                     goto s5_α;
-    condition4_β:                                                     goto s5_β;
-    s5_γ:                                                             goto csz6_α;
-    s5_ω:                                                             goto condition4_ω;
-    csz6_γ:             Shift(csz6, condition4);                      goto condition4_γ;
-    csz6_ω:                                                           goto condition4_ω;
+    condition4_α:                                                     goto a6_α;
+    condition4_β:                                                     goto a6_β;
+    a6_γ:               condition4 = a6;
+                        printf("%d %d\n", a6.σ-Σ, a6.δ);              goto condition4_γ;
+    a6_ω:                                                             goto condition4_ω;
     /*--------------------------------------------------------------------------------------------*/
-    str_t               s8;
-    s8_α:               if (Σ[Δ+0] != '+')                            goto s8_ω;
-                        s8 = str(Σ+Δ,1); Δ+=1;                        goto s8_γ;
-    s8_β:               Δ-=1;                                         goto s8_ω;
-    /*--------------------------------------------------------------------------------------------*/
-    const char *        csz9;
-    csz9_α:             csz9 = "+";                                   goto csz9_γ;
-    /*--------------------------------------------------------------------------------------------*/
-    str_t               condition7;
-    condition7_α:                                                     goto s8_α;
-    condition7_β:                                                     goto s8_β;
-    s8_γ:                                                             goto csz9_α;
-    s8_ω:                                                             goto condition7_ω;
-    csz9_γ:             Shift(csz9, condition7);                      goto condition7_γ;
-    csz9_ω:                                                           goto condition7_ω;
-    /*--------------------------------------------------------------------------------------------*/
-    str_t               s11;
-    s11_α:              if (Σ[Δ+0] != '?')                            goto s11_ω;
-                        s11 = str(Σ+Δ,1); Δ+=1;                       goto s11_γ;
-    s11_β:              Δ-=1;                                         goto s11_ω;
-    /*--------------------------------------------------------------------------------------------*/
-    const char *        csz12;
-    csz12_α:            csz12 = "?";                                  goto csz12_γ;
-    /*--------------------------------------------------------------------------------------------*/
-    str_t               condition10;
-    condition10_α:                                                    goto s11_α;
-    condition10_β:                                                    goto s11_β;
-    s11_γ:                                                            goto csz12_α;
-    s11_ω:                                                            goto condition10_ω;
-    csz12_γ:            Shift(csz12, condition10);                    goto condition10_γ;
-    csz12_ω:                                                          goto condition10_ω;
-    /*--------------------------------------------------------------------------------------------*/
-    str_t               alt3;
-    alt3_α:             ζ->alt3_i = 1;                                goto condition4_α;
-    alt3_β:             if (ζ->alt3_i == 1)                           goto condition4_β;
-                        if (ζ->alt3_i == 2)                           goto condition7_β;
-                        if (ζ->alt3_i == 3)                           goto condition10_β;
-                                                                      goto alt3_ω;
-    condition4_γ:       alt3 = condition4;                            goto alt3_γ;
-    condition4_ω:       ζ->alt3_i++;                                  goto condition7_α;
-    condition7_γ:       alt3 = condition7;                            goto alt3_γ;
-    condition7_ω:       ζ->alt3_i++;                                  goto condition10_α;
-    condition10_γ:      alt3 = condition10;                           goto alt3_γ;
-    condition10_ω:                                                    goto alt3_ω;
-    /*--------------------------------------------------------------------------------------------*/
-    re_Quantifier_α:                                                  goto alt3_α;
-    re_Quantifier_β:                                                  goto alt3_β;
-    alt3_γ:             return alt3;
-    alt3_ω:             return empty;
+    str_t               match2;
+    match2_α:                                                         goto subj3_α;
+    match2_β:                                                         goto condition4_β;
+    subj3_γ:                                                          goto condition4_α;
+    subj3_ω:            return empty;
+    condition4_γ:       return condition4;
+    condition4_ω:       return empty;
 }
 /*================================================================================================*/
 __kernel void snobol(
@@ -177,18 +144,18 @@ __kernel void snobol(
         buffer[i] = 0;
     /*--------------------------------------------------------------------------------------------*/
     str_t               main1;
-    re_Quantifier_t     re_Quantifier_ζ;
-    re_Quantifier_t *   re_Quantifier_ζζ;
-                        re_Quantifier_ζζ = &re_Quantifier_ζ;
-                        main1 = re_Quantifier(&re_Quantifier_ζζ, α);  goto re_Quantifier_λ;
-    re_Quantifier_β:    main1 = re_Quantifier(&re_Quantifier_ζζ, β);  goto re_Quantifier_λ;
-    re_Quantifier_λ:    if (is_empty(main1))                          goto re_Quantifier_ω;
-                        else                                          goto re_Quantifier_γ;
+    match2_t            match2_ζ;
+    match2_t *          match2_ζζ;
+                        match2_ζζ = &match2_ζ;
+                        main1 = match2(&match2_ζζ, α);                goto match2_λ;
+    match2_β:           main1 = match2(&match2_ζζ, β);                goto match2_λ;
+    match2_λ:           if (not_null(main1))                          goto match2_γ;
+                        else                                          goto match2_ω;
 /*------------------------------------------------------------------------------------------------*/
-    re_Quantifier_γ:    write_sz(out, cszSuccess);
+    match2_γ:           write_sz(out, cszSuccess);
                         write_str(out, main1);
-                        write_nl(out);                                goto re_Quantifier_β;
-    re_Quantifier_ω:    write_sz(out, cszFailure);
+                        write_nl(out);                                goto match2_β;
+    match2_ω:           write_sz(out, cszFailure);
                         write_nl(out);                                return;
 }
 
