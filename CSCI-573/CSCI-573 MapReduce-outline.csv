@@ -1,35 +1,57 @@
--,Abstract
-1,Introduction
-2,Programming Model
-2.1,Example
-2.2,Types
-2.3,More Examples
-3,Implementation
-3.1,Execution Overview
-3.2,Master Data Structures
-3.3,Fault Tolerance
-3.4,Locality
-3.5,Task Granularity
-3.6,Backup Tasks
-4,Refinements
-4.1,Partitioning Function
-4.2,Ordering Guarantees
-4.3,Combiner Function
-4.4,Input/Output Types
-4.5,Side Effects
-4.6,Skipping Bad Records
-4.7,Local Execution
-4.8,Status Information
-4.9,Counters
-5,Performance
-5.1,Cluster Configuration
-5.2,Grep
-5.3,Sort
-5.4,Effect of Backup Tasks
-5.5,Machine Failures
-6,Experience
-6.1,Large Scale Indexing
-7,Related Work
-8,Conclusion
--,Acknowledgements
--,References
+-,Abstract,
+1,Introduction,
+2,Programming Model,
+2.0.1,Map function,"map(k1, v) ==> list(k2, v2)"
+2.0.2,Reduce function,"reduce(k2, list(v2)) ==> list(v2)"
+2.1,Example (word count),
+2.2,Types,
+2.3,More Examples,
+2.3.1,Distributed Grep,
+2.3.2,Count of URL Access Frequency,
+2.3.3,Reverse Web-link Graph,
+2.3.4,Term-Vector Per Host,
+2.3.5,Inverted Index,
+2.3.6,Distributed Sort,
+3,Implementation,
+3.0.1,user program,
+3.0.2,master process,
+3.0.3,worker process,
+3.0.4,input files (splits),
+3.0.5,itermediate files (local disks),
+3.0.6,output files,
+3.1,Execution Overview,
+3.1.1,M splits of the input,
+3.1.2,M map tasks,
+3.1.3,R reduce tasks,
+3.1.4,R regions (partitioning function),
+3.1.5,R output files,
+3.2,Master Data Structures,
+3.2.1,idle task state,
+3.2.2,in-progress task state,
+3.2.3,completed task state,
+3.3,Fault Tolerance,
+3.4,Locality,
+3.5,Task Granularity,
+3.6,Backup Tasks,
+4,Refinements,
+4.1,Partitioning Function,
+4.2,Ordering Guarantees,
+4.3,Combiner Function,
+4.4,Input/Output Types,
+4.5,Side Effects,
+4.6,Skipping Bad Records,
+4.7,Local Execution,
+4.8,Status Information,
+4.9,Counters,
+5,Performance,
+5.1,Cluster Configuration,
+5.2,Grep,
+5.3,Sort,
+5.4,Effect of Backup Tasks,
+5.5,Machine Failures,
+6,Experience,
+6.1,Large Scale Indexing,
+7,Related Work,
+8,Conclusion,
+-,Acknowledgements,
+-,References,
