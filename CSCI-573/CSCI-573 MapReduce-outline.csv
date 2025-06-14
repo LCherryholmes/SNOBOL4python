@@ -1,0 +1,35 @@
+-,Abstract
+1,Introduction
+2,Programming Model
+2.1,Example
+2.2,Types
+2.3,More Examples
+3,Implementation
+3.1,Execution Overview
+3.2,Master Data Structures
+3.3,Fault Tolerance
+3.4,Locality
+3.5,Task Granularity
+3.6,Backup Tasks
+4,Refinements
+4.1,Partitioning Function
+4.2,Ordering Guarantees
+4.3,Combiner Function
+4.4,Input/Output Types
+4.5,Side Effects
+4.6,Skipping Bad Records
+4.7,Local Execution
+4.8,Status Information
+4.9,Counters
+5,Performance
+5.1,Cluster Configuration
+5.2,Grep
+5.3,Sort
+5.4,Effect of Backup Tasks
+5.5,Machine Failures
+6,Experience
+6.1,Large Scale Indexing
+7,Related Work
+8,Conclusion
+-,Acknowledgements
+-,References
