@@ -30,14 +30,26 @@
 3.2.2,in-progress task state,
 3.2.3,completed task state,
 3.3,Fault Tolerance,
+3.3.1,Worker Failure,
+3.3.2,Master Failure,
+3.3.3,Semantics in the Presence of Failures,map and reduce might be deterministic functions
 3.4,Locality,
 3.5,Task Granularity,
-3.6,Backup Tasks,
+3.5.1,subdivisions,M and R should be much larger than the number of worker machines.
+3.5.2,scheduling decisions,O(M + R)
+3.5.3,memory states,O(M * R)
+3.5.4,typical configuration,"M=200_000, R=5_000, and 2_000 machines"
+3.6,Backup Tasks,straggler tasks
 4,Refinements,
 4.1,Partitioning Function,
+4.1.1,default,hash(key) mod R
+4.1.2,provided,hash(Hostname(urlkey)) mod R
 4.2,Ordering Guarantees,
 4.3,Combiner Function,
 4.4,Input/Output Types,
+4.4.1,built-in,text
+4.4.2,built-in,key-value
+4.4.3,customized,reader intrerface
 4.5,Side Effects,
 4.6,Skipping Bad Records,
 4.7,Local Execution,
@@ -50,6 +62,10 @@
 5.4,Effect of Backup Tasks,
 5.5,Machine Failures,
 6,Experience,
+6.0.1,large-scale machine learning problems,
+6.0.2,clustering problems for the Google News and Froogle products,
+6.0.3,extraction of data used to produce reports of popular queries (e.g. Google Zeitgeist),
+6.0.4,large-scale graph computations,
 6.1,Large Scale Indexing,
 7,Related Work,
 8,Conclusion,
