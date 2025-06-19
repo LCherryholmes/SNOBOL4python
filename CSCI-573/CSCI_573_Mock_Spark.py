@@ -50,7 +50,7 @@
 # §2.2.0.3(iii): ... only on disk or replicating it across machines, through flags to persist.
 # §2.2.0.3(iv): Finally, users can set a persistence priority on each RDD ...
 # §2.2.0.3(iv): ... to specify which in-memory data should spill to disk first.
-#---------------------------------------------------------------------------------------------------
+#===================================================================================================
 # §2.2.1: Example: Console Log Mining
 #---------------------------------------------------------------------------------------------------
 # §2.2.1.1(i): Suppose that a web service is experiencing errors and an operator wants ...
@@ -58,36 +58,27 @@
 # §2.2.1.1(ii): Using Spark, the operator can load just the error messages from the logs ...
 # §2.2.1.1(ii): ... into RAM across a set of nodes and query them interactively.
 # §2.2.1.1(iii): She would first type the following Scala code:
-# §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS file (as a collection of lines of text), ...
-# §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
-# §2.2.1.1(v): Line 3 then asks for errors to persist in memory ...
+lines = spark.textFile( # §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS ...
+    "hdfs://...")       # §2.2.1.1(iv): ... file (as a collection of lines of text), ...
+errors = lines.filter(  # §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
+    lambda line: line.startsWith("ERROR"))
+errors.persist() # §2.2.1.1(v): Line 3 then asks for errors to persist in memory ...
 # §2.2.1.1(v): ... so that it can be shared across queries.
 # §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
-"""\
-    lines = spark.textFile("hdfs://..."); // Line 1
-    errors = lines.filter(_.startsWith("ERROR")); // Line 2
-    errors.persist(); // Line 3
-"""
 #---------------------------------------------------------------------------------------------------
 # §2.2.1.2(i): At this point, no work has been performed on the cluster.
-# §2.2.1.2(ii): However, the user can now use the RDD in actions, ...
-# §2.2.1.2(ii): ... e.g., to count the number of messages.
-"""\
-    errors.count();
-"""
+errors.count()  # §2.2.1.2(ii): However, the user can now use the RDD in actions, ...
+                # §2.2.1.2(ii): ... e.g., to count the number of messages.
 #---------------------------------------------------------------------------------------------------
 # §2.2.1.3(i): The user can also perform further transformations on the RDD ...
 # §2.2.1.3(i): ... and use their results, as in the following lines ...
-"""\
-    // Count errors mentioning MySQL:
-    errors.filter(_.contains("MySQL")).count();
-    // Return the time fields of errors mentioning
-    // HDFS as an array (assuming time is field
-    // number 3 in a tab-separated format):
-    errors.filter(_.contains("HDFS"))
-          .map(_.split('\t')(3))
-          .collect();
-"""
+# Count errors mentioning MySQL:
+errors.filter(lambda line: line.contains("MySQL")).count()
+# Return the time fields of errors mentioning HDFS as an array
+# (assuming time is field number 3 in a tab-separated format):
+errors.filter(lambda line: line.contains("HDFS")) \
+      .map(lambda line: line.split('\t')[3]) \
+      .collect()
 #---------------------------------------------------------------------------------------------------
 # §2.2.1.4(i): After the first action involving errors runs, Spark will store the partitions ...
 # §2.2.1.4(i): ... of errors in memory, greatly speeding up subsequent computations on it.
@@ -116,11 +107,8 @@
 # §3.0.3(ii): Scala represents each closure as a Java object, and these objects can be ...
 # §3.0.3(ii): ... serialized and loaded on another node to pass the closure across the network.
 # §3.0.3(iii): Scala also saves any variables bound in the closure as fields in the Java object.
-# §3.0.3(iv): For example, one can write code like ...
-"""\
-    var x = 5; rdd.map(_ + x);
-"""
-# §3.0.3(iv): ... to add 5 to each element of an RDD.
+x = 5                     # §3.0.3(iv): For example, one can write code like ...
+rdd.map(lambda i: i + x)  # §3.0.3(iv): ... to add 5 to each element of an RDD.
 #---------------------------------------------------------------------------------------------------
 # §3.0.4(i): RDDs themselves are statically typed objects parametrized by an element type.
 # §3.0.4(ii): For example, RDD[Int] is an RDD of integers.
@@ -194,16 +182,14 @@
 # §3.2.1.2(ii): The algorithm uses gradient descent: it starts w at a random value, ...
 # §3.2.1.2(ii): ... and on each iteration, it sums a function of w over the data ...
 # §3.2.1.2(ii): ... to move w in a direction that improves it ...
-"""\
-    val points = spark.textFile("...").map(parsePoint).persist();
-    var w = ???; // random initial vector
-    for (i <- 1 to ITERATIONS) {
-        val gradient = points.map (
-            p => p.x * (1 / (1 + exp(-p.y * (w dot p.x))) - 1) * p.y
-        ).reduce((a,b) => a + b);
-        w -= gradient;
-    }
-"""
+def parsePoint(): pass
+points = spark.textFile("...").map(parsePoint).persist()
+w = None # random initial vector
+for i in range(1, ITERATIONS+1):
+    gradient = points.map(
+        lambda p: p.x * (1 / (1 + exp(-p.y * (dot(w, p.x)))) - 1) * p.y
+    ).reduce(lambda a, b: a + b)
+    w -= gradient
 #---------------------------------------------------------------------------------------------------
 # §3.2.1.3(i): We start by defining a persistent RDD called points as the result of a map ...
 # §3.2.1.3(i): ... transformation on a text file that parses each line of text into a Point object.
@@ -223,20 +209,17 @@
 # §3.2.2.1(iv): ... where the sum is over the contributions it received ...
 # §3.2.2.1(iv): ... and N is the total number of documents.
 # §3.2.2.1(v): We can write PageRank in Spark as follows ...
-"""\
-    // Load graph as an RDD of (URL, outlinks) pairs
-    val links = spark.textFile(...).map(...).persist();
-    var ranks = ???; // RDD of (URL, rank) pairs
-    for (i <- 1 to ITERATIONS) {
-        // Build an RDD of (targetURL, float) pairs
-        // with the contributions sent by each page
-        val contribs = links.join(ranks).flatMap(
-            (url, (links, rank)) => links.map(dest => (dest, rank / links.size))
-        );
-        // Sum contributions by URL and get new ranks
-        ranks = contribs.reduceByKey((x, y) => x + y).mapValues(sum => a/N + (1 - a) * sum);
-    }
-"""
+# Load graph as an RDD of (URL, outlinks) pairs
+links = spark.textFile("...").map("...").persist()
+ranks = None # RDD of (URL, rank) pairs
+for i in range(1, ITERATIONS+1):
+    # Build an RDD of (targetURL, float) pairs with the contributions sent by each page
+    contribs = links.join(ranks).flatMap(
+        lambda url, (links, rank):
+            links.map(lambda dest: (dest, rank / links.size))
+    )
+    # Sum contributions by URL and get new ranks
+    ranks = contribs.reduceByKey(lambda x, y: x + y).mapValues(lambda sum: a/N + (1 - a) * sum)
 #---------------------------------------------------------------------------------------------------
 # §3.2.2.2(i): This program leads to the RDD lineage graph in Figure 3.
 # §3.2.2.2(ii): On each iteration, we create a new ranks dataset based on the contribs ...
@@ -263,9 +246,8 @@
 # §3.2.2.3(iii): We can also write a custom Partitioner class to group pages ...
 # §3.2.2.3(iii): ... that link to each other together (e.g., partition the URLs by domain name).
 # §3.2.2.3(iv): Both optimizations can be expressed by calling partitionBy when we define links ...
-"""\
-    links = spark.textFile("...").map(...).partitionBy(myPartFunc).persist();
-"""
+def myPartFunc(): pass
+links = spark.textFile("...").map("...").partitionBy(myPartFunc).persist()
 #===================================================================================================
 # §4: Representing RDDs
 #---------------------------------------------------------------------------------------------------
@@ -485,7 +467,7 @@
 # §5.4: Support for Checkpointing
 #---------------------------------------------------------------------------------------------------
 # §5.4.1(i): Although lineage can always be used to recover RDDs after a failure, ...
-# §5.4.1(i): ... such recovery may be time-consuming for RDDs with long lineage chains.
+# §5.4.1(i): ... such recovery may be time-consuming for RDDs with long l-ineage chains.
 # §5.4.1(ii): Thus, it can be helpful to checkpoint some RDDs to stable storage.
 #---------------------------------------------------------------------------------------------------
 # §5.4.2(i): In general, checkpointing is useful for RDDs with long lineage graphs ...
