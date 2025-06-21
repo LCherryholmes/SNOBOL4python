@@ -29,6 +29,7 @@ identifier  =   ( η
                   + (SPAN(DIGITS+UCASE+'_'+LCASE) | ε())
                   ) @ "OUTPUT" % "id"
                 )
+#-------------------------------------------------------------------------------
 parameters  =   ( identifier + item("id")
                 + ARBNO(ς(',') + identifier + item("id"))
                 )
@@ -42,6 +43,7 @@ reference   =   ( identifier + push("'id'") + item("id") + pop()
                 | identifier + push("id")
                 + ς('(') + ζ(lambda: arguments) + ς(')') + pop()
                 )
+#-------------------------------------------------------------------------------
 element     =   ( integer + push("'int'") + item("eval(txtint)") + pop()
                 | string  + push("'str'") + item("eval(txtstr)") + pop()
                 | reference
@@ -60,7 +62,6 @@ factor      =   ( ς('+') + push("'+'") + ζ(lambda: factor) + pop()
 term        =   ( factor
                 + ( ς('*') + inject("'*'") + ζ(lambda: term) + pop()
                   | ς('/') + inject("'/'") + ζ(lambda: term) + pop()
-                  | ς('//') + inject("'//'") + ζ(lambda: term) + pop()
                   | ε()
                   )
                 )
@@ -71,6 +72,7 @@ expression  =   ( term
                   | ε()
                   )
                 )
+#-------------------------------------------------------------------------------
 argument    =   ( function
                 | expression
                 + (ς('until') + inject("'until'") + expression + pop() | ε())
@@ -81,6 +83,7 @@ argument    =   ( function
                   )
                 )
 arguments   =   argument + ARBNO(ς(',') + argument) | ε()
+#-------------------------------------------------------------------------------
 assignment  =   ( (ς('var') | ς('val') | ε())
                 + identifier
                 + ( ς('=') + push("'='") + item("id")
@@ -90,6 +93,7 @@ assignment  =   ( (ς('var') | ς('val') | ε())
                 + expression
                 + pop()
                 )
+#-------------------------------------------------------------------------------
 loop        =   ( ς('for') + push("'for'")
                 + ς('(') + identifier + item("id")
                 + ς('<-') + expression + (ς('to') + expression | ε())
@@ -98,6 +102,7 @@ loop        =   ( ς('for') + push("'for'")
                 + ς('}')
                 + pop()
                 )
+#-------------------------------------------------------------------------------
 statement   =   ( loop
                 | assignment + ς(';')
                 | push("'eval'") + expression + ς(';') + pop()
@@ -124,7 +129,6 @@ def interp(t):
         case '-=':      globals()[t[1]] -= interp(t[2])
         case '*':       return interp(t[1]) * interp(t[2])
         case '/':       return interp(t[1]) / interp(t[2])
-        case '//':      return interp(t[1]) // interp(t[2])
         case '+':       # positive and addition
                         if len(t) == 2: return +interp(t[1])
                         elif len(t) == 3: return interp(t[1]) + interp(t[2])
@@ -133,6 +137,10 @@ def interp(t):
                         elif len(t) == 3: return interp(t[1]) - interp(t[2])
         case 'eval':    return interp(t[1])
         case 'print':   return print(interp(t[1]))
+        case 'for':     #
+                        for index in range(interp(t[2]), interp(t[3])):
+                            globals()[t[1]] = index
+                            for s in t[4:]: interp(s)
         case 'scala':   # interpret each statement
                         for s in t[1:]: interp(s)
         case _:         raise Exception(f"interp: {t}")
@@ -140,8 +148,11 @@ def interp(t):
 GLOBALS(globals())
 TRACE(40)
 program_source = """\
-x = 1 + 2 * 3; print(x);
-y = (1 + 2) * 3; print(y);
+x = 0;
+for (i <- 0 to 10) {
+    x += 1;
+    print(x);
+}
 """
 if program_source in program:
     pprint(scala)
