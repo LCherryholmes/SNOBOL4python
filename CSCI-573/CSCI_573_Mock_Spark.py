@@ -416,7 +416,7 @@ wide_dependencies = None
 # §4.5(ii): ... without knowing the details of the scheduler.
 # §4.5(iii): We sketch some RDD implementations below.
 #-------------------------------------------------------------------------------
-def textfile(): pass # §4.5.1(i): HDFS files: The input RDDs in our samples have been files in HDFS.
+def textFile(): pass # §4.5.1(i): HDFS files: The input RDDs in our samples have been files in HDFS.
 # §4.5.1(ii): For these RDDs, partitions returns one partition for each ...
 # §4.5.1(ii): ... block of the file (with the block’s offset stored in each ...
 # §4.5.1(ii): ... Partition object), preferredLocations gives the nodes the ...
@@ -521,22 +521,169 @@ tasks = None
 #===============================================================================
 # §5.2: Interpreter Integration
 #-------------------------------------------------------------------------------
+# 31 flavors of patterns to choose from ...
+from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
+from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
+from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
+from SNOBOL4python import RTAB, SPAN, SUCCEED, TAB
+from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
+from SNOBOL4python import PATTERN, STRING, NULL
+from pprint import pformat, pprint
+#-------------------------------------------------------------------------------
 # §5.2.1(i): Scala includes an interactive shell ...
 # §5.2.1(i): ... similar to those of Ruby and Python.
 # §5.2.1(ii): Given the low latencies attained with in-memory data, ...
 # §5.2.1(ii): ... we wanted to let users run Spark interactively ...
 # §5.2.1(ii): ... from the interpreter to query big datasets.
 #-------------------------------------------------------------------------------
-Scala_interpreter = None # §5.2.2(i): The Scala interpreter normally operates by compiling a class ...
+def interp(t):
+    match t[0]:
+        case 'id':      #
+                        if t[1] in globals():
+                            return globals()[t[1]]
+                        else: return None
+        case 'int':     return t[1]
+        case 'str':     return t[1]
+        case '=':       globals()[t[1]] = interp(t[2])
+        case '+=':      globals()[t[1]] += interp(t[2])
+        case '-=':      globals()[t[1]] -= interp(t[2])
+        case '*':       return interp(t[1]) * interp(t[2])
+        case '/':       return interp(t[1]) / interp(t[2])
+        case '+':       # positive and addition
+                        if len(t) == 2: return +interp(t[1])
+                        elif len(t) == 3: return interp(t[1]) + interp(t[2])
+        case '-':       # negative and subtraction
+                        if len(t) == 2: return -interp(t[1])
+                        elif len(t) == 3: return interp(t[1]) - interp(t[2])
+        case 'eval':    return interp(t[1])
+        case 'print':   return print(interp(t[1]))
+        case 'for':     # looping
+                        for n in range(interp(t[2]), interp(t[3])):
+                            globals()[t[1]] = n
+                            for s in t[4:]: interp(s)
+        case 'scala':   # interpret each statement
+                        for s in t[1:]: interp(s)
+        case _:         raise Exception(f"interp: {t}")
+#-------------------------------------------------------------------------------
+# §5.2.2(i): The Scala interpreter normally operates by compiling a class ...
 # §5.2.2(i): ... for each line typed by the user, loading it into the JVM, ...
 # §5.2.2(i): ... and invoking a function on it.
 # §5.2.2(ii): This class includes a singleton object that contains ...
 # §5.2.2(ii): ... the variables or functions on that line and ...
 # §5.2.2(ii): ... runs the line’s code in an initialize method.
+#-------------------------------------------------------------------------------
+def init():     return λ(f"scala = None; stack = []")   # + λ(f"pprint(stack)")
+def push(v):    return λ(f"stack.append([{v}])")        # + λ(f"pprint(stack)")
+def inject(v):  return ( λ(f"top = stack[-1].pop()")    # + λ(f"pprint(stack)")
+                       + λ(f"stack.append([{v}, top])") # + λ(f"pprint(stack)")
+                       )
+def item(v):    return λ(f"stack[-1].append({v})")      # + λ(f"pprint(stack)")
+def pop():      return ( λ(f"top = tuple(stack.pop())") # + λ(f"pprint(stack)")
+                       + λ(f"stack[-1].append(top)")    # + λ(f"pprint(stack)")
+                       )
+def fini():     return λ(f"scala = tuple(stack.pop())") # + λ(f"pprint(stack)")
+#-------------------------------------------------------------------------------
 # §5.2.2(iii): For example, if the user types var x = 5 followed by ...
 # §5.2.2(iii): ... println(x), the interpreter defines a class called Line1 ...
 # §5.2.2(iii): ... containing x and causes the second line to ...
 # §5.2.2(iii): ... compile to println(Line1.getInstance().x).
+#-------------------------------------------------------------------------------
+η           =   ARBNO(SPAN(' \t\r\n') | σ('//') + BREAK('\n'))
+def ς(s):       return η + σ(s)
+#-------------------------------------------------------------------------------
+integer     =   η + (SPAN(DIGITS)) @ "OUTPUT" % "txtint"
+string      =   η + (σ('"') + BREAK('"') + σ('"')) @ "OUTPUT" % "txtstr"
+identifier  =   ( η
+                + ( ANY(UCASE+LCASE)
+                  + (SPAN(DIGITS+UCASE+'_'+LCASE) | ε())
+                  ) @ "OUTPUT" % "id"
+                )
+#-------------------------------------------------------------------------------
+parameters  =   ( identifier + item("id")
+                + ARBNO(ς(',') + identifier + item("id"))
+                )
+function    =   ( push("'lambda'")
+                + parameters
+                + ς('=>')
+                + ζ(lambda: expression)
+                + pop()
+                )
+reference   =   ( identifier + push("'id'") + item("id") + pop()
+                | identifier + push("id")
+                + ς('(') + ζ(lambda: arguments) + ς(')') + pop()
+                )
+#-------------------------------------------------------------------------------
+element     =   ( integer + push("'int'") + item("eval(txtint)") + pop()
+                | string  + push("'str'") + item("eval(txtstr)") + pop()
+                | reference
+                | ς('(') + ζ(lambda: expression) + ς(')')
+                )
+factor      =   ( ς('+') + push("'+'") + ζ(lambda: factor) + pop()
+                | ς('-') + push("'-'") + ζ(lambda: factor) + pop()
+                | element
+                + ARBNO(
+                    ς('.')
+                  + inject("'.'")
+                  + reference
+                  + pop()
+                  )
+                )
+term        =   ( factor
+                + ( ς('*') + inject("'*'") + ζ(lambda: term) + pop()
+                  | ς('/') + inject("'/'") + ζ(lambda: term) + pop()
+                  | ε()
+                  )
+                )
+expression  =   ( term
+                + ( ς('+') + inject("'+'") + ζ(lambda: expression) + pop()
+                  | ς('-') + inject("'-'") + ζ(lambda: expression) + pop()
+                  | ς('dot') + inject("'dot'") + ζ(lambda: expression) + pop()
+                  | ε()
+                  )
+                )
+#-------------------------------------------------------------------------------
+argument    =   ( function
+                | expression
+                + (ς('until') + inject("'until'") + expression + pop() | ε())
+                | ( ς('new') + push("'new'")
+                  + identifier + item("id")
+                  + ς('(') + ζ(lambda: arguments) + ς(')')
+                  + pop()
+                  )
+                )
+arguments   =   argument + ARBNO(ς(',') + argument) | ε()
+#-------------------------------------------------------------------------------
+assignment  =   ( (ς('var') | ς('val') | ε())
+                + identifier
+                + ( ς('=') + push("'='") + item("id")
+                  | ς('+=') + push("'+='") + item("id")
+                  | ς('-=') + push("'-='") + item("id")
+                  )
+                + expression
+                + pop()
+                )
+#-------------------------------------------------------------------------------
+loop        =   ( ς('for') + push("'for'")
+                + ς('(') + identifier + item("id")
+                + ς('<-') + expression + (ς('to') + expression | ε())
+                + ς(')') + ς('{')
+                + ζ(lambda: statements)
+                + ς('}')
+                + pop()
+                )
+#-------------------------------------------------------------------------------
+statement   =   ( loop
+                | assignment + ς(';')
+                | push("'eval'") + expression + ς(';') + pop()
+                )
+statements  =   ARBNO(statement)
+program     =   ( POS(0)
+                + init()
+                + push("'scala'")
+                + statements
+                + fini()
+                + η + RPOS(0)
+                )
 #-------------------------------------------------------------------------------
 # §5.2.3: We made two changes to the interpreter in Spark:
 #-------------------------------------------------------------------------------
@@ -563,9 +710,23 @@ Scala_interpreter = None # §5.2.2(i): The Scala interpreter normally operates b
 # §5.2.5(i): ... exploring datasets stored in HDFS.
 # §5.2.5(i): We also plan to use ...
 # §5.2.5(i): ... to run higher-level query languages interactively, e.g., SQL.
-Spark_interpreter = None
 #===============================================================================
-memory_management = None # §5.3: Memory Management
+GLOBALS(globals())
+TRACE(40)
+program_source = """\
+x = 0;
+for (i <- 0 to 10) {
+    x += 1;
+    print(x);
+}
+"""
+if program_source in program:
+    pprint(scala)
+    pprint(interp(scala))
+else: print("Boo!")
+#===============================================================================
+# §5.3: Memory Management
+memory_management = None
 #-------------------------------------------------------------------------------
 # §5.3.1(i): Spark provides three options for storage of persistent RDDs: ...
 # §5.3.1(i): ... in-memory storage as deserialized Java objects, ...
