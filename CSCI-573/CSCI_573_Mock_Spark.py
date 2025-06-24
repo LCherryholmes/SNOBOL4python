@@ -739,7 +739,7 @@ tests = [
 , (None,        lambda: [ (k, [list(vv) for vv in vs])
                           for k, vs in rdd_A.cogroup(rdd_B).collect()
                         ])
-, ( "rdd_CG",   lambda: rdd_A.cogroup(rdd_B)
+, ("rdd_CG",    lambda: rdd_A.cogroup(rdd_B)
                              .mapValues(lambda vs: [list(vv) for vv in vs]))
 , ("rdd_CP",    lambda: rdd_A.cartesian(rdd_B)) # .crossProduct(rdd_B)
 , ("rdd_MV",    lambda: rdd_A.mapValues(lambda v: v * 100))
