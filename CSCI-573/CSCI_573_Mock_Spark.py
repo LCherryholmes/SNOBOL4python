@@ -7,6 +7,13 @@
 # §2(iii): ... with finer-grained shared memory abstractions (§2.3).
 # §2(iv): Finally, we discuss limitations of the RDD model (§2.4).
 #-------------------------------------------------------------------------------
+#export PYTHONHASHSEED=42
+#export SPARK_LOCAL_IP=172.28.64.15
+from pyspark import SparkContext
+from pprint import pformat, pprint
+spark = SparkContext.getOrCreate()
+spark.setLogLevel("ERROR")
+#-------------------------------------------------------------------------------
 # §2.1: RDD Abstraction
 # §2.1(i): Formally, an RDD is a read-only, partitioned collection of records.
 # §2.1(ii): RDDs can only be created through deterministic operations on ...
@@ -68,44 +75,57 @@
 # §2.2.1.1(i): Suppose that a web service is experiencing errors and an ...
 # §2.2.1.1(i): ... operator wants to search terabytes of logs ...
 # §2.2.1.1(i): ... in the Hadoop filesystem (HDFS) to find the cause.
+hdfs_log = [
+    "INFO\t2025-06-26\t23:53\tStartup complete.",
+    "ERROR\t2025-06-26\t23:54\tMySQL connection failed.",
+    "WARN\t2025-06-26\t23:55\tDisk space low.",
+    "ERROR\t2025-06-26\t23:56\tHDFS block missing.",
+    "ERROR\t2025-06-26\t23:57\tMySQL timeout.",
+    "INFO\t2025-06-26\t23:58\tShutdown complete.",
+    "ERROR\t2025-06-26\t23:59\tHDFS nodename lost."
+]
 # §2.2.1.1(ii): Using Spark, the operator can load just the error messages ...
 # §2.2.1.1(ii): ... from the logs into RAM across a set of nodes and ...
 # §2.2.1.1(ii): ... query them interactively.
-# §2.2.1.1(iii): She would first type the following Scala code:
-examples = {} # §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS file ...
-              # §2.2.1.1(iv): ... (as a collection of lines of text), ...
-examples['2.2.1'] = """lines = spark.textFile("hdfs://...");\n"""
-# §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
-examples['2.2.1'] += """errors = lines.filter(line => line.startsWith("ERROR"));\n"""
-# §2.2.1.1(v): Line 3 then asks for errors to persist in memory ...
-# §2.2.1.1(v): ... so that it can be shared across queries.
-examples['2.2.1'] += """errors.persist();\n"""
-# §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
+errors = None # §2.2.1.1(iii): She would first type the following Scala code:
+def example_2_2_1_1():
+    global errors
+    # §2.2.1.1(iv): Line 1 defines an RDD backed by an ...
+    # §2.2.1.1(iv): ... HDFS file (as a collection of lines of text), ...
+    lines = spark.parallelize(hdfs_log) #.textFile("hdfs://...")
+    # §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
+    errors = lines.filter(lambda line: line.startswith("ERROR"))
+    errors.persist() # §2.2.1.1(v): Line 3 then asks for errors to persist ...
+    # §2.2.1.1(v): ... in memory so that it can be shared across queries.
+    # §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
+    pprint(["errors", errors.collect()])
 #-------------------------------------------------------------------------------
 # §2.2.1.2(i): At this point, no work has been performed on the cluster.
 # §2.2.1.2(ii): However, the user can now use the RDD in actions, ...
 # §2.2.1.2(ii): ... e.g., to count the number of messages:
-examples['2.2.1'] += "errors.count();\n"
+def example_2_2_1_2():
+    pprint(["errors count", errors.count()])
 #-------------------------------------------------------------------------------
 # §2.2.1.3(i): The user can also perform further transformations on the RDD ...
 # §2.2.1.3(i): ... and use their results, as in the following lines:
-examples['2.2.1'] += """\
-// Count errors mentioning MySQL:
-errors.filter(line => line.contains("MySQL")).count();
-// Return the time fields of errors mentioning HDFS as an array
-// (assuming time is field number 3 in a tab-separated format):
-errors.filter(line => line.contains("HDFS"))
-      .map(line => line.split("\t")[3])
-      .collect();
-"""
+def example_2_2_1_3():
+    # Count errors mentioning MySQL:
+    count = errors.filter(lambda line: line.find("MySQL") > 0).count()
+    pprint(["MySQL count", count])
+    # Return the time fields of errors mentioning HDFS as an array
+    # (assuming time is field number 3 in a tab-separated format):
+    times = errors.filter(lambda line: line.find("HDFS") > 0) \
+                  .map(lambda line: line.split("\t")[2]) \
+                  .collect()
+    pprint(["HDFS times", times])
 #-------------------------------------------------------------------------------
 # §2.2.1.4(i): After the first action involving errors runs, Spark will ...
 # §2.2.1.4(i): ... store the partitions of errors in memory, ...
 # §2.2.1.4(i): ... greatly speeding up subsequent computations on it.
 # §2.2.1.4(ii): Note that the base RDD, lines, is not loaded into RAM.
-# §2.2.1.4(iii): This is desirable because the ...
-# §2.2.1.4(iii): ... error messages might only be a small ...
-# §2.2.1.4(iii): ... fraction of the data (small enough to fit into memory).
+# §2.2.1.4(iii): This is desirable because the error messages might only ...
+# §2.2.1.4(iii): ... be a small fraction of the data ...
+# §2.2.1.4(iii): ... (small enough to fit into memory).
 #===============================================================================
 # §3: Spark Programming Interface
 #-------------------------------------------------------------------------------
@@ -134,11 +154,9 @@ errors.filter(line => line.contains("HDFS"))
 # §3.0.3(ii): ... to pass the closure across the network.
 # §3.0.3(iii): Scala also saves any variables bound in the closure ...
 # §3.0.3(iii): ... as fields in the Java object.
-# §3.0.3(iv): For example, one can write code like ...
-examples['3.0'] = """\
-x = 5;
-rdd.map(i => i + x);
-""" # §3.0.3(iv): ... to add 5 to each element of an RDD.
+x = 5
+def example_3_0(): # §3.0.3(iv): For example, one can write code like to ...
+    rdd.map(lambda i: i + x) # §3.0.3(iv): ... add 5 to each element of an RDD.
 #-------------------------------------------------------------------------------
 # §3.0.4(i): RDDs themselves are statically typed ...
 # §3.0.4(i): ... objects parametrized by an element type.
@@ -221,39 +239,67 @@ rdd.map(i => i + x);
 # §3.2.1.1(i): ... such as gradient descent, to maximize a function.
 # §3.2.1.1(ii): They can thus run much faster by keeping their data in memory.
 #-------------------------------------------------------------------------------
-# §3.2.1.2(i): As an example, the following program implements ...
-# §3.2.1.2(i): ... logistic regression [14], a common classification ...
-# §3.2.1.2(i): ... algorithm that searches for a hyperplane w that ...
-# §3.2.1.2(i): ... best separates two sets of points ...
-# §3.2.1.2(i): ... (e.g., spam and non-spam emails).
+import math     # §3.2.1.2(i): As an example, the following program ...
+import random   # §3.2.1.2(i): ... implements logistic regression [14], a ...
+points_data = [ # §3.2.1.2(i): ... common classification algorithm that ...
+  "0.5,1.2,-1.3,1"  # §3.2.1.2(i): ... searches for a hyperplane w that ...
+, "-0.3,0.8,0.5,-1" # §3.2.1.2(i): ... best separates two sets of points ...
+, "1.0,-0.5,2.0,1"  # §3.2.1.2(i): ... (e.g., spam and non-spam emails).
+, "-1.2,0.4,-0.7,-1" ]
+#-------------------------------------------------------------------------------
+class Point:
+    def __init__(self, x, y):
+        self.x = x # feature vector (list of floats)
+        self.y = y # label (+1 or -1)
+#-------------------------------------------------------------------------------
+def parsePoint(line):
+    fields = line.strip().split(',')
+    x = [float(v) for v in fields[:-1]]
+    y = float(fields[-1])
+    return Point(x, y)
+#-------------------------------------------------------------------------------
 # §3.2.1.2(ii): The algorithm uses gradient descent: it starts w at a random ...
 # §3.2.1.2(ii): ... value, and on each iteration, it sums a function of w ...
 # §3.2.1.2(ii): ... over the data to move w in a direction that improves it.
-examples['3.2.1'] = """\
-val points = spark.textFile("...").map(parsePoint).persist();
-var w = (0.0, 0.0); # random initial vector
-for (i <- 1 to ITERATIONS) {
-    val gradient = points.map(
-        p => p.x * (1 / (1 + exp(-p.y * (w dot p.x))) - 1) * p.y
-    ).reduce((a, b) => a + b);
-    w -= gradient;
-}
-"""
 #-------------------------------------------------------------------------------
-# §3.2.1.3(i): We start by defining a persistent RDD called points as the ...
-# §3.2.1.3(i): ... result of a map transformation on a text file that ...
-# §3.2.1.3(i): ... parses each line of text into a Point object.
-# §3.2.1.3(ii): We then repeatedly run map and reduce on points to compute ...
-# §3.2.1.3(ii): ... the gradient at each step by ...
-# §3.2.1.3(ii): ... summing a function of the current w.
-# §3.2.1.3(iii): Keeping points in memory across iterations can yield a ...
-# §3.2.1.3(iii): ... 20x speedup, as we show in Section 6.1.
+def example_3_2_1():
+    DIMENSIONS = len(parsePoint(points_data[0]).x)
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # §3.2.1.3(i): We start by defining a persistent RDD called points as the ...
+    # §3.2.1.3(i): ... result of a map transformation on a text file that ...
+    # §3.2.1.3(i): ... parses each line of text into a Point object.
+    points = spark.parallelize(points_data).map(parsePoint)
+    points.persist()
+    w = [random.uniform(-1, 1) for _ in range(DIMENSIONS)]
+    def gradient_func(p):
+        dot = sum(wj * xj for wj, xj in zip(w, p.x))
+        coeff = (1 / (1 + math.exp(-p.y * dot)) - 1) * p.y
+        return [xj * coeff for xj in p.x]
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # §3.2.1.3(ii): We then repeatedly run map and reduce on points to ...
+    # §3.2.1.3(ii): ... compute the gradient at each step by ...
+    # §3.2.1.3(ii): ... summing a function of the current w.
+    ITERATIONS = 5
+    for i in range(ITERATIONS):
+        gradients = points.map(gradient_func).reduce(
+            lambda a, b: [ai + bi for ai, bi in zip(a, b)]
+        )
+        w = [wj - gj for wj, gj in zip(w, gradients)]
+        print("Weights (w):", w)
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # §3.2.1.3(iii): Keeping points in memory across iterations can yield a ...
+    # §3.2.1.3(iii): ... 20x speedup, as we show in Section 6.1.
 #-------------------------------------------------------------------------------
 # §3.2.2: PageRank
 #-------------------------------------------------------------------------------
 # §3.2.2.1(i): A more complex pattern of data sharing occurs in PageRank [6].
-# §3.2.2.1(ii): The algorithm iteratively updates a rank for each document ...
-# §3.2.2.1(ii): ... by adding up contributions from documents that link to it.
+graph_data = [          # §3.2.2.1(ii): The algorithm iteratively updates a ...
+    ("A", ["B", "C"]),  # §3.2.2.1(ii): ... rank for each document by adding ...
+    ("B", ["C"]),       # §3.2.2.1(ii): ... up contributions from documents ...
+    ("C", ["A"]),       # §3.2.2.1(ii): ... that link to it.
+    ("D", ["C"])
+]
+#-------------------------------------------------------------------------------
 # §3.2.2.1(iii): On each iteration, each document sends a contribution of ...
 # §3.2.2.1(iii): ... "r / n" to its neighbors, where ...
 # §3.2.2.1(iii): ... r is its rank and ...
@@ -263,27 +309,46 @@ for (i <- 1 to ITERATIONS) {
 # §3.2.2.1(iv): ... sum is over the contributions it received and ...
 # §3.2.2.1(iv): ... N is the total number of documents.
 # §3.2.2.1(v): We can write PageRank in Spark as follows ...
-examples['3.2.2'] = """\
-// Load graph as an RDD of (URL, outlinks) pairs
-val links = spark.textFile("...").map("...").persist();
-var ranks = ""; // RDD of (URL, rank) pairs
-for (i <- 1 to ITERATIONS) {
-    // Build an RDD of (targetURL, float) pairs
-    // with the contributions sent by each page
-    val contribs = links.join(ranks).flatMap(
-        (url, (links, rank)) =>
-            links.map(dest => (dest, rank / links.size))
-    );
-    // Sum contributions by URL and get new ranks
-    ranks = contribs.reduceByKey(lambda x, y: x + y)
-                    .mapValues(lambda sum: a/N + (1 - a) * sum);
-}
-"""
 #-------------------------------------------------------------------------------
-# §3.2.2.2(i): This program leads to the RDD lineage graph in Figure 3.
-# §3.2.2.2(ii): On each iteration, we create a new ranks dataset based ...
-# §3.2.2.2(ii): ... on the contribs and ranks from the previous iteration ...
-# §3.2.2.2(ii): ... and the static links dataset.
+def display_ranks(ranks):
+    print("PageRank: ", end="")
+    for url, rank in sorted(ranks.collect()):
+        print(f" {url}: {rank:.4f}", end="")
+    print()
+#-------------------------------------------------------------------------------
+def example_3_2_2():
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Load graph as an RDD of (URL, outlinks) pairs
+    links = spark.parallelize(graph_data)
+    links.persist()
+    urls = [url for url, _ in graph_data]
+    N = len(urls)
+    alpha = 0.15
+    ranks = spark.parallelize([(url, 1.0) for url in urls])
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # §3.2.2.2(i): This program leads to the RDD lineage graph in Figure 3.
+    # §3.2.2.2(ii): On each iteration, we create a new ranks dataset based ...
+    # §3.2.2.2(ii): ... on the contribs and ranks from the previous ...
+    # §3.2.2.2(ii): ... iteration and the static links dataset.
+    ITERATIONS = 5
+    for i in range(ITERATIONS):
+        # Build an RDD of (targetURL, float) pairs
+        # with the contributions sent by each page
+        joined = links.join(ranks)
+        def compute_contribs(item):
+            url, (outlinks, rank) = item
+            n = len(outlinks)
+            if n == 0:
+                return []
+            return [(dest, rank / n) for dest in outlinks]
+        contribs = joined.flatMap(compute_contribs)
+        contribs_summed = contribs.reduceByKey(lambda x, y: x + y)
+        # Sum contributions by URL and get new ranks
+        def update_rank(sum_contrib):
+            return alpha / N + (1 - alpha) * sum_contrib
+        ranks = contribs_summed.map(lambda kv: (kv[0], update_rank(kv[1])))
+        display_ranks(ranks)
+#-------------------------------------------------------------------------------
 # §3.2.2.2(iii): One interesting feature of this graph is ...
 # §3.2.2.2(iii): ... that it grows longer with the number of iterations.
 # §3.2.2.2(iv): Thus, in a job with many iterations, it may be necessary ...
@@ -312,9 +377,8 @@ for (i <- 1 to ITERATIONS) {
 # §3.2.2.3(iii): ... URLs by domain name).
 # §3.2.2.3(iv): Both optimizations can be expressed by ...
 # §3.2.2.3(iv): ... calling partitionBy when we define links.
-examples['3.2.2.3'] = """\
-links = spark.textFile("...").map("...").partitionBy(myPartFunc).persist();
-"""
+def example_3_2_2_3():
+    links = spark.textFile("...").map().partitionBy(myPartFunc).persist()
 #===============================================================================
 # §4: Representing RDDs
 #-------------------------------------------------------------------------------
@@ -539,107 +603,52 @@ links = spark.textFile("...").map("...").partitionBy(myPartFunc).persist();
 # §5.2.5(i): We also plan to use ...
 # §5.2.5(i): ... to run higher-level query languages interactively, e.g., SQL.
 #===============================================================================
-examples['Word Count'] = """\
-    texts = Seq("Hello Spark", "Hello RDD", "Resilient Distributed Datasets");
-    lines = spark.parallelize(texts);
-    words = lines.flatMap(line => line.split(" "));
-    word_pairs = words.map(word => (word, 1));
-    word_count = word_pairs.reduceByKey((a, b) => a + b);
-    print(word_count.collect());
-"""
+def word_count():
+    texts = ["Hello Spark", "Hello RDD", "Hello Scala"]
+    lines = spark.parallelize(texts)
+    words = lines.flatMap(lambda line: line.split(" "))
+    word_pairs = words.map(lambda word: (word, 1))
+    word_count = word_pairs.reduceByKey(lambda total, value: total + value)
+    pprint(word_count.collect())
 #-------------------------------------------------------------------------------
-examples['Fruits'] = """\
-    data = Array(
+def fruits():
+    data = [
         ("apple", 1),
         ("banana", 2),
         ("apple", 3),
         ("orange", 4),
-        ("banana", 5));
-    fruits = spark.parallelize(data);
-    counts = fruits.reduceByKey((a, b) => a + b);
-    counts.collect().foreach(print);
-"""
+        ("banana", 5)]
+    fruits = spark.parallelize(data)
+    counts = fruits.reduceByKey(lambda total, value: total + value)
+    print(counts.collect())
 #-------------------------------------------------------------------------------
-examples['Numbers'] = """\
-    data = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    numbers = spark.parallelize(data, numSlices = 3);
-    doubled = numbers.map(n => n * 2);
-    filtered = doubled.filter(n => n > 10);
-    filtered.collect().foreach(print);
-    sum_of_numbers = numbers.reduce((a, b) => a + b);
-"""
+def numbers():
+    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    numbers = spark.parallelize(data, numSlices=3)
+    doubled = numbers.map(lambda n: n * 2)
+    filtered = doubled.filter(lambda n: n > 10)
+    print(filtered.collect())
+    sum_of_numbers = numbers.reduce(lambda total, value: total + value)
+    print(sum_of_numbers)
 #-------------------------------------------------------------------------------
-examples['Page Rank'] = """\
-    links_list = Seq(
-        ("A", Seq("B", "C")),
-        ("B", Seq("C")),
-        ("C", Seq("A")),
-        ("D", Seq("C"))
-    );
-    val links = spark.parallelize(links_list).persist();
-    var ranks = links.mapValues(x => 1.0);
-    val ITERATIONS = 10;
-    for (i <- 1 to ITERATIONS) {
-        val contributions = links.join(ranks).flatMap {
-          case (url, (neighbors, rank)) =>
-            val size = neighbors.size;
-            neighbors.map(dest => (dest, rank / size));
-        }
-        ranks = contributions
-                .reduceByKey((a, b) => a + b)
-                .mapValues(rank_sum => 0.15 + 0.85 * rank_sum);
-    }
-    ranks.collect().foreach(print)
-"""
-#-------------------------------------------------------------------------------
-examples['Sand Box'] = """\
-    data = List(1, 2, 3, 4, 5, 6);
+def sand_box():
+    data = [1, 2, 3, 4, 5, 6]
     rdd = spark.parallelize(data);
-    evens = rdd.filter(x => x % 2 == 0);
-    squares = evens.map(x => x * x);
-    sum = squares.reduce((a, b) => a + b);
-    rdd1 = spark.parallelize(Seq(("a", 1), ("b", 2), ("a", 3)));
-    rdd2 = spark.parallelize(Seq(("a", "x"), ("b", "y")));
+    evens = rdd.filter(lambda x: x % 2 == 0);
+    squares = evens.map(lambda x: x * x);
+    sum = squares.reduce(lambda x, y: x + y);
+    rdd1 = spark.parallelize((("a", 1), ("b", 2), ("a", 3)));
+    rdd2 = spark.parallelize((("a", "x"), ("b", "y")));
     grouped = rdd1.groupByKey();
-    grouped.collect().foreach(println);
+    print(grouped.mapValues(lambda vs: list(vs)).collect())
     joined = rdd1.join(rdd2);
-    joined.collect().foreach(println);
-    base = spark.parallelize(1 to 10);
-    filtered = base.filter(x => x % 2 == 0);
-    mapped = filtered.map(x => x * 10);
+    print(joined.collect())
+    base = spark.parallelize(list(range(1, 11)))
+    filtered = base.filter(lambda x: x % 2 == 0);
+    mapped = filtered.map(lambda x: x * 10);
     mapped.persist();
     mapped.count();
-    mapped.collect().foreach(println);
-"""
-#-------------------------------------------------------------------------------
-examples['Logistic Regression'] = """\
-def sigmoid(z): return 1.0 / (1.0 + exp(-z))
-def parsePoint(line):
-    parts = line.split(",")
-    y = parts.last.toDouble
-    x = DenseVector(parts.init.map(_.toDouble))
-    return Point(x, y)
-
-    raw = Seq(
-      "0.5,1.0,1",
-      "1.5,2.0,1",
-      "1.0,0.5,0",
-      "2.0,1.0,0"
-    )
-    data = spark.parallelize(raw).map(parsePoint).persist();
-    D = data.first().x.length;
-    w = DenseVector.rand[Double](D);
-    numIterations = 10;
-    for (i <- 1 to numIterations) {
-        gradient = data.map { p =>
-            margin = -p.y * (w dot p.x);
-            multiplier = (1.0 / (1.0 + exp(margin)) - 1) * p.y;
-            p.x * multiplier
-        }.reduce((a, b) => a + b);
-        learningRate = 0.1;
-        w -= learningRate * gradient;
-    }
-"""
+    print(mapped.collect())
 #===============================================================================
 # §5.3: Memory Management
 #-------------------------------------------------------------------------------
@@ -712,12 +721,6 @@ def parsePoint(line):
 # §5.4.4(ii): ... can be written out in the background without requiring ...
 # §5.4.4(ii): ... program pauses or distributed snapshot schemes.
 #===============================================================================
-#export PYTHONHASHSEED=42
-#export SPARK_LOCAL_IP=172.28.64.15
-from pyspark import SparkContext
-from pprint import pformat, pprint
-spark = SparkContext.getOrCreate()
-spark.setLogLevel("ERROR")
 data = list(range(1, 17))
 pairs1 = [(x % 2, x) for x in range(0, 4)]
 pairs2 = [(x % 2, x * 2) for x in range(0, 4)]
@@ -754,6 +757,15 @@ tests = [
 , (None,        lambda: rdd_A.lookup(1))
 ]
 #-------------------------------------------------------------------------------
+example_2_2_1_1()
+example_2_2_1_2()
+example_2_2_1_3()
+example_3_2_1()
+example_3_2_2()
+word_count()
+fruits()
+numbers()
+sand_box()
 for test in tests:
     variable = test[0]
     function = test[1]
