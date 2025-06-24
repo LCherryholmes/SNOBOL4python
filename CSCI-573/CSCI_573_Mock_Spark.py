@@ -72,15 +72,13 @@
 # §2.2.1.1(ii): ... from the logs into RAM across a set of nodes and ...
 # §2.2.1.1(ii): ... query them interactively.
 # §2.2.1.1(iii): She would first type the following Scala code:
-examples = dict()
-# §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS file ...
-# §2.2.1.1(iv): ... (as a collection of lines of text), ...
+examples = {} # §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS file ...
+              # §2.2.1.1(iv): ... (as a collection of lines of text), ...
 examples['2.2.1'] = """lines = spark.textFile("hdfs://...");\n"""
 # §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
 examples['2.2.1'] += """errors = lines.filter(line => line.startsWith("ERROR"));\n"""
-# §2.2.1.1(v): Line 3 then asks for errors to persist ...
-# §2.2.1.1(v): ... in memory so that it can be shared ...
-# §2.2.1.1(v): ... across queries.
+# §2.2.1.1(v): Line 3 then asks for errors to persist in memory ...
+# §2.2.1.1(v): ... so that it can be shared across queries.
 examples['2.2.1'] += """errors.persist();\n"""
 # §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
 #-------------------------------------------------------------------------------
@@ -497,49 +495,11 @@ links = spark.textFile("...").map("...").partitionBy(myPartFunc).persist();
 #===============================================================================
 # §5.2: Interpreter Integration
 #-------------------------------------------------------------------------------
-# 31 flavors of patterns to choose from ...
-from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
-from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
-from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
-from SNOBOL4python import RTAB, SPAN, SUCCEED, TAB
-from SNOBOL4python import ALPHABET, DIGITS, UCASE, LCASE
-from SNOBOL4python import PATTERN, STRING, NULL
-from pprint import pformat, pprint
-#-------------------------------------------------------------------------------
 # §5.2.1(i): Scala includes an interactive shell ...
 # §5.2.1(i): ... similar to those of Ruby and Python.
 # §5.2.1(ii): Given the low latencies attained with in-memory data, ...
 # §5.2.1(ii): ... we wanted to let users run Spark interactively ...
 # §5.2.1(ii): ... from the interpreter to query big datasets.
-#-------------------------------------------------------------------------------
-def interp(t):
-    match t[0]:
-        case 'id':      #
-                        if t[1] in globals():
-                            return globals()[t[1]]
-                        else: return None
-        case 'int':     return t[1]
-        case 'str':     return t[1]
-        case '=':       globals()[t[1]] = interp(t[2])
-        case '+=':      globals()[t[1]] += interp(t[2])
-        case '-=':      globals()[t[1]] -= interp(t[2])
-        case '*':       return interp(t[1]) * interp(t[2])
-        case '/':       return interp(t[1]) / interp(t[2])
-        case '+':       # positive and addition
-                        if len(t) == 2: return +interp(t[1])
-                        elif len(t) == 3: return interp(t[1]) + interp(t[2])
-        case '-':       # negative and subtraction
-                        if len(t) == 2: return -interp(t[1])
-                        elif len(t) == 3: return interp(t[1]) - interp(t[2])
-        case 'eval':    return interp(t[1])
-        case 'print':   return print(interp(t[1]))
-        case 'for':     # looping
-                        for n in range(interp(t[2]), interp(t[3])):
-                            globals()[t[1]] = n
-                            for s in t[4:]: interp(s)
-        case 'scala':   # interpret each statement
-                        for s in t[1:]: interp(s)
-        case _:         raise Exception(f"interp: {t}")
 #-------------------------------------------------------------------------------
 # §5.2.2(i): The Scala interpreter normally operates by compiling a class ...
 # §5.2.2(i): ... for each line typed by the user, loading it into the JVM, ...
@@ -548,116 +508,10 @@ def interp(t):
 # §5.2.2(ii): ... the variables or functions on that line and ...
 # §5.2.2(ii): ... runs the line’s code in an initialize method.
 #-------------------------------------------------------------------------------
-def init():     return λ(f"scala = None; stack = []")   # + λ(f"pprint(stack)")
-def push(v):    return λ(f"stack.append([{v}])")        # + λ(f"pprint(stack)")
-def inject(v):  return ( λ(f"top = stack[-1].pop()")    # + λ(f"pprint(stack)")
-                       + λ(f"stack.append([{v}, top])") # + λ(f"pprint(stack)")
-                       )
-def item(v):    return λ(f"stack[-1].append({v})")      # + λ(f"pprint(stack)")
-def pop():      return ( λ(f"top = tuple(stack.pop())") # + λ(f"pprint(stack)")
-                       + λ(f"stack[-1].append(top)")    # + λ(f"pprint(stack)")
-                       )
-def fini():     return λ(f"scala = tuple(stack.pop())") # + λ(f"pprint(stack)")
-#-------------------------------------------------------------------------------
 # §5.2.2(iii): For example, if the user types var x = 5 followed by ...
 # §5.2.2(iii): ... println(x), the interpreter defines a class called Line1 ...
 # §5.2.2(iii): ... containing x and causes the second line to ...
 # §5.2.2(iii): ... compile to println(Line1.getInstance().x).
-#-------------------------------------------------------------------------------
-η           =   ARBNO(SPAN(' \t\r\n') | σ('//') + BREAK('\n'))
-def ς(s):       return η + σ(s)
-#-------------------------------------------------------------------------------
-integer     =   η + (SPAN(DIGITS)) @ "OUTPUT" % "txtint"
-string      =   η + (σ('"') + BREAK('"') + σ('"')) @ "OUTPUT" % "txtstr"
-identifier  =   ( η
-                + ( ANY(UCASE+LCASE)
-                  + (SPAN(DIGITS+UCASE+'_'+LCASE) | ε())
-                  ) @ "OUTPUT" % "id"
-                )
-#-------------------------------------------------------------------------------
-parameters  =   ( identifier + item("id")
-                + ARBNO(ς(',') + identifier + item("id"))
-                )
-function    =   ( push("'lambda'")
-                + parameters
-                + ς('=>')
-                + ζ(lambda: expression)
-                + pop()
-                )
-reference   =   ( identifier + push("'id'") + item("id") + pop()
-                | identifier + push("id")
-                + ς('(') + ζ(lambda: arguments) + ς(')') + pop()
-                )
-#-------------------------------------------------------------------------------
-element     =   ( integer + push("'int'") + item("eval(txtint)") + pop()
-                | string  + push("'str'") + item("eval(txtstr)") + pop()
-                | reference
-                | ς('(') + ζ(lambda: expression) + ς(')')
-                )
-factor      =   ( ς('+') + push("'+'") + ζ(lambda: factor) + pop()
-                | ς('-') + push("'-'") + ζ(lambda: factor) + pop()
-                | element
-                + ARBNO(
-                    ς('.') + inject("'.'") + reference + pop()
-                  | ς('[') + inject("'[]'") + ζ(lambda: expression) + ς(']')
-                  )
-                )
-term        =   ( factor
-                + ( ς('*') + inject("'*'") + ζ(lambda: term) + pop()
-                  | ς('/') + inject("'/'") + ζ(lambda: term) + pop()
-                  | ε()
-                  )
-                )
-expression  =   ( term
-                + ( ς('+') + inject("'+'") + ζ(lambda: expression) + pop()
-                  | ς('-') + inject("'-'") + ζ(lambda: expression) + pop()
-                  | ς('dot') + inject("'dot'") + ζ(lambda: expression) + pop()
-                  | ε()
-                  )
-                )
-#-------------------------------------------------------------------------------
-argument    =   ( function
-                | expression
-                + (ς('until') + inject("'until'") + expression + pop() | ε())
-                | ( ς('new') + push("'new'")
-                  + identifier + item("id")
-                  + ς('(') + ζ(lambda: arguments) + ς(')')
-                  + pop()
-                  )
-                )
-arguments   =   argument + ARBNO(ς(',') + argument) | ε()
-#-------------------------------------------------------------------------------
-assignment  =   ( (ς('var') | ς('val') | ε())
-                + identifier
-                + ( ς('=') + push("'='") + item("id")
-                  | ς('+=') + push("'+='") + item("id")
-                  | ς('-=') + push("'-='") + item("id")
-                  )
-                + expression
-                + pop()
-                )
-#-------------------------------------------------------------------------------
-loop        =   ( ς('for') + push("'for'")
-                + ς('(') + identifier + item("id")
-                + ς('<-') + expression + (ς('to') + expression | ε())
-                + ς(')') + ς('{')
-                + ζ(lambda: statements)
-                + ς('}')
-                + pop()
-                )
-#-------------------------------------------------------------------------------
-statement   =   ( loop
-                | assignment + ς(';')
-                | push("'eval'") + expression + ς(';') + pop()
-                )
-statements  =   ARBNO(statement)
-program     =   ( POS(0)
-                + init()
-                + push("'scala'")
-                + statements
-                + fini()
-                + η + RPOS(0)
-                )
 #-------------------------------------------------------------------------------
 # §5.2.3: We made two changes to the interpreter in Spark:
 #-------------------------------------------------------------------------------
@@ -786,41 +640,6 @@ def parsePoint(line):
         w -= learningRate * gradient;
     }
 """
-#-------------------------------------------------------------------------------
-if False:
-    data = list(range(1, 17))
-    rdd = data
-    rdd1 = rdd.map(lambda x: x * 2)
-    rdd2 = rdd1.filter(lambda x: x > 10)
-    rdd3 = rdd2.flatMap(lambda x: [x, -x])
-    rdd4 = rdd3.sample(0.5)
-    result = rdd4.collect()
-    print("Collected Result:", result)
-
-    pairs1 = [(x % 3, x) for x in range(1, 17)]
-    pairs2 = [(x % 3, x * 10) for x in range(1, 17)]
-    rddA = pairs1, num_partitions
-    rddB = pairs2, num_partitions
-    rddR = rddA.reduceByKey(lambda a, b: a + b)
-    print("reduceByKey result:", rddR.collect())
-    rddU = rddA.union(rddB)
-    print("Union result:", rddU.collect())
-    rddJ = rddA.join(rddB)
-    print("Join result:", rddJ.collect())
-    rddCG = rddA.cogroup(rddB)
-    print("Cogroup result:", rddCG.collect())
-    rddCP = rddA.crossProduct(rddB)
-    print("CrossProduct result:", rddCP.collect())
-    rddMV = rddA.mapValues(lambda v: v * 100)
-    print("mapValues result:", rddMV.collect())
-    rddSorted = rddA.sort(comparator=lambda k: k)
-    print("Sort result:", rddSorted.collect())
-    rddPB = rddA.partitionBy(lambda k: k)
-    print("PartitionBy result:", rddPB.collect())
-    print("Count:", rddA.count())
-    rddNums = rdd.map(lambda x: x)
-    print("Reduce result:", rddNums.reduce(lambda a, b: a + b))
-    print("Lookup key 1:", rddA.lookup(1))
 #===============================================================================
 # §5.3: Memory Management
 #-------------------------------------------------------------------------------
@@ -893,12 +712,54 @@ if False:
 # §5.4.4(ii): ... can be written out in the background without requiring ...
 # §5.4.4(ii): ... program pauses or distributed snapshot schemes.
 #===============================================================================
-GLOBALS(globals())
-TRACE(50)
-for example, example_source in examples.items():
-#   pprint(example_source)
-    if example_source in program:
-        pprint(scala)
-    #   pprint(interp(scala))
-    else: print("Boo!")
+#export PYTHONHASHSEED=42
+#export SPARK_LOCAL_IP=172.28.64.15
+from pyspark import SparkContext
+from pprint import pformat, pprint
+spark = SparkContext.getOrCreate()
+spark.setLogLevel("ERROR")
+data = list(range(1, 17))
+pairs1 = [(x % 2, x) for x in range(0, 4)]
+pairs2 = [(x % 2, x * 2) for x in range(0, 4)]
+tests = [
+  ("rdd",       lambda: spark.parallelize(data))
+, ("rdd_1",     lambda: rdd.map(lambda x: x * 2))
+, ("rdd_2",     lambda: rdd_1.filter(lambda x: x < 10))
+, ("rdd_3",     lambda: rdd_2.flatMap(lambda x: [x, -x]))
+, ("rdd_4",     lambda: rdd_3.sample(False, 0.5, seed=None))
+, ("rdd_A",     lambda: spark.parallelize(pairs1))
+, ("rdd_B",     lambda: spark.parallelize(pairs2))
+, (None,        lambda: [ (k, list(vs))
+                          for k, vs in rdd_A.groupByKey().collect()
+                        ])
+, ("rdd_G",     lambda: rdd_A.groupByKey().mapValues(lambda vs: list(vs)))
+, ("rdd_R",     lambda: rdd_A.reduceByKey(lambda total, count: total + count))
+, ("rdd_U",     lambda: rdd_A.union(rdd_B))
+, ("rdd_J",     lambda: rdd_A.join(rdd_B))
+, (None,        lambda: [ (k, [list(vv) for vv in vs])
+                          for k, vs in rdd_A.cogroup(rdd_B).collect()
+                        ])
+, ( "rdd_CG",   lambda: rdd_A.cogroup(rdd_B)
+                             .mapValues(lambda vs: [list(vv) for vv in vs]))
+, ("rdd_CP",    lambda: rdd_A.cartesian(rdd_B)) # .crossProduct(rdd_B)
+, ("rdd_MV",    lambda: rdd_A.mapValues(lambda v: v * 100))
+, ("rdd_S",     lambda: rdd_A.sortBy(lambda k: k,
+                                ascending=True,
+                                numPartitions=None)
+  )
+, ("rdd_PB",    lambda: rdd_A.partitionBy(4, lambda k: hash(k)))
+, (None,        lambda: rdd_A.count())
+, ("rdd_nums",  lambda: rdd.map(lambda x: x))
+, (None,        lambda: rdd_nums.reduce(lambda total, count: total + count))
+, (None,        lambda: rdd_A.lookup(1))
+]
+#-------------------------------------------------------------------------------
+for test in tests:
+    variable = test[0]
+    function = test[1]
+    value = function()
+    if (variable):
+        globals()[variable] = value
+        print(f"{variable}: {pformat(value.collect())}")
+    else: pprint(value)
 #===============================================================================
