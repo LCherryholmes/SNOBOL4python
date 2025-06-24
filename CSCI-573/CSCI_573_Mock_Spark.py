@@ -1,12 +1,11 @@
 #===============================================================================
-class RDD: # §2: Resilient Distributed Datasets (RDDs)
+# §2: Resilient Distributed Datasets (RDDs)
 # §2(i): This section provides an overview of RDDs.
-    def __init__(): # §2(ii): We first define RDDs (§2.1) ...
+# §2(ii): We first define RDDs (§2.1) ...
 # §2(ii): ... and introduce their programming interface in Spark (§2.2).
 # §2(iii): We then compare RDDs ...
 # §2(iii): ... with finer-grained shared memory abstractions (§2.3).
 # §2(iv): Finally, we discuss limitations of the RDD model (§2.4).
-Spark = None
 #-------------------------------------------------------------------------------
 # §2.1: RDD Abstraction
 # §2.1(i): Formally, an RDD is a read-only, partitioned collection of records.
@@ -31,9 +30,6 @@ Spark = None
 # §2.1(xi): This is useful for placement optimizations, such as ...
 # §2.1(xi): ... ensuring that two datasets that will be joined together ...
 # §2.1(xi): ... are hash-partitioned in the same way.
-records = None
-machines = None
-partitions = None
 #===============================================================================
 # §2.2: Spark Programming Interface
 #-------------------------------------------------------------------------------
@@ -49,15 +45,13 @@ partitions = None
 # §2.2.0.2(ii): ... operations that return a value to the application or ...
 # §2.2.0.2(ii): ... export data to a storage system.
 # §2.2.0.2(iii): Examples of actions include ...
-count = None   # §2.2.0.2(iii): ... count (which returns the number ...
-               # §2.2.0.2(iii): ... of elements in the dataset), ...
-collect = None # §2.2.0.2(iii): ... collect (which returns the elements themselves), and ...
-save = None    # §2.2.0.2(iii): ... save (which outputs the dataset to a storage system).
+# §2.2.0.2(iii): ... count (which returns the number ...
+# §2.2.0.2(iii): ... of elements in the dataset), ...
+# §2.2.0.2(iii): ... collect (which returns the elements themselves), and ...
+# §2.2.0.2(iii): ... save (which outputs the dataset to a storage system).
 # §2.2.0.2(iv): Like DryadLINQ, Spark computes RDDs lazily the first time ...
 # §2.2.0.2(iv): ... they are used in an action, so that it can pipeline ...
 # §2.2.0.2(iv): ... transformations.
-transformations = None
-actions = None
 #-------------------------------------------------------------------------------
 # §2.2.0.3(i): In addition, programmers can call a persist method to ...
 # §2.2.0.3(i): ... indicate which RDDs they want to reuse in future operations.
@@ -68,11 +62,8 @@ actions = None
 # §2.2.0.3(iii): ... replicating it across machines, through flags to persist.
 # §2.2.0.3(iv): Finally, users can set a persistence priority on each RDD ...
 # §2.2.0.3(iv): ... to specify which in-memory data should spill to disk first.
-persistence_priority = None
-in_memory = None
 #===============================================================================
 # §2.2.1: Example: Console Log Mining
-examples = dict()
 #-------------------------------------------------------------------------------
 # §2.2.1.1(i): Suppose that a web service is experiencing errors and an ...
 # §2.2.1.1(i): ... operator wants to search terabytes of logs ...
@@ -81,17 +72,16 @@ examples = dict()
 # §2.2.1.1(ii): ... from the logs into RAM across a set of nodes and ...
 # §2.2.1.1(ii): ... query them interactively.
 # §2.2.1.1(iii): She would first type the following Scala code:
-examples['2.2.1'] = """\
-lines = spark.textFile("hdfs://...");
-errors = lines.filter(line => line.startsWith("ERROR"));
-errors.persist();
-"""
-# §2.2.1.1(iv): Line 1 defines an RDD ...
-# §2.2.1.1(iv): ... backed by an HDFS file (as a collection of lines of ...
-# §2.2.1.1(iv): ... text), while line 2 derives a filtered RDD from it.
+examples = dict()
+# §2.2.1.1(iv): Line 1 defines an RDD backed by an HDFS file ...
+# §2.2.1.1(iv): ... (as a collection of lines of text), ...
+examples['2.2.1'] = """lines = spark.textFile("hdfs://...");\n"""
+# §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
+examples['2.2.1'] += """errors = lines.filter(line => line.startsWith("ERROR"));\n"""
 # §2.2.1.1(v): Line 3 then asks for errors to persist ...
 # §2.2.1.1(v): ... in memory so that it can be shared ...
 # §2.2.1.1(v): ... across queries.
+examples['2.2.1'] += """errors.persist();\n"""
 # §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
 #-------------------------------------------------------------------------------
 # §2.2.1.2(i): At this point, no work has been performed on the cluster.
@@ -130,7 +120,6 @@ errors.filter(line => line.contains("HDFS"))
 # §3.0.1(ii): ... and efficiency (due to static typing).
 # §3.0.1(iii): However, nothing about the RDD abstraction ...
 # §3.0.1(iii): ... requires a functional language.
-Scala = None
 #-------------------------------------------------------------------------------
 # §3.0.2(i): To use Spark, developers write a driver program ...
 # §3.0.2(i): ... that connects to a cluster of workers, as shown in Figure 2.
@@ -138,8 +127,6 @@ Scala = None
 # §3.0.2(iii): Spark code on the driver also tracks the RDDs lineage.
 # §3.0.2(iv): The workers are long-lived processes ...
 # §3.0.2(iv): ... that can store RDD partitions in RAM across operations.
-driver = None
-worker = None
 #-------------------------------------------------------------------------------
 # §3.0.3(i): As we showed in the log mining example in Section 2.2.1, ...
 # §3.0.3(i): ... users provide arguments to RDD operations like map ...
@@ -195,25 +182,6 @@ rdd.map(i => i + x);
 # Table 2.2(iv):   lookup(k: K):                           RDD[(K, V)] => Seq[V]
 # Table 2.2(iv):                                (On hash/range partitioned RDDs)
 # Table 2.2(v):    save(path: String): Outputs RDD to a storage system, HDFS
-#===============================================================================
-def map(): pass
-def filter(): pass
-def flatMap(): pass
-def sample(): pass
-def groupByKey(): pass
-def reduceByKey(): pass
-def union(): pass
-def join(): pass
-def cogroup(): pass
-def crossProduct(): pass
-def mapValues(): pass
-def sort(): pass
-def partitionBy(): pass
-def count(): pass
-def collect(): pass
-def reduce(): pass
-def lookup(): pass
-def save(): pass
 #===============================================================================
 # §3.1 RDD Operations in Spark
 #-------------------------------------------------------------------------------
@@ -367,11 +335,11 @@ links = spark.textFile("...").map("...").partitionBy(myPartFunc).persist();
 #-------------------------------------------------------------------------------
 # §4.2(i): In a nutshell, we propose representing each RDD through a ...
 # §4.2(i): ... common interface that exposes five pieces of information: ...
-partitions = None       # §4.2(i): ... a set of partitions, which are atomic pieces of the dataset; ...
-dependencies = None     # §4.2(i): ... a set of dependencies on parent RDDs; ...
-compute_function = None # §4.2(i): ... a function for computing the dataset based on its parents; ...
-metadata = None         # §4.2(i): ... and metadata about its partitioning scheme ...
-data_placement = None   # §4.2(i): ... and data placement.
+# §4.2(i): ... a set of partitions, which are atomic pieces of the dataset; ...
+# §4.2(i): ... a set of dependencies on parent RDDs; ...
+# §4.2(i): ... a function for computing the dataset based on its parents; ...
+# §4.2(i): ... and metadata about its partitioning scheme ...
+# §4.2(i): ... and data placement.
 # §4.2(ii): For example, an RDD representing an HDFS file has a partition ...
 # §4.2(ii): ... for each block of the file and knows ...
 # §4.2(ii): ... which machines each block is on.
@@ -379,21 +347,20 @@ data_placement = None   # §4.2(i): ... and data placement.
 # §4.2(iii): ... the same partitions, but applies the map function ...
 # §4.2(iii): ... to the parent’s data when computing its elements.
 # §4.2(iv): We summarize this interface in Table 3.
-file_block = None
 #-------------------------------------------------------------------------------
 # Table 3: Interface used to represent RDDs in Spark
 # Table 3(i): Operation: Meaning
-def partitions(): pass      # Table 3(ii):  partitions(): Return a list of Partition objects
-def preferredLocations():   # Table 3(iii): preferredLocations(p): ...
-    pass                    # Table 3(iii): ... List nodes where partition p can be accessed faster ...
-                            # Table 3(iii): ... due to data locality
-def dependencies(): pass    # Table 3(iv):  dependencies(): Return a list of dependencies
-def iterator(): pass        # Table 3(v):   iterator(p, parentIters): ...
-                            # Table 3(v):   ... Compute the elements of partition p ...
-                            # Table 3(v):   ... given iterators for its parent partitions
-def partitioner(): pass     # Table 3(vi):  partitioner(): ...
-                            # Table 3(vi):  ... Return metadata specifying ...
-                            # Table 3(vi):  ... whether the RDD is hash/range partitioned
+# Table 3(ii):  partitions(): Return a list of Partition objects
+# Table 3(iii): preferredLocations(p): ...
+# Table 3(iii): ... List nodes where partition p can be accessed faster ...
+# Table 3(iii): ... due to data locality
+# Table 3(iv):  dependencies(): Return a list of dependencies
+# Table 3(v):   iterator(p, parentIters): ...
+# Table 3(v):   ... Compute the elements of partition p ...
+# Table 3(v):   ... given iterators for its parent partitions
+# Table 3(vi):  partitioner(): ...
+# Table 3(vi):  ... Return metadata specifying ...
+# Table 3(vi):  ... whether the RDD is hash/range partitioned
 #-------------------------------------------------------------------------------
 # §4.3(i): The most interesting question in designing this interface ...
 # §4.3(i): ... is how to represent dependencies between RDDs.
@@ -407,8 +374,6 @@ def partitioner(): pass     # Table 3(vi):  partitioner(): ...
 # §4.3(iii): ... while join leads to to wide dependencies ...
 # §4.3(iii): ... (unless the parents are hash-partitioned).
 # §4.3(iv): Figure 4 shows other examples.
-narrow_dependencies = None
-wide_dependencies = None
 #-------------------------------------------------------------------------------
 # §4.4(i): This distinction is useful for two reasons.
 # §4.4(ii): First, narrow dependencies allow for pipelined execution on ...
@@ -433,27 +398,27 @@ wide_dependencies = None
 # §4.5(ii): ... without knowing the details of the scheduler.
 # §4.5(iii): We sketch some RDD implementations below.
 #-------------------------------------------------------------------------------
-def textFile(): pass # §4.5.1(i): HDFS files: The input RDDs in our samples have been files in HDFS.
+# §4.5.1(i): HDFS files: The input RDDs in our samples have been files in HDFS.
 # §4.5.1(ii): For these RDDs, partitions returns one partition for each ...
 # §4.5.1(ii): ... block of the file (with the block’s offset stored in each ...
 # §4.5.1(ii): ... Partition object), preferredLocations gives the nodes the ...
 # §4.5.1(ii): ... block is on, and iterator reads the block.
 #-------------------------------------------------------------------------------
-def map(): pass # §4.5.2(i): map: Calling map on any RDD returns a MappedRDD object.
+# §4.5.2(i): map: Calling map on any RDD returns a MappedRDD object.
 # §4.5.2(ii): This object has the same partitions and preferred locations ...
 # §4.5.2(ii): ... as its parent, but applies the function passed to map ...
 # §4.5.2(ii): ... to the parent’s records in its iterator method.
 #-------------------------------------------------------------------------------
-def union(): pass # §4.5.3(i): union: Calling union on two RDDs returns an RDD ...
+# §4.5.3(i): union: Calling union on two RDDs returns an RDD ...
 # §4.5.3(i): ... whose partitions are the union of those of the parents.
 # §4.5.3(ii): Each child partition is computed through a narrow dependency ...
 # §4.5.3(ii): ... on the corresponding parent.
 #-------------------------------------------------------------------------------
-def sample(): pass # §4.5.4: sample: Sampling is similar to mapping, except that the RDD ...
+# §4.5.4: sample: Sampling is similar to mapping, except that the RDD ...
 # §4.5.4: ... stores a random number generator seed for each partition ...
 # §4.5.4: ... to deterministically sample parent records.
 #-------------------------------------------------------------------------------
-def join(): pass # §4.5.5(i): join: Joining two RDDs may lead to either ...
+# §4.5.5(i): join: Joining two RDDs may lead to either ...
 # §4.5.5(i): ... two narrow dependencies (if they are both hash/range ...
 # §4.5.5(i): ... partitioned with the same partitioner), ...
 # §4.5.5(i): ... two wide dependencies, or a mix (if one parent has a ...
@@ -464,14 +429,10 @@ def join(): pass # §4.5.5(i): join: Joining two RDDs may lead to either ...
 # §5: Implementation
 #-------------------------------------------------------------------------------
 # §5.0.1(i): We have implemented Spark in about 14,000 lines of Scala.
-Spark = None
-Mesos = None # §5.0.1(ii): The system runs over the Mesos cluster manager ...
-Mesos_cluster_manager = None
+# §5.0.1(ii): The system runs over the Mesos cluster manager ...
 # §5.0.1(ii): ... [17], allowing it to share resources with Hadoop, ...
 # §5.0.1(ii): ... MPI and other applications.
 # §5.0.1(iii): Each Spark program runs as a separate Mesos application, ...
-Spark_program = None
-Mesos_application = None
 # §5.0.1(iii): ... with its own driver (master) and workers, and resource ...
 # §5.0.1(iii): ... sharing between these applications is handled by Mesos.
 #-------------------------------------------------------------------------------
@@ -504,8 +465,6 @@ Mesos_application = None
 # §5.1.2(iv): ... computation of a parent RDD.
 # §5.1.2(v): The scheduler then launches tasks to compute missing partitions ...
 # §5.1.2(v): ... from each stage until it has computed the target RDD.
-scheduler = None
-tasks = None
 #-------------------------------------------------------------------------------
 # §5.1.2(i): Our scheduler assigns tasks to machines ...
 # §5.1.2(i): ... based on data locality using delay scheduling [32].
@@ -639,10 +598,8 @@ factor      =   ( ς('+') + push("'+'") + ζ(lambda: factor) + pop()
                 | ς('-') + push("'-'") + ζ(lambda: factor) + pop()
                 | element
                 + ARBNO(
-                    ς('.')
-                  + inject("'.'")
-                  + reference
-                  + pop()
+                    ς('.') + inject("'.'") + reference + pop()
+                  | ς('[') + inject("'[]'") + ζ(lambda: expression) + ς(']')
                   )
                 )
 term        =   ( factor
@@ -830,59 +787,42 @@ def parsePoint(line):
     }
 """
 #-------------------------------------------------------------------------------
+if False:
     data = list(range(1, 17))
-    rdd = RDD_full(base_data=data, num_partitions=4)
+    rdd = data
     rdd1 = rdd.map(lambda x: x * 2)
     rdd2 = rdd1.filter(lambda x: x > 10)
     rdd3 = rdd2.flatMap(lambda x: [x, -x])
     rdd4 = rdd3.sample(0.5)
     result = rdd4.collect()
     print("Collected Result:", result)
-    print("=" * 50)
 
     pairs1 = [(x % 3, x) for x in range(1, 17)]
-    pairs2 = [((x % 3), x * 10) for x in range(1, 17)]
-    rddA = RDD_full(base_data=pairs1, num_partitions=4)
-    rddB = RDD_full(base_data=pairs2, num_partitions=4)
+    pairs2 = [(x % 3, x * 10) for x in range(1, 17)]
+    rddA = pairs1, num_partitions
+    rddB = pairs2, num_partitions
     rddR = rddA.reduceByKey(lambda a, b: a + b)
     print("reduceByKey result:", rddR.collect())
-    print("=" * 50)
     rddU = rddA.union(rddB)
     print("Union result:", rddU.collect())
-    print("=" * 50)
     rddJ = rddA.join(rddB)
     print("Join result:", rddJ.collect())
-    print("=" * 50)
     rddCG = rddA.cogroup(rddB)
-    print("CoGroup result:", rddCG.collect())
-    print("=" * 50)
+    print("Cogroup result:", rddCG.collect())
     rddCP = rddA.crossProduct(rddB)
     print("CrossProduct result:", rddCP.collect())
-    print("=" * 50)
     rddMV = rddA.mapValues(lambda v: v * 100)
     print("mapValues result:", rddMV.collect())
-    print("=" * 50)
     rddSorted = rddA.sort(comparator=lambda k: k)
     print("Sort result:", rddSorted.collect())
-    print("=" * 50)
     rddPB = rddA.partitionBy(lambda k: k)
     print("PartitionBy result:", rddPB.collect())
-    print("=" * 50)
     print("Count:", rddA.count())
     rddNums = rdd.map(lambda x: x)
     print("Reduce result:", rddNums.reduce(lambda a, b: a + b))
     print("Lookup key 1:", rddA.lookup(1))
-    rddA.save("rddA_output.txt")
-#-------------------------------------------------------------------------------
-GLOBALS(globals())
-TRACE(40)
-if program_source in program:
-    pprint(scala)
-    pprint(interp(scala))
-else: print("Boo!")
 #===============================================================================
 # §5.3: Memory Management
-memory_management = None
 #-------------------------------------------------------------------------------
 # §5.3.1(i): Spark provides three options for storage of persistent RDDs: ...
 # §5.3.1(i): ... in-memory storage as deserialized Java objects, ...
@@ -916,7 +856,7 @@ memory_management = None
 # §5.3.3(ii): In future work, we plan to investigate sharing RDDs ...
 # §5.3.3(ii): ... across instances of Spark through a unified memory manager.
 #===============================================================================
-checkpoint = None # §5.4: Support for Checkpointing
+# §5.4: Support for Checkpointing
 #-------------------------------------------------------------------------------
 # §5.4.1(i): Although lineage can always be used to recover RDDs ...
 # §5.4.1(i): ... after a failure, such recovery may be time-consuming ...
@@ -952,4 +892,13 @@ checkpoint = None # §5.4: Support for Checkpointing
 # §5.4.4(ii): Because consistency is not a concern, RDDs ...
 # §5.4.4(ii): ... can be written out in the background without requiring ...
 # §5.4.4(ii): ... program pauses or distributed snapshot schemes.
+#===============================================================================
+GLOBALS(globals())
+TRACE(50)
+for example, example_source in examples.items():
+#   pprint(example_source)
+    if example_source in program:
+        pprint(scala)
+    #   pprint(interp(scala))
+    else: print("Boo!")
 #===============================================================================
