@@ -10,8 +10,8 @@
 #export PYTHONHASHSEED=42
 #export SPARK_LOCAL_IP=172.28.64.15
 import pickle
-from pyspark import SparkContext
 from pprint import pformat, pprint
+from pyspark import SparkContext
 from functools import reduce
 from collections import defaultdict
 spark = SparkContext.getOrCreate()
@@ -227,11 +227,12 @@ def example_3_0(context): # §3.0.3(iv): ... to add 5 to each element of an RDD.
 # §3.1.1(iii): Recall that transformations are lazy operations that define ...
 # §3.1.1(iii): ... a new RDD, while actions launch a computation to return ...
 # §3.1.1(iii): ... a value to the program or write data to external storage.
-#===============================================================================
+#-------------------------------------------------------------------------------
 # Table 2(i): Transformations and actions available on RDDs in Spark.
 # Table 2(ii): Seq[T] denotes a sequence of elements of type T.
-# Table 2.1: ----- Transformations: --------------------------------------------
-#-------------------------------------------------------------------------------
+#===============================================================================
+# Table 2.1: ===== Transformations: ============================================
+#===============================================================================
 # Table 2.1(i):     map(f: T => U): RDD[T] => RDD[U]
 MockRDD.ops       ["map"] = _map; del _map
 setattr(MockRDD,   "map", lambda self, func:
@@ -333,8 +334,9 @@ def _partitionBy(records, numPartitions, partitionFunc):
 MockRDD.ops       ["partitionBy"] = _partitionBy; del _partitionBy
 setattr(MockRDD,   "partitionBy", lambda self, numPartitions, partitionFunc=None:
         MockRDD(op="partitionBy", deps=[self], args=(numPartitions, partitionFunc)))
-# Table 2.2: ----- Actions: ----------------------------------------------------
-#-------------------------------------------------------------------------------
+#===============================================================================
+# Table 2.2: ===== Actions: ====================================================
+#===============================================================================
 # Table 2.2(i): count(): RDD[T] => Long
 def _count(self):
     return len(self.compute())
@@ -361,9 +363,8 @@ setattr(MockRDD, "lookup", _lookup); del _lookup
 #-------------------------------------------------------------------------------
 # Table 2.2(v): save(path: String): (Outputs RDD to a storage system, HDFS)
 def _save(self, path): # Table 2.2(iv): (On hash/range partitioned RDDs)
-    self.compute()
     with open(path, 'wb') as file:
-        pickle.dump(records, path)
+        pickle.dump(self.compute(), path)
     return self
 setattr(MockRDD, "save", _save); del _save
 #-------------------------------------------------------------------------------
