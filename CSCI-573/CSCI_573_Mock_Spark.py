@@ -17,20 +17,36 @@ from collections import defaultdict
 spark = SparkContext.getOrCreate()
 spark.setLogLevel("ERROR")
 #-------------------------------------------------------------------------------
+unique_id = 0
+def next_id(): global unique_id; unique_id += 1; return unique_id
+#-------------------------------------------------------------------------------
+machines = ["Brazos", "Colorado", "Guadalupe", "Pecos", "Trinity"]
+N_MACHINES = len(machines)
+class Machine:
+    def __init__(self, id):
+        self.name = machines[id]
+        self.files = defaultdict(list)
+        self.records = defaultdict(list)
+cluster = [Machine(n) for n in range(0, N_MACHINES)]
+#-------------------------------------------------------------------------------
 # §2.1: RDD Abstraction
 class MockRDD: # §2.1(i): Formally, an RDD is a read-only, partitioned ...
                # §2.1(i): ... collection of records.
     def __init__(self, records=None, op=None, deps=None, args=None):
-        self.records = records
         self.op = op
         self.deps = deps
         self.args = args
+        if records:
+            self.uid = next_id()
+            cluster[0].records[self.uid] = records
+        else: self.uid = 0
     ops = dict()
     def compute(self):
-        if self.op and not self.records:
+        if self.op and self.uid == 0:
             args = [dep.compute() for dep in self.deps] + list(self.args)
-            self.records = self.ops[self.op](*args)
-        return self.records
+            self.uid = next_id()
+            cluster[0].records[self.uid] = self.ops[self.op](*args)
+        return cluster[0].records[self.uid]
 #-------------------------------------------------------------------------------
 # §2.1(ii): RDDs can only be created through deterministic ...
 # §2.1(ii): ...  operations on either (1) data in stable storage ...
@@ -64,6 +80,7 @@ def _join(records, other_records, numPartitions):
 # §2.1(vi): Instead, an RDD has enough information about how it was derived ...
 # §2.1(vi): ... from other datasets (its lineage) to compute its partitions ...
 # §2.1(vi): ... from data in stable storage.
+#-------------------------------------------------------------------------------
 # §2.1(vii): This is a powerful property: in essence, a program cannot ...
 # §2.1(vii): ... reference an RDD that it cannot reconstruct after a failure.
 # §2.1(viii): Finally, users can control two other aspects of RDDs: ...
