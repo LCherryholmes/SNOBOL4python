@@ -9,19 +9,50 @@
 #-------------------------------------------------------------------------------
 #export PYTHONHASHSEED=42
 #export SPARK_LOCAL_IP=172.28.64.15
+import pickle
 from pyspark import SparkContext
 from pprint import pformat, pprint
+from functools import reduce
+from collections import defaultdict
 spark = SparkContext.getOrCreate()
 spark.setLogLevel("ERROR")
 #-------------------------------------------------------------------------------
 # §2.1: RDD Abstraction
-# §2.1(i): Formally, an RDD is a read-only, partitioned collection of records.
-# §2.1(ii): RDDs can only be created through deterministic operations on ...
-# §2.1(ii): ... either (1) data in stable storage ...
+class MockRDD: # §2.1(i): Formally, an RDD is a read-only, partitioned ...
+    def __init__(self, records=None): # §2.1(i): ... collection of records.
+        self.records = records
+# §2.1(ii): RDDs can only be created through deterministic ...
+# §2.1(ii): ...  operations on either (1) data in stable storage ...
 # §2.1(ii): ... or (2) other RDDs.
+class SpockContext:
+    def textFile(self, filename, minPartitions=4):
+        with open(filename) as file:
+            return MockRDD([line.rstrip('\n') for line in file])
+    def parallelize(self, sequence, numSlices=4):
+        return MockRDD(list(sequence))
+spock = SpockContext()
+#-------------------------------------------------------------------------------
 # §2.1(iii): We call these operations transformations ...
 # §2.1(iii): ... to differentiate them from other operations on RDDs.
 # §2.1(iv): Examples of transformations include map, filter, and join.
+def _map(self, func):    return MockRDD([func(x) for x in self.records])
+def _filter(self, func): return MockRDD([x for x in self.records if func(x)])
+def _join(self, other, numPartitions=None):
+    memory = {}
+    for x in self.records:
+        memory.setdefault(x[0], []).append(x)
+    new_data = []
+    for y in other.records:
+        if y[0] in memory:
+            for x in memory[y[0]]:
+                assert x[0] == y[0]
+                new_data.append((x[0], (x[1], y[1])))
+    return MockRDD(new_data)
+#-------------------------------------------------------------------------------
+setattr(MockRDD, "map",     _map);    del _map
+setattr(MockRDD, "filter",  _filter); del _filter
+setattr(MockRDD, "join",    _join);   del _join
+#-------------------------------------------------------------------------------
 # §2.1(v): RDDs do not need to be materialized at all times.
 # §2.1(vi): Instead, an RDD has enough information about how it was derived ...
 # §2.1(vi): ... from other datasets (its lineage) to compute its partitions ...
@@ -30,8 +61,10 @@ spark.setLogLevel("ERROR")
 # §2.1(vii): ... reference an RDD that it cannot reconstruct after a failure.
 # §2.1(viii): Finally, users can control two other aspects of RDDs: ...
 # §2.1(viii): ... persistence and partitioning.
-# §2.1(ix): Users can indicate which RDDs they will reuse and ...
-# §2.1(ix): ... choose a storage strategy for them (e.g., in-memory storage).
+def _persist(self, storage='memory'): # §2.1(ix): Users can indicate which ...
+    self.persisted = True # ... RDDs they will reuse and choose a storage ...
+    self.storage = storage # ... strategy for them (e.g., in-memory storage).
+setattr(MockRDD, "persist", _persist); del _persist
 # §2.1(x): They can also ask that an RDD’s elements be partitioned ...
 # §2.1(x): ... across machines based on a key in each record.
 # §2.1(xi): This is useful for placement optimizations, such as ...
@@ -51,14 +84,30 @@ spark.setLogLevel("ERROR")
 # §2.2.0.2(ii): They can then use these RDDs in actions, which are ...
 # §2.2.0.2(ii): ... operations that return a value to the application or ...
 # §2.2.0.2(ii): ... export data to a storage system.
+#-------------------------------------------------------------------------------
 # §2.2.0.2(iii): Examples of actions include ...
-# §2.2.0.2(iii): ... count (which returns the number ...
-# §2.2.0.2(iii): ... of elements in the dataset), ...
-# §2.2.0.2(iii): ... collect (which returns the elements themselves), and ...
-# §2.2.0.2(iii): ... save (which outputs the dataset to a storage system).
+def _count(self): # §2.2.0.2(iii): ... count (which returns the ...
+    return len(self.collect()) # ... number of elements in the dataset), ...
+def _collect(self): # ... collect (which returns the ...
+    return self.records # ... elements themselves), and ...
+def _save(self, filename): # ... save (which outputs the ...
+    with open(filename, 'wb') as file: # ... dataset to a storage system).
+        pickle.dump(self.records, file)
+#-------------------------------------------------------------------------------
+setattr(MockRDD, "count",   _count);    del _count
+setattr(MockRDD, "collect", _collect);  del _collect
+setattr(MockRDD, "save",    _save);     del _save
+#-------------------------------------------------------------------------------
 # §2.2.0.2(iv): Like DryadLINQ, Spark computes RDDs lazily the first time ...
 # §2.2.0.2(iv): ... they are used in an action, so that it can pipeline ...
 # §2.2.0.2(iv): ... transformations.
+#-------------------------------------------------------------------------------
+def test_2_2_0_2(context):
+    records = [(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]
+    rdd_1 = context.parallelize(records);               pprint(rdd_1.collect())
+    rdd_2 = rdd_1.map(lambda x: (x[0], x[1].upper()));  pprint(rdd_2.collect())
+    rdd_3 = rdd_2.filter(lambda x: x[0] % 2 == 0);      pprint(rdd_3.collect())
+    rdd_4 = rdd_1.join(rdd_3);                          pprint(rdd_4.collect())
 #-------------------------------------------------------------------------------
 # §2.2.0.3(i): In addition, programmers can call a persist method to ...
 # §2.2.0.3(i): ... indicate which RDDs they want to reuse in future operations.
@@ -88,11 +137,11 @@ hdfs_log = [
 # §2.2.1.1(ii): ... from the logs into RAM across a set of nodes and ...
 # §2.2.1.1(ii): ... query them interactively.
 errors = None # §2.2.1.1(iii): She would first type the following Scala code:
-def example_2_2_1_1():
+def example_2_2_1_1(context):
     global errors
     # §2.2.1.1(iv): Line 1 defines an RDD backed by an ...
     # §2.2.1.1(iv): ... HDFS file (as a collection of lines of text), ...
-    lines = spark.parallelize(hdfs_log) #.textFile("hdfs://...")
+    lines = context.parallelize(hdfs_log) #.textFile("hdfs://...")
     # §2.2.1.1(iv): ... while line 2 derives a filtered RDD from it.
     errors = lines.filter(lambda line: line.startswith("ERROR"))
     errors.persist() # §2.2.1.1(v): Line 3 then asks for errors to persist ...
@@ -103,12 +152,12 @@ def example_2_2_1_1():
 # §2.2.1.2(i): At this point, no work has been performed on the cluster.
 # §2.2.1.2(ii): However, the user can now use the RDD in actions, ...
 # §2.2.1.2(ii): ... e.g., to count the number of messages:
-def example_2_2_1_2():
+def example_2_2_1_2(context):
     pprint(["errors count", errors.count()])
 #-------------------------------------------------------------------------------
 # §2.2.1.3(i): The user can also perform further transformations on the RDD ...
 # §2.2.1.3(i): ... and use their results, as in the following lines:
-def example_2_2_1_3():
+def example_2_2_1_3(context):
     # Count errors mentioning MySQL:
     count = errors.filter(lambda line: line.find("MySQL") > 0).count()
     pprint(["MySQL count", count])
@@ -154,9 +203,9 @@ def example_2_2_1_3():
 # §3.0.3(ii): ... to pass the closure across the network.
 # §3.0.3(iii): Scala also saves any variables bound in the closure ...
 # §3.0.3(iii): ... as fields in the Java object.
-x = 5
-def example_3_0(): # §3.0.3(iv): For example, one can write code like to ...
-    rdd.map(lambda i: i + x) # §3.0.3(iv): ... add 5 to each element of an RDD.
+x = 5 # §3.0.3(iv): For example, one can write code like ...
+def example_3_0(context): # §3.0.3(iv): ... to add 5 to each element of an RDD.
+    rdd.map(lambda i: i + x)
 #-------------------------------------------------------------------------------
 # §3.0.4(i): RDDs themselves are statically typed ...
 # §3.0.4(i): ... objects parametrized by an element type.
@@ -174,30 +223,91 @@ def example_3_0(): # §3.0.3(iv): For example, one can write code like to ...
 # Table 2(i): Transformations and actions available on RDDs in Spark.
 # Table 2(ii): Seq[T] denotes a sequence of elements of type T.
 # Table 2.1: ----- Transformations: --------------------------------------------
-# Table 2.1(i):    map(f: T => U):                              RDD[T] => RDD[U]
-# Table 2.1(ii):   filter(f: T => Bool):                        RDD[T] => RDD[T]
-# Table 2.1(iii):  flatMap(f: T => Seq[U]):                     RDD[T] => RDD[U]
-# Table 2.1(iv):   sample(fraction: Float):                     RDD[T] => RDD[T]
+# Table 2.1(i): map(f: T => U): RDD[T] => RDD[U]
+# Table 2.1(ii): filter(f: T => Bool): RDD[T] => RDD[T]
+#-------------------------------------------------------------------------------
+# Table 2.1(iii): flatMap(f: T => Seq[U]): RDD[T] => RDD[U]
+def _flatMap(self, func):
+    return MockRDD([y for x in self.records for y in func(x)])
+setattr(MockRDD, "flatMap", _flatMap); del _flatMap
+#-------------------------------------------------------------------------------
+# Table 2.1(iv): sample(fraction: Float): RDD[T] => RDD[T]
+def _sample(self, withReplacement, fraction, seed=42):
+    random.seed(seed)
+    return MockRDD([x for x in self.records if random.random() < fraction])
+setattr(MockRDD, "sample", _sample); del _sample
 # Table 2.1(iv):                                        (Deterministic sampling)
-# Table 2.1(v):    groupByKey():                 RDD[(K, V)] => RDD[(K, Seq[V])]
-# Table 2.1(vi):   reduceByKey(f: (V, V) => V):       RDD[(K, V)] => RDD[(K, V)]
-# Table 2.1(vii):  union():                           (RDD[T], RDD[T]) => RDD[T]
-# Table 2.1(viii): join():                            (RDD[(K, V)], RDD[(K, W)])
-# Table 2.1(viii):                                           => RDD[(K, (V, W))]
-# Table 2.1(ix):   cogroup():                         (RDD[(K, V)], RDD[(K, W)])
-# Table 2.1(ix):                                   => RDD[(K, (Seq[V], Seq[W]))]
-# Table 2.1(x):    crossProduct():               (RDD[T], RDD[U]) => RDD[(T, U)]
-# Table 2.1(xi):   mapValues(f: V => W):              RDD[(K, V)] => RDD[(K, W)]
-# Table 2.1(xi):                                        (Preserves partitioning)
-# Table 2.1(xii):  sort(c: Comparator[K]):            RDD[(K, V)] => RDD[(K, V)]
-# Table 2.1(xiii): partitionBy(p: Partitioner[K]):    RDD[(K, V)] => RDD[(K, V)]
+#-------------------------------------------------------------------------------
+# Table 2.1(v): groupByKey(): RDD[(K, V)] => RDD[(K, Seq[V])]
+def _groupByKey(self): # Only for RDDs of key-value pairs
+    grouped = dict()
+    for k, v in self.records:
+        grouped.setdefault(k, []).append(v)
+    return MockRDD(list(grouped.items()))
+setattr(MockRDD, "groupByKey", _groupByKey); del _groupByKey
+#-------------------------------------------------------------------------------
+# Table 2.1(vi): reduceByKey(f: (V, V) => V): RDD[(K, V)] => RDD[(K, V)]
+def _reduceByKey(self, func): # Only for RDDs of key-value pairs
+    reduced = dict()
+    for k, v in self.records:
+        reduced.setdefault(k, []).append(v)
+    return MockRDD([(k, reduce(func, vlist)) for k, vlist in reduced.items()])
+setattr(MockRDD, "reduceByKey", _reduceByKey); del _reduceByKey
+#-------------------------------------------------------------------------------
+# Table 2.1(vii): union(): (RDD[T], RDD[T]) => RDD[T]
+def _union(self, other):
+    return MockRDD(self.records + other.records)
+setattr(MockRDD, "union", _union); del _union
+# Table 2.1(viii): join(): (RDD[(K, V)], RDD[(K, W)]) => RDD[(K, (V, W))]
+# Table 2.1(ix): cogroup(): (RDD[(K, V)], RDD[(K, W)])
+# Table 2.1(ix):          => RDD[(K, (Seq[V], Seq[W]))]
+def _cogroup(self, other):
+    dict_self = defaultdict(list)
+    for k, v in self.records:
+        dict_self[k].append(v)
+    dict_other = defaultdict(list)
+    for k, w in other.records:
+        dict_other[k].append(w)
+    keys = set(dict_self.keys()) | set(dict_other.keys())
+    result = []
+    for k in keys:
+        result.append((k, (dict_self[k], dict_other[k])))
+    return MockRDD(result)
+setattr(MockRDD, "cogroup", _cogroup); del _cogroup
+# Table 2.1(x): crossProduct(): (RDD[T], RDD[U]) => RDD[(T, U)]
+def _cartesian(self, other):
+    return MockRDD([(x, y) for x in self.records for y in other.records])
+setattr(MockRDD, "cartesian", _cartesian); del _cartesian
+# Table 2.1(xi): mapValues(f: V => W): RDD[(K, V)] => RDD[(K, W)]
+# Table 2.1(xi): (Preserves partitioning)
+def _mapValues(self, func):
+    return MockRDD([(k, func(v)) for k, v in self.records])
+setattr(MockRDD, "mapValues", _mapValues); del _mapValues
+# Table 2.1(xii): sort(c: Comparator[K]): RDD[(K, V)] => RDD[(K, V)]
+def _sortBy(self, keyfunc=None, ascending=True, numPartitions=None):
+    return MockRDD(sorted(self.records, key=keyfunc, reverse=not ascending))
+setattr(MockRDD, "sortBy", _sortBy); del _sortBy
+# Table 2.1(xiii): partitionBy(p: Partitioner[K]): RDD[(K, V)] => RDD[(K, V)]
+def _partitionBy(self, numPartitions, partitionFunc=None):
+    return MockRDD(self.records)
+setattr(MockRDD, "partitionBy", _partitionBy); del _partitionBy
 # Table 2.2: ----- Actions: ----------------------------------------------------
-# Table 2.2(i):    count():                                       RDD[T] => Long
-# Table 2.2(ii):   collect():                                   RDD[T] => Seq[T]
-# Table 2.2(iii):  reduce(f: (T, T) => T):                           RDD[T] => T
-# Table 2.2(iv):   lookup(k: K):                           RDD[(K, V)] => Seq[V]
-# Table 2.2(iv):                                (On hash/range partitioned RDDs)
-# Table 2.2(v):    save(path: String): Outputs RDD to a storage system, HDFS
+# Table 2.2(i): count(): RDD[T] => Long
+# Table 2.2(ii): collect(): RDD[T] => Seq[T]
+# Table 2.2(iii): reduce(f: (T, T) => T): RDD[T] => T
+def _reduce(self, func):
+    iterator = iter(self.records)
+    result = next(iterator)
+    for x in iterator:
+        result = func(result, x)
+    return result
+setattr(MockRDD, "reduce", _reduce); del _reduce
+# Table 2.2(iv): lookup(k: K): RDD[(K, V)] => Seq[V]
+# Table 2.2(iv): (On hash/range partitioned RDDs)
+def _lookup(self, key):
+    return [v for k, v in self.records if k == key]
+setattr(MockRDD, "lookup", _lookup); del _lookup
+# Table 2.2(v): save(path: String): (Outputs RDD to a storage system, HDFS)
 #===============================================================================
 # §3.1 RDD Operations in Spark
 #-------------------------------------------------------------------------------
@@ -262,13 +372,13 @@ def parsePoint(line):
 # §3.2.1.2(ii): ... value, and on each iteration, it sums a function of w ...
 # §3.2.1.2(ii): ... over the data to move w in a direction that improves it.
 #-------------------------------------------------------------------------------
-def example_3_2_1():
+def example_3_2_1(context):
     DIMENSIONS = len(parsePoint(points_data[0]).x)
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # §3.2.1.3(i): We start by defining a persistent RDD called points as the ...
     # §3.2.1.3(i): ... result of a map transformation on a text file that ...
     # §3.2.1.3(i): ... parses each line of text into a Point object.
-    points = spark.parallelize(points_data).map(parsePoint)
+    points = context.parallelize(points_data).map(parsePoint)
     points.persist()
     w = [random.uniform(-1, 1) for _ in range(DIMENSIONS)]
     def gradient_func(p):
@@ -300,6 +410,12 @@ graph_data = [          # §3.2.2.1(ii): The algorithm iteratively updates a ...
     ("D", ["C"])
 ]
 #-------------------------------------------------------------------------------
+def display_ranks(ranks):
+    print("PageRank: ", end="")
+    for url, rank in sorted(ranks.collect()):
+        print(f" {url}: {rank:.4f}", end="")
+    print()
+#-------------------------------------------------------------------------------
 # §3.2.2.1(iii): On each iteration, each document sends a contribution of ...
 # §3.2.2.1(iii): ... "r / n" to its neighbors, where ...
 # §3.2.2.1(iii): ... r is its rank and ...
@@ -310,21 +426,15 @@ graph_data = [          # §3.2.2.1(ii): The algorithm iteratively updates a ...
 # §3.2.2.1(iv): ... N is the total number of documents.
 # §3.2.2.1(v): We can write PageRank in Spark as follows ...
 #-------------------------------------------------------------------------------
-def display_ranks(ranks):
-    print("PageRank: ", end="")
-    for url, rank in sorted(ranks.collect()):
-        print(f" {url}: {rank:.4f}", end="")
-    print()
-#-------------------------------------------------------------------------------
-def example_3_2_2():
+def example_3_2_2(context):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Load graph as an RDD of (URL, outlinks) pairs
-    links = spark.parallelize(graph_data)
+    links = context.parallelize(graph_data)
     links.persist()
     urls = [url for url, _ in graph_data]
     N = len(urls)
     alpha = 0.15
-    ranks = spark.parallelize([(url, 1.0) for url in urls])
+    ranks = context.parallelize([(url, 1.0) for url in urls])
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # §3.2.2.2(i): This program leads to the RDD lineage graph in Figure 3.
     # §3.2.2.2(ii): On each iteration, we create a new ranks dataset based ...
@@ -377,8 +487,8 @@ def example_3_2_2():
 # §3.2.2.3(iii): ... URLs by domain name).
 # §3.2.2.3(iv): Both optimizations can be expressed by ...
 # §3.2.2.3(iv): ... calling partitionBy when we define links.
-def example_3_2_2_3():
-    links = spark.textFile("...").map().partitionBy(myPartFunc).persist()
+def example_3_2_2_3(context):
+    links = context.textFile("...").map().partitionBy(myPartFunc).persist()
 #===============================================================================
 # §4: Representing RDDs
 #-------------------------------------------------------------------------------
@@ -603,47 +713,47 @@ def example_3_2_2_3():
 # §5.2.5(i): We also plan to use ...
 # §5.2.5(i): ... to run higher-level query languages interactively, e.g., SQL.
 #===============================================================================
-def word_count():
+def word_count(context):
     texts = ["Hello Spark", "Hello RDD", "Hello Scala"]
-    lines = spark.parallelize(texts)
+    lines = context.parallelize(texts)
     words = lines.flatMap(lambda line: line.split(" "))
     word_pairs = words.map(lambda word: (word, 1))
     word_count = word_pairs.reduceByKey(lambda total, value: total + value)
     pprint(word_count.collect())
 #-------------------------------------------------------------------------------
-def fruits():
+def fruits(context):
     data = [
         ("apple", 1),
         ("banana", 2),
         ("apple", 3),
         ("orange", 4),
         ("banana", 5)]
-    fruits = spark.parallelize(data)
+    fruits = context.parallelize(data)
     counts = fruits.reduceByKey(lambda total, value: total + value)
     print(counts.collect())
 #-------------------------------------------------------------------------------
-def numbers():
+def numbers(context):
     data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    numbers = spark.parallelize(data, numSlices=3)
+    numbers = context.parallelize(data, numSlices=3)
     doubled = numbers.map(lambda n: n * 2)
     filtered = doubled.filter(lambda n: n > 10)
     print(filtered.collect())
     sum_of_numbers = numbers.reduce(lambda total, value: total + value)
     print(sum_of_numbers)
 #-------------------------------------------------------------------------------
-def sand_box():
+def sand_box(context):
     data = [1, 2, 3, 4, 5, 6]
-    rdd = spark.parallelize(data);
+    rdd = context.parallelize(data);
     evens = rdd.filter(lambda x: x % 2 == 0);
     squares = evens.map(lambda x: x * x);
     sum = squares.reduce(lambda x, y: x + y);
-    rdd1 = spark.parallelize((("a", 1), ("b", 2), ("a", 3)));
-    rdd2 = spark.parallelize((("a", "x"), ("b", "y")));
+    rdd1 = context.parallelize((("a", 1), ("b", 2), ("a", 3)));
+    rdd2 = context.parallelize((("a", "x"), ("b", "y")));
     grouped = rdd1.groupByKey();
     print(grouped.mapValues(lambda vs: list(vs)).collect())
     joined = rdd1.join(rdd2);
     print(joined.collect())
-    base = spark.parallelize(list(range(1, 11)))
+    base = context.parallelize(list(range(1, 11)))
     filtered = base.filter(lambda x: x % 2 == 0);
     mapped = filtered.map(lambda x: x * 10);
     mapped.persist();
@@ -725,13 +835,13 @@ data = list(range(1, 17))
 pairs1 = [(x % 2, x) for x in range(0, 4)]
 pairs2 = [(x % 2, x * 2) for x in range(0, 4)]
 tests = [
-  ("rdd",       lambda: spark.parallelize(data))
+  ("rdd",       lambda: context.parallelize(data))
 , ("rdd_1",     lambda: rdd.map(lambda x: x * 2))
 , ("rdd_2",     lambda: rdd_1.filter(lambda x: x < 10))
 , ("rdd_3",     lambda: rdd_2.flatMap(lambda x: [x, -x]))
-, ("rdd_4",     lambda: rdd_3.sample(False, 0.5, seed=None))
-, ("rdd_A",     lambda: spark.parallelize(pairs1))
-, ("rdd_B",     lambda: spark.parallelize(pairs2))
+, ("rdd_4",     lambda: rdd_3.sample(False, 0.5, seed=53))
+, ("rdd_A",     lambda: context.parallelize(pairs1))
+, ("rdd_B",     lambda: context.parallelize(pairs2))
 , (None,        lambda: [ (k, list(vs))
                           for k, vs in rdd_A.groupByKey().collect()
                         ])
@@ -757,21 +867,22 @@ tests = [
 , (None,        lambda: rdd_A.lookup(1))
 ]
 #-------------------------------------------------------------------------------
-example_2_2_1_1()
-example_2_2_1_2()
-example_2_2_1_3()
-example_3_2_1()
-example_3_2_2()
-word_count()
-fruits()
-numbers()
-sand_box()
+for test in [ test_2_2_0_2
+            , example_2_2_1_1, example_2_2_1_2, example_2_2_1_3
+            , example_3_2_1, example_3_2_2
+            , word_count, fruits, numbers, sand_box]:
+    for context in (spark, spock):
+        test(context)
+    print()
+
 for test in tests:
     variable = test[0]
     function = test[1]
-    value = function()
-    if (variable):
-        globals()[variable] = value
-        print(f"{variable}: {pformat(value.collect())}")
-    else: pprint(value)
+    for context in (spark, spock):
+        value = function()
+        if (variable):
+            globals()[variable] = value
+            print(f"{variable}: {pformat(value.collect())}")
+        else: pprint(value)
+    print()
 #===============================================================================
