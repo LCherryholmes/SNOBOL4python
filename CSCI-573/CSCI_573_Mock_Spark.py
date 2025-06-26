@@ -1,10 +1,14 @@
 #===============================================================================
+# Mock Spark, by Lon Cherryholmes, Sr.
+# CSCI-573: Big Data Computing and Analytics
+# Professor: Manar Alsaid, East Texas A&M University,
+#===============================================================================
 # Resilient Distributed Datasets:
 #    A Fault-Tolerant Abstraction for In-Memory Cluster Computing
 # by Matei Zaharia, Mosharaf Chowdhury, Tathagata Das, Ankur Dave, Justin Ma,
 #    Murphy McCauley, Michael J. Franklin, Scott Shenker, and Ion Stoica
 # at University of California, Berkeley
-#===============================================================================
+#-------------------------------------------------------------------------------
 # Abstract:
 # Abstract(i): We present Resilient Distributed Datasets (RDDs), ...
 machines = ["Brazos", "Colorado", "Guadalupe", "Pecos"] # ... a distributed ...
