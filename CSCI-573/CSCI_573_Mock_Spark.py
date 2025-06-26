@@ -1,7 +1,7 @@
 #===============================================================================
 # Mock Spark, by Lon Cherryholmes, Sr.
 # CSCI-573: Big Data Computing and Analytics
-# Professor: Manar Alsaid, East Texas A&M University,
+# Professor: Manar Alsaid, East Texas A&M University
 #===============================================================================
 # Resilient Distributed Datasets:
 #    A Fault-Tolerant Abstraction for In-Memory Cluster Computing
@@ -210,8 +210,8 @@ def test_2_2_0_2(context): # §2.2.0.2(i): ... through transformations on ...
                     # §2.2.0.2(iii): ... number of elements in the dataset), ...
     pprint(rdd_4.collect()) # §2.2.0.2(iii): ... collect (which returns the ...
                             # §2.2.0.2(iii): ... elements themselves), and ...
-#   rdd_4.save("a.pkl") # §2.2.0.2(iii): ... save (which outputs the dataset ...
-                        # §2.2.0.2(iii): ... to a storage system).
+#   rdd_4.save("rdd_4.pkl") # §2.2.0.2(iii): ... save (which outputs the ...
+                            # §2.2.0.2(iii): ... dataset to a storage system).
 #-------------------------------------------------------------------------------
 # §2.2.0.2(iv): Like DryadLINQ, Spark computes RDDs lazily the first time ...
 # §2.2.0.2(iv): ... they are used in an action, so that it can pipeline ...
@@ -919,53 +919,6 @@ def example_3_2_2_3(context):
 # §5.2.5(i): We also plan to use ...
 # §5.2.5(i): ... to run higher-level query languages interactively, e.g., SQL.
 #===============================================================================
-def word_count(context):
-    texts = ["Hello Spark", "Hello RDD", "Hello Scala"]
-    lines = context.parallelize(texts)
-    words = lines.flatMap(lambda line: line.split(" "))
-    word_pairs = words.map(lambda word: (word, 1))
-    word_count = word_pairs.reduceByKey(lambda total, value: total + value)
-    pprint(word_count.collect())
-#-------------------------------------------------------------------------------
-def fruits(context):
-    data = [
-        ("apple", 1),
-        ("banana", 2),
-        ("apple", 3),
-        ("orange", 4),
-        ("banana", 5)]
-    fruits = context.parallelize(data)
-    counts = fruits.reduceByKey(lambda total, value: total + value)
-    pprint(counts.collect())
-#-------------------------------------------------------------------------------
-def numbers(context):
-    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    numbers = context.parallelize(data)
-    doubled = numbers.map(lambda n: n * 2)
-    filtered = doubled.filter(lambda n: n > 10)
-    pprint(filtered.collect())
-    sum_of_numbers = numbers.reduce(lambda total, value: total + value)
-    pprint(sum_of_numbers)
-#-------------------------------------------------------------------------------
-def sand_box(context):
-    data = [1, 2, 3, 4, 5, 6]
-    rdd = context.parallelize(data)
-    evens = rdd.filter(lambda x: x % 2 == 0)
-    squares = evens.map(lambda x: x * x)
-    sum = squares.reduce(lambda x, y: x + y)
-    rdd1 = context.parallelize((("a", 1), ("b", 2), ("a", 3)))
-    rdd2 = context.parallelize((("a", "x"), ("b", "y")))
-    grouped = rdd1.groupByKey()
-    pprint(grouped.mapValues(lambda vs: list(vs)).collect())
-    joined = rdd1.join(rdd2)
-    pprint(joined.collect())
-    base = context.parallelize(list(range(1, 11)))
-    filtered = base.filter(lambda x: x % 2 == 0)
-    mapped = filtered.map(lambda x: x * 10)
-    mapped.persist()
-    mapped.count()
-    pprint(mapped.collect())
-#===============================================================================
 # §5.3: Memory Management
 #-------------------------------------------------------------------------------
 # §5.3.1(i): Spark provides three options for storage of persistent RDDs: ...
@@ -1038,8 +991,55 @@ def sand_box(context):
 # §5.4.4(ii): ... program pauses or distributed snapshot schemes.
 #===============================================================================
 # §6: Evaluation
-# §7: Discussion
+#-------------------------------------------------------------------------------
+def word_count(context):
+    texts = ["Hello Spark", "Hello RDD", "Hello Scala"]
+    lines = context.parallelize(texts)
+    words = lines.flatMap(lambda line: line.split(" "))
+    word_pairs = words.map(lambda word: (word, 1))
+    word_count = word_pairs.reduceByKey(lambda total, value: total + value)
+    pprint(word_count.collect())
+#-------------------------------------------------------------------------------
+def fruits(context):
+    data = [
+        ("apple", 1),
+        ("banana", 2),
+        ("apple", 3),
+        ("orange", 4),
+        ("banana", 5)]
+    fruits = context.parallelize(data)
+    counts = fruits.reduceByKey(lambda total, value: total + value)
+    pprint(counts.collect())
+#-------------------------------------------------------------------------------
+def numbers(context):
+    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    numbers = context.parallelize(data)
+    doubled = numbers.map(lambda n: n * 2)
+    filtered = doubled.filter(lambda n: n > 10)
+    pprint(filtered.collect())
+    sum_of_numbers = numbers.reduce(lambda total, value: total + value)
+    pprint(sum_of_numbers)
+#-------------------------------------------------------------------------------
+def sand_box(context):
+    data = [1, 2, 3, 4, 5, 6]
+    rdd = context.parallelize(data)
+    evens = rdd.filter(lambda x: x % 2 == 0)
+    squares = evens.map(lambda x: x * x)
+    sum = squares.reduce(lambda x, y: x + y)
+    rdd1 = context.parallelize((("a", 1), ("b", 2), ("a", 3)))
+    rdd2 = context.parallelize((("a", "x"), ("b", "y")))
+    grouped = rdd1.groupByKey()
+    pprint(grouped.mapValues(lambda vs: list(vs)).collect())
+    joined = rdd1.join(rdd2)
+    pprint(joined.collect())
+    base = context.parallelize(list(range(1, 11)))
+    filtered = base.filter(lambda x: x % 2 == 0)
+    mapped = filtered.map(lambda x: x * 10)
+    mapped.persist()
+    mapped.count()
+    pprint(mapped.collect())
 #===============================================================================
+# §7: Discussion
 # §8: Related Work
 #-------------------------------------------------------------------------------
 data = list(range(1, 17))
