@@ -50,7 +50,7 @@ class MockRDD: # §2.1(i): Formally, an RDD is a read-only, partitioned ...
         records=None, num_parts=None,
         partitioner=None):
         self.op = op
-        self.uid = 0
+        self.uid = None
         self.deps = deps
         self.args = args
         if records: self.records = records
@@ -75,6 +75,7 @@ class SpockContext:
         return MockRDD(records=list(sequence), num_parts=num_parts)
 #-------------------------------------------------------------------------------
 from pyspark import SparkContext
+from pyspark.rdd import portable_hash
 spark = SparkContext.getOrCreate()
 spark.setLogLevel("ERROR")
 spock = SpockContext()
@@ -103,8 +104,8 @@ def _join(records, other_records, numPartitions):
 #-------------------------------------------------------------------------------
 def HashPartitioner(key): return hash(key)
 def _compute(self, partitioner=None):
-    if self.uid == 0:
-        self.uid = next_id()
+    if self.uid is None:
+        self.uid = f"{self.op if self.op else ''}{next_id()}"
         if self.op: # Mock scheduling partition tasks
             if self.op in ["cogroup", "groupByKey", "join", "reduceByKey"]:
                 if partitioner is None:
@@ -628,12 +629,14 @@ def display_ranks(ranks):
 def example_3_2_2(context):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Load graph as an RDD of (URL, outlinks) pairs
-    links = context.parallelize(graph_data)
+    links = context.parallelize(graph_data, numSlices=1)
+#   links = links.partitionBy(2, lambda key: portable_hash(key))
     links.persist()
     urls = [url for url, _ in graph_data]
     N = len(urls)
     alpha = 0.15
-    ranks = context.parallelize([(url, 1.0) for url in urls])
+    ranks = context.parallelize([(url, 1.0) for url in urls], numSlices=1)
+#   ranks = ranks.partitionBy(2, lambda key: portable_hash(key))
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # §3.2.2.2(i): This program leads to the RDD lineage graph in Figure 3.
     # §3.2.2.2(ii): On each iteration, we create a new ranks dataset based ...
@@ -1076,8 +1079,10 @@ tests = [
 cluster = [Machine(n) for n in range(N_MACHINES)]
 for test in [ test_2_2_0_2
             , example_2_2_1_1, example_2_2_1_2, example_2_2_1_3
-            , example_3_2_1, example_3_2_2
-            , word_count, fruits, numbers, sand_box]:
+            , example_3_2_1,
+              example_3_2_2
+            , word_count, fruits, numbers, sand_box
+            ]:
     for context in (spark, spock): # (spock,)
         test(context)
     print()
