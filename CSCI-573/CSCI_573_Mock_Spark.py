@@ -28,6 +28,8 @@ class Machine:
         self.name = machines[id]
         self.files = defaultdict(list)
         self.records = defaultdict(list)
+    def __repr__(self):
+        return f"{self.id} {self.name} {pformat(self.records)}"
     def executor(self, uid, op, args):
         match op:
             case "map":         args = (self.records[args[0]], args[1])
@@ -51,7 +53,6 @@ class Machine:
             case "persist":     args = (self.records[args[0]], args[1])
             case _: raise Exception("[executor] Unknown operation {op}.")
         self.records[uid] = MockRDD_ops[op](*args)
-cluster = [Machine(n) for n in range(N_MACHINES)]
 #-------------------------------------------------------------------------------
 # §2.1: RDD Abstraction
 MockRDD_ops = dict()
@@ -103,7 +104,7 @@ class SpockContext:
         with open(filename) as file:
             records = [line.rstrip('\n') for line in file]
             return MockRDD(records=records, num_parts=num_parts)
-    defaultParallelism = 1
+    defaultParallelism = 2
     def parallelize(self, sequence, numSlices=None):
         num_parts = numSlices if numSlices else self.defaultParallelism
         return MockRDD(records=list(sequence), num_parts=num_parts)
@@ -520,6 +521,7 @@ class Point:
     def __init__(self, x, y):
         self.x = x # feature vector (list of floats)
         self.y = y # label (+1 or -1)
+    def __repr__(self): return f"Point({self.x}, {self.y})"
 #-------------------------------------------------------------------------------
 def parsePoint(line):
     fields = line.strip().split(',')
@@ -1026,6 +1028,7 @@ tests = [
 , (None,        lambda: rdd_A.lookup(1))
 ]
 #-------------------------------------------------------------------------------
+cluster = [Machine(n) for n in range(N_MACHINES)]
 for test in [ test_2_2_0_2
             , example_2_2_1_1, example_2_2_1_2, example_2_2_1_3
             , example_3_2_1, example_3_2_2
@@ -1033,7 +1036,9 @@ for test in [ test_2_2_0_2
     for context in (spock,): # (spark, spock)
         test(context)
     print()
-
+pprint(cluster)
+#-------------------------------------------------------------------------------
+cluster = [Machine(n) for n in range(N_MACHINES)]
 for context in (spock,): # (spark, spock)
     for test in tests:
         variable = test[0]
@@ -1044,4 +1049,5 @@ for context in (spock,): # (spark, spock)
             print(f"{variable}: {pformat(value.collect())}")
         else: pprint(value)
     print()
+pprint(cluster)
 #===============================================================================
