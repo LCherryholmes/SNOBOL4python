@@ -1,8 +1,0 @@
-Example,k1,v1,k2,v2
-Word Occurence Counting,document name,document contents,a word,a list counts
-Distributed Grep,record identifier,text line,file name or constant key,matching line
-Count of URL Access Frequency,log record identifier,log entry,URL extracted from the log,count
-Reverse Web-Link Graph,source page URL,list of outlinks,outlink URL,source page URL
-Term-Vector per Host,document identifier,document contents,host name parsed from the URL,partial term frequency pair (tuple)
-Inverted Index,document identifier,document contents,word token,document identifier or occurrence info
-Distributed Sort,record identifier,record content,sort key (often record content),full record or placeholder
