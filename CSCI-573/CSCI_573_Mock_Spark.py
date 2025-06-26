@@ -143,7 +143,6 @@ def _compute(self, partitioner=None):
     return self.uid
 setattr(MockRDD, "compute", _compute); del _compute
 #-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
 # §2.1(vii): This is a powerful property: in essence, a program cannot ...
 # §2.1(vii): ... reference an RDD that it cannot reconstruct after a failure.
 unique_id = 0
@@ -154,10 +153,8 @@ def next_id(): global unique_id; unique_id += 1; return unique_id
 def _persist(self, storage='memory'): # §2.1(ix): Users can indicate which ...
     self.persisted = True # ... RDDs they will reuse and choose a storage ...
     self.storage = storage # ... strategy for them (e.g., in-memory storage).
-#-------------------------------------------------------------------------------
 # §2.1(x): They can also ask that an RDD’s elements be partitioned across ...
-setattr(MockRDD, "partitioner", None) # §2.1(x): ... machines based on a ...
-# §2.1(x): ... key in each record.
+# §2.1(x): ... machines based on a key in each record.
 # §2.1(xi): This is useful for placement optimizations, such as ...
 # §2.1(xi): ... ensuring that two datasets that will be joined together ...
 # §2.1(xi): ... are hash-partitioned in the same way.
@@ -530,8 +527,9 @@ setattr(MockRDD,   "persist", lambda self:
         MockRDD(op="persist", deps=[self], args=(), num_parts=self.num_parts))
 #-------------------------------------------------------------------------------
 # §3.1.3(ii): Furthermore, users can get an RDD’s partition order, which is ...
-# §3.1.3(ii): ... represented by a Partitioner class, and ...
-# §3.1.3(ii): ... partition another dataset according to it.
+# §3.1.3(ii): ... represented by a Partitioner class, and partition another ...
+setattr(MockRDD, "partitioner", None) # §3.1.3(ii): ... dataset according ...
+def getNumPartitions(self): return self.num_parts # §3.1.3(ii): ... to it.
 # §3.1.3(iii): Operations such as groupByKey, reduceByKey and sort ...
 # §3.1.3(iii): ... automatically result in a hash or range partitioned RDD.
 #===============================================================================
@@ -1083,7 +1081,7 @@ for test in [ test_2_2_0_2
     for context in (spark, spock): # (spock,)
         test(context)
     print()
-#pprint(cluster)
+pprint(cluster)
 #-------------------------------------------------------------------------------
 cluster = [Machine(n) for n in range(N_MACHINES)]
 for context in (spark, spock): # (spock,)
@@ -1096,5 +1094,5 @@ for context in (spark, spock): # (spock,)
             print(f"{variable}: {pformat(value.collect())}")
         else: pprint(value)
     print()
-#pprint(cluster)
+pprint(cluster)
 #===============================================================================
