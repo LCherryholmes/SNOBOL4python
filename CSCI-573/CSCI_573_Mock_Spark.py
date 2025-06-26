@@ -101,7 +101,7 @@ def _join(records, other_records, numPartitions):
 # §2.1(vi): ... from other datasets (its lineage) to compute its partitions ...
 # §2.1(vi): ... from data in stable storage.
 #-------------------------------------------------------------------------------
-def HashPartitioner(key, numPartitions): return hash(key) % numPartitions
+def HashPartitioner(key): return hash(key)
 def _compute(self, partitioner=None):
     if self.uid == 0:
         self.uid = next_id()
@@ -114,9 +114,11 @@ def _compute(self, partitioner=None):
                    )
             if False:
                 for n in range(self.num_parts):
-                    cluster[n].records[self.uid] = cluster[n].executor(self.op, args)
+                    cluster[n].records[self.uid] = \
+                        cluster[n].executor(self.op, args)
             if True:
-                with ThreadPoolExecutor(max_workers=self.num_parts) as executor:
+                with ThreadPoolExecutor(max_workers=self.num_parts) \
+                  as executor:
                     futures = {
                         executor.submit(
                             Machine.executor,
@@ -131,7 +133,7 @@ def _compute(self, partitioner=None):
         else: # Mock copying partitions to machines in the cluster
             if partitioner:
                 for record in self.records:
-                    n = partitioner(record[0], self.num_parts)
+                    n = partitioner(record[0]) % self.num_parts
                     cluster[n].records[self.uid].append(record)
             else:
                 part_size = math.ceil(len(self.records) / self.num_parts)
@@ -1064,7 +1066,7 @@ tests = [
                                 ascending=True,
                                 numPartitions=None)
   )
-, ("rdd_PB",    lambda: rdd_A.partitionBy(2, lambda k, n: hash(k) % n))
+, ("rdd_PB",    lambda: rdd_A.partitionBy(2, lambda k: hash(k)))
 , (None,        lambda: rdd_A.count())
 , ("rdd_nums",  lambda: rdd.map(lambda x: x))
 , (None,        lambda: rdd_nums.reduce(lambda total, count: total + count))
@@ -1078,13 +1080,13 @@ for test in [ test_2_2_0_2
             , example_2_2_1_1, example_2_2_1_2, example_2_2_1_3
             , example_3_2_1, example_3_2_2
             , word_count, fruits, numbers, sand_box]:
-    for context in (spock,): # (spark, spock)
+    for context in (spark, spock): # (spock,)
         test(context)
     print()
-pprint(cluster)
+#pprint(cluster)
 #-------------------------------------------------------------------------------
 cluster = [Machine(n) for n in range(N_MACHINES)]
-for context in (spock,): # (spark, spock)
+for context in (spark, spock): # (spock,)
     for test in tests:
         variable = test[0]
         function = test[1]
@@ -1094,5 +1096,5 @@ for context in (spock,): # (spark, spock)
             print(f"{variable}: {pformat(value.collect())}")
         else: pprint(value)
     print()
-pprint(cluster)
+#pprint(cluster)
 #===============================================================================
