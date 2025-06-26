@@ -4,25 +4,15 @@
 # by Matei Zaharia, Mosharaf Chowdhury, Tathagata Das, Ankur Dave, Justin Ma,
 #    Murphy McCauley, Michael J. Franklin, Scott Shenker, and Ion Stoica
 # at University of California, Berkeley
-#-------------------------------------------------------------------------------
-#export PYTHONHASHSEED=42
-#export SPARK_LOCAL_IP=172.28.64.15
-import pickle
-from pprint import pformat, pprint
-from functools import reduce
-from collections import defaultdict
 #===============================================================================
 # Abstract:
 # Abstract(i): We present Resilient Distributed Datasets (RDDs), ...
-# Abstract(i): ... a distributed memory abstraction that lets programmers ...
-# Abstract(i): ... perform in-memory computations on large clusters ...
-# Abstract(i): ... in a fault-tolerant manner.
-N_MACHINES = len(machines)
-class Machine:
-    machines = ["Brazos", "Colorado", "Guadalupe", "Pecos"]
-    def __init__(self, id):
+machines = ["Brazos", "Colorado", "Guadalupe", "Pecos"] # ... a distributed ...
+N_MACHINES = len(machines) # ... memory abstraction that lets programmers ...
+class Machine: # ... perform in-memory computations on large clusters ...
+    def __init__(self, id): # ... in a fault-tolerant manner.
         self.id = id
-        self.name = self.machines[id]
+        self.name = machines[id]
         self.files = defaultdict(list)
         self.records = defaultdict(list)
     def __repr__(self):
@@ -33,8 +23,15 @@ class Machine:
 # Abstract(ii): ... iterative algorithms and interactive data mining tools.
 # Abstract(iii): In both cases, keeping data in memory ...
 # Abstract(iii): ... can improve performance by an order of magnitude.
-#===============================================================================
+#-------------------------------------------------------------------------------
 # §1: Introduction
+#export PYTHONHASHSEED=42
+#export SPARK_LOCAL_IP=172.28.64.15
+import pickle
+from pprint import pformat, pprint
+from functools import reduce
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 #===============================================================================
 # §2: Resilient Distributed Datasets (RDDs)
 # §2(i): This section provides an overview of RDDs.
@@ -50,13 +47,15 @@ class MockRDD: # §2.1(i): Formally, an RDD is a read-only, partitioned ...
 #   ----------------------------------------------------------------------------
     def __init__(self,
         op=None, deps=None, args=None,
-        records=None, num_parts=None):
+        records=None, num_parts=None,
+        partitioner=None):
         self.op = op
         self.uid = 0
         self.deps = deps
         self.args = args
-        self.num_parts = num_parts
         if records: self.records = records
+        self.num_parts = num_parts
+        self.partitioner = partitioner
 #-------------------------------------------------------------------------------
 # §2.1(ii): RDDs can only be created through deterministic ...
 # §2.1(ii): ...  operations on either (1) data in stable storage ...
@@ -102,7 +101,7 @@ def _join(records, other_records, numPartitions):
 # §2.1(vi): ... from other datasets (its lineage) to compute its partitions ...
 # §2.1(vi): ... from data in stable storage.
 #-------------------------------------------------------------------------------
-def HashPartitioner(key, numPartitions): hash(key) % numPartitions
+def HashPartitioner(key, numPartitions): return hash(key) % numPartitions
 def _compute(self, partitioner=None):
     if self.uid == 0:
         self.uid = next_id()
@@ -113,8 +112,22 @@ def _compute(self, partitioner=None):
             args = ( [dep.compute(partitioner) for dep in self.deps]
                    + list(self.args)
                    )
-            for n in range(self.num_parts):
-                cluster[n].executor(self.uid, self.op, args)
+            if False:
+                for n in range(self.num_parts):
+                    cluster[n].records[self.uid] = cluster[n].executor(self.op, args)
+            if True:
+                with ThreadPoolExecutor(max_workers=self.num_parts) as executor:
+                    futures = {
+                        executor.submit(
+                            Machine.executor,
+                            cluster[MACHINE],
+                            self.op,
+                            args): MACHINE
+                        for MACHINE in range(self.num_parts)
+                    }
+                    for future in as_completed(futures):
+                        n = futures[future]
+                        cluster[n].records[self.uid] = future.result()
         else: # Mock copying partitions to machines in the cluster
             if partitioner:
                 for record in self.records:
@@ -127,6 +140,7 @@ def _compute(self, partitioner=None):
                         self.records[n * part_size:(n + 1) * part_size]
     return self.uid
 setattr(MockRDD, "compute", _compute); del _compute
+#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 # §2.1(vii): This is a powerful property: in essence, a program cannot ...
 # §2.1(vii): ... reference an RDD that it cannot reconstruct after a failure.
@@ -151,7 +165,7 @@ setattr(MockRDD, "partitioner", None) # §2.1(x): ... machines based on a ...
 # §2.2.0.1(i): Spark exposes RDDs through a language-integrated API similar ...
 # §2.2.0.1(i): ... to DryadLINQ [31] and FlumeJava [8], where each dataset ...
 MockRDD_ops = dict() # §2.2.0.1(i): ... is represented as an object and ...
-def _executor(self, uid, op, args): # §2.2.0.1(i): ... transformations are ...
+def _executor(self, op, args): # §2.2.0.1(i): ... transformations are ...
     match op: # §2.2.0.1(i): ... invoked using methods on these objects.
         case "map":         args = (self.records[args[0]], args[1])
         case "filter":      args = (self.records[args[0]], args[1])
@@ -168,12 +182,12 @@ def _executor(self, uid, op, args): # §2.2.0.1(i): ... transformations are ...
                                     self.records[args[1]])
         case "cartesian":   args = (self.records[args[0]],
                                     self.records[args[1]])
-        case "mapValues":   args = (self.records[args[0]], *args[1:])
+        case "mapValues":   args = (self.records[args[0]], args[1])
         case "sortBy":      args = (self.records[args[0]], *args[1:])
         case "partitionBy": args = (self.records[args[0]], *args[1:])
         case "persist":     args = (self.records[args[0]], *args[1:])
         case _: raise Exception("[executor] Unknown operation {op}.")
-    self.records[uid] = MockRDD_ops[op](*args)
+    return MockRDD_ops[op](*args)
 setattr(Machine, "executor", _executor); del _executor
 #-------------------------------------------------------------------------------
 # §2.2.0.2(i): Programmers start by defining one or more RDDs ...
@@ -192,7 +206,7 @@ def test_2_2_0_2(context): # §2.2.0.2(i): ... through transformations on ...
                     # §2.2.0.2(iii): ... number of elements in the dataset), ...
     pprint(rdd_4.collect()) # §2.2.0.2(iii): ... collect (which returns the ...
                             # §2.2.0.2(iii): ... elements themselves), and ...
-    rdd_4.save("a.pkl") # §2.2.0.2(iii): ... save (which outputs the dataset ...
+#   rdd_4.save("a.pkl") # §2.2.0.2(iii): ... save (which outputs the dataset ...
                         # §2.2.0.2(iii): ... to a storage system).
 #-------------------------------------------------------------------------------
 # §2.2.0.2(iv): Like DryadLINQ, Spark computes RDDs lazily the first time ...
@@ -360,26 +374,26 @@ setattr(MockRDD,   "sample", lambda self, withReplacement, fraction, seed=42:
             num_parts=self.num_parts))
 #-------------------------------------------------------------------------------
 # Table 2.1(v): groupByKey(): RDD[(K, V)] => RDD[(K, Seq[V])]
-def _groupByKey(records, numPartitions=None): # Only for RDDs of key-value pairs
+def _groupByKey(records, numPartitions): # Only for RDDs of key-value pairs
     grouped = dict()
     for k, v in records:
         grouped.setdefault(k, []).append(v)
     return list(grouped.items())
 MockRDD_ops       ["groupByKey"] = _groupByKey; del _groupByKey
-setattr(MockRDD,   "groupByKey", lambda self:
+setattr(MockRDD,   "groupByKey", lambda self, numPartitions=None:
         MockRDD(op="groupByKey",
             deps=[self],
-            args=(numPartitions),
+            args=(numPartitions,),
             num_parts=self.num_parts))
 #-------------------------------------------------------------------------------
 # Table 2.1(vi): reduceByKey(f: (V, V) => V): RDD[(K, V)] => RDD[(K, V)]
-def _reduceByKey(records, func, numPartitions=None): # Only for RDDs of key-value pairs
+def _reduceByKey(records, func, numPartitions): # Only for RDDs of key-value pairs
     reduced = dict()
     for k, v in records:
         reduced.setdefault(k, []).append(v)
     return [(k, reduce(func, vlist)) for k, vlist in reduced.items()]
 MockRDD_ops       ["reduceByKey"] = _reduceByKey; del _reduceByKey
-setattr(MockRDD,   "reduceByKey", lambda self, func:
+setattr(MockRDD,   "reduceByKey", lambda self, func, numPartitions=None:
         MockRDD(op="reduceByKey",
             deps=[self],
             args=(func, numPartitions),
@@ -427,7 +441,7 @@ setattr(MockRDD,   "cogroup", lambda self, other:
 def _cartesian(records, other_records):
     return [(x, y) for x in records for y in other_records]
 MockRDD_ops       ["cartesian"] = _cartesian; del _cartesian
-setattr(MockRDD,   "cartesian", lambda self,    other:
+setattr(MockRDD,   "cartesian", lambda self, other:
         MockRDD(op="cartesian",
             deps=[self, other],
             args=(),
@@ -455,17 +469,15 @@ setattr(MockRDD, "sortBy",
             num_parts=self.num_parts))
 #-------------------------------------------------------------------------------
 # Table 2.1(xiii): partitionBy(p: Partitioner[K]): RDD[(K, V)] => RDD[(K, V)]
-def _partitionBy(records, numPartitions, partitionFunc=None):
-    self.num_parts = numPartitions
-    self.partitioner = partitionFunc
-    return self
+def _partitionBy(records): return records
 MockRDD_ops       ["partitionBy"] = _partitionBy; del _partitionBy
 setattr(MockRDD,   "partitionBy",
     lambda self, numPartitions, partitionFunc=None:
         MockRDD(op="partitionBy",
             deps=[self],
-            args=(numPartitions, partitionFunc),
-            num_parts=self.num_parts))
+            args=(),
+            num_parts=numPartitions,
+            partitioner=partitionFunc))
 #===============================================================================
 # Table 2.2: ===== Actions: ====================================================
 #===============================================================================
@@ -675,7 +687,7 @@ def example_3_2_2(context):
 # §3.2.2.3(iv): Both optimizations can be expressed by ...
 # §3.2.2.3(iv): ... calling partitionBy when we define links.
 def example_3_2_2_3(context):
-    links = context.textFile("...").map().partitionBy(myPartFunc).persist()
+    links = context.textFile("...").map().partitionBy(4, myPartFunc).persist()
 #===============================================================================
 # §4: Representing RDDs
 #-------------------------------------------------------------------------------
@@ -1052,7 +1064,7 @@ tests = [
                                 ascending=True,
                                 numPartitions=None)
   )
-, ("rdd_PB",    lambda: rdd_A.partitionBy(4, lambda k: hash(k)))
+, ("rdd_PB",    lambda: rdd_A.partitionBy(2, lambda k, n: hash(k) % n))
 , (None,        lambda: rdd_A.count())
 , ("rdd_nums",  lambda: rdd.map(lambda x: x))
 , (None,        lambda: rdd_nums.reduce(lambda total, count: total + count))
