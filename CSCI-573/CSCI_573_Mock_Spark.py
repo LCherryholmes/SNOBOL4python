@@ -36,15 +36,20 @@ class Machine:
             case "sample":      args = (self.records[args[0]], *args[1:])
             case "groupByKey":  args = (self.records[args[0]],)
             case "reduceByKey": args = (self.records[args[0]], args[1])
-            case "union":       args = (self.records[args[0]], self.records[args[1]])
-            case "join":        args = (self.records[args[0]], self.records[args[1]], args[2])
-            case "cogroup":     args = (self.records[args[0]], self.records[args[1]])
-            case "cartesian":   args = (self.records[args[0]], self.records[args[1]])
+            case "union":       args = (self.records[args[0]],
+                                        self.records[args[1]])
+            case "join":        args = (self.records[args[0]],
+                                        self.records[args[1]],
+                                        args[2])
+            case "cogroup":     args = (self.records[args[0]],
+                                        self.records[args[1]])
+            case "cartesian":   args = (self.records[args[0]],
+                                        self.records[args[1]])
             case "mapValues":   args = (self.records[args[0]], args[1])
             case "sortBy":      args = (self.records[args[0]], *args[1:])
             case "partitionBy": args = (self.records[args[0]], *args[1:])
             case "persist":     args = (self.records[args[0]], args[1])
-            case _: raise Exception("[Machine:executor] Unknown operation {op}.")
+            case _: raise Exception("[executor] Unknown operation {op}.")
         self.records[uid] = MockRDD_ops[op](*args)
 cluster = [Machine(n) for n in range(N_MACHINES)]
 #-------------------------------------------------------------------------------
@@ -206,8 +211,8 @@ def example_2_2_1_1(context):
     errors = lines.filter(lambda line: line.startswith("ERROR"))
     errors.persist() # §2.2.1.1(v): Line 3 then asks for errors to persist ...
     # §2.2.1.1(v): ... in memory so that it can be shared across queries.
-    # §2.2.1.1(vi): Note that the argument to filter is Scala syntax for a closure.
-    pprint(["errors", errors.collect()])
+    # §2.2.1.1(vi): Note that the argument to filter is Scala syntax ...
+    pprint(["errors", errors.collect()]) # §2.2.1.1(vi): ... for a closure.
 #-------------------------------------------------------------------------------
 # §2.2.1.2(i): At this point, no work has been performed on the cluster.
 # §2.2.1.2(ii): However, the user can now use the RDD in actions, ...
@@ -529,9 +534,9 @@ def parsePoint(line):
 def example_3_2_1(context):
     DIMENSIONS = len(parsePoint(points_data[0]).x)
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # §3.2.1.3(i): We start by defining a persistent RDD called points as the ...
-    # §3.2.1.3(i): ... result of a map transformation on a text file that ...
-    # §3.2.1.3(i): ... parses each line of text into a Point object.
+    # §3.2.1.3(i): We start by defining a persistent RDD called points as ...
+    # §3.2.1.3(i): ... the result of a map transformation on a text file ...
+    # §3.2.1.3(i): ... that parses each line of text into a Point object.
     points = context.parallelize(points_data).map(parsePoint)
     points.persist()
     w = [random.uniform(-1, 1) for _ in range(DIMENSIONS)]
