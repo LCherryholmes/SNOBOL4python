@@ -90,7 +90,7 @@ spock = SpockContext()
 def _map(records, func):    return [func(x) for x in records]
 def _filter(records, func): return [x for x in records if func(x)]
 def _join(records, other_records, numPartitions):
-    memory = {}
+    memory = dict()
     for x in records:
         memory.setdefault(x[0], []).append(x)
     new_records = []
@@ -391,8 +391,8 @@ setattr(MockRDD,   "groupByKey", lambda self, numPartitions=None:
             num_parts=self.num_parts))
 #-------------------------------------------------------------------------------
 # Table 2.1(vi): reduceByKey(f: (V, V) => V): RDD[(K, V)] => RDD[(K, V)]
-def _reduceByKey(records, func, numPartitions): # Only for RDDs of key-value pairs
-    reduced = dict()
+def _reduceByKey(records, func, numPartitions):
+    reduced = dict() # Only for RDDs of key-value pairs
     for k, v in records:
         reduced.setdefault(k, []).append(v)
     return [(k, reduce(func, vlist)) for k, vlist in reduced.items()]
@@ -1082,10 +1082,15 @@ tests = [
 #-------------------------------------------------------------------------------
 cluster = [Machine(n) for n in range(N_MACHINES)]
 for test in [ test_2_2_0_2
-            , example_2_2_1_1, example_2_2_1_2, example_2_2_1_3
-            , example_3_2_1,
-              example_3_2_2
-            , word_count, fruits, numbers, sand_box
+            , example_2_2_1_1
+            , example_2_2_1_2
+            , example_2_2_1_3
+            , example_3_2_1
+            , example_3_2_2
+            , word_count
+            , fruits
+            , numbers
+            , sand_box
             ]:
     for context in (spark, spock): # (spock,)
         test(context)
