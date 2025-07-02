@@ -267,11 +267,11 @@ def example_2_2_1_2(context):
 # §2.2.1.3(i): ... and use their results, as in the following lines:
 def example_2_2_1_3(context):
     # Count errors mentioning MySQL:
-    count = errors.filter(lambda line: line.find("MySQL") > 0).count()
+    count = errors.filter(lambda line: line.find("MySQL") >= 0).count()
     pprint(["MySQL count", count])
     # Return the time fields of errors mentioning HDFS as an array
     # (assuming time is field number 3 in a tab-separated format):
-    times = errors.filter(lambda line: line.find("HDFS") > 0) \
+    times = errors.filter(lambda line: line.find("HDFS") >= 0) \
                   .map(lambda line: line.split("\t")[2]) \
                   .collect()
     pprint(["HDFS times", times])
@@ -341,7 +341,7 @@ def example_3_0(context): # §3.0.3(iv): ... to add 5 to each element of an RDD.
 # Table 2(i): Transformations and actions available on RDDs in Spark.
 # Table 2(ii): Seq[T] denotes a sequence of elements of type T.
 #===============================================================================
-# Table 2.1: ===== Transformations: ============================================
+# Table 2.1: Transformations: ==================================================
 #===============================================================================
 # Table 2.1(i):     map(f: T => U): RDD[T] => RDD[U]
 MockRDD_ops       ["map"] = _map; del _map
@@ -483,7 +483,7 @@ setattr(MockRDD,   "partitionBy",
             num_parts=numPartitions,
             partitioner=partitionFunc))
 #===============================================================================
-# Table 2.2: ===== Actions: ====================================================
+# Table 2.2: Actions: ==========================================================
 #===============================================================================
 # Table 2.2(i): count(): RDD[T] => Long
 def _count(self):
