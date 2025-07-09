@@ -3,13 +3,11 @@ Term,Definition,Example
 3D reconstruction,Building a 3D model of a scene or object from 2D images.,Reconstructing a statue’s geometry from multiple photos taken around it.
 activity recognition,"Identifying human actions (e.g. walking, running) from video.","Classifying video clips as “sitting,” “walking,” or “jumping.”"
 actual intensity,Measured brightness value recorded by a sensor for each pixel.,A camera captures a pixel value of 120 on a 0–255 scale.
-actual intensity,The true measured brightness value at a pixel before any processing.,A camera sensor reading of 120 (on a 0–255 scale) at a pixel.
 AlexNet,A landmark CNN architecture (2012) that popularized deep learning for image classification.,"Classifying ImageNet images with 8 layers, winning the 2012 ILSVRC."
 aliasing,"Distortion when high-frequency detail is sampled too coarsely, causing artifacts.",“Jaggies” on a diagonal line in a low‑resolution image.
 analog image,"A continuous image signal (e.g. film, CRT) rather than digital discrete samples.",Photographic film negative before scanning.
 Apollo missions,NASA’s crewed lunar missions (1968–1972) that captured pioneering space imagery.,High‑resolution panoramas of the Moon’s surface from Apollo 17.
 artificial intelligence,"Broad field developing algorithms that exhibit “intelligent” behavior, including vision.",Using a neural network to drive a robot arm.
-artificial light,Man-made illumination source used to light scenes for imaging.,Using LED panels in a studio for portrait photography.
 artificial light,"Man‑made illumination (LED, incandescent) used in imaging instead of natural daylight.",Using studio strobes to photograph a product.
 artistic effects,Applying filters or stylizations to give images an artistic look.,Turning a photo into a “watercolor” painting via style transfer.
 augmented reality,Overlaying virtual content on live camera views.,Displaying navigation arrows on your phone camera feed.
@@ -18,8 +16,8 @@ autoencoders,"Neural nets trained to reconstruct inputs via a bottleneck, learni
 autonomous navigation,Planning and executing paths in an environment without human intervention.,A robot vacuum mapping and cleaning a room on its own.
 autonomous perception,A system’s ability to perceive its environment without human input.,A self‑driving car detecting obstacles in real time.
 autonomous system,A system capable of operating independently.,A drone navigating without remote piloting.
-Bartlane Service,Early 1920s telegraph‑based news service for transmitting images over telephone lines.,Sending news photos across the Atlantic by wire.
-Bartlane System,The apparatus used in the Bartlane Service to encode and decode telegraphed images.,The scanner and printer at the endpoints of a Bartlane transmission.
+Bartlane service,Early 1920s telegraph‑based news service for transmitting images over telephone lines.,Sending news photos across the Atlantic by wire.
+Bartlane system,The apparatus used in the Bartlane Service to encode and decode telegraphed images.,The scanner and printer at the endpoints of a Bartlane transmission.
 black & white,"Images consisting of luminance only, without color.",A monochrome portrait in grayscale.
 blind convolution,"Convolution operation when the kernel is unknown, typically solved via blind deconvolution.",Restoring a blurred image without knowing the blur kernel.
 blurring,Smoothing an image by averaging neighboring pixels.,Applying a Gaussian blur to reduce noise.
@@ -27,33 +25,25 @@ brightness adaptation,The visual system’s adjustment to different overall ligh
 brightness discrimination,The ability to detect small differences in luminance between areas.,Noticing slight shade differences between two gray patches.
 C/C++,Popular programming languages for high‑performance vision code.,Implementing real‑time edge detection in optimized C++.
 candela,SI unit of luminous intensity.,A light source emitting 1 cd has the brightness of a standard candle.
-Canny,Edge detection algorithm identifying intensity gradients with non-maximum suppression.,Detecting object outlines in medical X‑ray scans.
 Canny,Early edge detector by John Canny (1986) optimizing detection and localization.,The multi-stage algorithm that finds edges with non‑max suppression.
-Canny edge detector,"Implementation of Canny algorithm producing thin, connected edges.",Finding lane boundaries in autonomous vehicle cameras.
 Canny edge detector,"The full algorithm using gradient filtering, non‑max suppression, and hysteresis thresholding.",Extracting crisp edges for object boundary detection.
 CAT scan,Computed tomography using X‑rays to produce cross‑sectional medical images.,A head CT used to detect brain hemorrhage.
 CCD arrays,Charge‑coupled device sensors converting light to electrons in digital imaging.,DSLR cameras using CCD sensors for low noise.
 ciliary muscles,Eye muscles that adjust lens shape to focus light on the retina.,Human eye focusing on nearby text when reading.
-ciliary muscles,Eye muscles that adjust the lens shape for focus.,Focusing the human eye on near vs. distant objects.
 class labels,Categories assigned to training examples in supervised learning.,"Labeling images as “cat,” “dog,” or “bird.”"
-class targets,Labeled output categories used to supervise model training.,“Cat” and “Dog” labels for training an animal classifier.
 class targets,Desired outputs (often one-hot vectors) during model training.,"A target vector [0,1,0] for “dog” in three‑class classification."
 clustering,Grouping data points by similarity without labels.,k‑means grouping image patches into visual words.
 CMOS arrays,Complementary metal‑oxide semiconductor sensors for digital imaging.,Mobile phone cameras using CMOS sensors.
 CMY,"Subtractive color model using cyan, magenta, yellow inks to reproduce colors.",Color printing in magazines using CMY inks.
-CMY,"Subtractive color model using cyan, magenta, yellow.","Printing photos with cyan, magenta, and yellow inks."
 CMYK,CMY plus black (key) channel for printing.,Commercial printers using CMYK cartridges.
 CNNs,Convolutional Neural Networks: deep models with convolutional layers for spatial feature learning.,ImageNet classification using ResNet architectures.
-CNNs,"Convolutional neural networks, deep nets with conv layers for vision tasks.",Using ResNet to classify ImageNet images.
 COCO,Large-scale object detection/segmentation dataset (Common Objects in Context).,Training instance segmentation models on COCO images.
 color adjustment,"Process of modifying hue, saturation, or brightness of an image.",Increasing contrast and saturation in Instagram filters.
-color adjustment,"Modifying hue, saturation, or brightness of an image.",Increasing saturation to make a sunset more vivid.
 color image processing,Techniques applied to RGB or other multi‑channel images.,Applying a white‑balance correction to an RGB photo.
 compositing,Combining multiple images or layers into one.,Overlaying an actor shot on a green screen onto a background plate.
 Computer Vision,Field focused on interpreting visual data algorithmically.,Developing face detectors for photo tagging.
 Computer Vision Toolbox,MATLAB/Simulink toolbox with prebuilt vision algorithms.,Using its built‑in functions to detect and track objects.
 cones,Photoreceptor cells in the retina sensitive to color wavelengths.,"Trichromatic human vision perceiving red, green, and blue."
-cones,Photoreceptor cells in the retina sensitive to color.,"L‑, M‑, and S‑cones responding to red, green, and blue wavelengths."
 continuous,A signal defined over a continuous domain (vs. discrete).,Analog waveforms before sampling.
 contrast,Difference in luminance or color that makes an object distinguishable.,High‑contrast text (black on white) for readability.
 Convolutional Neural Network,A neural network architecture with convolutional layers well‑suited for grid‑structured data (images).,Training a CNN to detect tumors in X‑ray images.
@@ -61,7 +51,6 @@ CT scan,See CAT scan (same as computed tomography).,A chest CT used to look for 
 CUDA,NVIDIA’s parallel computing platform and API for GPUs.,Accelerating deep learning training on an NVIDIA GPU.
 CV,Abbreviation for Computer Vision.,“CV algorithms” refers to vision methods.
 deblurring,"Removing blur from an image, often by estimating and reversing the blur kernel.",Restoring sharp edges in a motion‑blurred photo.
-decision trees,Supervised algorithm splitting data by feature thresholds to predict labels.,Classifying whether a pixel belongs to foreground or background.
 decision trees,Hierarchical models that split data by feature thresholds to make predictions.,Classifying pixels as foreground/background based on intensity and texture.
 deep learning,Subfield of ML using multi‑layer neural networks to learn hierarchical representations from data.,Training a CNN to recognize objects in images.
 deep learning pipeline,"End‑to‑end workflow: data collection, preprocessing, model training, validation, deployment.","Gathering labeled images, augmenting them, training a ResNet, and exporting to mobile."
@@ -73,15 +62,12 @@ DenseNet‑201,A DenseNet variant with 201 layers.,Achieving high accuracy on fi
 digital image,Array of discrete pixels with quantized intensity/color values.,A JPEG photo with 1920×1080 resolution.
 Digital Image Processing (DIP),"Techniques for processing digital images via algorithms (filtering, transforms, analysis).",Applying histogram equalization to improve contrast.
 DIP,Digital Image Processing: techniques to enhance or analyze digital images.,Applying histogram equalization to improve photo contrast.
-DIP,Abbreviation for Digital Image Processing.,“I implemented the DIP pipeline in MATLAB.”
 discrete,"Defined only at separate, distinct values (vs. continuous).",Pixel intensity values ranging 0–255.
 discrete quantity levels,The finite set of values a discrete signal can take.,8‑bit image’s 256 gray levels.
 discrete time intervals,Sampling instants where a signal is measured.,Capturing video at 30 fps (every 33 ms).
 DMSP instruments,Sensors on the Defense Meteorological Satellite Program capturing low‑light Earth imagery.,Night‑time city lights imaged from space for urban studies.
 DPI,Dots per inch; spatial printing resolution.,A 300 DPI image has 300 dots in each inch of print.
-driverless cars,Autonomous vehicles using CV and sensor fusion to navigate without human control.,Tesla Autopilot using cameras and radar to steer and brake.
-driverless cars,Vehicles that navigate without human drivers using perception and planning.,Waymo’s autonomous taxis operating in Phoenix.
-drizzling technique,Super-resolution method combining multiple dithered images to increase detail.,Hubble Space Telescope’s high‑res astronomy images.
+driverless cars,Autonomous cars using CV and sensor fusion to navigate without human control.,Tesla Autopilot using cameras and radar to steer and brake.
 drizzling technique,Super‑resolution method combining multiple dithered images to increase effective resolution.,Hubble Space Telescope’s Advanced Camera uses drizzling to sharpen images.
 DSLR,Digital Single‑Lens Reflex camera with interchangeable lenses and optical viewfinder.,Canon EOS 5D Mark IV used for high‑quality photography.
 DSP boards,Digital signal processor hardware for real‑time image/video operations.,FPGA‑based DSP board implementing a real‑time video codec.
@@ -94,88 +80,55 @@ eye tracking,Capturing gaze direction and fixation points using cameras or senso
 face recognition,Identifying or verifying a person from their facial image.,Unlocking a phone via the owner’s face.
 face recognition hard features,Geometric landmarks or descriptors manually engineered for identifying faces.,"Distances between eyes, nose tip, and mouth corners used for matching."
 face recognition hard features,"Using manually‑engineered facial attributes (eyes, nose, mouth distances) instead of learned embeddings.",Matching faces by measuring interocular distance and nose width.
-FAST,Features from Accelerated Segment Test: fast corner detector.,Real‑time tracking of interest points in video streams.
 FAST,Features from Accelerated Segment Test: a fast corner detector.,Detecting keypoints for real‑time SLAM on a mobile robot.
 Faster R‑CNN,Two‑stage object detector: region proposal network + classification head.,Detecting and classifying vehicles in traffic camera feeds.
 feature detection,"Identifying salient points or regions (edges, corners) in an image.",Finding SIFT keypoints on a building facade for panorama stitching.
-feature detection,"Finding salient points or regions (corners, blobs) in an image.",Detecting SIFT keypoints for image matching.
 feature engineering,Manually crafting input descriptors from raw data for ML models.,Computing histogram of oriented gradients (HOG) for pedestrian detection.
-feature engineering,Designing or selecting input features for ML models.,Computing color histograms and texture descriptors for classification.
 feature extraction,Automated learning or computing of descriptors representing image content.,CNN’s convolutional layers outputting feature maps.
-feature extraction,Automatically or manually deriving informative representations from raw data.,Using HOG descriptors as inputs to an SVM pedestrian detector.
-feature extractor,Component (algorithm or network) that generates feature vectors from images.,Pretrained VGG network outputting a 4096‑dim embedding for an image.
 feature extractor,Component that computes features from raw data.,The convolutional base of a CNN acting as a feature extractor for transfer learning.
-feature matching,Pairing similar features across images based on descriptor similarity.,Matching ORB features between two overlapping frames for alignment.
 feature matching,Pairing corresponding features between images.,Matching ORB descriptors between two frames for image stitching.
 feature vectors,Numerical arrays representing detected features for downstream tasks.,128‑element SIFT descriptor for each keypoint.
-feature vectors,Numeric arrays representing features for ML.,128‑dimensional SIFT descriptor vector.
 features,"Image attributes (edges, textures, shapes) used for analysis and recognition.","Corners, blobs, and texture patches used in object detection."
-features,Informative measurements derived from raw data.,"Edges, textures, or learned filter responses in an image."
 feed‑forward NN,Neural network where connections do not form cycles; data moves forward only.,A multilayer perceptron for digit classification.
-Fovea,Central retina region with highest acuity in human vision.,Sharp focus on the center of gaze in natural scenes.
 fovea,Central retina region with high cone density for sharp central vision.,Area of gaze focus in human vision.
 FPGAs,Field‑programmable gate arrays: reconfigurable hardware for parallel processing.,Implementing custom CNN acceleration on an FPGA board.
 fully‑connected layer,Neural network layer where every input connects to every output unit.,Final dense layer classifying between 1000 ImageNet categories.
-fully‑connected layer,Neural network layer where each input connects to every output neuron.,The classification head of a CNN after convolutional layers.
-Gabor filters,"Bank of oriented, frequency‑selective filters modeling visual cortex receptive fields.",Texture segmentation by convolving an image with multiple Gabor kernels.
 Gabor filters,"Localized, oriented sinusoidal filters modeling simple cells in visual cortex.",Extracting texture patterns for texture segmentation.
 gamma correction,Non‑linear mapping of pixel intensities to correct for display or perceptual response.,Applying sRGB gamma curve before displaying an image.
-gamma‑ray band,Imaging beyond visible spectrum capturing high‑energy photons.,Astronomy telescopes detecting gamma‑ray bursts in space.
 gamma‑ray band,High‑energy part of the electromagnetic spectrum used in astronomy/imaging.,Imaging gamma‑ray bursts with specialized detectors.
 Gaussian blur,Low‑pass filter smoothing images by convolving with a Gaussian kernel.,Reducing noise before edge detection on photographs.
-Gaussian blur,Blurring filter using a Gaussian kernel to smooth images.,Preprocessing to reduce noise before edge detection.
 gesture recognition,"Identifying human gestures (hand, body) from video or sensor data.",Recognizing swipe or pinch gestures on a touch camera.
 GIS,Geographic Information System: spatial analysis of map/geospatial data.,Overlaying satellite images with vector maps for land‑use classification.
 granularity,Level of detail or scale in data.,Pixel‑level vs. region‑level segmentation.
 graphic designer,Professional creating visual content using software tools.,Designing posters in Adobe Photoshop using image processing filters.
 grayscale,Single‑channel image representing intensity only.,Converting a color photo to 8‑bit gray for analysis.
 hand‑crafted features,Manually designed descriptors based on expert knowledge.,Haar cascades for face detection in OpenCV.
-hand‑crafted features,"Manually designed descriptors based on domain knowledge (e.g. edges, textures).",Using SIFT keypoints and descriptors for matching.
 Harris,Corner detection algorithm using local intensity autocorrelation.,Detecting corners in a chessboard calibration image.
-Harris,Corner detector that finds points with large gradients in orthogonal directions.,Detecting corners in architectural images for stitching.
 HCI,Human–Computer Interaction: study of interfaces between users and computers.,Gesture‑based control of VR applications.
-HCI,Human–Computer Interaction: designing systems for effective human use.,Gesture‑based camera controls in AR applications.
 HDR imaging,Capturing or synthesizing high dynamic range images to preserve detail in shadows and highlights.,Merging bracketed exposures into one HDR photo.
 hidden layers,Intermediate layers in neural networks between input and output.,Two hidden FC layers of 512 neurons each in an MLP classifier.
-hidden layers,Intermediate layers in a neural network between input and output.,Two dense layers in a feed‑forward NN before the classification layer.
 high‑level image processing spectrum,"Processing stages involving semantic understanding (detection, recognition).",Object classification and scene labeling tasks.
-high‑level image processing spectrum,"Tasks that interpret scene semantics (recognition, segmentation) rather than low‑level filtering.",Segmenting a road from a camera feed in autonomous driving.
 histogram equalization,Redistributing image intensities to enhance contrast.,Stretching dark areas in a dim photo to reveal detail.
 HOG,Histogram of Oriented Gradients: descriptor capturing local edge orientation distributions.,Pedestrian detection in surveillance video.
-HOG,Histogram of Oriented Gradients: descriptor capturing edge orientation distributions.,Detecting pedestrians using HOG features + SVM.
 Hough transform,"Voting‑based method to detect parametric shapes (lines, circles).",Extracting lane lines in self‑driving car images.
-Hough transform,"Method to detect parameterized shapes (lines, circles) via voting in parameter space.",Finding lane lines in road images.
 Hubble telescope,Space telescope providing high‑resolution optical and UV imaging.,Capturing deep‑field images of distant galaxies.
-Hugging Face,"AI platform & library offering pretrained models, including for vision (Transformers).",Using a Vision Transformer from Hugging Face to classify images.
 Hugging Face,"Platform and library for sharing transformers/models; increasingly hosts CV models (e.g., DETR).",Loading a DETR object‑detection model from Hugging Face Hub for quick prototyping.
 Human Computer Interface,Hardware/software enabling people to interact with computers via visual or other signals.,Eye‑tracking interface for hands‑free cursor control.
-human vision,Biological process of perceiving and interpreting visual stimuli.,Studying saccades and visual attention in psychology experiments.
 human vision,"Biological visual processing in humans (reception, neural processing).",Studying foveal vs. peripheral resolution limits.
 illumination source,Light emitter used to illuminate a scene for imaging.,Ring‑light used for uniform facial illumination in face capture.
 image acquisition,"Capturing analog or digital data from sensors (cameras, scanners).",Scanning documents with a flatbed scanner.
-image acquisition,Capturing an image via sensors or devices.,Scanning a document using a flatbed scanner.
-image alignment,Geometric registration of multiple images into a common coordinate frame.,Aligning aerial images for 3D terrain reconstruction.
 image alignment,Registering images into a common coordinate frame (e.g. for stitching).,Aligning overlapping photos before panorama creation.
-image compression,Reducing file size by eliminating redundancy (lossy or lossless).,JPEG encoding of photographs for web use.
 image compression,Reducing file size by removing redundancy (lossy or lossless).,Saving a JPEG with 90% quality to shrink file size.
 image displays,"Devices or methods for rendering images (monitors, projectors).",Calibrating an LCD to accurately show colors.
 image enhancement,"Improving visual quality by adjusting contrast, sharpness, or color.",Applying unsharp mask to bring out detail in a landscape photo.
-image enhancement,Improving visual quality via filtering or transforms.,Applying unsharp mask to make details pop.
 image filters,"Kernels or operators applied to images for various effects (blur, sharpen, edge).",Applying a median filter to remove salt‑and‑pepper noise.
-image filters,"Convolution kernels or operations applied for smoothing, sharpening, edge detection, etc.",Using a Sobel filter to detect vertical edges.
-image formation,Physical process converting 3D scene light into a 2D image via optics and sensors.,Modeling camera imaging process in ray‑tracing software.
 image formation,"Physical and optical process by which a scene is captured (geometry, optics, illumination).",Modeling pinhole camera projection in graphics.
 image processing software,Applications or libraries providing tools for processing images.,Using OpenCV or Adobe Photoshop for editing.
-image processing software,Applications or libraries for manipulating images.,Using Photoshop for retouching or OpenCV for algorithmic processing.
-image processing spectrum,See high‑level and low‑level processing continuum from pixels to semantics.,Low‑level denoising → mid‑level segmentation → high‑level recognition.
 image processing spectrum,"Range of tasks from low‑level (denoising, filtering) through mid‑level (segmentation) to high‑level (recognition).",Building pipelines that go from raw sensor data to object labels.
 Image Processing Toolbox,MATLAB toolbox providing functions for DIP.,Calling imadjust to adjust image contrast.
 image restoration,"Recovering original image by removing degradations (blur, noise).",Deblurring motion‑blurred photos using Wiener filter.
-image restoration,"Recovering an uncorrupted image from degraded observations (noise, blur).",Using Wiener deconvolution to undo motion blur.
 image sensors,"Devices converting photons to electrical signals (CCD, CMOS, specialized).",A back‑illuminated CMOS sensor in a mirrorless camera.
-image sharpening,Enhancing edges to increase apparent acutance.,Applying a Laplacian filter to emphasize image detail.
 image sharpening,Enhancing edges and fine detail via high‑pass filtering.,Applying a Laplacian filter to accentuate contours.
-image stitching,Combining overlapping images into a seamless panorama.,Creating 360° panoramas from multiple smartphone photos.
 image stitching,Combining multiple overlapping images into a seamless composite.,Creating a 360° panorama from six DSLR photos.
 image transforms,"Mathematical operations (Fourier, wavelet, Radon) to analyze or process images.",Computing the 2D FFT of an image to analyze frequency content.
 ImageNet,"Large-scale labeled image dataset (14M+ images, 20K+ categories) for benchmarking vision models.",Training and evaluating deep CNNs in the ILSVRC challenge.

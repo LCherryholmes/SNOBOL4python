@@ -1,0 +1,263 @@
+Term,Definition,Example
+3D pose estimation,Predicting the orientation and position of objects or body joints in three-dimensional space from one or more images.,Estimating the skeleton joint angles of a person from a single camera frame for augmented-reality fitness coaching.
+3D reconstruction,Building a 3D model or surface of a scene or object by integrating information from multiple views or depth sensors.,Generating a textured mesh of a building facade using drone-captured photographs.
+activity recognition,Automatically classifying human actions or behaviors in videos or image sequences by analyzing motion and appearance cues.,Detecting when someone falls versus when they sit down in a nursing-home surveillance system.
+actual intensity,The measured brightness value of a pixel in an image,A grayscale pixel value of 120 on a 0–255 scale
+AlexNet,"Landmark eight-layer CNN that popularized deep learning for image classification, using ReLU, dropout, and data augmentation to win ImageNet 2012.","Retraining AlexNet on a custom fruit-classification dataset to distinguish apples, bananas, and cherries."
+aliasing,"Distortion that occurs when a continuous signal is sampled below twice its highest frequency, causing spurious patterns.",Moiré fringes appearing when scanning a finely striped fabric at low resolution.
+analog image,A continuous-tone representation of a scene where brightness varies smoothly without discrete steps.,A piece of photographic film capturing a landscape’s nuances in light and shadow.
+Apollo missions,NASA crewed lunar programs (1961–1972) that carried specialized film and digital cameras to capture lunar surface imagery.,Apollo 11’s Hasselblad 70 mm film camera documenting Neil Armstrong’s first steps.
+artificial intelligence,"Field of computer science dedicated to creating systems that perform tasks typically requiring human intelligence, such as learning and reasoning.",A chatbot using natural-language understanding to answer customer-service queries.
+artificial light,Illumination originating from man-made sources,Using an LED ring to light a product for inspection
+artistic effects,Stylized transformations applied to images to mimic traditional art techniques or create novel looks.,Converting a photo into an oil-painting–style rendering with brush-stroke textures.
+augmented reality,Overlaying computer-generated graphics or information onto live camera views to enrich perception of the real world.,Pokémon characters appearing on a smartphone screen as if they inhabit the user’s surroundings.
+auto-detected features,"Image features (keypoints, edges, regions) identified by an algorithm without manual intervention.",SIFT extracting salient corner points from a building image for matching across multiple photos.
+autoencoders,"Neural networks that learn to compress (encode) data into a lower-dimensional representation and reconstruct (decode) it, often for denoising or reduction.",A denoising autoencoder trained to remove Gaussian noise from face images.
+autonomous navigation,Self-driving agents planning and controlling their path in an environment without human input.,A delivery drone using onboard cameras and lidar to navigate city streets and avoid obstacles.
+autonomous perception,"Machines sensing and interpreting their environment (objects, terrain, motion) in real time without human guidance.",A warehouse robot detecting and classifying packages on a conveyor belt to route them correctly.
+autonomous system,"Integrated system combining perception, planning, and actuation to operate independently in complex environments.",An unmanned underwater vehicle mapping coral reefs and adjusting its course to avoid reefs.
+Bartlane service,Early phototelegraphic service (1930s–1940s) for transmitting reconnaissance and mapping imagery via radio-teletype lines.,U.S. Navy ships sending low-resolution aerial photos back to shore stations using Bartlane Service links.
+Bartlane system,End-to-end hardware and protocol suite for automated photogrammetric image transmission over long distances.,WWII reconnaissance planes feeding film images through Bartlane System modems to distant processing centers.
+black & white,"Imagery represented using a single intensity channel, ranging from black to white (or digitally, 0–255 in 8-bit).",A newspaper photograph scanned as an 8-bit grayscale image for archival.
+blind convolution,Convolution operation performed when the blur kernel is unknown—both the latent sharp image and kernel must be estimated.,Restoring a motion-blurred security-camera frame without knowing the camera’s shake pattern.
+blurring,"Reducing detail or noise by convolving an image with a low-pass filter, which smooths intensity variations.",Applying a Gaussian blur to soften background details in portrait photography.
+brightness adaptation,The process by which visual systems adjust sensitivity to different lighting levels over time.,Eyes adjusting to darkness when you enter a dimly lit movie theater.
+brightness discrimination,The ability to perceive small differences in luminance between adjacent areas.,Detecting a 1% change in grayscale intensity between two neighboring patches.
+C/C++,"General-purpose, compiled programming languages commonly used to implement high-performance vision and image-processing algorithms.",Writing an OpenCV-based real-time face‐detection module in C++.
+candela,SI unit of luminous intensity quantifying light emitted by a source in a given direction.,Calibrating a studio strobe light to emit exactly 1 000 cd for repeatable product photography.
+Canny,A multi-stage edge detection algorithm,Applying Canny to highlight object boundaries in a scene
+Canny edge detector,Implementation of the Canny algorithm that detects edges via gradient and hysteresis,Detecting road lane markings in a dash-cam image
+CAT scan,Computerized Axial Tomography; X-ray source and detectors rotate around the body to acquire cross-sectional images.,A hospital CT scanner producing slice-by-slice images of a patient’s skull to detect fractures.
+CCD arrays,"Charge-Coupled Device sensors convert incoming photons into electronic charges, then read out pixel values sequentially.",A scientific CCD camera in astrophotography capturing faint starlight with high quantum efficiency.
+ciliary muscles,Eye muscles that adjust the lens’s shape for focusing,Shifting focus from reading a book to looking at a distant object
+class labels,Categorical annotations assigned to training samples in supervised learning to guide model training.,"Tagging thousands of street-view images with “pedestrian,” “bicycle,” or “vehicle” for an autonomous-driving dataset."
+class targets,Desired labels used in supervised learning,“Cat” or “Dog” labels for an image classifier
+clustering,Unsupervised learning technique that groups data points into clusters based on similarity metrics.,"Segmenting satellite images into land-cover classes (water, forest, urban) using K-means clustering."
+CMOS arrays,Complementary Metal–Oxide–Semiconductor sensors integrate photon-to-voltage conversion and readout circuitry per pixel on–chip.,A smartphone camera using a CMOS sensor to capture HDR video at 4 K resolution.
+CMY,"Color model using cyan, magenta, and yellow subtractive primaries",Printing full-color photographs on paper
+CMYK,"Subtractive color model (Cyan, Magenta, Yellow, Key/Black) used in printing to reproduce full-color images.",Separating a digital photograph into CMYK channels before sending to a commercial four-color offset press.
+CNNs,Convolutional Neural Networks designed for grid-structured data,Using ResNet-50 to classify ImageNet pictures
+COCO,"Common Objects in Context; large-scale dataset of everyday scenes annotated for object detection, segmentation, and captioning.",Training a Mask R-CNN model on COCO’s 80 object categories for instance segmentation in crowd scenes.
+color adjustment,Modifying an image’s color properties,Increasing saturation and contrast in a portrait
+color image processing,"Techniques specifically designed to analyze or enhance full-color images in various color spaces (RGB, HSV, Lab, etc.).",Converting a RAW underwater photo to Lab color space to correct greenish hues and restore natural tones.
+compositing,"Combining multiple image or video layers using alpha blending, masks, and transforms to create a single coherent scene.",Merging actors filmed on a green screen into a digitally created fantasy environment for a movie scene.
+Computer Vision,"Subfield of AI focused on enabling machines to interpret, analyze, and make decisions based on visual data.",Deploying object-detection networks on traffic cameras to count vehicles and detect incidents.
+Computer Vision Toolbox,"MATLAB toolbox providing algorithms for camera calibration, feature detection, object recognition, and 3D vision workflows.",Using detectSURFFeatures in MATLAB to extract keypoints for panorama stitching.
+cones,Retinal cells responsible for color vision,"Distinguishing red, green, and blue hues in daytime scenes"
+continuous,A signal or image defined over a continuous domain (space or time) rather than at discrete samples.,Light intensity varying smoothly across the sky in a sunset photograph (before digitization).
+contrast,"The ratio or difference between the darkest and brightest parts of an image, affecting perceived sharpness and detail.",A black-and-white portrait with stark blacks and bright whites for dramatic effect.
+Convolutional Neural Network (CNN),"Specialized deep network applying learnable convolution filters to extract spatial hierarchies of features, widely used in image tasks.",VGG-16 applying 3×3 convolution kernels and max-pooling to classify objects in photos.
+CT scan,"Computed Tomography; synonymous with CAT scan, combines multiple X-ray images taken from different angles to form 3D volumes.",A CT scan of the chest used to visualize lung nodules in oncology screening.
+CUDA,NVIDIA’s parallel computing platform and API for accelerating compute-intensive operations on GPUs.,Offloading convolution operations in a deep learning model to CUDA-enabled GPUs for faster training.
+CV,"Abbreviation for Computer Vision, the field focused on enabling machines to interpret and act on visual data.",Implementing CV algorithms to detect and track faces in security footage.
+deblurring,"Restoring image sharpness by reversing the blurring process, often via inverse filtering or optimization.",Using a Wiener filter to correct motion blur from a hand-held camera shot.
+decision trees,Tree-structured models that split data by feature tests,Classifying traffic signs by shape and color
+deep learning,Subfield of machine learning using multi-layered neural networks to automatically learn hierarchical feature representations from data.,Training a network on ImageNet to learn edges in early layers and object parts in deeper layers.
+deep learning pipeline,"End-to-end workflow covering data collection, preprocessing, model design, training, evaluation, and deployment for deep models.","Building a pipeline that loads COCO images, applies augmentations, trains a YOLO detector, and exports it to ONNX for edge."
+deep learning-based techniques,"Methods leveraging deep neural networks—such as transfer learning, attention mechanisms, and GANs—for advanced image analysis and synthesis.",Using a GAN to generate high-resolution satellite images conditioned on low-res input.
+deep neural network,"Neural network architecture with multiple hidden layers between input and output, enabling learning of complex patterns.",A 10-layer network trained for semantic segmentation of urban street scenes.
+denoising,Removing random variations (noise) from an image while preserving important structures and edges.,Applying a median filter to eliminate salt-and-pepper noise on a scanned document.
+DenseNet,"CNN architecture where each layer receives feature maps from all preceding layers, improving gradient flow and parameter efficiency.",Using DenseNet-121 for transfer learning on medical X-ray images to detect pneumonia.
+DenseNet-201,"A deeper variant of DenseNet with 201 layers, offering more capacity and refined feature reuse for complex recognition tasks.",Fine-tuning DenseNet-201 on a skin-lesion dataset for melanoma detection.
+digital image,"A representation of a scene as a grid of discrete pixels, each with quantized intensity values.",A 1024×768 JPEG photo where each pixel holds an 8-bit color value.
+Digital Image Processing,Scientific and engineering discipline concerned with the mathematical manipulation of pixel arrays to enhance or extract information.,Applying morphological filters to a scanned fingerprint for a forensic database.
+DIP,Digital Image Processing: the manipulation of images via digital computation,Performing histogram equalization on a medical X-ray
+discrete,"Defined only at separate, distinct points rather than over a continuous range.",Pixel values sampled at integer row and column indices in a raster image.
+discrete quantity levels,The finite set of possible values (quantization levels) an image sample can take.,An 8-bit grayscale image with 256 possible intensity levels per pixel.
+discrete time intervals,Fixed sampling instants at which a time-varying signal (like video) is recorded.,Capturing video frames at exactly 30 frames per second.
+DMSP instruments,"Sensors aboard the U.S. Defense Meteorological Satellite Program for nighttime Earth-view imaging, notably the Operational Linescan System.",Night-time city-light imagery from DMSP satellites used in urban growth studies.
+DPI,"Dots Per Inch; measure of spatial printing or scanning resolution, indicating how many individual dots or samples fit into one inch.",Setting a scanner to 600 DPI to digitize a printed photograph with fine detail.
+driverless cars,Autonomous vehicles relying on CV and sensors to navigate,Tesla Autopilot using cameras to stay in lane
+drizzling technique,Super-resolution method combining dithered images to increase detail,Enhancing Hubble Space Telescope photos for finer star field resolution
+DSLR,Digital Single-Lens Reflex camera uses a mirror/prism system to direct light to an optical viewfinder and an image sensor.,A professional photographer using a full-frame DSLR to shoot wildlife with a 400 mm telephoto lens.
+DSP boards,Digital Signal Processing hardware accelerators equipped with specialized processors and memory for real-time image signal tasks.,An embedded DSP board in a video conferencing system performing live background segmentation.
+dynamic range extension,Techniques to increase the captured or displayed intensity range of an image beyond standard limits.,Merging multiple exposures into a single HDR image to reveal both shadow and highlight detail.
+EfficientNet,"Family of CNNs that scale depth, width, and resolution using a compound coefficient, achieving state-of-the-art accuracy with fewer parameters.",Deploying EfficientNet-B0 on mobile devices for real-time object detection in AR applications.
+electro-microscopic image,High-resolution images formed by scanning or transmission electron microscopes using accelerated electron beams instead of light.,A TEM (Transmission Electron Microscope) image revealing the lattice structure of a metal alloy.
+electromagnetic spectrum,"The full range of wavelengths of electromagnetic radiation, from gamma rays to radio waves.",Visible light (400–700 nm) used by cameras to form standard photographs.
+EmguCV,A .NET wrapper for OpenCV that brings OpenCV’s computer vision capabilities into C# and VB.NET applications.,Using EmguCV in C# to perform real-time Canny edge detection on a live webcam feed.
+eye tracking,Measuring and analyzing the point of gaze and eye motion dynamics to infer user attention and intent.,Using an infrared-based eye-tracker to study how users read a news website layout.
+face recognition,Identifying or verifying individuals based on their facial features by matching to a known database.,Unlocking a smartphone by comparing a live selfie to the owner’s enrolled face template.
+face recognition hard features,Manually designed facial measurements,Computing the distance between eye corners to identify a person
+FAST,"Features from Accelerated Segment Test, a corner detection method",Real-time corner detection for object tracking in video
+Faster R-CNN,"Two-stage object detector: Region Proposal Network generates candidate object boxes, followed by a classifier/regressor refining each proposal.",Detecting pedestrians and vehicles in autonomous-driving footage at 5 FPS on a GPU.
+feature detection,Identifying salient points or regions in an image,Detecting Harris corners on building facades
+feature engineering,Crafting custom features from raw data,Computing texture descriptors before feeding data into an SVM
+feature extraction,Automatically deriving informative attributes from raw input,Using CNN layers to extract object representations
+feature extractor,A module or algorithm that produces feature representations,SIFT descriptor generator for interest points
+feature matching,Pairing features between images based on similarity,Matching ORB keypoints across consecutive video frames
+feature vectors,Numerical arrays representing extracted features,A 128-dimensional SIFT descriptor for an image patch
+features,Distinct measurable properties of an image,"Edges, corners, texture patterns"
+feed-forward NN,Neural network where information flows in one direction—from input through hidden layers to output—without cycles or feedback loops.,A simple 3-layer perceptron classifying handwritten digits from MNIST.
+fovea,Central part of the retina with high visual acuity,Humans focusing on text with their foveal region
+FPGAs,"Field-Programmable Gate Arrays; reconfigurable silicon devices used to implement custom, parallelized image-processing pipelines.",An FPGA board in a machine-vision camera executing edge detection at 240 fps with ultra-low latency.
+fully-connected layer,Neural network layer where each input neuron connects to every output neuron,Final dense layer in a CNN that outputs class probabilities
+Gabor filters,Bandpass filters that capture spatial frequency and orientation information,Analyzing fingerprint ridge orientations
+gamma correction,Nonlinear mapping of intensity values to compensate for the nonlinear response of display devices or human vision.,Applying an sRGB gamma curve (γ≈2.2) to linear camera data before showing it on a monitor.
+gamma-ray band,Portion of the electromagnetic spectrum above X-rays,Imaging cosmic gamma-ray bursts with the Fermi telescope
+Gaussian blur,Smoothing filter that applies a Gaussian kernel,Blurring background inPortrait mode to mimic shallow depth-of-field
+gesture recognition,Interpreting human hand or body movements as input commands to interact with machines or software.,Controlling slideshow navigation with swipe gestures detected by a webcam.
+GIS,"Geographic Information System; software platform for storing, analyzing, and visualizing spatially referenced data and imagery.",Overlaying LiDAR-derived elevation models with aerial photographs in QGIS to plan flood mitigation projects.
+granularity,"The fineness of sampling in either spatial or value domains, determining how finely details can be represented.",A coarse granularity in a 64×64-pixel thumbnail lacks detail compared to a 4K image.
+graphic designer,"Professional who uses image-processing and CV tools to create visual content—logos, layouts, illustrations—for print or digital media.","Designing a magazine cover in Photoshop, combining type, photos, and composited illustrations."
+grayscale,"Image representation using shades of gray only, typically storing one intensity value per pixel.",Converting a color scene into a single-channel 8-bit image with values from black (0) to white (255).
+hand-crafted features,Manually defined measurements for image analysis,Computing histogram of oriented gradients (HOG) by hand
+Harris,Corner detection algorithm that finds interest points,Detecting repeatable points on architectural structures
+HCI,Human-Computer Interaction: study and design of interfaces,Designing a touchscreen layout for photo editing software
+HDR imaging,Capturing or generating images with a higher dynamic range than standard sensors or displays to show detail in both shadows and highlights.,Merging bracketed exposures of a sunset into a single HDR image that preserves deep shadows and bright skies.
+hidden layers,Intermediate layers in a neural network,Convolutional blocks in VGG between input and output
+high-level image processing spectrum,Tasks that involve semantic understanding of image content,Recognizing activity in surveillance footage
+histogram equalization,Contrast-enhancement technique that redistributes pixel intensities to produce a uniform histogram.,Enhancing a dimly lit photo so its dark regions become more distinguishable from midtones and highlights.
+HOG,Histogram of Oriented Gradients: feature descriptor for object detection,Detecting pedestrians in street scenes
+Hough transform,"Technique to detect parameterized shapes (lines, circles)",Finding lane lines in a road image by voting in Hough space
+Hubble telescope,Space-based optical telescope equipped with CCD/CMOS detectors capturing high-resolution images free from atmospheric distortion.,Hubble’s Ultra Deep Field image exposing thousands of distant galaxies billions of light-years away.
+Hugging Face,"An open platform and library hosting pre-trained models (including vision transformers), datasets, and deployment tools.",Fine-tuning a Vision Transformer from Hugging Face Transformers for custom image-classification tasks.
+Human Computer Interface,Alternate term for HCI: interfaces enabling user–machine interaction,Voice-command menus for camera settings
+human vision,Biological process by which eyes and brain interpret visual stimuli,Using depth cues such as stereopsis to perceive 3D structure
+Illumination source,Any light-emitting device or natural source used to illuminate a scene for image acquisition.,"A ring-light LED array providing diffuse, shadow-free lighting in a dental intraoral camera."
+image acquisition,Capturing or digitizing a scene into an image,Using a DSLR camera sensor to record a landscape
+image alignment,Registering two or more images into a common coordinate frame,Aligning overlapping photos for panorama stitching
+image compression,Reducing data size of images with minimal quality loss,Saving a photograph as a JPEG with 80% quality
+Image displays,"Output hardware (monitors, projectors) that render processed or raw image data into visible form for human observation.",A medical-grade 4 MP diagnostic display showing radiographs with calibrated luminance and contrast.
+image enhancement,Improving visual quality or highlighting features,Applying contrast stretching to an underexposed photograph
+image filters,Operations that modify pixel values based on neighborhood rules,Using a median filter to remove salt-and-pepper noise
+image formation,The process by which light from a scene is projected and recorded by a sensor,Modeling pinhole camera projection for 3D reconstruction
+image processing software,Tools or libraries for manipulating images,Using OpenCV in Python to detect faces
+image processing spectrum,The full chain from acquisition through analysis,From capturing a photo to extracting object counts
+Image Processing Toolbox,"MATLAB toolbox offering functions for image filtering, enhancement, segmentation, and geometric transformations.",Applying imadjust to stretch contrast in a dimly lit photograph.
+image restoration,Recovering a clean image from a degraded one,Deblurring a motion-blurred video frame
+image sensors,"General category for devices (CCD, CMOS, etc.) that convert optical images into electronic signals for processing or storage.",A thermal camera’s microbolometer sensor array mapping infrared radiation to temperature values.
+image sharpening,Enhancing edges and fine details,Applying an unsharp-mask filter to bring out texture
+image stitching,Combining multiple images to form a seamless composite,Creating a 180° panorama from four overlapping shots
+image transforms,Mathematical operations mapping images into alternate domains,Performing a 2D FFT to analyze frequency content
+ImageNet,"Vast image database organized by WordNet hierarchy, widely used to pretrain deep networks via large-scale image classification.",Fine-tuning an ImageNet-pretrained ResNet on a medical-imaging task to improve classification accuracy.
+imaging system,"Complete setup including optics, sensor, and processing chain to capture and interpret scenes","A drone-mounted camera with gimbal, CMOS sensor, and onboard FPGA for real-time stitching"
+industrial inspection,"Automated visual examination in manufacturing for defects, alignment, or assembly verification",Vision line checking PCB solder joints for missing components
+infrared band,"Wavelengths between ~700 nm and 1 mm, sensitive to thermal emissions, used in night-vision and heat mapping",Thermal camera spotting hotspots in building inspections
+intensity resolution,Number of discrete gray levels per pixel (bit depth),8-bit grayscale image offers 256 shades from black to white
+internal image plane,Surface within an imaging system where light converges to form the focused image,The CMOS sensor in a smartphone sits at the internal image plane
+Isopreference curve,"Graph showing combinations of image attributes (e.g., noise vs. blur) rated equally acceptable by observers",Designers selecting filter strength that trades off denoising and sharpness for same perceived quality
+Java,"Statically typed, object-oriented language running on the Java Virtual Machine (JVM)",Using OpenCV’s Java API to build a cross-platform vision app
+JAX,Python library for high-performance numerical computing and automatic differentiation,Using jax.vmap and jax.jit to vectorize and compile a differentiable Sobel filter
+Jitter,Temporal or spatial variation—often random—in image acquisition or display leading to instability,Slight frame-to-frame misalignment causing a shaky webcam feed
+JPEG,Lossy compressed raster format using discrete cosine transform (DCT),Photographs saved at 80 % quality as .jpg for web publishing
+k-NN,k-Nearest Neighbors—a non-parametric method classifying a sample based on majority vote of k closest training points,Classifying a flower species by comparing its features to the five nearest flowers in feature space
+Keras,High-level neural-network API running on top of TensorFlow (and other backends) for rapid prototyping,Building a CNN with Sequential and Functional APIs to classify X-ray images
+law enforcement,"Application of vision algorithms for surveillance, forensics, or identification in policing contexts",Automated facial recognition on CCTV footage to flag suspects
+LBP (Local Binary Patterns),Texture descriptor encoding the relationship between a pixel and its neighbors into a binary pattern,Building an LBP histogram to classify textures in fabric inspection
+learned features,"Data representations distilled automatically by models (e.g., activations of hidden layers) versus hand-crafted descriptors",Deep network extracting texture patterns for face recognition
+LeNet-5,Early convolutional architecture (7 layers) pioneered for digit recognition,Classifying MNIST handwritten digits with ~99% accuracy
+lens,Optical element that gathers and focuses light onto an image plane,DSLR camera lens focusing a landscape onto its CMOS sensor
+light receptors,General term for sensors that detect light in imaging devices,CCD arrays in astronomical telescopes registering faint starlight
+Linux,Open-source Unix-like operating system kernel and distributions,Deploying a Dockerized TensorFlow inference service on Ubuntu
+low-level image processing spectrum,"Pixel-level operations for noise suppression, contrast enhancement, and basic filtering",Applying histogram equalization to improve contrast in a dark photograph
+lux,SI unit measuring illuminance (luminous flux per unit area),Indoor office lighting specified at ~500 lux
+Mac OS,Apple’s proprietary Unix-based desktop operating system,Developing macOS Vision framework apps in Xcode
+machine language pipeline,Sequence of steps for ML-based image analysis,Data preprocessing → model training → inference
+machine learning,Algorithms that learn patterns from data to make predictions or decisions without explicit programming,"Training a CNN on ImageNet to classify 1,000 object categories"
+machine learning algorithm,A procedure that learns patterns from data,Training an SVM to classify handwritten digits
+machine learning techniques,Methods for training models or extracting patterns,Using k-means clustering to segment an image
+machine perception,High-level interpretation of sensor data to infer semantics and context,Self-driving car interpreting traffic signs and pedestrian behavior
+MATLAB,Numerical computing environment with an Image Processing Toolbox,Writing a script to perform morphological opening on a binary mask
+medical visualization,Interactive rendering and analysis of medical image data—often in 3D or fused modalities,VR-based planning tool displaying segmented organs before surgery
+microwave band,"Spectrum from 300 MHz to 300 GHz, penetrates clouds and vegetation, used in radar and remote sensing",Doppler weather radar detecting storm movements
+mid-level image processing spectrum,"Region- or feature-based operations such as edge linking, region growing, and contour extraction",Extracting contiguous road boundaries after edge detection
+MLPs,Multilayer perceptrons—fully connected networks with one or more hidden layers,Predicting image intensity from small patches
+morphological processing,"Shape-based transformations using structuring elements (e.g., erosion, dilation)",Closing small gaps in a binary mask of scanned text by dilation then erosion
+motion estimation,Calculating movement of objects or pixels between frames,Using block-matching to stabilize a shaky video
+MRI,Non-invasive imaging using strong magnetic fields and radio pulses to produce detailed soft-tissue contrast,Brain scan revealing a glioma
+natural light,Illumination provided by the sun or sky,Photographing outdoors at sunset
+NDVI maps,Normalized Difference Vegetation Index maps derived from red and near-infrared bands to quantify vegetation health and coverage,Satellite NDVI map highlighting crop vigor across an agricultural region
+neural network,"Computational model with interconnected layers of artificial neurons, capable of approximating complex functions",Feed-forward network identifying handwritten digits
+neural style transfer,Technique that recombines the content of one image with the artistic style of another image via optimization,Rendering a photograph in the style of Van Gogh’s Starry Night
+noise reduction,Smoothing or averaging filters to attenuate random pixel-level variations,Applying a Gaussian blur to reduce sensor noise in low-light images
+noise removal,Suppressing random or unwanted variations in pixel values,Applying a bilateral filter to reduce sensor noise
+NumPy,Fundamental package for numerical computing with N-dimensional array support,"Representing and manipulating an image as a 3D NumPy array (height, width, channels)"
+Nyquist principle,Sampling theory requiring twice the maximum signal frequency to avoid aliasing,Choosing a camera sensor resolution to capture fine texture without aliasing
+object classification,Assigning a semantic label to an entire image or region,Labeling cropped images of leaves as “maple” or “oak”
+object detection,Localizing and classifying multiple objects within an image,"Drawing bounding boxes around cars, pedestrians, and traffic signs in street‐view photos"
+object recognition,Verifying object identity or category by matching it against known instances,Confirming that two face crops correspond to the same person in access-control systems
+object segmentation,Pixel-level partitioning of image regions into semantic or instance masks,Generating a binary mask isolating each cell in microscopy images
+offset printing,"Indirect printing process transferring ink from plate to substrate, where digital proofs guide quality control",Using CV to inspect color registration on offset-printed brochures
+ONNX,Open Neural Network Exchange format for interoperability between ML frameworks,Exporting a PyTorch YOLOv5 model to ONNX for deployment in a C++ application
+opacity,"Degree of transparency encoded by the alpha channel, ranging from fully transparent (0) to opaque (1)",Overlay graphic with semi‐transparent watermark (opacity 0.5)
+OpenCL,"Open standard for heterogeneous parallel computing across CPUs, GPUs, and other processors",Accelerating a Sobel filter on the GPU via an OpenCL kernel
+OpenCV,Open-source C/C++ library (with Python/Java bindings) offering algorithms for real-time computer vision,Using cv::undistort to rectify fisheye images from a wide-angle lens
+OpenGL,"Cross-platform API for rendering 2D/3D graphics, often leveraged for shader-based image processing",Writing a GLSL fragment shader to perform edge detection in a game engine
+optic nerve,Bundle of nerve fibers transmitting electrical signals from the retina to the brain,Optic nerve carrying visual information to the visual cortex
+optical flow,Field of apparent motion of brightness patterns between frames,Estimating flow vectors for video compression
+optical path,"Trajectory that light follows through an optical system, including lenses and mirrors",The series of lenses and mirrors directing light inside a compound microscope
+ORB (Oriented FAST and Rotated BRIEF),Combines the FAST keypoint detector and BRIEF descriptor with orientation compensation,SLAM pipeline extracting ORB features for real-time mapping on a mobile robot
+output digitized image,Digital representation produced by sampling and quantizing an analog scene,Film scan saved as a TIFF file after drum‐scanner capture
+PCA,Principal Component Analysis—a linear dimensionality-reduction technique projecting data onto orthogonal axes of maximum variance,"Reducing 1,024-D feature vectors to 100 principal components before classification"
+perceived intensity,Human‐vision‐weighted brightness based on gamma and psychophysical response curves,Gamma‐corrected pixel values for linear display output
+PET scan,Functional imaging that tracks a radiolabeled tracer’s metabolic uptake in tissues,Oncology study mapping glucose consumption in tumors
+photodiodes,Semiconductor devices that generate electric current proportional to incident light,Photodiodes in a CMOS sensor array detecting scene brightness
+photoreceptors,Cells or devices that detect photons and convert them into electrical signals,Rod cells in the eye enabling vision in dim lighting
+Photoshop,Commercial image-editing application,Using the clone-stamp tool to remove blemishes
+PIL (Pillow),"Python Imaging Library fork for opening, manipulating, and saving many image file formats","Loading a JPEG, resizing to 256×256, and saving as PNG"
+Pixel,Smallest image unit representing a single color or intensity value,A 1920×1080 photo consists of about 2 million pixels
+PNG,Lossless compressed raster format supporting truecolor and transparency,Diagrams exported with see‐through backgrounds in .png
+Python,Dynamically typed scripting language with extensive ecosystem for scientific computing,Writing a NumPy + OpenCV script to detect edges in images
+PyTorch,Python-first deep-learning framework with dynamic computation graphs and strong community support,Implementing a custom ResNet block and training on CIFAR-10
+quantity domain,"Data representation where values denote measurable physical quantities (e.g., intensity, color)",Pixel intensity histogram analysis falls in the quantity domain
+quantization,Process of mapping continuous analog values to a fixed set of discrete levels,Camera ADC converting sensor voltage to 12-bit digital values
+radio band,"Electromagnetic spectrum from ~30 Hz to 300 GHz, used for long-range, low-resolution imaging",Radio telescopes mapping galactic hydrogen emissions
+Ranger 7 probe,NASA’s 1964 lunar probe that transmitted high-resolution television images of the Moon’s surface moments before impact,Ranger 7’s close-up images resolving features as small as 115 m
+real-time ALPR system,Automatic License Plate Recognition pipeline processing video or images to extract plate numbers instantly,Parking garage barrier lifting upon recognizing a resident’s license plate
+ResNet,Residual network architecture introducing skip connections to enable ultra-deep models without vanishing gradients,Training a 50-layer ResNet for accurate image classification
+ResNet-152,"Variant of ResNet with 152 layers, balancing depth and performance for large-scale image tasks",Fine-tuning ResNet-152 on a custom dataset of wildlife images
+resolution,Pixel dimensions (width×height) or density (pixels per inch/mm) of an image,A 4K display with 3840×2160 pixels
+retina,Light-sensitive layer of cells at the back of the eye that converts photons to signals,Human retina capturing visual scenes for processing by the brain
+RGB,"Color model with three channels—red, green, blue—combined to represent full‐color images",A DSLR sensor capturing a scenic landscape in RGB
+RGBA,Extension of RGB with an alpha channel that encodes opacity,A logo PNG with transparent background uses RGBA
+RNNs,Recurrent neural networks that model sequential dependencies via cyclic connections,Generating video captions frame by frame
+rods,Retinal cells sensitive to low light,Seeing shapes in a dimly lit room
+ROI cropping,Selecting and extracting a specific subregion of an image for focused processing,Cropping the face region from a photo before running a face-recognition model
+rotating drum scanners,Scanners that rotate film-wrapped drums and use linear sensors for high-res digitizing,Drum scanner digitizing a 35 mm film negative at 4000 dpi
+sampling,Measuring scene information at discrete spatial or temporal intervals,Video recorded at 30 frames per second
+scene element,Individual object or region within an image that contributes to overall interpretation,"Classifying cars, pedestrians, and road in an autonomous-driving scene"
+scene understanding,"Holistic analysis combining detected elements, spatial relationships, and semantics","Inferring “intersection ahead” from grouped lane markings, signs, and crosswalks"
+scikit-image,Python library of algorithms for image processing built on NumPy/SciPy,Applying skimage.filters.gaussian for smoothing microscopy images
+SciPy,"Python ecosystem module for scientific computing, includes ndimage subpackage for multi-dimensional filters",Performing morphological opening and closing with scipy.ndimage.morphology.binary_opening
+segmentation,Partitioning an image into coherent regions or labeled objects based on pixel similarity,"Semantic segmentation of road scenes into “road,” “pedestrian,” and “vehicle” classes"
+semi-supervised learning,Hybrid approach combining a small set of labeled data with large amounts of unlabeled data to improve model performance,Fine-tuning a segmentation network with a few hand-annotated masks plus many unlabeled scans
+sharpening,Emphasizing high-frequency components to accentuate edges and fine details,Unsharp mask filter boosting edge contrast in a portrait
+Shi-Tomasi,Corner detector that finds “good” features by evaluating the minimum eigenvalue of the local autocorrelation matrix,Tracking strong interest points across video frames for motion analysis
+SIFT (Scale-Invariant Feature Transform),Detects and describes local features invariant to scale and rotation,Stitching overlapping photos into a panorama by matching SIFT keypoints
+SIFT keypoints,Scale-Invariant Feature Transform interest points,Matching landmark points between aerial photographs
+Sobel,Gradient operator computing approximate first derivatives in X and Y directions,Detecting vertical edges on a road surface with cv2.Sobel
+spatial resolution,Smallest discernible detail in an image,A scanner’s 600 dpi capturing fine newspaper print
+specialized image hardware,Dedicated processors or circuits optimized for intensive image processing tasks,FPGA-based board in an industrial inspection camera for real-time defect detection
+supervised learning,Training paradigm using labeled examples (input paired with target output),Teaching a classifier to label cats vs. dogs from annotated photos
+supervised learning pipeline,"Sequence of steps in a supervised ML workflow: data collection, labeling, preprocessing, training, validation, and deployment","Building an object detector: collect images, annotate boxes, augment data, train, tune, and export model"
+SURF (Speeded-Up Robust Features),Approximation of SIFT that uses integral images and Hessian matrix for faster keypoint detection,Real-time object recognition by matching SURF descriptors
+SVMs,Support Vector Machines—algorithms that find hyperplanes maximizing margin between classes,Separating handwritten digits using an RBF-kernel SVM
+television band,Subset of the VHF/UHF radio spectrum allocated for broadcast television signals (54 MHz–806 MHz in US),Over-the-air TV antenna receiving local broadcast channels
+TensorFlow,"End-to-end open-source platform for machine learning, supporting training and deployment at scale",Training an image classifier on ImageNet using tf.keras
+TensorRT,NVIDIA’s high-performance deep-learning inference optimizer and runtime,Converting a TensorFlow model to a TensorRT engine for real-time inference on Jetson Xavier
+three-dimensional image,"Volumetric data representation along X, Y, and Z axes",3D reconstruction of cerebral vasculature from CT angiography
+tomography,"Cross-sectional imaging by reconstructing slice data from penetrating waves (e.g., X-rays, sound, electrons)",CT chest scan showing axial slices of lung anatomy
+traditional computer vision pipeline,Hand-crafted stages from pre-processing to classification,Filtering → edge detection → feature extraction → rule-based decision
+traditional computer vision techniques,Non-learning methods using explicit algorithms,Detecting circles via Hough transform
+traditional neural network,"Early, shallow architectures (few hidden layers) used for basic pattern recognition",Single-hidden-layer perceptron distinguishing line-drawn shapes
+transmission electron microscopy,High-resolution microscopy transmitting electrons through ultra-thin samples,Imaging viral capsid structure at sub-nanometer scale
+time domain,"Representation of data varying over time, typically used for sequences of images (video)",Analyzing frame‐by‐frame motion in a video clip
+two-dimensional image,Flat image representation with only height and width dimensions,Standard X-ray radiograph of a fractured wrist
+ultrasound,Real-time visualization using high-frequency sound waves and their echoes,Fetal ultrasound monitoring development in utero
+ultraviolet band,"Wavelengths from 10 nm to 380 nm, used to detect fluorescence and surface features",UV photography revealing varnish layers on paintings
+Unix,"Family of multitasking, multiuser OSes that influenced modern operating systems",Running legacy C-based image-processing code on Solaris
+unsupervised learning,"Learning patterns from unlabeled data by discovering structure, clusters, or latent representations",Grouping animal images into clusters without prior species labels
+VGG16,"Deep CNN with 16 weight layers using small (3×3) convolution filters, known for uniform architecture",Feature extraction for transfer learning on medical X-rays
+video stabilization,Removing unwanted camera shake by estimating frame-to-frame motion and compensating via transformation,Smoothing handheld footage to produce a steady output in post-production
+video tracking,Continuously following one or more objects across video frames using motion prediction and data association,Tracking a ball’s trajectory in sports analytics
+VIIRS instruments,Visible Infrared Imaging Radiometer Suite sensors onboard NOAA/NASA satellites recording global radiometric measurements,VIIRS night-time lights data used to monitor urban expansion
+virtual reality,Simulated 3D environment presented to the user,Oculus Rift rendering stereoscopic scenes
+visible band,Light wavelengths from ~380 nm to 740 nm perceptible by the human eye,Standard digital cameras capturing everyday scenes
+vision specialist,"Expert (human or algorithm) focusing on vision tasks, from annotation to fine-tuning model performance",Data scientist labeling bounding boxes on traffic-cam images for training a detection model
+watermarking,Embedding hidden or visible marks to assert ownership or authenticity,Inserting a semi-transparent logo into a photograph’s corner
+watershed algorithm,Treats grayscale images as topographic surfaces and “floods” catchment basins to segment touching objects,Separating overlapping cells in microscopy images
+Wiener deconvolution,Inverse filtering technique that accounts for blur and additive noise via a Wiener filter,Deblurring a motion-blurred document scan using estimated point-spread function
+Windows,Microsoft’s proprietary OS with broad software compatibility,Running MATLAB Computer Vision Toolbox on Windows 10
+x-ray band,High-energy waves from 0.01 nm to 10 nm that penetrate soft tissues,Medical X-ray radiograph showing bone fractures
+YOLO,“You Only Look Once”—real-time object detection framework predicting bounding boxes and class probabilities in a single forward pass,Detecting pedestrians and vehicles at 45 fps in dash-cam footage
