@@ -16,7 +16,7 @@ autoencoders,"Neural networks that learn to compress (encode) data into a lower-
 autonomous navigation,Self-driving agents planning and controlling their path in an environment without human input.,A delivery drone using onboard cameras and lidar to navigate city streets and avoid obstacles.
 autonomous perception,"Machines sensing and interpreting their environment (objects, terrain, motion) in real time without human guidance.",A warehouse robot detecting and classifying packages on a conveyor belt to route them correctly.
 autonomous system,"Integrated system combining perception, planning, and actuation to operate independently in complex environments.",An unmanned underwater vehicle mapping coral reefs and adjusting its course to avoid reefs.
-Bartlane service,Early phototelegraphic service (1930s–1940s) for transmitting reconnaissance and mapping imagery via radio-teletype lines.,U.S. Navy ships sending low-resolution aerial photos back to shore stations using Bartlane Service links.
+Bartlane service,Early photo-telegraphic service (1920s) for transmitting reconnaissance and mapping imagery via radio-teletype lines.,U.S. Navy ships sending low-resolution aerial photos back to shore stations using Bartlane Service links.
 Bartlane system,End-to-end hardware and protocol suite for automated photogrammetric image transmission over long distances.,WWII reconnaissance planes feeding film images through Bartlane System modems to distant processing centers.
 binary image,Image with two intensity levels (black & white),Thresholded document scan used as a mask
 black & white,"Imagery represented using a single intensity channel, ranging from black to white (or digitally, 0–255 in 8-bit).",A newspaper photograph scanned as an 8-bit grayscale image for archival.
@@ -45,10 +45,10 @@ COCO,"Common Objects in Context; large-scale dataset of everyday scenes annotate
 color adjustment,Modifying an image’s color properties,Increasing saturation and contrast in a portrait
 color image processing,"Techniques specifically designed to analyze or enhance full-color images in various color spaces (RGB, HSV, Lab, etc.).",Converting a RAW underwater photo to Lab color space to correct greenish hues and restore natural tones.
 color model,Mathematical structure defining how colors are represented (channels/components),"CMYK model using cyan, magenta, yellow, black"
-color shade,Hue mixed with black to darken the color,Maroon produced by shading red with black
+color shade,What artists call HSV saturation.,Maroon produced by shading red with black
 color space,Coordinate system describing colors numerically,"RGB space with axes R, G, B from 0 to 255"
-color tint,Hue mixed with white to increase lightness,Pink created by tinting red with white
-color tone,Hue mixed with gray to reduce saturation,Dusty rose achieved by toning red with gray
+color tint,What artists call HSV hue.,Pink created by tinting red with white
+color tone,What artists call HSV value.,Dusty rose achieved by toning red with gray
 compositing,"Combining multiple image or video layers using alpha blending, masks, and transforms to create a single coherent scene.",Merging actors filmed on a green screen into a digitally created fantasy environment for a movie scene.
 Computer Vision,"Subfield of AI focused on enabling machines to interpret, analyze, and make decisions based on visual data.",Deploying object-detection networks on traffic cameras to count vehicles and detect incidents.
 Computer Vision Toolbox,"MATLAB toolbox providing algorithms for camera calibration, feature detection, object recognition, and 3D vision workflows.",Using detectSURFFeatures in MATLAB to extract keypoints for panorama stitching.
@@ -110,7 +110,7 @@ gesture recognition,Interpreting human hand or body movements as input commands 
 GIF file type,Palette-based raster format with simple animation support,A short looping animation saved as spinner.gif
 GIS,"Geographic Information System; software platform for storing, analyzing, and visualizing spatially referenced data and imagery.",Overlaying LiDAR-derived elevation models with aerial photographs in QGIS to plan flood mitigation projects.
 granularity,"The fineness of sampling in either spatial or value domains, determining how finely details can be represented.",A coarse granularity in a 64×64-pixel thumbnail lacks detail compared to a 4K image.
-graphic designer,"Professional who uses image-processing and CV tools to create visual content—logos, layouts, illustrations—for print or digital media.","Designing a magazine cover in Photoshop, combining type, photos, and composited illustrations."
+graphic designer,"Professional who uses image-processing and DIM/CV tools to create visual content—logos, layouts, illustrations—for print or digital media.","Designing a magazine cover in Photoshop, combining type, photos, and composited illustrations."
 grayscale,"Image representation using shades of gray only, typically storing one intensity value per pixel.",Converting a color scene into a single-channel 8-bit image with values from black (0) to white (255).
 hand-crafted features,Manually defined measurements for image analysis,Computing histogram of oriented gradients (HOG) by hand
 Harris,Corner detection algorithm that finds interest points,Detecting repeatable points on architectural structures
@@ -127,18 +127,18 @@ HSV color space,"Cylindrical model with Hue, Saturation, Value",Photo editor adj
 Hubble telescope,Space-based optical telescope equipped with CCD/CMOS detectors capturing high-resolution images free from atmospheric distortion.,Hubble’s Ultra Deep Field image exposing thousands of distant galaxies billions of light-years away.
 hue component,Attribute specifying the type of color (angle around a color wheel),Hue = 120° in HSV corresponds to pure green
 Hugging Face,"An open platform and library hosting pre-trained models (including vision transformers), datasets, and deployment tools.",Fine-tuning a Vision Transformer from Hugging Face Transformers for custom image-classification tasks.
-Human Computer Interface,Alternate term for HCI: interfaces enabling user–machine interaction,Voice-command menus for camera settings
+Human Computer Interface,HCI: interfaces enabling user–machine interaction,Voice-command menus for camera settings
 human vision,Biological process by which eyes and brain interpret visual stimuli,Using depth cues such as stereopsis to perceive 3D structure
 Illumination source,Any light-emitting device or natural source used to illuminate a scene for image acquisition.,"A ring-light LED array providing diffuse, shadow-free lighting in a dental intraoral camera."
 image acquisition,Capturing or digitizing a scene into an image,Using a DSLR camera sensor to record a landscape
 image alignment,Registering two or more images into a common coordinate frame,Aligning overlapping photos for panorama stitching
 image compression,Reducing data size of images with minimal quality loss,Saving a photograph as a JPEG with 80% quality
-Image displays,"Output hardware (monitors, projectors) that render processed or raw image data into visible form for human observation.",A medical-grade 4 MP diagnostic display showing radiographs with calibrated luminance and contrast.
+image displays,"Output hardware (monitors, projectors) that render processed or raw image data into visible form for human observation.",A medical-grade 4 MP diagnostic display showing radiographs with calibrated luminance and contrast.
 image enhancement,Improving visual quality or highlighting features,Applying contrast stretching to an underexposed photograph
 image filters,Operations that modify pixel values based on neighborhood rules,Using a median filter to remove salt-and-pepper noise
 image formation,The process by which light from a scene is projected and recorded by a sensor,Modeling pinhole camera projection for 3D reconstruction
 image processing software,Tools or libraries for manipulating images,Using OpenCV in Python to detect faces
-image processing spectrum,The full chain from acquisition through analysis,From capturing a photo to extracting object counts
+image processing spectrum,The full chain of processes from acquisition through analysis,From capturing a photo to extracting object counts
 Image Processing Toolbox,"MATLAB toolbox offering functions for image filtering, enhancement, segmentation, and geometric transformations.",Applying imadjust to stretch contrast in a dimly lit photograph.
 image restoration,Recovering a clean image from a degraded one,Deblurring a motion-blurred video frame
 image sensors,"General category for devices (CCD, CMOS, etc.) that convert optical images into electronic signals for processing or storage.",A thermal camera’s microbolometer sensor array mapping infrared radiation to temperature values.
@@ -152,12 +152,12 @@ indexed image - color map matrix,Table of RGB triplets corresponding to each ind
 indexed image - data matrix,Matrix of numeric indices that point into a colormap,"2D array [0,5,3,…] indexing palette entries"
 industrial inspection,"Automated visual examination in manufacturing for defects, alignment, or assembly verification",Vision line checking PCB solder joints for missing components
 infrared band,"Wavelengths between ~700 nm and 1 mm, sensitive to thermal emissions, used in night-vision and heat mapping",Thermal camera spotting hotspots in building inspections
-intensity resolution,Number of discrete gray levels per pixel (bit depth),8-bit grayscale image offers 256 shades from black to white
+intensity resolution,Number of discrete gray or color levels per pixel (bit depth),8-bit grayscale image offers 256 shades from black to white
 internal image plane,Surface within an imaging system where light converges to form the focused image,The CMOS sensor in a smartphone sits at the internal image plane
 Isopreference curve,"Graph showing combinations of image attributes (e.g., noise vs. blur) rated equally acceptable by observers",Designers selecting filter strength that trades off denoising and sharpness for same perceived quality
 Java,"Statically typed, object-oriented language running on the Java Virtual Machine (JVM)",Using OpenCV’s Java API to build a cross-platform vision app
 JAX,Python library for high-performance numerical computing and automatic differentiation,Using jax.vmap and jax.jit to vectorize and compile a differentiable Sobel filter
-Jitter,Temporal or spatial variation—often random—in image acquisition or display leading to instability,Slight frame-to-frame misalignment causing a shaky webcam feed
+jitter,Temporal or spatial variation—often random—in image acquisition or display leading to instability,Slight frame-to-frame misalignment causing a shaky webcam feed
 JPEG,Lossy compressed raster format using discrete cosine transform (DCT),Photographs saved at 80 % quality as .jpg for web publishing
 JPEG file type,Lossy compressed raster image format using discrete cosine transform,Photograph saved as image.jpg for web display
 k-NN,k-Nearest Neighbors—a non-parametric method classifying a sample based on majority vote of k closest training points,Classifying a flower species by comparing its features to the five nearest flowers in feature space
@@ -215,7 +215,7 @@ ORB (Oriented FAST and Rotated BRIEF),Combines the FAST keypoint detector and BR
 output digitized image,Digital representation produced by sampling and quantizing an analog scene,Film scan saved as a TIFF file after drum‐scanner capture
 PCA,Principal Component Analysis—a linear dimensionality-reduction technique projecting data onto orthogonal axes of maximum variance,"Reducing 1,024-D feature vectors to 100 principal components before classification"
 perceived intensity,Human‐vision‐weighted brightness based on gamma and psychophysical response curves,Gamma‐corrected pixel values for linear display output
-PET scan,Functional imaging that tracks a radiolabeled tracer’s metabolic uptake in tissues,Oncology study mapping glucose consumption in tumors
+PET scan,Functional imaging that tracks a radio-labeled tracer’s metabolic uptake in tissues,Oncology study mapping glucose consumption in tumors
 photodiodes,Semiconductor devices that generate electric current proportional to incident light,Photodiodes in a CMOS sensor array detecting scene brightness
 photoreceptors,Cells or devices that detect photons and convert them into electrical signals,Rod cells in the eye enabling vision in dim lighting
 Photoshop,Commercial image-editing application,Using the clone-stamp tool to remove blemishes
@@ -241,7 +241,7 @@ RGB,"Color model with three channels—red, green, blue—combined to represent 
 RGBA,Extension of RGB with an alpha channel that encodes opacity,A logo PNG with transparent background uses RGBA
 RNNs,Recurrent neural networks that model sequential dependencies via cyclic connections,Generating video captions frame by frame
 rods,Retinal cells sensitive to low light,Seeing shapes in a dimly lit room
-ROI cropping,Selecting and extracting a specific subregion of an image for focused processing,Cropping the face region from a photo before running a face-recognition model
+ROI cropping,"Region of Interest, selecting and extracting a specific subregion of an image for focused processing",Cropping the face region from a photo before running a face-recognition model
 rotating drum scanners,Scanners that rotate film-wrapped drums and use linear sensors for high-res digitizing,Drum scanner digitizing a 35 mm film negative at 4000 dpi
 sampling,Measuring scene information at discrete spatial or temporal intervals,Video recorded at 30 frames per second
 saturation component,Degree of color purity or intensity,S = 0.75 in HSL for a vivid pink
