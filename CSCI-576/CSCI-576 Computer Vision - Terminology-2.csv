@@ -18,9 +18,11 @@ autonomous perception,A system’s ability to perceive its environment without h
 autonomous system,A system capable of operating independently.,A drone navigating without remote piloting.
 Bartlane service,Early 1920s telegraph‑based news service for transmitting images over telephone lines.,Sending news photos across the Atlantic by wire.
 Bartlane system,The apparatus used in the Bartlane Service to encode and decode telegraphed images.,The scanner and printer at the endpoints of a Bartlane transmission.
+binary image,"A digital image with exactly two intensity values (0 and 1), representing foreground and background.",A thresholded document scan where text pixels are 1 and background is 0.
 black & white,"Images consisting of luminance only, without color.",A monochrome portrait in grayscale.
 blind convolution,"Convolution operation when the kernel is unknown, typically solved via blind deconvolution.",Restoring a blurred image without knowing the blur kernel.
 blurring,Smoothing an image by averaging neighboring pixels.,Applying a Gaussian blur to reduce noise.
+BMP file type,"A simple, uncompressed raster format developed by Microsoft, storing pixel data with minimal overhead.",A raw screen‑capture saved as .bmp.
 brightness adaptation,The visual system’s adjustment to different overall light levels.,Camera auto‑exposure adapting to indoor vs. outdoor lighting.
 brightness discrimination,The ability to detect small differences in luminance between areas.,Noticing slight shade differences between two gray patches.
 C/C++,Popular programming languages for high‑performance vision code.,Implementing real‑time edge detection in optimized C++.
@@ -35,11 +37,18 @@ class targets,Desired outputs (often one-hot vectors) during model training.,"A 
 clustering,Grouping data points by similarity without labels.,k‑means grouping image patches into visual words.
 CMOS arrays,Complementary metal‑oxide semiconductor sensors for digital imaging.,Mobile phone cameras using CMOS sensors.
 CMY,"Subtractive color model using cyan, magenta, yellow inks to reproduce colors.",Color printing in magazines using CMY inks.
+CMY color space,"The subtractive color space using cyan, magenta, and yellow primaries, where colors form by absorption.",Combining 100% cyan and 100% yellow produces green on a print press.
 CMYK,CMY plus black (key) channel for printing.,Commercial printers using CMYK cartridges.
+CMYK color space,"Extends CMY with a Key (black) component to improve depth and reduce ink usage, standard in printing.","A four‑ink printer uses 30% C, 20% M, 0% Y, 10% K to reproduce a dark teal."
 CNNs,Convolutional Neural Networks: deep models with convolutional layers for spatial feature learning.,ImageNet classification using ResNet architectures.
 COCO,Large-scale object detection/segmentation dataset (Common Objects in Context).,Training instance segmentation models on COCO images.
 color adjustment,"Process of modifying hue, saturation, or brightness of an image.",Increasing contrast and saturation in Instagram filters.
 color image processing,Techniques applied to RGB or other multi‑channel images.,Applying a white‑balance correction to an RGB photo.
+color model,"A coordinate system (and accompanying notation) for describing and specifying colors; an abstract framework for a color space (e.g., RGB, CMYK).","The CMYK model used in print workflows (Cyan, Magenta, Yellow, Key/Black)."
+color shade,"A mixture of a color with black, decreasing lightness without changing hue.",Maroon is a shade of red (red + black).
+color space,A mathematical representation of colors as tuples of numbers (coordinates) in a standardized multidimensional space.,"The RGB space where colors are (R, G, B) with values 0–255."
+color tint,"A mixture of a color with white, increasing lightness without changing hue.",Pink is a tint of red (red + white).
+color tone,"A mixture of a color with gray (white + black), reducing saturation without changing hue.",Dusty rose is a tone of red (red + gray).
 compositing,Combining multiple images or layers into one.,Overlaying an actor shot on a green screen onto a background plate.
 Computer Vision,Field focused on interpreting visual data algorithmically.,Developing face detectors for photo tagging.
 Computer Vision Toolbox,MATLAB/Simulink toolbox with prebuilt vision algorithms.,Using its built‑in functions to detect and track objects.
@@ -76,6 +85,7 @@ EfficientNet,Family of CNNs that scale depth/width/resolution in a principled wa
 electro‑microscopic image,High‑resolution image captured with an electron microscope.,Scanning electron micrograph of a cell’s surface.
 electromagnetic spectrum,Range of all electromagnetic radiation wavelengths/frequencies.,"Visible light (~400–700 nm), infrared, ultraviolet, X‑rays."
 EmguCV,.NET wrapper for OpenCV allowing vision in C#.,Building a face detector in a C# application using EmguCV.
+EPS file type,"Encapsulated PostScript, a vector graphics format (with optional embedded raster) used for printing and illustration.",A company logo with vector paths and embedded bitmap in .eps.
 eye tracking,Capturing gaze direction and fixation points using cameras or sensors.,Determining where a user looks on a webpage during usability testing.
 face recognition,Identifying or verifying a person from their facial image.,Unlocking a phone via the owner’s face.
 face recognition hard features,Geometric landmarks or descriptors manually engineered for identifying faces.,"Distances between eyes, nose tip, and mouth corners used for matching."
@@ -98,6 +108,7 @@ gamma correction,Non‑linear mapping of pixel intensities to correct for displa
 gamma‑ray band,High‑energy part of the electromagnetic spectrum used in astronomy/imaging.,Imaging gamma‑ray bursts with specialized detectors.
 Gaussian blur,Low‑pass filter smoothing images by convolving with a Gaussian kernel.,Reducing noise before edge detection on photographs.
 gesture recognition,"Identifying human gestures (hand, body) from video or sensor data.",Recognizing swipe or pinch gestures on a touch camera.
+GIF file type,"A lossless raster format limited to 256 colors, supporting simple animations and transparency.",A short looped animation of a bouncing ball saved as .gif.
 GIS,Geographic Information System: spatial analysis of map/geospatial data.,Overlaying satellite images with vector maps for land‑use classification.
 granularity,Level of detail or scale in data.,Pixel‑level vs. region‑level segmentation.
 graphic designer,Professional creating visual content using software tools.,Designing posters in Adobe Photoshop using image processing filters.
@@ -106,12 +117,16 @@ hand‑crafted features,Manually designed descriptors based on expert knowledge.
 Harris,Corner detection algorithm using local intensity autocorrelation.,Detecting corners in a chessboard calibration image.
 HCI,Human–Computer Interaction: study of interfaces between users and computers.,Gesture‑based control of VR applications.
 HDR imaging,Capturing or synthesizing high dynamic range images to preserve detail in shadows and highlights.,Merging bracketed exposures into one HDR photo.
+HEIC file type,"High Efficiency Image Coding, a container for HEVC‑encoded images, supporting higher compression and HDR metadata.",A smartphone’s camera raw photo saved as .heic.
 hidden layers,Intermediate layers in neural networks between input and output.,Two hidden FC layers of 512 neurons each in an MLP classifier.
 high‑level image processing spectrum,"Processing stages involving semantic understanding (detection, recognition).",Object classification and scene labeling tasks.
 histogram equalization,Redistributing image intensities to enhance contrast.,Stretching dark areas in a dim photo to reveal detail.
 HOG,Histogram of Oriented Gradients: descriptor capturing local edge orientation distributions.,Pedestrian detection in surveillance video.
 Hough transform,"Voting‑based method to detect parametric shapes (lines, circles).",Extracting lane lines in self‑driving car images.
+HSI color space,"A perceptual model using Hue, Saturation, and Intensity, separating chromatic aspects from brightness.",Image enhancement by modifying only the I component without altering hue or saturation.
+HSV color space,"A cylindrical representation of colors in terms of Hue, Saturation, and Value (brightness).","A color picker where users adjust hue angle, saturation radius, and value height."
 Hubble telescope,Space telescope providing high‑resolution optical and UV imaging.,Capturing deep‑field images of distant galaxies.
+hue component,The attribute of a color that indicates its position on the color wheel (dominant wavelength).,"In HSV, hue = 120° corresponds to pure green."
 Hugging Face,"Platform and library for sharing transformers/models; increasingly hosts CV models (e.g., DETR).",Loading a DETR object‑detection model from Hugging Face Hub for quick prototyping.
 Human Computer Interface,Hardware/software enabling people to interact with computers via visual or other signals.,Eye‑tracking interface for hands‑free cursor control.
 human vision,"Biological visual processing in humans (reception, neural processing).",Studying foveal vs. peripheral resolution limits.
@@ -133,6 +148,9 @@ image stitching,Combining multiple overlapping images into a seamless composite.
 image transforms,"Mathematical operations (Fourier, wavelet, Radon) to analyze or process images.",Computing the 2D FFT of an image to analyze frequency content.
 ImageNet,"Large-scale labeled image dataset (14M+ images, 20K+ categories) for benchmarking vision models.",Training and evaluating deep CNNs in the ILSVRC challenge.
 imaging system,Hardware + software that captures and processes images.,A digital SLR camera coupled with RAW‐processing software.
+indexed image,"A raster image that stores a small palette (color map) and for each pixel an index into that palette, reducing storage.",A 256‑color GIF where each pixel references one of 256 palette entries.
+indexed image - color map matrix,"The table of palette entries mapping each index to a full color value (e.g., RGB triplet).",A 256×3 matrix listing the 256 RGB colors of a GIF palette.
+indexed image - data matrix,The two‑dimensional array of indices into the color map for an indexed image.,"A 100×100 matrix of bytes, each 0–255, representing palette indices."
 industrial inspection,Automated CV to check manufactured parts for defects.,A conveyor‐belt vision system spotting cracks in smartphone screens.
 infrared band,Portion of EM spectrum with wavelengths ~700 nm–1 mm.,Thermal cameras imaging heat leaks in buildings.
 intensity resolution,Number of gray levels an image sensor can distinguish.,An 8‑bit sensor yielding 256 intensity levels.
@@ -142,8 +160,10 @@ Java,"General‑purpose, object‑oriented programming language often used in CV
 JAX,Google’s Python library for high‑performance differentiation and accelerated array ops.,Training a neural style‑transfer model with JAX on TPU hardware.
 jitter,"Small, rapid, unwanted variations in image position or sensor sampling.",Frame‐to‐frame camera shake causing blurred video.
 JPEG,Lossy image compression standard using DCT.,Saving a photo with 80% quality to reduce file size.
+JPEG file type,"A lossy compressed raster image format using discrete cosine transform, optimized for photographic content.",A 2 MB photograph of a landscape saved as .jpg.
 k‑NN,"k‑nearest neighbors: a simple, instance‑based classifier/regressor.",Classifying handwritten digits by majority vote of 5 nearest samples in feature space.
 Keras,High‑level neural‑network API running on top of TensorFlow.,Building a CNN for image classification with just a few lines of Keras code.
+LANDSAT,"A series of Earth‐observing satellite missions jointly managed by NASA and USGS, providing multispectral imagery for environmental monitoring.",A 30 m resolution multispectral scene used to map deforestation.
 law enforcement,Agencies using CV/DIP for public safety applications.,Automated license‑plate recognition on highway cameras.
 LBP,Local Binary Patterns: a texture descriptor comparing pixel neighborhood intensities.,Face recognition systems using LBP histograms to encode skin patterns.
 learned features,Data representations automatically discovered by ML models.,Activations of a ResNet’s intermediate layer as image descriptors.
@@ -152,6 +172,7 @@ lens,Optical element(s) that focus light onto the image sensor/film.,A 50 mm f/1
 light receptors,Photoreceptor cells in the retina (rods & cones) converting light to neural signals.,Human vision detecting dim starlight via rods.
 Linux,Open‑source Unix‐like operating system commonly used for CV deployments.,Running real‑time video‑analysis pipelines on an Ubuntu server.
 low‑level image processing spectrum,"Operations directly on pixel values (e.g., filtering, denoising).",Applying a median filter to remove salt‑and‑pepper noise.
+luminance component,"The perceptual brightness information in an image color representation, often separated from chromatic components.",The Y channel in YCbCr holding grayscale brightness.
 lux,Unit of illuminance: lumens per square meter.,Measuring office lighting at 500 lux for ergonomic standards.
 Mac OS,Apple’s Unix‐based desktop operating system.,Developing OpenCV‐based Mac apps in Xcode.
 machine language pipeline,Sequence of processing stages in classical CV (filter → feature → decision).,Edge detection → HOG descriptor → SVM classifier.
@@ -171,8 +192,11 @@ natural light,"Sunlight or ambient environmental lighting, as opposed to artific
 NDVI maps,Normalized Difference Vegetation Index: maps vegetation health using NIR and red bands.,Monitoring crop health via drone‐captured NDVI imagery.
 neural network,Network of interconnected “neurons” (nodes) that learn representations.,A CNN for facial recognition.
 neural style transfer,Algorithm that applies style of one image onto content of another using deep nets.,Rendering a photo in Van Gogh’s painting style.
+night-time lights of the world,"Global composite imagery of artificial lighting on Earth’s surface at night, indicating urbanization and human activity.",VIIRS day‑night band map showing city lights across Europe.
+NOAA,"The U.S. National Oceanic and Atmospheric Administration, which operates environmental satellites, weather services, and oceanic research.",GOES‐R series weather satellite imagery for storm tracking.
 noise reduction,Algorithms to suppress unwanted signal variations.,Using a bilateral filter to smooth a noisy image while preserving edges.
 noise removal,Suppressing unwanted random variations in pixel values.,Applying a bilateral filter to denoise a photograph while preserving edges.
+NTSC color space,"The analog television color space defined by the NTSC standard, using Y (luma), I (in‑phase), and Q (quadrature) signals.",Broadcasted color TV signal in North America.
 NumPy,Python library for numerical arrays; backbone for scientific computing.,Representing images as numpy.ndarray for pixel‐wise operations.
 Nyquist principle,Sampling theorem stating sampling rate must be ≥2× highest frequency to avoid aliasing.,Scanning an analog signal at 44.1 kHz in audio digitization.
 object classification,Assigning a label to an entire image or detected object.,"Classifying images as “cat,” “dog,” or “bird.”"
@@ -199,12 +223,16 @@ Photoshop,Commercial image editing software by Adobe.,Using layers and masks to 
 PIL (Pillow),"Python Imaging Library fork for opening, manipulating, and saving images.","Loading a JPEG, resizing, and saving as PNG via PIL.Image."
 pixel,"The smallest addressable image element, carrying color/intensity.",A 1920×1080 image has ~2.07 million pixels.
 PNG,"Lossless, alpha‑capable bitmap image format.",Saving screenshots with transparency for UI mockups.
+PNG file type,"A lossless compressed raster format supporting transparency and palette-based images, ideal for graphics.",A web logo with transparent background saved as .png.
+primary colors of light,"The additive primaries (red, green, blue) which combine to form other colors in displays.",Mixing red and green light makes yellow.
+primary colors of pigment,"The subtractive primaries (cyan, magenta, yellow) used in printing to absorb (subtract) light.",Overlaying magenta and yellow ink yields red.
 Python,High‑level scripting language widely used for CV/DIP prototyping.,Writing a quick face‑detection script with OpenCV in Python.
 PyTorch,Deep‑learning framework emphasizing dynamic computation graphs.,Training a GAN to generate photorealistic textures.
 quantity domain,"Range of possible pixel/sample values (e.g., intensity, color).","Grayscale image with quantity domain [0,255] in 8‑bit format."
 quantization,"Mapping continuous values into discrete levels, often introducing rounding error.",Converting floating‑point pixel intensities to 8‑bit integers.
 radio band,"EM spectrum from ~1 mm to 100 km, used in radar and wireless imaging.",Synthetic‑aperture radar mapping of Earth’s surface.
 Ranger 7 probe,1964 NASA lunar probe; returned first close‑up images of the Moon’s surface.,Studying lunar crater morphology via Ranger 7 imagery.
+RAW file type,"Unprocessed sensor data from digital cameras, retaining maximum bit depth and metadata for post‑processing flexibility.",A DSLR’s 14‑bit .CR2 photo imported into Lightroom for editing.
 real‑time ALPR system,Automatic License Plate Recognition processing live video streams with minimal lag.,Toll‑booth camera identifying plates within 200 ms of capture.
 ResNet,Deep CNN architecture with residual (“skip”) connections enabling very deep networks.,Training ResNet‑50 to classify 1000 ImageNet categories.
 ResNet‑152,A 152‑layer variant of ResNet for higher accuracy at the cost of compute.,Fine‑tuning ResNet‑152 for medical‑image classification.
@@ -217,6 +245,7 @@ rods,Photoreceptors in the retina sensitive to low light (greyscale).,Night‑vi
 ROI cropping,Extracting a Region Of Interest from an image for focused processing.,Cropping faces before passing to a recognition network.
 rotating drum scanners,Devices that scan film/prints by wrapping them around a drum and rotating.,Digitizing large maps with high spatial accuracy.
 sampling,Converting a continuous signal (image) into discrete pixels or samples.,Acquiring a video frame at 30 Hz sampling rate.
+saturation component,The degree of colorfulness relative to brightness; how pure or diluted a color appears.,"In HSV, saturation = 0 yields a grayscale color, saturation = 100% yields a vivid hue."
 scene element,Individual object or region in an image contributing to overall understanding.,"Identifying “road,” “sky,” and “vehicle” elements in an autonomous‑driving scene."
 scene understanding,High‐level interpretation of all elements and their relations in an image/sequence.,Generating a scene graph describing objects and their interactions in a photo.
 scikit‑image,Python library of image‐processing routines built on NumPy/SciPy.,Running skimage.filters.sobel to detect edges in microscopy images.
@@ -233,11 +262,13 @@ specialized image hardware,"Dedicated devices (GPUs, FPGAs, ASICs) optimized for
 supervised learning,Training models on fully labeled datasets.,Teaching a CNN to classify cats vs. dogs using labeled images.
 supervised learning pipeline,End‑to‑end workflow: data labeling → preprocessing → training → evaluation.,Deploying a defect‑detection system in manufacturing.
 SURF,Speeded‑Up Robust Features: faster alternative to SIFT for keypoint detection/description.,Real‑time panorama stitching on mobile devices.
+SVG file type,"Scalable Vector Graphics, an XML‑based vector image format supporting interactivity and animation.",A scalable icon set on a website using .svg.
 SVMs,Support Vector Machines: classifiers that find optimal separating hyperplanes.,Classifying textures via SVM on LBP features.
 television band,EM frequencies (~54–890 MHz) used by broadcast TV; occasionally exploited for passive radar imaging.,Passive surveillance capturing reflections in TV band.
 TensorFlow,Open‐source ML framework by Google for building and deploying neural nets.,Training a YOLO‑based object detector for real‑time inference.
 TensorRT,NVIDIA’s SDK for high‑performance deep‑learning inference optimization.,Converting a TensorFlow model to TensorRT for GPU acceleration.
 three‑dimension image,"Volume data with X, Y, and Z axes (voxel grid).",CT scan reconstruction producing a 3D organ model.
+TIFF file type,"A flexible raster container supporting multiple pages, layers, and various compressions (lossless or lossy).",A high‑resolution satellite image stored in .tiff for archival.
 time domain,Signal representation versus time; relevant in video and temporal filtering.,Applying temporal median filter to reduce flicker in video.
 tomography,"Imaging by cross‑sectional reconstruction from projections (e.g., CT, PET).",Reconstructing 3D chest CT from multiple X‑ray slices.
 traditional computer vision pipeline,Hand‑crafted sequence: calibration → segmentation → feature → classification.,Classical OCR pipeline using engineered features and template matching.
@@ -258,7 +289,10 @@ visible band,EM spectrum visible to human eyes (≈380–740 nm).,Capturing RGB 
 vision specialist,Expert in CV/DIP theory and applications (often PhD level).,A researcher developing new deep‑learning architectures for segmentation.
 watermarking,Embedding imperceptible patterns into images for copyright protection.,Adding an invisible digital signature to stock photos.
 Watershed algorithm,Region‑based segmentation treating grayscale image as a topographic surface.,Separating overlapping cells in microscopy images.
+WebP file type,"A modern image format by Google, offering both lossy and lossless compression, with optional alpha channel and animation.",A web hero image saved as .webp to reduce load time.
 Wiener deconvolution,Restoration filter minimizing mean square error given known blur and noise statistics.,Deblurring motion‑blurred photos using estimated PSF.
 Windows,Microsoft’s proprietary OS widely used for desktop CV development.,Building a C# application using EmguCV (OpenCV wrapper) on Windows.
 x‑ray band,High‑energy EM radiation (≈0.01–10 nm) used in radiography and CT.,Performing chest X‑ray imaging for pneumonia diagnosis.
+YCbCr color space,"A digital color space separating luma (Y) from chroma (Cb, Cr), widely used in video compression and JPEG.",A JPEG encoder converts RGB to YCbCr before DCT and quantization.
+YIQ color space,"A color space encoding luma (Y) and two chrominance components (I, Q) used in NTSC television.","Transforming an RGB frame to Y, I, Q for analog transmission."
 Yolo,“You Only Look Once”: real‑time object detection system framing detection as single regression problem.,Detecting pedestrians and vehicles in self‑driving‑car video at >30 FPS.
