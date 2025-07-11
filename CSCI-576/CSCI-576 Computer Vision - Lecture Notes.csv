@@ -18,7 +18,7 @@ light & electromagnetic spectrum: energy,Photon energy inversely proportional to
 light & electromagnetic spectrum: gamma-rays,"Extremely short (<0.01 nm) high-energy EM waves, produced by nuclear or cosmic events. Example: Gamma-ray bursts from deep space; used in cancer radiotherapy."
 light & electromagnetic spectrum: x-rays,High-energy waves (0.01–10 nm) that penetrate soft tissue but are absorbed by bone and dense materials. Example: Medical radiography; CT scans.
 light & electromagnetic spectrum: ultraviolet,"Short-wavelength (10–400 nm) waves just beyond visible violet, causing fluorescence and sunburn. Example: UV lamps for sterilization; black-light posters."
-light & electromagnetic spectrum: visible,"The narrow band (400–700 nm) detectable by human cones, perceived as color. Example: RGB cameras sample roughly these three bands."
+light & electromagnetic spectrum: visible,"The narrow band (400–700 nm) detectable by human cones, perceived as color."
 light & electromagnetic spectrum: infrared,Longer waves (700 nm–1 mm) experienced as heat; used in night-vision and remote sensing. Example: Thermal cameras detect IR emission from warm objects.
 light & electromagnetic spectrum: microwave,"Wavelengths (1 mm–1 m) for radar, Wi-Fi, and cooking (2.45 GHz). Example: Microwave ovens; Doppler radar."
 light & electromagnetic spectrum: television,Colored EM bands around 54–890 MHz carrying analog/digital broadcast signals. Example: VHF/UHF TV channels in the 20th century.
@@ -63,7 +63,7 @@ computer vision: machine perception,Emulating human-like sensory interpretation 
 "history of digital image processing: 1980s through present, industrial inspection",Automated defect detection on manufacturing lines via vision algorithms. Example: Circuit-board inspection for solder-joint faults.
 "history of digital image processing: 1980s through present, law enforcement","Facial recognition, license-plate reading for public safety. Example: Real-time ALPR systems at toll booths."
 "history of digital image processing: 1980s through present, human/computer interface",Gesture and eye-tracking for natural interaction. Example: Touchless gesture controls in automotive infotainment.
-DIP application: image enhancemnet,"Improving visibility or aesthetic quality via contrast, color adjustment, noise reduction. Example: Sharpening low-light security camera footage."
+DIP application: image enhancement,"Improving visibility or aesthetic quality via contrast, color adjustment, noise reduction. Example: Sharpening low-light security camera footage."
 DIP application: the Hubble telescope,Post-capture processing to remove optical distortions and stitch deep-space images. Example: “Drizzling” technique delivers ultra-high resolution sky surveys.
 DIP application: artistic effects,"Stylizing images algorithmically to mimic paintings, sketches or surreal looks. Example: Neural style transfer to render photos in Van Gogh style."
 "DIP application: medicine, x-ray, gamma-ray, MRI, ultrasound","Modality-specific filtering, segmentation and 3D reconstruction for diagnosis. Example: Adaptive histogram equalization enhances X-ray contrast."
@@ -77,7 +77,7 @@ DIP or CV components: computer,CPU/GPU hardware executing algorithms and models.
 DIP or CV components: image displays,Monitors or projectors used to visualize processed results. Example: High-DPI medical displays for radiologists.
 DIP or CV components: mass storage,Hard drives or SSDs to archive large image datasets. Example: Petabyte-scale storage for satellite imagery.
 DIP or CV components: hardcopy,Printers and film recorders producing physical output. Example: Laser printers for proofing CAD drawings.
-DIP or CV components: specializeed image hardware,"FPGAs, DSP boards or smart cameras with onboard processing. Example: Embedded vision modules in factory line scanners."
+DIP or CV components: specialized image hardware,"FPGAs, DSP boards or smart cameras with onboard processing. Example: Embedded vision modules in factory line scanners."
 DIP or CV components: image processing software,"Toolkits and applications (e.g., OpenCV, MATLAB, Photoshop) implementing algorithms. Example: Python+OpenCV pipeline for automated microscopy."
 DIP or CV components: image sensors,CCD or CMOS arrays capturing incoming photons and converting them into electronic signals. Example: 24-megapixel CMOS sensor in a DSLR camera.
 DIP or CV components: network,LAN/WAN connectivity for streaming or distributed processing of imagery. Example: Edge devices forwarding frames to cloud via 5G.
@@ -86,7 +86,7 @@ DIP and CV stages: problem domain,"Definition of application scope, inputs, desi
 DIP and CV stages: image acquisition,Capturing or loading raw image data via sensors or readers. Example: Scanning film negatives at 2400 dpi.
 DIP and CV stages: image enhancement,Improving visual quality or accentuating features using filters and transforms. Example: Histogram equalization to boost contrast in low-light frames.
 DIP and CV stages: image restoration,"Undoing known degradations (blur, noise) based on physical or statistical models. Example: Wiener deconvolution to remove motion blur."
-DIP and CV stages: morphological processing,"Structural operations (erosion, dilation) for shape analysis and noise suppression. Example: Cleaning up small specks in binary document scans."
+DIP and CV stages: morphological processing,"Structural operations (erosion, dilation) for shape analysis and noise suppression."
 DIP and CV stages: segmentation,Partitioning an image into meaningful regions or objects. Example: Watershed algorithm for separating touching cells in microscopy.
 DIP and CV stages: feature extraction,"Computing descriptors (edges, corners, textures) summarizing local image patterns. Example: SIFT keypoints for matching aerial photos."
 DIP and CV stages: object recognition and classifications,Assigning labels to detected objects based on learned patterns. Example: CNN classifying animals in wildlife camera traps.
@@ -95,7 +95,7 @@ DIP and CV stages: image compression,Reducing data size through lossy or lossles
 "DIP and CV stages: color image processing, CMY, Cyan Magenta Yellow","Subtractive color space operations (Cyan, Magenta, Yellow) used in printing and some imaging contexts. Example: Converting RGB to CMYK for offset printing."
 digital image acquisition: sensing,"The process of detecting physical energy (e.g., light, sound, X-rays) from a scene using a sensor that converts it into an electrical signal. Example: A camera sensor converts incoming light into voltage using photodiodes."
 digital image acquisition: representation,"The transformation of sensed analog energy into a form suitable for digital processing, typically as voltage or current. Example: Light intensity is converted to voltage, which is then digitized."
-digital image acquisition: sampling,The process of measuring the signal at discrete spatial (and sometimes temporal) intervals to form a grid of data points. Example: Sampling a scene at 1000×1000 points creates a 1-megapixel image.
+digital image acquisition: sampling,The process of measuring the signal at discrete temporal intervals.
 digital image acquisition: quantization,"Mapping the continuous range of sampled values into a finite set of discrete levels, introducing approximation. Example: An 8-bit quantizer maps brightness to 256 levels (0–255)."
 digital image acquisition: resolution,"Describes the level of detail in an image, determined by the number of spatial samples (pixels) and the number of intensity levels (bit depth). Example: A 4K image has high spatial resolution; 16-bit images have high intensity resolution."
 digital image acquisition: illumination by x-ray of a skeleton,"A medical imaging technique where X-rays pass through the body and are absorbed differently by bones and tissues, captured by a detector. Example: Used in radiography to visualize bone fractures."
@@ -107,7 +107,7 @@ digital image acquisition - sensing: collections or arrays of sensors,Multiple s
 "digital image acquisition - quantization: samples at discrete quantity levels, regarding quantity domain","The analog signal is quantized into a finite number of levels, reducing precision but enabling digital storage. Example: A 10-bit quantizer maps values into 1024 levels."
 digital image acquisition: Nyquist principle,"To avoid aliasing, the sampling rate must be at least twice the highest frequency present in the signal. Example: A 1000 dpi scanner can resolve features down to 500 dpi."
 digital image acquisition: approximation,"Digital images are approximations of the real world due to sampling, quantization, and sensor limitations. Example: Fine textures may be lost if resolution is too low or quantization too coarse."
-"image representation: M rows and N columns of pixels, special resolution","A digital image is a 2D grid of pixels with M rows and N columns. Spatial resolution refers to how finely the image captures detail, determined by the number of pixels. Example: A 1920×1080 image has higher spatial resolution than a 640×480 image."
+"image representation: M rows and N columns of pixels, spatial resolution","A digital image is a 2D grid of pixels with M rows and N columns. Spatial resolution refers to how finely the image captures detail, determined by the number of pixels. Example: A 1920×1080 image has higher spatial resolution than a 640×480 image."
 "image representation: pixel values, often 8-bit byte, intensity resolution","Each pixel stores a value representing brightness or color. Intensity resolution refers to how many brightness levels are available, often 256 for 8-bit images. Example: 0 = black, 255 = white in grayscale; 8-bit per channel in RGB gives 16.7 million colors."
 image representation: for storage use matrices,"Images are stored as matrices (2D for grayscale, 3D for color) for efficient processing and manipulation. Example: In Python, a grayscale image is a NumPy array of shape (H, W); color images are (H, W, 3)."
 "spatial resolution: vision specialists, total number of pixels","Vision scientists often define resolution by total pixel count, which determines the level of detail captured. Example: A 12 MP camera captures 12 million pixels."
@@ -148,10 +148,10 @@ computer vision - useful features: edges,"Boundaries between regions. Example: C
 computer vision - useful features: corners,"Points with high curvature. Example: Harris, Shi-Tomasi."
 "computer vision - useful features: regions, textures","Larger areas with consistent patterns. Example: LBP, Gabor filters."
 computer vision - useful features: image statistics,"Global or local measures like mean, variance. Example: Used in segmentation, classification."
-computer vision - traditional CV pipeline: input => hand-crafted features => hand-crafted algorithm => output,Input → hand-crafted features → algorithm → output. Example: Edge detection → Hough transform → line detection.
-computer vision - ML pipeline: input => hand-crafted features => ML algorithm => output,Input → hand-crafted features → ML algorithm → output. Example: HOG → SVM → object classification.
-computer vision - deep learning pipeline: input => learned features => ML algorithm => output,Input → learned features → ML algorithm → output. Example: CNN → softmax → image label.
-computer vision - face recognition: hard feaures,
+computer vision - traditional CV pipeline: input → hand-crafted features → hand-crafted algorithm → output,Input → hand-crafted features → algorithm → output. Example: Edge detection → Hough transform → line detection.
+computer vision - ML pipeline: input → hand-crafted features → ML algorithm → output,Input → hand-crafted features → ML algorithm ↔ output. Example: HOG → SVM ↔ object classification.
+computer vision - deep learning pipeline: input → learned features → ML algorithm → output,Input → learned features ↔ ML algorithm ↔ output. Example: CNN ↔ softmax ↔ image label.
+computer vision - face recognition: hard feaures,"Hand-crafted features which include the basic elements of the face; brow, relative position and lengths of nose and eyes."
 computer vision - deep learning: computer learns by example,Models learn patterns from labeled data. Example: CNN trained on ImageNet.
 computer vision - deep learning: driverless cars and voice control in consumer devices,"DL powers perception in autonomous systems. Example: Tesla Autopilot, Siri."
 "computer vision - deep learning: perform classification tasks directly on images, text, or sound",End-to-end learning from raw data. Example: Image → label; audio → transcript.
@@ -161,12 +161,12 @@ computer vision - deep learning: requires large amount of computational power,"T
 computer vision - deep learning: traditional neural networks have 2-3 hidden layers,Shallow nets used in early ML. Example: MLPs.
 computer vision - deep learning: deep neural networks can have 150 or more,Modern nets are very deep. Example: ResNet-152.
 computer vision - deep learning: learn features directly from the data,No manual feature engineering needed
-"computer vision - deep learning: CNN, Convolutional Neural Network, 2-dimensional layers (or 3 dimensions)",
+"computer vision - deep learning: CNN, Convolutional Neural Network, 2-dimensional layers (or 3 dimensions)","CNN (Convolutional Neural Network): A deep learning architecture with stacked 2D (or 3D) convolutional layers that automatically learn spatial hierarchies of features directly from raw pixel inputs. Example: Real-time pedestrian detection in autonomous vehicles using a multi-layer CNN that applies 2D convolutions to extract edges, textures, and object shapes."
 computer vision - CNN: general architecture,"A typical CNN alternates convolution → nonlinearity → pooling layers, often ending with fully connected (dense) or global‐pooling layers and a softmax (classification) or regression head. Example: LeNet-5 introduced conv→ReLU→pooling→FC. AlexNet added dropout and ReLU. Modern nets (ResNet, DenseNet) introduce skip‐connections or dense‐blocks."
 "computer vision - CNN: using tens or hundreds of hidden layers, learn detection of features","Deep CNNs can span dozens to hundreds of layers; early layers capture low‐level patterns (edges, textures), while deeper layers learn higher‐order features (object parts, scenes). Example: ResNet-50 has 50 layers; ResNet-152 uses 152. DenseNet-201 employs dense skip‐connections across 201 layers."
 computer vision - CNN: every hidden layer increases the complexity of the learned features,"Each successive convolutional layer broadens its receptive field and transforms simpler features into more abstract representations, facilitating tasks like detection or segmentation. Example: In VGG16, layer 1 filters detect edges; mid‐layers detect corners/textures; final conv layers respond to object‐level patterns (faces, wheels, etc.)."
 "computer vision - ML versus deep learning: regarding manual, automatic, scaling up, workflow, pipeline",Classical ML relies on manual feature engineering then a separate training step; DL unifies feature learning and classification into an end-to-end pipeline that scales with data. Example: ML pipeline: HOG → SVM.
-computer vision - ML versus deep learning: choose ML if high-performance GPU and lots of labeled data not available,
-computer vision - deep learning training: from scratch,
-computer vision - deep learning training: through transfer learning,
-"computer vision - deep learning training: by feature extraction, feature extractor",
+computer vision - ML versus deep learning: choose ML if high-performance GPU and lots of labeled data not available,"ML vs Deep Learning Decision: Opt for traditional machine learning (e.g., SVM, random forest) when you lack high-performance GPUs and large labeled datasets, since deep networks require heavy compute and extensive annotations. Example: Classifying a small set of satellite images (<500 samples) with a random forest on CPU instead of training a deep CNN due to limited data and hardware."
+computer vision - deep learning training: from scratch,"Training from Scratch: Initializing all network weights randomly and learning every parameter solely from your target dataset, without leveraging any pre-trained models. Example: Building a custom CNN from random initialization and training it on the CIFAR-10 dataset to distinguish 10 object classes."
+computer vision - deep learning training: through transfer learning,"Transfer Learning: Starting from a model pre-trained on a large source dataset (e.g., ImageNet) and fine-tuning some or all layers on your specific target dataset to speed up convergence and improve accuracy. Example: Taking an ImageNet-trained ResNet50, freezing its early layers, and fine-tuning the top layers on a new flower species dataset."
+"computer vision - deep learning training: by feature extraction, feature extractor","Feature Extraction (Feature Extractor): Using a pre-trained network in “frozen” mode to compute high-level feature vectors (activations) for images, then feeding those vectors into a separate classifier (e.g., SVM) without updating the network weights. Example: Extracting 4096-dimensional feature vectors with a frozen VGG16 and training an SVM on those vectors to recognize handwritten digits."
