@@ -19,6 +19,7 @@ autonomous system,"Integrated system combining perception, planning, and actuati
 Bartlane service,Early photo-telegraphic service (1920s) for transmitting reconnaissance and mapping imagery via radio-teletype lines.,U.S. Navy ships sending low-resolution aerial photos back to shore stations using Bartlane Service links.
 Bartlane system,End-to-end hardware and protocol suite for automated photogrammetric image transmission over long distances.,WWII reconnaissance planes feeding film images through Bartlane System modems to distant processing centers.
 binary image,Image with two intensity levels (black & white),Thresholded document scan used as a mask
+bit depth,,
 black & white,"Imagery represented using a single intensity channel, ranging from black to white (or digitally, 0–255 in 8-bit).",A newspaper photograph scanned as an 8-bit grayscale image for archival.
 blind convolution,Convolution operation performed when the blur kernel is unknown—both the latent sharp image and kernel must be estimated.,Restoring a motion-blurred security-camera frame without knowing the camera’s shake pattern.
 blurring,"Reducing detail or noise by convolving an image with a low-pass filter, which smooths intensity variations.",Applying a Gaussian blur to soften background details in portrait photography.
@@ -49,6 +50,7 @@ color shade,What artists call HSV saturation.,Maroon produced by shading red wit
 color space,Coordinate system describing colors numerically,"RGB space with axes R, G, B from 0 to 255"
 color tint,What artists call HSV hue.,Pink created by tinting red with white
 color tone,What artists call HSV value.,Dusty rose achieved by toning red with gray
+component image,,
 compositing,"Combining multiple image or video layers using alpha blending, masks, and transforms to create a single coherent scene.",Merging actors filmed on a green screen into a digitally created fantasy environment for a movie scene.
 Computer Vision,"Subfield of AI focused on enabling machines to interpret, analyze, and make decisions based on visual data.",Deploying object-detection networks on traffic cameras to count vehicles and detect incidents.
 Computer Vision Toolbox,"MATLAB toolbox providing algorithms for camera calibration, feature detection, object recognition, and 3D vision workflows.",Using detectSURFFeatures in MATLAB to extract keypoints for panorama stitching.
@@ -223,6 +225,7 @@ PIL (Pillow),"Python Imaging Library fork for opening, manipulating, and saving 
 Pixel,Smallest image unit representing a single color or intensity value,A 1920×1080 photo consists of about 2 million pixels
 PNG,Lossless compressed raster format supporting truecolor and transparency,Diagrams exported with see‐through backgrounds in .png
 PNG file type,Lossless compressed raster format supporting transparency,Logo saved as logo.png with an alpha channel
+primary colors,,
 primary colors of light,"Additive primaries: red, green, blue",Combining red and green light yields yellow on a display
 primary colors of pigment,"Subtractive primaries: cyan, magenta, yellow","Printing using cyan, magenta, and yellow inks"
 Python,Dynamically typed scripting language with extensive ecosystem for scientific computing,Writing a NumPy + OpenCV script to detect edges in images
@@ -249,6 +252,7 @@ scene element,Individual object or region within an image that contributes to ov
 scene understanding,"Holistic analysis combining detected elements, spatial relationships, and semantics","Inferring “intersection ahead” from grouped lane markings, signs, and crosswalks"
 scikit-image,Python library of algorithms for image processing built on NumPy/SciPy,Applying skimage.filters.gaussian for smoothing microscopy images
 SciPy,"Python ecosystem module for scientific computing, includes ndimage subpackage for multi-dimensional filters",Performing morphological opening and closing with scipy.ndimage.morphology.binary_opening
+secondary colors,,
 segmentation,Partitioning an image into coherent regions or labeled objects based on pixel similarity,"Semantic segmentation of road scenes into “road,” “pedestrian,” and “vehicle” classes"
 semi-supervised learning,Hybrid approach combining a small set of labeled data with large amounts of unlabeled data to improve model performance,Fine-tuning a segmentation network with a few hand-annotated masks plus many unlabeled scans
 sharpening,Emphasizing high-frequency components to accentuate edges and fine details,Unsharp mask filter boosting edge contrast in a portrait

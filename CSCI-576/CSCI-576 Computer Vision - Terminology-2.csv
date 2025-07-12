@@ -19,6 +19,7 @@ autonomous system,A system capable of operating independently.,A drone navigatin
 Bartlane service,Early 1920s telegraph‑based news service for transmitting images over telephone lines.,Sending news photos across the Atlantic by wire.
 Bartlane system,The apparatus used in the Bartlane Service to encode and decode telegraphed images.,The scanner and printer at the endpoints of a Bartlane transmission.
 binary image,"A digital image with exactly two intensity values (0 and 1), representing foreground and background.",A thresholded document scan where text pixels are 1 and background is 0.
+bit depth,,
 black & white,"Images consisting of luminance only, without color.",A monochrome portrait in grayscale.
 blind convolution,"Convolution operation when the kernel is unknown, typically solved via blind deconvolution.",Restoring a blurred image without knowing the blur kernel.
 blurring,Smoothing an image by averaging neighboring pixels.,Applying a Gaussian blur to reduce noise.
@@ -49,6 +50,7 @@ color shade,"A mixture of a color with black, decreasing lightness without chang
 color space,A mathematical representation of colors as tuples of numbers (coordinates) in a standardized multidimensional space.,"The RGB space where colors are (R, G, B) with values 0–255."
 color tint,"A mixture of a color with white, increasing lightness without changing hue.",Pink is a tint of red (red + white).
 color tone,"A mixture of a color with gray (white + black), reducing saturation without changing hue.",Dusty rose is a tone of red (red + gray).
+component image,,
 compositing,Combining multiple images or layers into one.,Overlaying an actor shot on a green screen onto a background plate.
 Computer Vision,Field focused on interpreting visual data algorithmically.,Developing face detectors for photo tagging.
 Computer Vision Toolbox,MATLAB/Simulink toolbox with prebuilt vision algorithms.,Using its built‑in functions to detect and track objects.
@@ -224,6 +226,7 @@ PIL (Pillow),"Python Imaging Library fork for opening, manipulating, and saving 
 pixel,"The smallest addressable image element, carrying color/intensity.",A 1920×1080 image has ~2.07 million pixels.
 PNG,"Lossless, alpha‑capable bitmap image format.",Saving screenshots with transparency for UI mockups.
 PNG file type,"A lossless compressed raster format supporting transparency and palette-based images, ideal for graphics.",A web logo with transparent background saved as .png.
+primary colors,,
 primary colors of light,"The additive primaries (red, green, blue) which combine to form other colors in displays.",Mixing red and green light makes yellow.
 primary colors of pigment,"The subtractive primaries (cyan, magenta, yellow) used in printing to absorb (subtract) light.",Overlaying magenta and yellow ink yields red.
 Python,High‑level scripting language widely used for CV/DIP prototyping.,Writing a quick face‑detection script with OpenCV in Python.
@@ -250,6 +253,7 @@ scene element,Individual object or region in an image contributing to overall un
 scene understanding,High‐level interpretation of all elements and their relations in an image/sequence.,Generating a scene graph describing objects and their interactions in a photo.
 scikit‑image,Python library of image‐processing routines built on NumPy/SciPy.,Running skimage.filters.sobel to detect edges in microscopy images.
 SciPy,"Python library providing scientific computing routines, including optimization and filtering.",Using scipy.ndimage.gaussian_filter to blur noisy images.
+secondary colors,,
 segmentation,Partitioning an image into meaningful regions (semantic or instance).,Using U-Net to segment tumor regions in MRI scans.
 semi‑supervised learning,Learning from a mix of labeled and unlabeled data.,Training a segmentation network with 10% annotated and 90% raw medical images.
 sharpening,Enhancing edge contrast to make details stand out.,Applying an unsharp‑mask filter to a landscape photo.
