@@ -118,8 +118,8 @@ digital image acquisition,ultrasound of an unborn baby,Uses high-frequency sound
 digital image acquisition,electro-microscopic imagery of molecules,Uses electron beams instead of light to image extremely small structures at the molecular or atomic level. Example: Transmission Electron Microscopy (TEM) reveals protein structures.
 digital image acquisition - sensing,sensor responsive to energy generates voltage,"A sensor element (e.g., photodiode) converts incoming energy (light, sound, etc.) into an electrical signal. Example: A photodiode outputs a voltage proportional to light intensity."
 digital image acquisition - sensing,collections or arrays of sensors,Multiple sensor elements arranged in a grid to capture a 2D image. Example: A CMOS sensor with millions of photodiodes forms a digital image.
-digital image acquisition - sampling,"samples at discrete time intervals
-regarding time domain","In video or dynamic imaging, the signal is sampled at regular time intervals to capture motion. Example: A video camera samples at 30 frames per second (fps)."
+digital image acquisition - sampling,"samples at discrete spatial and/or time intervals
+regarding space and/or time domain","In video or dynamic imaging, the signal is sampled at regular time intervals to capture motion. Example: A video camera samples at 30 frames per second (fps)."
 digital image acquisition - quantization,"samples at discrete quantity levels
 regarding quantity domain","The analog signal is quantized into a finite number of levels, reducing precision but enabling digital storage. Example: A 10-bit quantizer maps values into 1024 levels."
 digital image acquisition,Nyquist principle,"To avoid aliasing, the sampling rate must be at least twice the highest frequency present in the signal. Example: A 1000 dpi scanner can resolve features down to 500 dpi."
