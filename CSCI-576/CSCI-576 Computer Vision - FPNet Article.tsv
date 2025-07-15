@@ -1,0 +1,183 @@
+Section	Spec	Statement
+§Title	1	Frequency Perception Network for Camouflaged Object Detection
+§Authors	1	Runmin Cong, Mengyao Sun, Sanyi Zhang, Xiaofei Zhou, Wei Zhang, and Yao Zhao
+§A	1	Abstract
+§A.1	1	Camouflaged object detection (COD) aims to accurately detect objects hidden in the surrounding environment.
+§A.2	0	However, the existing COD methods mainly locate camouflaged objects in the RGB domain, their performance has not been fully exploited in many challenging scenarios.
+§A.3	1	Considering that the features of the camouflaged object and the background are more discriminative in the frequency domain, we propose a novel learnable and separable frequency perception mechanism driven by the semantic hierarchy in the frequency domain.
+§A.4	1	Our entire network adopts a two-stage model, including a frequency-guided coarse localization stage and a detail-preserving fine localization stage.
+§A.5	1	With the multi-level features extracted by the backbone, we design a flexible frequency perception module based on octave convolution for coarse positioning.
+§A.6	1	Then, we design the correction fusion module to step-by-step integrate the high-level features through the prior-guided correction and cross-layer feature channel association, and finally combine them with the shallow features to achieve the detailed correction of the camouflaged objects.
+§1	1	Introduction
+§1.1.1	0	In nature, animals use camouflage to blend in with their surroundings to avoid detection by predators.
+§1.1.2	1	The camouflaged object detection (COD) task aims to allow computers to automatically recognize these camouflaged objects that blend in with the background, which can be used in numerous downstream applications, including medical segmentation (Fan et al., 2020b; Huang et al., 2020; Cong et al., 2022c, b), unconstrained face recognition (Chen et al., 2023), and recreational art (Feng and Prabhakaran, 2013; Dean et al., 2017).
+§1.1.3	0	However, the COD task is very challenging due to the low contrast properties between the camouflaged object and the background.
+§1.1.4	0	Furthermore, camouflaged objects may have multiple appearances, including shapes, sizes, and textures, which further increases the difficulty of detection.
+§1.2.1	0	At the beginning of the research, the COD task was also regarded as a low-contrast special case of the salient object detection (SOD) task, but simple SOD model (Cong et al., 2019; Chen et al., 2020; Cong et al., 2023a; Zhang et al., 2021; Cong et al., 2023c, 2022a, 3883, b; Jing et al., 2021; Cong et al., 6476) retraining cannot obtain satisfactory COD results, and usually requires some special positioning design to find camouflaged objects.
+§1.2.2	0	Recently, with the development of deep learning (Fan et al., 2020c; Ni et al., 2017; Hu et al., 2021; Yue et al., 2022; Zhang et al., 2023), many customized networks for COD tasks have gradually emerged (Lv et al., 2023; Fan et al., 2020a; Chen et al., 2022).
+§1.2.3	0	However, current solutions still struggle in challenging situations, such as multiple camouflaged objects, uncertain or fuzzy object boundaries, and occlusion, as shown in Figure 1.
+§1.2.4	0	In general, these methods mainly design modules in the RGB color domain to detect camouflaged objects, and complete the initial positioning of camouflaged objects by looking for areas with inconsistent information such as textures (called breakthrough points).
+§1.2.5	0	However, the concealment and confusion of the camouflaged objects itself make this process very difficult.
+§1.2.6	1	In the image frequency domain analysis, the high-frequency and low-frequency component information in the frequency domain describes the details and contour characteristics of the image in a more targeted manner, which can be used to improve the accuracy of the initial positioning. Inspired by this, we propose a Frequency Perception Network (FPNet) that employs a two-stage strategy of search and recognition to detect camouflaged objects, taking full advantage of RGB and frequency cues.
+§1.3.1	1	On the one hand, the main purpose of the frequency-guided coarse positioning stage is to use the frequency domain features to find the breakthrough points of the camouflaged object position.
+§1.3.2	1	We first adopt the transformer backbone to extract multi-level features of the input RGB image.
+§1.3.3	1	Subsequently, in order to realize the extraction of frequency domain features, we introduce a frequency-perception module to decompose color features into high-frequency and low-frequency components.
+§1.3.4	1	Among them, the high-frequency features describe texture features or rapidly changing parts, while the low-frequency features can outline the overall contour of the image.
+§1.3.5	1	Considering that both texture and contour are important for camouflaged object localization, we fuse them as a complete representation of frequency domain information.
+§1.3.6	1	In addition, a neighbor interaction mechanism is also employed to combine different levels of frequency-aware features, thereby achieving coarse detection and localization of camouflaged objects.
+§1.3.7	1	On the other hand, the detail-preserving fine localization stage focuses on progressively prior-guided correction and fusion across layers, thereby generating the final finely camouflaged object masks.
+§1.3.8	1	Specifically, we design the correction fusion module to achieve the cross-layer high-level feature interaction by integrating the prior-guided correction and cross-layer feature channel association.
+§1.3.9	1	Finally, the shallow high-resolution features are further introduced to refine and modify the boundaries of camouflaged objects and generate the final COD result.
+§1.4.1	1	The main contributions are summarized as follows:
+§1.4.2.1	1	We propose a novel two-stage framework to deeply exploit the advantages of RGB and frequency domains for camouflaged object detection in an end-to-end manner.
+§1.4.2.2	1	The proposed network achieves competitive performance on three popular benchmark datasets (i.e., COD10K, CHAMELEON, and CAMO).
+§1.4.3	1	A novel fully frequency-perception module is designed to enhance the ability to distinguish camouflaged objects from backgrounds by automatically learning high-frequency and low-frequency features, thereby achieving coarse localization of camouflaged objects.
+§1.4.4	1	We design a progressive refinement mechanism to obtain the final refined camouflaged object detection results through prior-guided correction, cross-layer feature channel association, and shallow high-resolution boundary refinement.
+§2	1	Related Work
+§2.1.1	0	The COD task aims to localize objects that have a similar appearance to the background, which makes it extremely challenging.
+§2.1.2	0	Early methods employed hand-crafted low-level features to achieve this goal, such as color (Huerta et al., 2007), expectation-maximization statistics (Liu et al., 2012), convex intensity (Tankus and Yeshurun, 2001), optical flow (Hou and Li, 2011), and texture (Bhajantri and Nagabhushan, 2006; Kavitha et al., 2011).
+§2.1.3	0	However, due to the imperceptible differences between objects and backgrounds in complex environments, and the limited expressive power of hand-crafted features, they do not perform satisfactorily.
+§2.2.1	0	Recently CNN-based methods (Le et al., 2019; Fan et al., 2020a; Mei et al., 2021) have achieved significant success in the COD task.
+§2.2.2	0	In general, CNN-based methods often employ one or more of the following strategies, such as two-stage strategy (Fan et al., 2020a; Chen et al., 2022), multi-task learning strategy (Lv et al., 2021), and incorporating other guiding cues such as frequency (Gueguen et al., 2018).
+§2.2.3	0	For instance, Fan et al. (Fan et al., 2020a) proposed a two-stage process named SINet, which represents the new state-of-the-art in existing COD datasets and created the largest COD10K dataset with 10K images.
+§2.2.4	0	Mei et al. (Mei et al., 2021) imitated the predator-prey process in nature and developed a two-stage bionic framework called PFNet.
+§F2	1	Figure 2
+§F2.1	1	The overview of our proposed two-stage network FPNet.
+§F2.2	1	The input image is first extracted with multi-level features by a PVT encoder.
+§F2.3	1	In the frequency-guided coarse localization stage, we use FPM for frequency-domain feature extraction and generate the coarse COD map S1.
+§F2.4	1	Then, in the detail-preserving fine localization stage, the CFM is used to achieve progressively prior-guided correction and fusion across high-level layers.
+§F2.5	1	Finally, the first-level high-resolution features are further introduced to refine the boundaries of camouflaged objects and generate the final result So⁢u⁢t⁢p⁢u⁢t.
+§F2D	1	Figure 2 Description
+§F2D.0	1	The source image is fed as input into Level 1 block in the top block
+§F2D.1	1	The top block is the frequency-guided Coarse Positioning Stage
+§F2D.2	1	The middle block has the four Level blocks which output X1, X2, X3, and X4.
+§F2D.3	1	The bottom block is the detailed-preserving Fine Localization Stage
+§F2D.4	1	The top block has three FPMs: FPM2, FPM3, and FPM4
+§F2D.5	1	The bottom block has two CFMs: CFM1 and CFM2.
+§F2D.6	1	In the top block each FPM is a Frequency-Perception Module
+§F2D.7	1	In the bottom block each CFM is a Correction Fusion Module
+§F2D.8	1	In the top block: FPM2 → f2, FPM3 → f3, and FPM4 → f4
+§F2D.9	1	In the top block: S1 = concat_plus_conv((f2 * f3) * (f3 * f4), concat_plus_conv((f3 * f4), f4))
+§F2D.10	1	In the middle block each Level block has a Patch Emb block, plus a non-linearity like sigmoid then inputs to Encoder block
+§F2D.11	1	In the middle block the Level blocks use upsample + conv to daisy chain output between X1, X2, X3, and X4
+§F2D.12	1	In the bottom block are the RFB, Receptive Feild Block
+§F2D.13	1	In the bottom block are the SAM, Spatial Attention Module
+§F2D.14	1	In the bottom block: Conv(CFM2 output) → CFM1
+§F2D.15	1	In the bottom block: Soutput = Bconv_1x1(Bconv_3x3((RFB → SAM output) + CFM1 output))
+§F2D.16	1	In the bottom block: Bconv is sequence Conv + BN + ReLU
+§F2D.17	1	From the top block to the bottom block: S1 → CFM2
+§F2D.18	1	From the middle block to the the top block: X2 → FPM2, X3 → FPM3, and X4 → FPM4
+§F2D.19	1	From the middle block to the bottom block: X2 → CFM1 and X3 → CFM1
+§F2D.20	1	From the middle block to the bottom block: X3 → CFM2 and S1 → CFM2
+§F2D.21	1	From the middle block to the bottom block: X1 → RFB
+§2.3.1	0	In terms of frequency domain studies, Gueguen et al. (Gueguen et al., 2018) directly used the Discrete Cosine Transform (DCT) coefficients of the image as input to CNN for subsequent visual tasks.
+§2.3.2	0	Ehrlich et al. (Ehrlich and Davis, 2019) presented a general conversion algorithm for transforming spatial domain networks to the frequency domain.
+§2.3.3	0	Interestingly, both of these works delve deep into the frequency domain transformation of the image JPEG compression process.
+§2.3.4	1	Subsequently, Zhong et al. (Zhong et al., 2022) modeled the interaction between the frequency domain and the RGB domain, introducing the frequency domain as an additional cue to better detect camouflaged objects from backgrounds.
+§2.3.5	1	Unlike these methods, on the one hand, we use octave convolution to realize the online learning of frequency domain features, instead of offline extraction methods (e.g., DCT);
+§2.3.6	1	On the other hand, frequency domain features are mainly used for coarse positioning in the first stage, that is, by making full use of high-frequency and low-frequency information to find the breakthrough point of camouflaged object positioning in the frequency domain.
+§2.4.1	0	In addition, some methods (Liu et al., 2021b; Owens et al., 2014; Sun et al., 2022) also try to combine edge detection to extract more precise edges, thereby improving the accuracy of COD.
+§2.4.2	0	It is worth mentioning that in order to exploit the power of the Transformer model in the COD task, many Transformer-based methods have emerged.
+§2.4.3	0	For example, Yang et al. (Yang et al., 2021) proposed to incorporate Bayesian learning into Transformer-based reasoning to achieve the COD task.
+§2.4.4	0	The T2Net proposed by Mao et al. (Mao et al., 2021) in 2021 used a Swin-Transformer as the backbone network, surpassing all CNN-based approaches at that time.
+§3	1	Our Approach
+§3.1	1	Overview
+§3.1.1.1	1	Our goal is to exploit and fuse the inherent advantages of the RGB and frequency domains to enhance the discrimination ability to discover camouflaged objects in the complex background.
+§3.1.1.2	1	To that end, in this paper, we propose a Frequency Perception Network (FPNet) for camouflaged object detection, as shown in Figure 2, including a feature extraction backbone, a frequency-guided coarse localization stage, and a detail-preserving fine localization stage.
+§3.1.2.1	1	Given an input image I∈ℝH×W×3, for the feature extraction backbone, we adopt the Pyramid Vision Transformer (PVT) (Wang et al., 2021) as the encoder to generate features of different levels, denoted as Xi (i={1,2,3,4}).
+§3.1.2.2	1	Each feature map serves a different purpose.
+§3.1.2.3	1	The first-level feature map X1 includes rich detailed information about the camouflaged object, whereas the deeper-level features (X2, X3, X4) contain higher-level semantic information.
+§3.1.2.4	1	With the pyramid backbone features, in the frequency-guided coarse localization stage, we first use a frequency-perception module (FPM) for frequency-domain feature extraction on high-level features and then adopt the neighborhood connection decoder for feature fusion decoding to obtain the coarse COD map S1.
+§3.1.2.5	1	Whereafter, in the detail-preserving fine localization stage, with the guidance of coarse COD map S1, the high-level features are embedded into the correction fusion module (CFM) to progressively achieve prior-guided correction and fusion across layers.
+§3.1.2.6	1	Finally, a receptive field block (RFB) with spatial attention mechanism (SAM) is used for low-level high-resolution feature optimization and combined with the CFM module output to obtain the final COD result So⁢u⁢t⁢p⁢u⁢t.
+§3.2	1	Frequency-guided Coarse Positioning
+§3.2.1.1	1	Inspired by predator hunting systems, frequency information is more advantageous than RGB appearance features for a specific predator in the wild environment.
+§3.2.1.2	1	This point of view has also been verified in (Zhong et al., 2022), and then a frequency domain method for camouflaged object detection is proposed.
+§3.2.1.3	1	Specifically, this work (Zhong et al., 2022) used offline discrete cosine transform to convert the RGB domain information of an image to the frequency domain, but the offline frequency extraction method limits its flexibility.
+§3.2.1.4	1	As described in (Chen et al., 2019), octave convolution can learn to divide an image into low and high frequency components in the frequency domain.
+§3.2.1.5	1	The low-frequency features correspond to pixel points with gentle intensity transformations, such as large color blocks, that often represent the main part of the object.
+§3.2.1.6	1	The high-frequency components, on the other hand, refer to pixels with intense brightness changes, such as the edges of objects in the image. Inspired by this, we propose a frequency-perception module to automatically separate features into high-frequency and low-frequency parts, and then form a frequency-domain feature representation of camouflaged objects.
+§3.2.1.7	1	The detailed process is shown in Figure 3.
+§F3	1	Figure 3
+§F3.1	1	Illustration of frequency-perception module (FPM).
+§F3.2	1	Two branches are for high-frequency and low-frequency information learning, respectively.
+§3.2.2.1	1	Specifically, we employ octave convolution (Chen et al., 2019) to automatically perceive high-frequency and low-frequency information in an end-to-end manner, enabling online learning of camouflaged object detection.
+§3.2.2.2	1	The octave convolution can effectively avoid blockiness caused by the DCT and utilize the advantage of the computational speed of GPUs.
+§3.2.2.3	1	In addition, it can be easily plugged into arbitrary networks.
+§3.2.2.4	1	The detailed process of output of the octave convolution Yi={YiH,YiL} could be described in the following:
+§3.2.2.5	1	YiH=F⁢(XiH;WH→H)+Upsample⁢(F⁢(XiL;WL→H),2)
+§3.2.2.6	1	YiL=F⁢(XiL;WL→L)+F⁢(pool⁢(XiH,2);WH→L)
+§3.2.2.7	1	where F⁢(X;W) denotes a convolution with the learnable parameters of W, pool⁢(X,k) is an average pooling operation with kernel size of k×k, and Upsample⁢(X,s) is an up-sampling operation by a factor of s via nearest interpolation.
+§3.2.2.8	1	Considering that both high-frequency texture attribute and low-frequency contour attribute are important for camouflaged object localization, we fuse them as a complete representation of frequency domain information:
+§3.2.2.9	1	fi=Resize⁢(YiH)⊕Resize⁢(YiL)
+§3.2.2.10	1	where Resize means to adjust features to a fixed dimension, and ⊕ is the element-wise addition.
+§3.2.2.11	1	Then, the Neighbor Connection Decoder (NCD) (Deng-Ping et al., 2022), as shown in the top region (the part above the three FPMs) of Figure 2, is adopted to gradually integrate the frequency-domain features of the top-three layers, fully utilizing the cross-layer semantic context relationship through the neighbor layer connection, which can be represented as:
+§3.2.2.12	1	f4′=ℊ↑2⁢(f4), f3′=f3⊗ℊ↑2⁢(f4), f2′=cat⁢(f2⊗ℊ↑2⁢(f3′),cat⁢(f3′,f4′))
+§3.2.2.13	1	where ⊗ is element-wise multiplication, ℊ↑2⁢(x) denotes an up-sampling along with a 3×3 convolution, cat⁢() denotes concatenation along with a 3×3 convolution, and f2′ is the output of NCD.
+§3.2.2.14	1	After this stage, we use a simple convolution to obtain a coarse mask S1 that reveals the initial location of the camouflaged object.
+§3.3	1	Detail-preserving Fine Localization
+§3.3.1	1	In the previous section, we introduced how to use frequency-domain features to achieve coarse localization of camouflaged objects.
+§3.3.2	1	But the first stage is more like a process of finding and locating breakthrough points, the integrity and accuracy of results are still not enough.
+§3.3.3	1	To this end, we propose a detail-preserving fine localization mechanism, which not only achieves a progressive fusion of high-level features through prior correction and channel association but also considers high-resolution features to refine the boundaries of camouflaged objects, as shown in Figure 2.
+§3.3.4	1	To achieve the above goals, we first design a correction fusion module (CFM), which effectively fuses adjacent layer features and a coarse camouflaged mask to produce fine output.
+§3.3.5	1	The module includes three inputs: the current and previous layer features Xi and Xi+1, and the coarse mask Sg={S1,S2}.
+§3.3.6	1	In addition, we first reduce the number of input feature channels to 64, denoted as Fi and Fi+1, which helps to improve computational efficiency while still retaining relevant information for detection.
+§3.3.7	1	As shown in Figure 4, our CFM consists of two parts.
+§3.3.8	1	In order to make full use of the existing prior guidance map Sg, we purify the features of the previous layer and select the features most related to the camouflaged features to participate in the subsequent cross-layer interaction.
+§3.3.9	1	Mathematically, the feature map Fi+1 is first multiplied with the coarse mask Sg to obtain the output features fi+1′:
+§3.3.10	1	fi+1′=Upsample⁢(Fi+1⊙Sg)
+§3.3.11	1	where ⊙ denotes element-wise multiplication, and Upsample is the upsampling operation.
+§3.3.12	1	This prior-guided correction is particularly beneficial in scenarios where the object is difficult to discern from its surroundings.
+§3.3.13	1	It is well known that high-level features possess very rich channel-aware cues.
+§3.3.14	1	In order to achieve more sufficient cross-layer feature interaction and effectively transfer the high-level information of the previous layer to the current layer, we design the channel-level association modeling.
+§3.3.15	1	We perform channel attention by taking the inner product between each pixel point on Fi and fi+1′, which calculates the similarity between different feature maps in the channel dimension of the same pixel.
+§3.3.16	1	To further reduce computational complexity, we also employ a 3×3 convolution that creates a bottleneck structure, thereby compressing the number of output channels. This process can be described as:
+§3.3.17	1	A=conv⁢(Fi⊗(fi+1′)T)
+§3.3.18	1	where ⊗ is the matrix multiplication.
+§3.3.19	1	Then, we learn two weight maps, α and β, by using two 3×3 convolution operations on the features A.
+§3.3.20	1	They are further used in the correction of the features of the current layer Fi in a modulation manner.
+§3.3.21	1	In this way, the final cross-level fusion features can be generated through the residual processing:
+§3.3.22	1	fio⁢u⁢t=fi+1′+conv⁢(Fi)∗α+β
+§F4	1	Figure 4
+§F4.1	1	The schematic illustration of the correction fusion module (CFM).
+§F4.1	1	CFM contains two parts, i.e., prior-guided correction and channel-wise correlation modeling.
+§3.3.23	1	In addition to the above-mentioned prior correction and channel-wise association modeling on the high-level features, we also make full use of the high-resolution information of the first layer to supplement the detailed information.
+§3.3.24	1	Specifically, we use the receptive field block (RFB) module (Liu et al., 2018) and the spatial attention module (Woo et al., 2018) on the first-layer features (X1) to enlarge the receptive field and highlight the important spatial information of the features, and then fuse with the output of the CFM module (f2o⁢u⁢t) to generate the final prediction map:
+§3.3.25	1	So⁢u⁢t⁢p⁢u⁢t=B⁢c⁢o⁢n⁢v⁢(B⁢c⁢o⁢n⁢v⁢(S⁢A⁢M⁢(R⁢F⁢B⁢(X1))⊕f2o⁢u⁢t))
+§3.3.26	1	where R⁢F⁢B and S⁢A⁢M are the receptive field block and the spatial attention module, respectively.
+§3.3.27	1	B⁢c⁢o⁢n⁢v represents the 3×3 convolution layer along with the batch normalization and ReLU.
+§3.4	1	Loss Function
+§3.4.1	1	Following (Wei et al., 2020), we compute the weighted binary cross-entropy loss (ℒB⁢C⁢Eω) and IoU loss (ℒI⁢o⁢Uω) on three COD maps (i.e., S1, S2, and So⁢u⁢t⁢p⁢u⁢t) to form our final loss function:
+§3.4.2	1	ℒt⁢o⁢t⁢a⁢l=ℒ1+ℒ2+ℒo⁢u⁢t⁢p⁢u⁢t
+§3.4.3	1	where ℒ∗=ℒB⁢C⁢Eω+ℒI⁢o⁢Uω, ∗={1,2,output}, ℒ1 denotes the loss between the coarse prediction map S1 and ground truth, ℒ2 denotes the loss about the prediction map S2 after the first CFM, and ℒo⁢u⁢t⁢p⁢u⁢t denotes the loss between the final prediction map So⁢u⁢t⁢p⁢u⁢t and ground truth.
+§4	1	Experiment
+§4.1	1	Experimental Settings
+§4.1.1	1	Datasets
+§4.1.1.1	1	We conduct experiments and evaluate our proposed method on three popular benchmark datasets, i.e., CHAMELEON (Skurowski et al., 2018), CAMO (Le et al., 2019), and COD10K (Fan et al., 2020a).
+§4.1.1.2	1	CHAMELEON (Skurowski et al., 2018) dataset has 76 images.
+§4.1.1.3	1	CAMO (Le et al., 2019) contains 1,250 camouflaged images covering different categories, which are divided into 1,000 training images and 250 testing images, respectively.
+§4.1.1.4	1	As the largest benchmark dataset currently, COD10K (Fan et al., 2020a) includes 5,066 images in total, 3,040 images are chosen for training and 2,026 images are used for testing.
+§4.1.1.5	1	There are five concealed super-classes (i.e., terrestrial, atmobios, aquatic, amphibian, other) and 69 sub-classes.
+§4.1.1.6	1	And the pixel-level ground-truth annotations of each image in these three datasets are provided.
+§4.1.1.7	1	Besides, for a fair comparison, we follow the same training strategy of previous works (Zhong et al., 2022), our training set includes 3,040 images from COD10K datasets and 1,000 images from the CAMO dataset.
+§4.1.2	1	Evaluation Metrics
+§4.1.2.1	1	We use four widely used and standard metrics to evaluate the proposed method, i.e., structure-measure (Sα) (Fan et al., 2017), mean E-measure (Eϕ) (Fan et al., 2018), weighted F-measure (Fβω) (Margolin et al., 2014), and mean absolute error (M⁢A⁢E) (Li et al., 2020; Zhang et al., 2020; Li et al., 2021).
+§4.1.2.2	1	Overall, a better COD method has larger Sα, Eϕ, and Fβω scores, but a smaller M⁢A⁢E score.
+§4.1.3	1	Implementation Details
+§4.1.3.1	1	In this paper, we propose a frequency-perception network (FPNet) to address the challenge of camouflaged object detection by incorporating both RGB and frequency domains.
+§4.1.3.2	1	Specifically, a frequency-perception module is proposed to automatically separate frequency information leading the model to a good coarse mask at the first stage.
+§4.1.3.3	1	Then, a detail-preserving fine localization module equipped with a correction fusion module is explored to refine the coarse prediction map.
+§4.1.3.4	1	Comprehensive comparisons and ablation studies on three benchmark COD datasets have validated the effectiveness of the proposed FPNet.
+§4.1.3.5	1	The proposed method is implemented with PyTorch and leverages Pyramid Vision Transformer (Wang et al., 2021) pre-trained on ImageNet (Krizhevsky et al., 2017) as our backbone network.
+§4.1.3.6	1	We also implement our network by using the MindSpore Lite tool1.
+§4.1.3.7	1	To update the network parameters, we use the Adam optimizer, which is widely used in transformer-based networks (Wang et al., 2021, 2022; Liu et al., 2021a).
+§4.1.3.8	1	The initial learning rate is set to 1e-4 and weight decay is adjusted to 1e-4.
+§4.1.3.9	1	Furthermore, we resize the input images to 512×512, the model is trained with a mini-batch size of 4 for 100 epochs on an NVIDIA 2080Ti GPU.
+§4.1.3.10	1	We augment the training data by applying techniques such as random flipping, random cropping, and so on.
+§5	1	Conclusion
+§5.1	1	In this paper, we propose a frequency-perception network (FPNet) to address the challenge of camouflaged object detection by incorporating both RGB and frequency domains.
+§5.2	1	Specifically, a frequency-perception module is proposed to automatically separate frequency information leading the model to a good coarse mask at the first stage.
+§5.3	1	Then, a detail-preserving fine localization module equipped with a correction fusion module is explored to refine the coarse prediction map.
+§5.4	1	Comprehensive comparisons and ablation studies on three benchmark COD datasets have validated the effectiveness of the proposed FPNet.
+§5.5	1	This work will benefit more sophisticated algorithms exploiting frequency clues pursuing appropriate solutions in various areas of the multimedia community.
+§5.6	1	In addition, the long-tail problem also exists in COD, this motivates us to explore reasonable solutions referring to the typical methods of long-tail recognition (Yang et al., 2022, 2023).
