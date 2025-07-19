@@ -1,0 +1,933 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{iccv}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{bbm}
+\usepackage{multicol}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{color}
+% \usepackage{ulem}
+\usepackage{pifont}
+% \usepackage{authblk}
+\usepackage{marvosym}
+% \usepackage[accsupp]{axessibility}
+\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\newcommand{\tablestyle}[2]{\setlength{\tabcolsep}{#1}\renewcommand{\arraystretch}{#2}\centering\footnotesize}
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\iccvfinalcopy % *** Uncomment this line for the final submission
+
+\def\iccvPaperID{2578} % *** Enter the ICCV Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ificcvfinal\pagestyle{empty}\fi
+
+\newlength\savedwidth
+\newcommand\whline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 0.8pt}\hline\noalign{\global\arrayrulewidth\savedwidth}}
+
+\newcommand{\enze}[1]{\textcolor{red}{[enze: #1]}}
+\newcommand{\fdp}[1]{\textcolor{red}{[DP: #1]}}
+\newcommand{\implus}[1]{\textcolor{red}{[implus: #1]}}
+\newcommand{\gray}[1]{\textcolor{gray}{#1}}
+\newcommand{\green}[1]{\textcolor[RGB]{96,177,87}{#1}}
+\newcommand{\fn}[1]{\footnotesize{#1}}
+\newcommand{\gbf}[1]{\green{\bf{\fn{(#1)}}}}
+\newcommand{\rbf}[1]{\gray{\bf{\fn{(#1)}}}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+\definecolor{mygray}{gray}{.92}
+	
+\newcommand\blfootnote[1]{%
+\begingroup
+\renewcommand\thefootnote{}\footnote{#1}%
+\addtocounter{footnote}{-1}%
+\endgroup
+}
+	
+\def\ie{\emph{i.e.}}
+\def\eg{\emph{e.g.}}
+\def\etc{\emph{etc}}
+\def\etal{{\em et al.~}}
+
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Pyramid Vision Transformer: A Versatile Backbone for Dense Prediction without Convolutions}
+
+
+\author{
+    Wenhai Wang$^{1}$, 
+    Enze Xie$^{2}$,
+    Xiang Li$^{3}$,
+    Deng-Ping Fan$^{4}$\textsuperscript{\Letter}, \\
+    Kaitao Song$^{3}$,
+    Ding Liang$^{5}$,
+    Tong Lu$^{1}$\textsuperscript{\Letter},
+    Ping Luo$^{2}$,
+    Ling Shao$^{4}$\\
+    $^1$Nanjing University~~~
+    $^2$The University of Hong Kong~~~\\
+    $^3$Nanjing University of Science and Technology~~~
+    $^4$IIAI~~~
+    $^5$SenseTime Research\\
+    {\small \url{https://github.com/whai362/PVT}}
+}
+
+
+% \maketitle
+% Remove page # from the first page of camera-ready.
+\ificcvfinal\thispagestyle{empty}\fi
+
+
+\twocolumn[{%
+\maketitle
+\vspace{-10mm}
+\begin{figure}[H]
+\hsize=\textwidth
+\centering
+\hspace{-0.2in}
+\begin{subfigure}{0.30\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{figure/p11.pdf}
+    \caption{CNNs: VGG~\cite{simonyan2014very}, ResNet~\cite{he2016deep}, \etc.}
+    \label{fig:1a}	
+\end{subfigure}    
+\hspace{0.2in}
+\begin{subfigure}{0.30\textwidth}
+     \centering
+     \includegraphics[width=0.95\textwidth]{figure/p21.pdf}
+     \caption{Vision Transformer~\cite{dosovitskiy2020image}}
+     \label{fig:1b}
+\end{subfigure}
+\hspace{0.2in}
+\begin{subfigure}{0.30\textwidth}
+     \centering
+     \includegraphics[width=0.95\textwidth]{figure/p31.pdf}
+     \caption{Pyramid Vision Transformer (ours)}
+     \label{fig:1d}
+\end{subfigure}
+\vspace{-3mm}
+\caption{\textbf{Comparisons of different architectures,} where ``Conv'' and ``TF-E''
+stand for ``convolution'' and ``Transformer encoder'', 
+respectively. 
+(a) Many CNN backbones use a pyramid structure for dense prediction tasks such as object detection (DET), instance and semantic segmentation (SEG).
+(b) The recently proposed Vision Transformer (ViT)~\cite{dosovitskiy2020image} is a ``columnar'' structure specifically designed for image classification (CLS). (c) By incorporating the pyramid structure from CNNs, we present the Pyramid Vision Transformer (PVT), which can be used as a versatile backbone for many computer vision tasks,
+broadening the scope and impact of ViT.
+Moreover, our experiments also show that PVT can easily be combined with DETR~\cite{carion2020end} to build an end-to-end object detection system without convolutions.
+}
+\label{fig:pipeline}
+\end{figure}
+\vspace{2mm}
+}]
+
+
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+ 
+Although convolutional neural networks (CNNs) have achieved great success in computer vision, this work investigates a simpler, convolution-free backbone network useful for many dense prediction tasks.
+%
+Unlike the recently-proposed Vision Transformer (ViT) that was designed for image classification specifically, we introduce the Pyramid Vision Transformer~(PVT)\blfootnote{\Letter~Corresponding authors: Deng-Ping Fan (dengpfan@gmail.com); Tong Lu (lutong@nju.edu.cn).}, which overcomes the difficulties of porting Transformer to various dense prediction tasks. PVT has several merits compared to current state
+of the arts.
+%
+(1) Different from ViT that typically yields low-resolution outputs and incurs high computational and memory costs, PVT not only can be trained on dense partitions of an image to achieve high output resolution,
+which is important for dense prediction, but also uses a progressive shrinking pyramid to reduce the computations of large feature maps.
+% 
+(2) PVT inherits the advantages of both CNN and Transformer, making it a unified backbone for various vision tasks without convolutions, where it can be used as a direct replacement for CNN backbones. 
+(3) We validate PVT through extensive experiments, showing that it boosts the performance of many downstream tasks, including object detection, instance and semantic segmentation.
+For example, with a comparable number of parameters, PVT+RetinaNet achieves 40.4 AP on the COCO dataset, surpassing ResNet50+RetinNet (36.3 AP) by 4.1 absolute AP (see Figure \ref{fig:cmp}).
+We hope that PVT could serve as an alternative and useful backbone for pixel-level predictions and facilitate future research.
+
+
+\end{abstract}
+
+
+
+
+%%%%%%%%% BODY TEXT
+ 
+\section{Introduction}
+
+Convolutional neural network (CNNs) have achieved remarkable success in  computer vision, making them a versatile and dominant approach for almost all tasks~
+%
+\cite{simonyan2014very,he2016deep,xie2017aggregated,ren2015faster,he2017mask,lin2017focal,chen2018encoder,kirillov2019panoptic}. 
+%and made many remarkable achievements~\cite{}.
+Nevertheless, this work aims to explore an alternative backbone network beyond CNN,
+%
+which can be used for dense prediction tasks such as object detection~\cite{lin2014microsoft,everingham2010pascal}, semantic~\cite{zhou2017scene} and instance segmentation~\cite{lin2014microsoft}, in addition to image classification~\cite{deng2009imagenet}.
+
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.98\columnwidth]{figure/cmp.pdf}
+	\hspace{-42.5mm}\resizebox{.48\columnwidth}{!}{\tablestyle{2pt}{1}
+	\input{table/cmp.tex}
+	}
+    
+   \caption{\textbf{Performance comparison on COCO \texttt{val2017} of different backbones using RetinaNet for object detection}, where ``T'', ``S'', ``M'' and ``L'' denote our PVT models with tiny, small, medium and large size. We see that when the number of parameters among different models are comparable, PVT variants significantly outperform their corresponding counterparts such as ResNets (R)~\cite{he2016deep}, ResNeXts (X)~\cite{xie2017aggregated}, and ViT \cite{dosovitskiy2020image}.
+}
+
+\label{fig:cmp}
+\end{figure}
+
+Inspired by the success of Transformer~\cite{vaswani2017attention} in natural language processing,
+% (NLP), 
+many researchers have explored its application in computer vision.
+%
+For example, some works~\cite{carion2020end,zhu2020deformable,xie2021segmenting,sun2020transtrack,hu2021Transformer,liu2021vst} model the vision task as a dictionary lookup problem with learnable queries, and use the Transformer decoder
+as a task-specific head on top of the CNN backbone.
+%
+Although some prior arts have also incorporated attention modules~\cite{wang2018non,ramachandran2019stand,zhao2020exploring} into CNNs, 
+as far as we know, \emph{exploring a clean and convolution-free Transformer backbone to address dense prediction tasks in computer vision is rarely studied}.
+%
+
+
+Recently, Dosovitskiy \etal\cite{dosovitskiy2020image} introduced the Vision Transformer (ViT) for image classification.
+%
+This is an interesting and meaningful attempt to replace the CNN backbone with a convolution-free model. 
+%
+As shown in Figure~\ref{fig:pipeline} (b), ViT has a columnar structure with coarse image patches
+as input.\footnote{Due to resource constraints, ViT cannot use fine-grained image patches (\eg, 4$\times$4 pixels per patch) as input, instead only receive coarse patches (\eg, 32$\times$32 pixels per patch) as input, which leads to its low output resolution (\eg, 32-stride).}
+%
+Although ViT is applicable to image classification, it is challenging to directly 
+% 
+adapt it to pixel-level dense predictions such as object detection and segmentation, because 
+(1) its output feature map is single-scale and low-resolution,
+%
+and (2) its computational and memory costs are relatively high even for common input image sizes (\eg, shorter edge of 800 pixels in the COCO benchmark~\cite{lin2014microsoft}). 
+
+
+
+To address the above limitations, 
+%
+this work proposes a pure Transformer backbone,
+termed Pyramid Vision Transformer (PVT), which can serve as an alternative to the CNN backbone in many 
+%
+downstream tasks, including image-level prediction as well as  pixel-level dense predictions.
+%
+Specifically, as illustrated in Figure~\ref{fig:pipeline} (c), 
+%
+%
+our PVT overcomes the difficulties of the conventional Transformer by (1) taking fine-grained image patches (\ie, 4$\times$4 pixels per patch) as input to learn high-resolution representation, which is essential for dense prediction tasks;
+%
+(2) introducing a progressive shrinking pyramid to reduce the sequence length of Transformer as the network deepens,
+%
+significantly reducing the computational cost, and (3) adopting a spatial-reduction attention (SRA) layer to further reduce the resource consumption when learning high-resolution features.
+
+Overall, the proposed PVT possesses the following merits.
+%
+Firstly, compared to the 
+%
+traditional
+CNN backbones (see Figure~\ref{fig:pipeline} (a)), which have local receptive fields that increase with the network depth, our PVT always produces a global receptive field,
+%
+which is more suitable for detection and segmentation.
+%
+%
+Secondly, compared to ViT (see Figure~\ref{fig:pipeline} (b)), thanks to its advanced pyramid structure, our method can more easily be plugged into many representative dense prediction pipelines, \eg, RetinaNet~\cite{lin2017focal} and Mask R-CNN~\cite{he2017mask}.
+%
+Thirdly,
+we can build a convolution-free pipeline by combining our PVT with other task-specific
+Transformer decoders,
+%
+such as PVT+DETR~\cite{carion2020end} for object detection.
+\emph{To our knowledge, this is the first entirely convolution-free object detection pipeline.}
+%
+%
+%
+%
+
+Our main contributions are as follows:
+%
+    
+    (1) We propose Pyramid Vision Transformer (PVT), which is the first pure Transformer backbone designed for various pixel-level dense prediction tasks.
+    Combining our PVT and DETR, we can construct an end-to-end object detection system without convolutions and handcrafted components such as dense anchors and non-maximum suppression (NMS).
+    
+    (2) We overcome many difficulties when porting Transformer to dense
+    predictions, by designing a
+    progressive shrinking pyramid and a spatial-reduction attention (SRA). These are able to reduce the resource consumption of Transformer, making PVT flexible to learning multi-scale and high-resolution features.
+    
+    (3) We evaluate the proposed PVT on several different tasks, including image classification, object detection, instance and semantic segmentation, and compare it with 
+    popular
+    ResNets~\cite{he2016deep} and ResNeXts~\cite{xie2017aggregated}. As presented in Figure \ref{fig:cmp}, 
+    our PVT with different parameter scales
+    can consistently archived improved performance compared to the prior arts.
+    For example, under a comparable number of parameters, using RetinaNet~\cite{lin2017focal} for object detection, PVT-Small achieves 40.4 AP on COCO \texttt{val2017}, outperforming ResNet50 by 4.1 points (40.4 \vs 36.3).
+    Moreover, PVT-Large achieves 42.6 AP, which is 1.6 points better than ResNeXt101-64x4d, with  30\% less parameters.
+
+
+\section{Related Work}
+
+\subsection{CNN Backbones}
+
+
+%
+CNNs are the work-horses of deep neural networks in visual recognition. The standard
+%
+CNN was first introduced in \cite{lecun1998gradient} to distinguish handwritten numbers. 
+%
+The model
+contains convolutional kernels with a certain receptive field that captures favorable visual context. To provide translation equivariance, the weights of convolutional kernels are shared over the entire image space. More recently, with the rapid development of the computational resources (\eg, GPU), the successful training of stacked convolutional blocks~\cite{krizhevsky2012imagenet,simonyan2014very}
+%
+on large-scale image classification datasets (\eg, ImageNet \cite{russakovsky2015imagenet}) has become possible. For instance, GoogLeNet \cite{szegedy2015going} demonstrated that a convolutional operator containing multiple kernel paths can achieve very competitive performance. 
+%
+The effectiveness of a multi-path convolutional block was further validated in Inception series \cite{szegedy2016rethinking,szegedy2017inception}, ResNeXt \cite{xie2017aggregated}, DPN \cite{chen2017dual}, MixNet \cite{wang2018mixed} and SKNet \cite{li2019selective}.
+%
+Further, ResNet \cite{he2016deep} introduced skip connections into the convolutional block, making it possible to create/train very deep networks and obtaining impressive results in the field of computer vision.
+%
+DenseNet \cite{huang2017densely} introduced a densely connected topology, which connects each convolutional block to all previous blocks. 
+More recent advances can be found in recent survey/review papers~\cite{khan2020survey,shorten2019survey}.
+%
+
+Unlike the full-blown CNNs, the vision Transformer backbone is still in its early stage of development. In this work, we try to extend the scope of Vision Transformer by designing a new versatile Transformer backbone suitable for most vision tasks.
+
+
+\subsection{Dense Prediction Tasks}
+
+%
+\textbf{Preliminary.} The dense prediction task aims to perform pixel-level classification or regression on a feature map.
+Object detection and semantic segmentation are two representative dense prediction tasks.
+
+\textbf{Object Detection.} In the era of deep learning, CNNs~\cite{lecun1998gradient} have become the dominant framework for object detection, which includes single-stage detectors (\eg, SSD~\cite{liu2016ssd}, RetinaNet \cite{lin2017focal}, FCOS \cite{tian2019fcos}, GFL \cite{li2020generalized,li2020generalizedv2}, PolarMask \cite{xie2020polarmask} and OneNet \cite{sun2020onenet}) and multi-stage detectors (Faster R-CNN \cite{ren2015faster}, Mask R-CNN \cite{he2017mask}, Cascade R-CNN \cite{cai2018cascade} and Sparse R-CNN \cite{sun2020sparse}).
+%
+Most of these popular object detectors are built on high-resolution or multi-scale feature maps to obtain good detection performance.
+%
+Recently, DETR~\cite{carion2020end} and deformable DETR~\cite{zhu2020deformable} combined the CNN backbone and the Transformer decoder to build an end-to-end object detector.
+Likewise, they also require high-resolution or multi-scale feature maps for accurate object detection.
+%
+
+\textbf{Semantic Segmentation.} CNNs also play an important role in semantic segmentation.
+%
+In the early stages, FCN \cite{long2015fully} introduced a fully convolutional architecture to generate a spatial segmentation map for a given image of any size.
+%
+After that, the deconvolution operation was introduced by Noh \etal\cite{noh2015learning} and achieved impressive performance on the PASCAL VOC 2012 dataset \cite{shetty2016application}.
+%
+Inspired by FCN, U-Net \cite{ronneberger2015u} was proposed for the medical image segmentation domain specifically, bridging the information flow between corresponding low-level and high-level feature maps of the same spatial sizes. 
+%
+To explore richer global context representation, Zhao \etal\cite{zhao2017pyramid} designed a pyramid pooling module over various pooling scales, and Kirillov \etal\cite{kirillov2019panoptic} developed a lightweight segmentation head termed Semantic FPN, based on FPN~\cite{lin2017feature}.
+%
+Finally, the DeepLab family \cite{chen2017deeplab,liu2019auto} applies dilated convolutions to enlarge the receptive field while maintaining the feature map resolution.
+%
+%
+Similar to object detection methods, semantic segmentation models also rely on high-resolution or multi-scale feature maps.
+%
+
+\begin{figure*}[t]
+		\centering
+		\setlength{\fboxrule}{0pt}
+		\fbox{\includegraphics[width=0.95\textwidth]{./figure/arch1.pdf}}
+		\caption{\textbf{Overall architecture of Pyramid Vision Transformer (PVT).} The entire model is divided into four stages, each of which is comprised of a patch embedding layer and a $L_i$-layer Transformer encoder. Following a pyramid structure, the output resolution of the four stages progressively shrinks from high (4-stride) to low (32-stride).}
+		\label{fig:arch}
+\end{figure*}
+
+
+\subsection{Self-Attention and Transformer in Vision}
+
+
+As convolutional filter weights are usually fixed after training, 
+%
+they cannot be dynamically adapted to different inputs.
+Many methods have been proposed to alleviate this problem using dynamic filters~\cite{jia2016dynamic} or self-attention operations~\cite{vaswani2017attention}.
+%
+The non-local block \cite{wang2018non} attempts to model long-range dependencies in both space and time, which has been shown beneficial for accurate video classification.
+However, despite its success, the non-local operator suffers from the high computational and memory costs. Criss-cross \cite{huang2019ccnet} further reduces the complexity by generating sparse attention maps through a criss-cross path. 
+Ramachandran \etal\cite{ramachandran2019stand} proposed the stand-alone self-attention to replace convolutional layers with local self-attention units. 
+AANet \cite{bello2019attention} achieves competitive results when combining the self-attention and convolutional operations.
+LambdaNetworks~\cite{bello2021lambdanetworks} uses the lambda layer, an efficient self-attention to replace the convolution in the CNN.
+%
+DETR \cite{carion2020end} utilizes the Transformer decoder to model object detection as an end-to-end dictionary lookup problem with learnable queries,
+%
+successfully removing the need for handcrafted processes such as NMS. 
+%
+Based on DETR, deformable DETR \cite{zhu2020deformable} further adopts a deformable attention layer to focus on a sparse set of contextual elements, obtaining faster convergence and better performance.
+%
+Recently, Vision Transformer (ViT) \cite{dosovitskiy2020image} employs a pure Transformer~\cite{vaswani2017attention} model for image classification by treating an image as a sequence of patches.
+%
+DeiT \cite{touvron2020training} further extends ViT using a novel distillation approach. 
+%
+Different from previous models, this work introduces the pyramid structure into Transformer to present a pure Transformer backbone for dense prediction tasks, rather than a task-specific head or an image classification model.
+%
+
+
+\section{Pyramid Vision Transformer (PVT)}
+
+
+\subsection{Overall Architecture}
+
+
+Our goal is to introduce the pyramid structure into the Transformer framework, so that it can generate multi-scale feature maps for dense prediction tasks (\eg, object detection and semantic segmentation).
+%
+An overview of PVT is depicted in Figure~\ref{fig:arch}.
+%
+Similar to CNN backbones~\cite{he2016deep}, our method has four stages that generate feature maps of different scales.
+%
+All stages share a similar architecture, which consists of a patch embedding layer and $L_i$ Transformer encoder layers.
+
+In the first stage, given an input image of size $H\!\times\!W\! \times\!3$, we first divide it into $\frac{HW}{4^2}$ patches,\footnote{As done for ResNet, we keep the highest  resolution of our output feature map at 4-stride.} each of size $4\!\times\!4\!\times\!3$.
+%
+Then, we feed the flattened patches to a linear projection and obtain embedded patches of size $\frac{HW}{4^2}\!\times\!C_1$.
+%
+After that, the embedded patches along with a position embedding  are passed through a Transformer encoder with $L_1$ layers, and the output is reshaped to a feature map $F_1$ of size $\frac{H}{4}\!\times\!\frac{W}{4}\!\times\!C_1$. 
+%
+In the same way, using the feature map from the previous stage as input, we obtain the following feature maps: $F_2$, $F_3$, and $F_4$, whose strides are 8, 16, and 32 pixels with respect to the input image.
+%
+With the feature pyramid $\{F_1, F_2, F_3, F_4\}$, our method can be easily applied to most downstream tasks, including image classification, object detection, and semantic segmentation.
+
+
+\subsection{Feature Pyramid for Transformer}
+
+
+%
+Unlike CNN backbone networks~\cite{simonyan2014very,he2016deep}, which use different convolutional strides to obtain multi-scale feature maps, our PVT uses a \textit{progressive shrinking strategy} to control the scale of feature maps by patch embedding layers.
+
+%
+Here, we denote the patch size of the $i$-th stage as $P_i$.
+%
+At the beginning of stage $i$, we first evenly divide the input feature map $F_{i\!-\!1}\!\in\! \mathbb{R}^{H_{i\!-\!1}\!\times\!W_{i\!-\!1}\!\times\! C_{i\!-\!1}}$ into $\frac{H_{i\!-\!1}W_{i\!-\!1}}{P_i^2}$ patches, 
+%
+and then each patch is flatten and projected to a $C_i$-dimensional embedding. 
+%
+After the linear projection, the shape of the embedded patches can be viewed as $\frac{H_{i\!-\!1}}{P_i}\!\times\!\frac{W_{i\!-\!1}}{P_i}\!\times\!C_i$, where the height and width are $P_i$ times smaller than the input.
+
+In this way, we can flexibly adjust the scale of the feature map in each stage, making it possible to construct a feature pyramid for Transformer.
+
+
+\subsection{Transformer Encoder}
+
+
+\begin{figure}
+		\centering
+		\setlength{\fboxrule}{0pt}
+		\fbox{\includegraphics[width=0.4\textwidth]{./figure/att.pdf}}
+		 
+		\caption{\textbf{Multi-head attention (MHA) \vs spatial-reduction attention (SRA).} 
+		With the spatial-reduction operation, the computational/memory cost of our SRA is much lower than that of MHA.
+		%
+		}
+		\label{fig:att}
+\end{figure}
+
+The Transformer encoder in the stage $i $ has $L_i$ encoder layers, each of which is composed of an attention layer and a feed-forward layer~\cite{vaswani2017attention}.
+%
+Since PVT needs to process high-resolution (\eg, 4-stride) feature maps, 
+%
+we propose a spatial-reduction attention (SRA) layer to replace the traditional multi-head attention (MHA) layer~\cite{vaswani2017attention} in the encoder.
+
+Similar to MHA, our SRA receives a query $Q$, a key $K$, and a value $V$ as input, and outputs a refined feature.
+%
+The difference is that our SRA reduces the spatial scale of $K$ and $V$ before the attention operation (see Figure~\ref{fig:att}), which largely reduces the computational/memory overhead.
+%
+Details of the SRA in the stage $i$ can be formulated as follows:
+\begin{equation}
+    {\rm SRA}(Q, K, V) = {\rm Concat}({\rm head}_0,... , {\rm head}_{N_i})W^O,
+    \label{eqn:att1}
+\end{equation}
+\begin{equation}
+    {\rm head}_j={\rm Attention}(QW_j^Q, {\rm SR}(\!K\!)W_j^K, {\rm SR}(\!V\!)W_j^V),
+    \label{eqn:att2}
+\end{equation}
+where ${\rm Concat}(\cdot)$ is the concatenation operation as in \cite{vaswani2017attention}. $W_j^Q\!\in\!\mathbb{R}^{C_i\!\times\!d_{\rm head}}$,
+$W_j^K\!\in\!\mathbb{R}^{C_i\!\times\!d_{\rm head}}$,
+$W_j^V\!\in\!\mathbb{R}^{C_i\!\times\!d_{\rm head}}$, and
+$W^O\!\in\!\mathbb{R}^{C_i\!\times\!C_i}$
+are linear projection  parameters. 
+%
+$N_i$ is the head number of the attention layer in Stage $i$. 
+%
+Therefore, the dimension of each head (\ie, $d_{\rm head}$) is equal to $\frac{C_i}{N_i}$.
+%
+${\rm SR}(\cdot)$ is the operation for reducing the spatial dimension of the input sequence (\ie, $K$ or $V$), which is written as:
+ 
+\begin{equation}
+    {\rm SR}(\mathbf{x}) = {\rm Norm}({\rm Reshape}(\mathbf{x}, R_i)W^S).
+    \label{eqn:att4}
+\end{equation}
+Here, $\mathbf{x}\!\in\!\mathbb{R}^{(H_iW_i)\!\times\!C_i}$ represents a input sequence, and $R_i$ denotes the reduction ratio of the attention layers in Stage $i$.
+%
+${\rm Reshape}(\mathbf{x}, R_i)$ is an operation of reshaping the input sequence $\mathbf{x}$
+to a sequence of size $\frac{H_iW_i}{R_i^2}\!\times\!(R_i^2C_i)$.
+%
+$W_S\!\in\!\mathbb{R}^{(R_i^2C_i)\!\times\!C_i}$
+is a linear projection that reduces the dimension of the input sequence to $C_i$. ${\rm Norm}(\cdot)$ refers to layer normalization~\cite{ba2016layer}.
+%
+As in the original Transformer~\cite{vaswani2017attention},
+our attention operation ${\rm Attention}(\cdot)$ is calculated as:
+\begin{equation}
+    {\rm Attention}(\mathbf{q}, \mathbf{k}, \mathbf{v}) = {\rm Softmax}(\frac{\mathbf{q}\mathbf{k}^\mathsf{T}}{\sqrt{d_{\rm head}}})\mathbf{v}.
+    \label{eqn:att3}
+\end{equation}
+Through these formulas, we can find that the computational/memory costs of our attention operation are $R_i^2$ times lower than those of MHA, so our SRA can handle larger input feature maps/sequences with limited resources.
+
+
+
+
+\subsection{Model Details}
+
+In summary, the hyper parameters of our method are listed as follows:
+\begin{itemize}
+    \item $P_i$: the patch size of Stage $i$;
+    \item $C_i$: the channel number of the output of Stage $i$;
+    \item $L_i$: the number of encoder layers in Stage $i$;
+    \item $R_i$: the reduction ratio of the SRA in Stage $i$;
+    \item $N_i$: the head number of the SRA in Stage $i$;
+    \item $E_i$: the expansion ratio of the feed-forward layer~\cite{vaswani2017attention} in Stage $i$;
+\end{itemize}
+Following the design rules of ResNet~\cite{he2016deep}, we (1) use small output channel numbers in shallow stages; and (2) concentrate the major computation resource
+in intermediate stages.
+
+To provide instances for discussion, we describe a series of PVT models with different scales, namely PVT-Tiny, -Small, -Medium, and -Large, in Table~\ref{tab:arch}, whose parameter numbers are comparable to ResNet18, 50, 101, and 152 respectively.
+%
+More details of employing these models in specific downstream tasks will be introduced in Section~\ref{sec:task}.
+\begin{table*}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.0mm}
+    \input{table/arch.tex}
+    \caption{\textbf{Detailed settings of PVT series.} The design follows the two rules of ResNet~\cite{he2016deep}: (1) with the growth of network depth, the hidden dimension gradually increases, and the output resolution progressively shrinks; (2) the major computation resource is concentrated in Stage 3.
+    }
+    \label{tab:arch}
+\end{table*}
+
+
+
+\subsection{Discussion}
+
+The most related work to our model is ViT~\cite{dosovitskiy2020image}. 
+Here, we discuss the relationship and differences between them.
+%
+First, both PVT and ViT are pure Transformer models without convolutions. The primary difference between them is the pyramid structure. 
+%
+Similar to the traditional Transformer~\cite{vaswani2017attention}, the length of ViT's output sequence is the same as the input, which means that the output of ViT is single-scale (see Figure~\ref{fig:pipeline} (b)).
+%
+Moreover, due to the limited resource, the input of ViT is coarse-grained (\eg, the patch size is 16 or 32 pixels), and thus its output resolution is relatively low (\eg, 16-stride or 32-stride).
+%
+As a result, it is difficult to directly apply ViT to dense prediction tasks that require high-resolution or multi-scale feature maps.
+
+
+Our PVT breaks the routine of Transformer by introducing a progressive shrinking pyramid.
+%
+It can generate multi-scale feature maps like a traditional CNN backbone.
+%
+In addition, we also designed a simple but
+effective attention layer---SRA, to process high-resolution feature maps and reduce computational/memory costs.
+%
+Benefiting from the above designs, our method has the following advantages over ViT:
+1) more flexible---can generate feature maps of different scales/channels in different stages;
+2) more versatile---can be easily plugged and played in most downstream task models;
+3) more friendly to computation/memory---can handle higher resolution feature maps or longer sequences.
+
+%
+
+
+\section{Application to Downstream Tasks}\label{sec:task}
+
+\subsection{Image-Level Prediction}
+
+
+Image classification is the most classical task of image-level prediction.
+%
+To provide instances for discussion, we design a series of PVT models with different scales, namely PVT-Tiny, -Small, -Medium, and -Large, whose parameter numbers are similar to ResNet18, 50, 101, and 152, respectively.
+%
+Detailed hyper-parameter settings of the PVT series are provided in the \emph{supplementary material (SM)}.
+
+For image classification, we follow ViT~\cite{dosovitskiy2020image} and DeiT~\cite{touvron2020training} to append a learnable classification token to the input of the last stage, and then employ a fully connected (FC) layer to conduct classification on top of the token.
+
+
+\subsection{Pixel-Level Dense Prediction}
+
+In addition to image-level prediction, dense prediction that requires pixel-level classification or regression to be performed on the feature map, is also often seen in downstream tasks.
+Here, we discuss two typical tasks, namely object detection, and semantic segmentation.
+
+%
+We apply our PVT models to three representative dense prediction methods, namely RetinaNet~\cite{lin2017focal}, Mask R-CNN~\cite{he2017mask}, and Semantic FPN~\cite{kirillov2019panoptic}.
+RetinaNet is a widely used single-stage detector, Mask R-CNN is the most popular two-stage instance segmentation framework, and Semantic FPN is a vanilla semantic segmentation method without special operations (\eg, dilated convolution).
+Using these methods as baselines enables us to adequately examine the effectiveness of different backbones.
+
+The implementation details are as follows: 
+(1) Like ResNet, we initialize the PVT backbone with the weights pre-trained on ImageNet;
+(2) We use the output feature pyramid $\{F_1, F_2, F_3, F_4\}$ as the input of FPN~\cite{lin2017feature}, and then the refined feature maps are fed to the follow-up detection/segmentation head;
+(3) When training the detection/segmentation model, none of the layers in PVT are frozen;
+(4) Since the input for detection/segmentation can be an arbitrary shape, the position embeddings pre-trained on ImageNet may no longer be meaningful. Therefore, we perform bilinear interpolation on the pre-trained position embeddings according to the input resolution.
+
+
+\section{Experiments}
+
+We compare PVT with the two most representative CNN backbones, \ie, ResNet~\cite{he2016deep} and ResNeXt~\cite {xie2017aggregated}, which are widely used in the benchmarks of many downstream tasks.
+
+
+\subsection{Image Classification}\label{sec:cls}
+
+
+\noindent\textbf{Settings.}
+Image classification experiments are performed on the ImageNet 2012 dataset \cite{russakovsky2015imagenet},
+%
+which comprises 1.28 million training images and 50K validation images from 1,000 categories. 
+%
+For fair comparison, all models are trained on the training set, and report the top-1 error on the validation set.
+%
+We follow DeiT~\cite{touvron2020training} and apply random cropping, random horizontal flipping \cite{szegedy2015going}, label-smoothing regularization \cite{szegedy2016rethinking}, mixup~\cite{zhang2017mixup}, CutMix~\cite{yun2019cutmix}, and random erasing~\cite{zhong2020random} as data augmentations.
+%
+During training, we employ AdamW~\cite{loshchilov2017decoupled} with a momentum of 0.9, a mini-batch size of 128, and a weight decay of $5\times 10^{-2}$ to optimize models. The initial learning rate is set to $1\times 10^{-3}$ and decreases following the cosine schedule~\cite{loshchilov2016sgdr}.  All models are trained for 300 epochs from scratch on 8 V100 GPUs.
+%
+To benchmark, we apply a center crop on the validation set, where a 224$\times$ 224 patch is cropped to evaluate the classification accuracy. 
+
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.7mm}
+    \footnotesize
+    \input{table/cls1.tex}
+    \caption{\textbf{Image classification performance on the ImageNet validation set}.
+    ``\#Param'' refers to the number of parameters. 
+    ``GFLOPs'' is calculated under the input scale of $224\times 224$. ``*'' indicates the performance of the method trained under the strategy of its original paper.}
+    \label{tab:cls}
+\end{table}
+\noindent\textbf{Results.}
+%
+In Table~\ref{tab:cls}, we see that our PVT models are superior to conventional CNN backbones under similar parameter numbers and computational budgets.
+%
+For example, when the GFLOPs are roughly similar, the top-1 error of PVT-Small reaches 20.2, which is 1.3 points higher than that of ResNet50~\cite{he2016deep} (20.2 \vs 21.5).
+%
+Meanwhile, under similar or lower complexity, PVT models archive performances comparable to the recently proposed Transformer-based models, such as ViT~\cite{dosovitskiy2020image} and DeiT~\cite{touvron2020training} (PVT-Large: 18.3 \vs ViT(DeiT)-Base/16: 18.3).
+%
+Here, we clarify that these results are within our expectations, because the pyramid structure is beneficial to dense prediction tasks, but
+brings little improvements to image classification.
+%
+
+Note that ViT and DeiT have limitations as they are specifically designed for classification tasks, and thus are not suitable for dense prediction tasks, which usually require effective feature pyramids.
+%
+
+
+
+\subsection{Object Detection}\label{sec:det}
+
+\noindent\textbf{Settings.}
+Object detection experiments are conducted on the challenging COCO benchmark~\cite{lin2014microsoft}.
+%
+All models are trained on COCO \texttt{train2017} (118k images) and evaluated on \texttt{val2017} (5k images).
+%
+We verify the effectiveness of PVT backbones on top of two standard detectors, namely RetinaNet~\cite{lin2017focal} and Mask R-CNN~\cite{he2017mask}.
+Before training, we use the weights pre-trained on ImageNet to initialize the backbone and Xavier~\cite{glorot2010understanding} to initialize the newly added layers.
+Our models are trained with a batch size of 16 on 8 V100 GPUs and optimized by AdamW~\cite{loshchilov2017decoupled} with an initial learning rate of $1\times10^{-4}$.
+%
+Following common practices~ \cite{lin2017focal,he2017mask,chen2019mmdetection}, we adopt 1$\times$ or 3$\times$ training schedule~(\ie, 12 or 36 epochs) to train all detection models.
+%
+The training image is resized to have a shorter side of 800 pixels, while the longer side does not exceed 1,333 pixels.
+%
+When using the 3$\times$ training schedule, we randomly resize the shorter side of the input image within the range of $[640, 800]$.
+%
+In the testing phase, the shorter side of the input image is fixed to 800 pixels.
+%
+
+\begin{table*}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.9mm}
+    \footnotesize
+    \input{table/retina1.tex}
+     
+    \caption{\textbf{Object detection performance on COCO \texttt{val2017}.} 
+    ``MS'' means that multi-scale training~\cite{lin2017focal,he2017mask} is used.}
+    \label{tab:retina} 
+\end{table*}
+
+\begin{table*}[t]
+    \centering
+    \renewcommand\arraystretch{.9}
+    \setlength{\tabcolsep}{1.4mm}
+    \footnotesize
+    \input{table/mask1.tex}
+     
+    \caption{\textbf{Object detection and instance segmentation performance on COCO \texttt{val2017}.}
+    %
+    AP$^{\rm b}$ and AP$^{\rm m}$ denote bounding box AP and mask AP, respectively. 
+    %
+    }
+    \label{tab:mask}.
+\end{table*}
+
+\noindent\textbf{Results.}
+As shown in Table~\ref{tab:retina}, when using RetinaNet for object detection, we find that under comparable number of parameters, the PVT-based models significantly surpasses their counterparts. 
+For example, with the 1$\times$ training schedule, the AP of PVT-Tiny is 4.9 points better than that of ResNet18~(36.7 \vs 31.8).
+Moreover, with the 3$\times$ training schedule and multi-scale training, PVT-Large archive the best AP of 43.4, surpassing ResNeXt101-64x4d (43.4 \vs 41.8), while our parameter number is 30\% fewer.
+%
+These results indicate that our PVT can be a good alternative to the CNN backbone for object detection.
+
+Similar results are found in instance segmentation experiments based on Mask R-CNN, as shown in Table~\ref{tab:mask}.
+With the 1$\times$ training schedule, PVT-Tiny achieves 35.1 mask AP (AP$^{\rm m}$), which is 3.9 points better than ResNet18 (35.1 \vs 31.2) and even 0.7 points higher than ResNet50 (35.1 \vs 34.4). 
+The best AP$^{\rm m}$ obtained by PVT-Large is 40.7, which is 1.0 points higher than ResNeXt101-64x4d (40.7 \vs 39.7), with 20\% fewer parameters.
+
+
+\subsection{Semantic Segmentation}\label{sec:seg}
+
+
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{2.4mm}
+    \footnotesize
+    \input{table/seg1.tex}
+     
+    \caption{\textbf{Semantic segmentation performance of different backbones on the ADE20K validation set.}
+    ``GFLOPs'' is calculated under the input scale of $512\times 512$.
+    ``*'' indicates 320K iterations training and multi-scale flip testing.
+    }
+    \label{tab:seg}
+\end{table}
+
+\noindent\textbf{Settings.}
+We choose ADE20K~\cite{zhou2017scene}, a challenging scene parsing dataset, to benchmark the performance of semantic segmentation. ADE20K contains 150 fine-grained semantic categories, with 20,210, 2,000, and 3,352 images for training, validation, and testing, respectively. 
+%
+We evaluate our PVT backbones on the basis of Semantic FPN~\cite{kirillov2019panoptic}, a simple segmentation method without dilated convolutions~\cite{yu2015multi}.
+In the training phase, the backbone is initialized with the weights pre-trained on ImageNet~\cite{deng2009imagenet}, and other newly added layers are initialized with Xavier~\cite{glorot2010understanding}. 
+We optimize our models using AdamW~\cite{loshchilov2017decoupled} with an initial learning rate of 1e-4.
+Following common practices~\cite{kirillov2019panoptic,chen2017deeplab}, we train our models for 80k iterations with a batch size of 16 on 4 V100 GPUs.
+The learning rate is decayed following the polynomial decay schedule with a power of 0.9.
+We randomly resize and crop the image to $512\times 512$ for training, and rescale to have a shorter side of 512 pixels during testing.
+
+
+\noindent\textbf{Results.} 
+As shown in Table~\ref{tab:seg}, when using Semantic FPN~\cite{kirillov2019panoptic} for semantic segmentation, PVT-based models consistently outperforms the models based on ResNet~\cite{he2016deep} or ResNeXt~\cite{xie2017aggregated}.
+%
+For example, with almost the same number of parameters and GFLOPs, our PVT-Tiny/Small/Medium are at least 2.8 points higher than ResNet-18/50/101. 
+In addition, although the parameter number and GFLOPs of our PVT-Large are 20\% lower than those of ResNeXt101-64x4d,
+%
+the mIoU is still 1.9 points higher~(42.1 \vs 40.2).
+With a longer training schedule and multi-scale testing, PVT-Large+Semantic FPN archives the best mIoU of 44.8, which is very close to the state-of-the-art performance of the ADE20K benchmark. Note that Semantic FPN is just a simple segmentation head.
+%
+These results demonstrate that our PVT backbones can extract better features for semantic segmentation than the CNN backbone, benefiting from the global attention mechanism.
+
+
+\subsection{Pure Transformer Detection \& Segmentation}
+
+
+
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.4mm}
+    \footnotesize
+    \input{table/detr.tex}
+     
+    \caption{\textbf{Performance of the pure Transformer object detection pipeline.} We build a pure Transformer detector by combining PVT and DETR~\cite{carion2020end}, whose AP is 2.4 points higher than the original DETR based on ResNet50~\cite{he2016deep}.}
+    \label{tab:detr}
+\end{table}
+%
+\noindent\textbf{PVT+DETR.} To reach the limit of no convolution, we build a pure Transformer pipeline for object detection by simply combining our PVT with a Transformer-based detection head---DETR~\cite{carion2020end}. We train models on COCO \texttt{train2017} for 50 epochs with an initial learning rate of $1\times 10^{-4}$. The learning rate is divided by 10 at the 33rd epoch. We use random flipping and multi-scale training as data augmentation. All other experimental settings is the same as those in Sec.~\ref{sec:det}. As reported in Table \ref{tab:detr}, PVT-based DETR archieves 34.7 AP on COCO \texttt{val2017}, outperforming the original ResNet50-based DETR by 2.4 points (34.7 \vs 32.3). These results prove that \emph{a pure Transformer detector can also works well 
+%
+in the object detection task}.
+
+
+\begin{table}[t]
+    \centering
+    \footnotesize
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.3mm}
+    \input{table/trans2seg.tex}
+     
+    \caption{\textbf{Performance of the pure Transformer semantic segmentation pipeline.} We build a pure Transformer detector by combining PVT and Trans2Seg~\cite{xie2021segmenting}. It is 2.9\% higher than ResNet50-d16+Trans2Seg and 1.1\% higher than ResNet50-d8+DeeplabV3+ with lower GFlops. ``d8'' and ``d16'' means dilation 8 and 16, respectively. }
+    \label{tab:trans2seg}
+\end{table}
+\noindent\textbf{PVT+Trans2Seg.}We build a pure Transformer model for semantic segmentation by combining our PVT with Trans2Seg~\cite{xie2021segmenting}, a Transformer-based segmentation head.
+According to the experimental settings in Sec.~5.3, we perform experiments on ADE20K~\cite{zhou2017scene} with 40k iterations training, single scale testing, and compare it with ResNet50+Trans2Seg~\cite{xie2021segmenting} and DeeplabV3+~\cite{chen2018encoder} with ResNet50-d8 (dilation 8) and -d16(dilation 8) in Table \ref{tab:trans2seg}. 
+%
+We find that our PVT-Small+Trans2Seg achieves 42.6 mIoU, outperforming ResNet50-d8+DeeplabV3+~(41.5).
+Note that, ResNet50-d8+DeeplabV3+ has 120.5 GFLOPs due to the high computation cost of dilated convolution, and our method has only 31.6 GFLOPs, which is 4 times fewer.
+In addition, our PVT-Small+Trans2Seg performs better than ResNet50-d16+Trans2Seg~(mIoU: 42.6 \vs 39.7, GFlops: 31.6 \vs 79.3).
+%
+These results prove that \emph{a pure Transformer segmentation network is workable.}
+%
+
+\subsection{Ablation Study}
+
+
+\noindent\textbf{Settings.}
+%
+We conduct ablation studies on ImageNet~\cite{deng2009imagenet} and COCO~\cite{lin2014microsoft} datasets.
+The experimental settings on ImageNet are the same as the settings in Sec. \ref{sec:cls}.
+For COCO, all models are trained with a 1$\times$ training schedule (\ie, 12 epochs) and without multi-scale training, and other settings follow those in Sec. \ref{sec:det}.
+
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.1mm}
+    \footnotesize
+    \input{table/vit_pvt_det.tex}
+     
+    \caption{\textbf{Performance comparison between ViT and our PVT using  RetinaNet for object detection.} ViT-Small/4 runs out of GPU memory due to small patch size (\ie, $4\!\times\!4$ per patch). ViT-Small/32 obtains 31.7 AP on COCO \texttt{val2017},  which is 8.7 points lower than our PVT-Small.}
+    \label{tab:vit_pvt_det}
+\end{table}
+
+
+
+\noindent\textbf{Pyramid Structure.} A Pyramid structure is crucial when applying Transformer to dense prediction tasks. ViT (see Figure \ref{fig:pipeline} (b)) is a columnar framework, whose output is single-scale. This results in a low-resolution output feature map when using coarse image patches (\eg, 32$\times$32 pixels per patch) as input,
+%
+leading to poor detection performance (31.7 AP on COCO \texttt{val2017}),\footnote{For adapting ViT to RetinaNet, we extract the features from the layer 2, 4, 6, and 8 of ViT-Small/32, and interpolate them to different scales.} as shown in Table \ref{tab:vit_pvt_det}. When using fine-grained image patches (\eg, 4$\times$4 pixels per patch) as input like our PVT, ViT will exhaust the GPU memory (32G).
+%
+Our method avoids this problem through a progressive shrinking pyramid. Specifically, our model can process high-resolution feature maps in shallow stages and low-resolution feature maps in deep stages.
+Thus, it obtains a promising AP of 40.4 on COCO \texttt{val2017}, 8.7 points higher than ViT-Small/32 (40.4 \vs 31.7).
+
+\begin{figure}
+		\centering
+		\setlength{\fboxrule}{0pt}
+		\fbox{\includegraphics[width=0.45\textwidth]{./figure/pretrain.pdf}}
+		\caption{\textbf{AP curves of RetinaNet on COCO \texttt{val2017} under different backbone settings.} Top: using weights pre-trained on ImageNet \vs random initialization. Bottom: PVT-S \vs R50~\cite{he2016deep}.}
+		\label{fig:pretrain}
+\end{figure}
+
+
+
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    % \setlength{\tabcolsep}{1.2mm}
+    \footnotesize
+    \input{table/deep_wide.tex}
+    \caption{\textbf{Deeper \vs Wider.} ``Top-1'' denotes the top-1 error on the ImageNet validation set. ``AP'' denotes the bounding box AP on COCO \texttt{val2017}. The deep model (\ie, PVT-Medium) obtains better performance than the wide model (\ie, PVT-Small-Wide ) under comparable parameter number.}
+    \label{tab:deep_wide}
+\end{table}
+
+\noindent\textbf{Deeper \vs Wider.} 
+The problem of whether the CNN backbone should go deeper or wider has been extensively discussed in previous work~\cite{he2016deep,zerhouni2017wide}. Here, we explore this problem in our PVT.
+For fair comparisons, we multiply the hidden dimensions $\{C_1, C_2, C_3, C_4\}$ of PVT-Small
+%
+by a scale factor 1.4 to make it have an equivalent parameter number to the deep model (\ie, PVT-Medium). As shown in Table \ref{tab:deep_wide}, the deep model (\ie, PVT-Medium) consistently works better than the wide model (\ie, PVT-Small-Wide) on both ImageNet and COCO. Therefore, going deeper is more effective than going wider in the design of PVT. Based on this observation, in Table~\ref{tab:arch}, we develop PVT models with different scales by increasing the model depth.
+
+
+
+\noindent\textbf{Pre-trained Weights.} Most dense prediction models (\eg, RetinaNet~\cite{lin2017focal}) rely on the backbone whose weights are pre-trained on ImageNet. We also discuss this problem in our PVT. In the top of Figure \ref{fig:pretrain}, we plot the validation AP curves of RetinaNet-PVT-Small w/ ({red curves}) and w/o ({blue curves}) pre-trained weights.
+We find that the model w/ pre-trained weights converges better than the one w/o pre-trained weights, 
+%
+and the gap between their final AP reaches 13.8 under the 1$\times$ training schedule and 8.4 under the 3$\times$ training schedule and multi-scale training.
+%
+Therefore, like CNN-based models, pre-training weights can also help PVT-based models converge faster and better.
+%
+Moreover, in the bottom of Figure \ref{fig:pretrain}, we also see that the convergence speed of PVT-based models ({red curves}) is faster than that of ResNet-based models ({green curves}).
+
+\begin{table}[t]
+    \centering
+    \footnotesize
+    % \renewcommand\arraystretch{1.0}
+    \setlength{\tabcolsep}{1.8mm}
+    \input{table/pvt_vs_nolocal.tex}
+    \caption{\textbf{PVT \vs CNN w/ non-local.} AP$^{\rm m}$ denotes mask AP. Under similar parameter nubmer and GFLOPs, our PVT outperform the CNN backbone w/ Non-Local (ResNet50+GC r4) by 1.6 AP$^{\rm m}$ (37.8 \vs 36.2).}
+    \label{tab:non_local}
+\end{table}
+
+\noindent\textbf{PVT \vs ``CNN w/ Non-Local''}
+To obtain a global receptive field, some well-engineered CNN backbones, such as GCNet~\cite{cao2019gcnet}, integrate the non-local block in the CNN framework.
+Here, we compare the performance of our PVT (pure Transformer) and GCNet (CNN w/ non-local), using Mask R-CNN for instance segmentation.
+As reported in Table \ref{tab:non_local},  we find that our PVT-Small outperforms ResNet50+GC r4~\cite{cao2019gcnet} by 1.6 points in AP$^{\rm m}$ (37.8 \vs 36.2), and 2.0 points in AP$_{75}^{\rm m}$ (38.3 \vs 40.3), under comparable parameter number and GFLOPs. 
+There are two possible reasons for this result:
+
+(1) Although a single global attention layer (\eg, non-local~\cite{wang2018non} or multi-head attention (MHA)~\cite{vaswani2017attention}) can acquire global-receptive-field features, the model performance keeps improving as the model deepens.
+%
+This indicates that \emph{stacking multiple MHAs can further enhance the representation capabilities of features.}
+Therefore, as a pure Transformer backbone with more global attention layers, our PVT tends to perform better than the CNN backbone equipped with non-local blocks (\eg, GCNet).
+
+(2) Regular convolutions can be deemed
+as special instantiations of spatial attention mechanisms~\cite{zhu2019empirical}. In other words, the format of MHA is more flexible than the regular convolution.
+%
+For example, for different inputs, the weights of the convolution are fixed, but the attention weights of MHA change dynamically with the input.
+Thus, \emph{the features learned by the pure Transformer backbone full of MHA layers, could be more flexible and expressive.}
+
+\noindent\textbf{Computation Overhead.}
+\begin{table}[t]
+    \centering
+    \renewcommand\arraystretch{ 1.0}
+    \setlength{\tabcolsep}{1.6mm}
+    \footnotesize
+    \input{table/speed.tex}
+     
+    \caption{\textbf{Latency and AP under different input scales.} ``Scale'' and ``Time'' denote the input scale and time cost per image. When the shorter side 
+    %
+    is 640 pixels, the PVT-Small+RetinaNet has a lower 
+    %
+    GFLOPs and time cost (on a V100 GPU) than ResNet50+RetinaNet, while obtaining 2.4 points better AP (38.7 \vs 36.3).
+    %
+    }
+    \label{tab:speed}
+\end{table}
+%
+With increasing input scale, the growth rate of the GFLOPs of our PVT is greater than ResNet~\cite{he2016deep}, but lower than ViT~\cite{dosovitskiy2020image}, as shown in Figure \ref{fig:flops}.
+However, when the input scale does not exceed 640$\times$640 pixels, the GFLOPs of PVT-Small and ResNet50 are similar.
+This means that our PVT is more suitable for tasks with medium-resolution input.
+%
+
+On COCO, the shorter side of the input image is 800 pixels. Under this condition, the inference speed of RetinaNet based on PVT-Small is slower than the ResNet50-based model, as reported in Table \ref{tab:speed}.
+(1) \emph{A direct solution for this problem is to reduce the input scale.} When reducing the shorter side of the input image to 640 pixels, the model based on PVT-Small runs faster than the ResNet50-based model (51.7ms \vs, 55.9ms), with 2.4 higher AP (38.7 \vs 36.3).
+%
+2) \emph{Another solution is to develop a self-attention layer with lower computational complexity.} This is a worth exploring direction, we recently propose a solution PVTv2~\cite{wang2021pvtv2}.
+%
+%
+
+\noindent\textbf{Detection \& Segmentation Results.}
+In Figure \ref{fig:res}, we also present some qualitative object detection and instance segmentation results on COCO \texttt{val2017}~\cite{lin2014microsoft}, and semantic segmentation results on ADE20K~\cite{zhou2017scene}. These results indicate that a pure Transformer backbone (\ie, PVT) without convolutions can also be easily plugged in dense prediction models (\eg, RetinaNet~\cite{lin2017focal}, Mask R-CNN~\cite{he2017mask}, and Semantic FPN~\cite{kirillov2019panoptic}), and obtain high-quality results.
+
+\begin{figure}
+		\centering
+		\setlength{\fboxrule}{0pt}
+		\fbox{\includegraphics[width=0.45\textwidth]{./figure/flops.pdf}}
+		 
+		\caption{\textbf{Models' GFLOPs under different input scales.} The growth rate of GFLOPs: ViT-Small/16~\cite{dosovitskiy2020image}$>$ViT-Small/32~\cite{dosovitskiy2020image}$>$PVT-Small (ours)$>$ResNet50~\cite{he2016deep}.
+		When the input scale is less than $640\times 640$, the GFLOPs of PVT-Small and ResNet50~\cite{he2016deep} are similar.
+		}
+		\label{fig:flops}
+\end{figure}
+
+\begin{figure*}[t]
+		\centering
+		\setlength{\fboxrule}{0pt}
+		\fbox{\includegraphics[width=0.98\textwidth]{./figure/res_compressed.pdf}}
+		\caption{\textbf{Qualitative results of object detection and instance segmentation on COCO \texttt{val2017}~\cite{lin2014microsoft}, and semantic segmentation on ADE20K~\cite{zhou2017scene}.} The results (from left to right) are generated by PVT-Small-based RetinaNet~\cite{lin2017focal}, Mask R-CNN~\cite{he2017mask}, and Semantic FPN~\cite{kirillov2019panoptic}, respectively.}
+		\label{fig:res}
+		%
+\end{figure*}
+
+\section{Conclusions and Future Work}
+
+We introduce PVT, a pure Transformer backbone for dense prediction tasks, such as object detection and semantic segmentation. 
+We develop a progressive shrinking pyramid and a spatial-reduction attention layer to obtain high-resolution and multi-scale feature maps under limited computation/memory resources.
+Extensive experiments on object detection and semantic segmentation benchmarks verify that our PVT is stronger than well-designed CNN backbones under comparable numbers of parameters.
+
+
+%
+Although PVT can serve as an alternative to CNN backbones (\eg, ResNet, ResNeXt), there are still some specific modules and operations designed for CNNs and not considered in this work, such as 
+SE~\cite{hu2018squeeze}, SK~\cite{li2019selective}, dilated convolution~\cite{yu2015multi}, model pruning~\cite{han2015deep}, and NAS~\cite{tan2019efficientnet}.
+Moreover, with years of rapid developments, there have been many well-engineered CNN backbones such as Res2Net~\cite{gao2019res2net}, EfficientNet~\cite{tan2019efficientnet}, and ResNeSt~\cite{zhang2020resnest}.
+In contrast, the Transformer-based model in computer vision is still in its early stage of development. 
+%
+Therefore, 
+%
+we believe there are many potential technologies and applications (\eg, OCR~\cite{wang2019shape,wang2020ae,wang2021pan++}, 3D~\cite{hui2020progressive,cheng2021sspc,hui2021efficient} and medical~\cite{fan2021concealed,fan2020pranet,ji2021progressively} image analysis) to be explored in the future, and hope that PVT could serve as a good starting point.
+%
+
+\section*{Acknowledgments}
+This work was supported by the Natural Science Foundation of China under Grant 61672273 and Grant 61832008, the Science Foundation for Distinguished Young Scholars of Jiangsu under Grant BK20160021, Postdoctoral Innovative Talent Support Program of China under Grant BX20200168, 2020M681608, the General Research Fund of Hong Kong No. 27208720.
+
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{egbib}
+}
+
+\end{document}

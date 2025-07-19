@@ -1,0 +1,53 @@
+Component,Article
+FPNet,Frequency Perception Network for Camouflaged Object Detection
+CFM,Frequency Perception Network for Camouflaged Object Detection
+CFM direct lineage,Camouflaged Object Detection via Context-aware Cross-level Fusion
+CFM inspiration,Context-aware Cross-level Fusion Network for Camouflaged Object Detection
+Foundational,Detecting Camouflaged Object in Frequency Domain
+Loss Function,"F3Net Fusion, Feedback and Focus for Salient Object Detection"
+NCD,Concealed Object Detection
+Octave Convolution,Drop an Octave - Reducing Spatial Redundancy Convolutional Neural Networks with Octave Convolution
+PVT,Pyramid Vision Transformer a Versatile Backbone for Dense Prediction without Convolutions
+RFB,Receptive Field Block Net for Accurate and Fast Object Detection
+SAM,Convolutional Block Attention Module
+FPM,Frequency Perception Network for Camouflaged Object Detection
+Component Level,Component
+1,FPNet (Frequency Perception Network)
+1.1,Feature Extraction Backbone
+1.1.1,PVT (Pyramid Vision Transformer)
+1.1.1.1,overall 4 stages
+1.1.1.2,patch embedding layer
+1.1.1.3,"L1, L2, L3, and L4 Transformer Encoding Layers"
+1.1.1.3.1,attention layer
+1.1.1.3.2,feed-forward layer
+1.1.1.4,"1st stage, flattened 4x4 patches to a linear projection"
+1.1.1.5,"1st stage, transformer with L1 levels"
+1.1.1.6,"F1, feature map, 4x4"
+1.1.1.7,"F2, feature map, 8x8"
+1.1.1.8,"F3, feature map. 16x16"
+1.1.1.9,"F4, feature map, 32x32"
+1.1.1.10,"Feature pyramid, F1, F2, F3, F4"
+1.1.1.11,progressive shrinking strategy
+1.1.1.12,Spatial-Reduction Attention
+1.1.2,"X1 feature map, rich detail information"
+1.1.3,"X2 feature map, higher level semantic information"
+1.1.4,"X3 feature map, higher level semantic information"
+1.1.5,"X4 feature map, higher level semantic information"
+1.2,Frequency-guided Coarse Localization Stage
+1.2.1,"FPM, Frequency-perception Module
+frequency-domain feature extraction on high-level features
+automatically separate features into high-frequency and low-frequency parts"
+1.2.2,"NCD, Neighborhood Connection Decoder, feature fusion decoding"
+1.2.3,"S1, coarse COD map, high-level features are embedded into CFM"
+1.2.4,Octave Convolution
+1.3,Detail-preserving Fine Localization Stage
+1.3.1,"CFM, Correction Fusion Module
+progressively achieves prior-guided correction and fusion across layers
+fuses adjacent layer features and a coarse camouflaged mask to produce fine output"
+1.3.2,"RFB, Receptive Field Block, low-level high-resolution feature optimization"
+1.3.3,"SAM, Spatial Attention Mechanism"
+1.3.4,"Soutput, the final COD result, output of SAM and CFM combined"
+1.3.5,"Sg, coarse mask "
+1.3.6,Prior-guided Correction
+1.3.7,Channel-wise Correlation Modeling
+1.4,Loss Function
