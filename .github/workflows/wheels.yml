@@ -1,21 +1,21 @@
 # ============================================================================
-# wheels.yml — Build binary wheels + sdist and publish to PyPI
+# wheels.yml — Build binary wheels + sdist and publish to TestPyPI
 # ============================================================================
-# Triggered by pushing a version tag:  git tag v0.6.0 && git push --tags
+# Triggered by pushing a version tag:  git tag v0.5.0-rc6 && git push --tags
 #
 # Strategy:
 #   • cibuildwheel builds manylinux / musllinux / macOS / Windows wheels
 #     for CPython 3.10, 3.11, 3.12 across x86_64 and arm64.
 #   • A pure sdist is also built (for the pure-Python fallback on any platform).
-#   • All artefacts are uploaded to PyPI in a single Trusted Publisher job.
+#   • All artefacts are uploaded to TestPyPI in a single Trusted Publisher job.
 #
 # Prerequisites (one-time setup):
-#   1. On PyPI: Settings → Publishing → Add publisher
-#        owner:      LCherryholmes
-#        repo:       SNOBOL4python
-#        workflow:   wheels.yml
-#        environment: pypi
-#   2. On GitHub: Environments → create "pypi"
+#   1. On TestPyPI: Settings → Publishing → Add publisher
+#        owner:       LCherryholmes
+#        repo:        SNOBOL4python
+#        workflow:    wheels.yml
+#        environment: testpypi
+#   2. On GitHub: Settings → Environments → create "testpypi"
 # ============================================================================
 
 name: Build & Publish Wheels
@@ -23,7 +23,7 @@ name: Build & Publish Wheels
 on:
   push:
     tags:
-      - "v*"                  # e.g. v0.6.0
+      - "v*"                  # e.g. v0.5.0-rc6
   workflow_dispatch:          # allow manual trigger from the Actions tab
 
 jobs:
@@ -52,17 +52,12 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          # CPython 3.10–3.12 on x86_64 and arm64; skip PyPy and 32-bit
           CIBW_BUILD: "cp310-* cp311-* cp312-*"
           CIBW_SKIP:  "*-win32 *-manylinux_i686 *-musllinux_i686 pp*"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ARCHS_LINUX: "x86_64 aarch64"
-          # Run the test suite inside each wheel environment
           CIBW_TEST_REQUIRES: "pytest"
-          CIBW_TEST_COMMAND: "pytest {project}/tests -v"
-          # Ensure the pure-Python fallback still passes even without the .so
-          CIBW_TEST_COMMAND_PURE: >
-            SNOBOL4_BACKEND=pure pytest {project}/tests -v
+          CIBW_TEST_COMMAND: "pytest {project}/tests {project}/src/sno4py/tests -v --import-mode=importlib"
 
       - name: Upload wheel artefacts
         uses: actions/upload-artifact@v4
@@ -71,7 +66,7 @@ jobs:
           path: wheelhouse/*.whl
 
   # --------------------------------------------------------------------------
-  # 2. Build sdist (pure source, contains the C sources for pip to compile)
+  # 2. Build sdist
   # --------------------------------------------------------------------------
   build-sdist:
     name: "sdist"
@@ -97,15 +92,15 @@ jobs:
           path: dist/*.tar.gz
 
   # --------------------------------------------------------------------------
-  # 3. Publish everything to PyPI via OIDC Trusted Publisher (no tokens)
+  # 3. Publish to TestPyPI via OIDC Trusted Publisher (no tokens needed)
   # --------------------------------------------------------------------------
   publish:
     name: "Publish to TestPyPI"
     needs: [build-wheels, build-sdist]
-    runs-on: ubuntu-latest      # ← 4 spaces indent
-    environment: testpypi       # ← 4 spaces indent
+    runs-on: ubuntu-latest
+    environment: testpypi
     permissions:
-      id-token: write          # required for OIDC trusted publishing
+      id-token: write
 
     steps:
       - name: Download all artefacts
@@ -117,6 +112,7 @@ jobs:
       - name: List artefacts
         run: ls -lh dist/
 
-      - name: Publish to PyPI
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        # No API token needed — PyPI Trusted Publisher handles auth via OIDC
+        with:
+          repository-url: https://test.pypi.org/legacy/
