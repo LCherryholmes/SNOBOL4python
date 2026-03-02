@@ -4,27 +4,32 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "SNOBOL4python"
-version = "0.4.6"
-description = "A Python library for SNOBOL4-style pattern matching with support for regular expressions."
+version = "0.5.0"
+description = "SNOBOL4 string pattern matching for Python — dual-backend (pure-Python and C/SPIPAT)."
 readme = "README.md"
 requires-python = ">=3.10.0"
 license = "GPL-3.0-or-later"
 authors = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]
-keywords = ["Python", "SNOBOL", "SNOBOL4", "string pattern matching"]
+keywords = ["Python", "SNOBOL", "SNOBOL4", "SPITBOL", "string", "pattern", "matching", "SPIPAT"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: General",
 ]
 dependencies = []
 
-[project-optional-dependencies]
+[project.optional-dependencies]
 test = ["pytest"]
+# Install the C extension separately; it is not on PyPI yet.
 
 [project.urls]
-Homepage = "https://github.com/LCherryholmes/SNOBOL4python"
+Homepage   = "https://github.com/LCherryholmes/SNOBOL4python"
 Repository = "https://github.com/LCherryholmes/SNOBOL4python"
-Issues = "https://github.com/LCherryholmes/SNOBOL4python/issues"
+Issues     = "https://github.com/LCherryholmes/SNOBOL4python/issues"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where   = ["src"]
 include = ["SNOBOL4python*"]
 exclude = ["tests*"]
