@@ -1,0 +1,23 @@
+site_name: SNOBOL4python
+site_description: SNOBOL4 string pattern matching for Python — dual-backend (pure-Python and C/SPIPAT)
+site_url: https://lcherryholmes.github.io/SNOBOL4python/
+repo_url: https://github.com/LCherryholmes/SNOBOL4python
+repo_name: LCherryholmes/SNOBOL4python
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+nav:
+  - Home: index.md
+  - API Reference: api.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]

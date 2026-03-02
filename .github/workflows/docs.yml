@@ -1,14 +1,13 @@
 # ============================================================================
 # docs.yml — Build and deploy MkDocs documentation to GitHub Pages
 # ============================================================================
-# Triggered on push to main (so docs always reflect latest main).
+# Currently triggered manually only (workflow_dispatch).
+# Change to push: branches: ["main"] once mkdocs.yml is created.
 # ============================================================================
 
 name: Docs
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 permissions:
