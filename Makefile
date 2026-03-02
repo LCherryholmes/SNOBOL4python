@@ -78,12 +78,12 @@ wheel: clean-dist
 # ── install targets ──────────────────────────────────────────────────────────
 install:
 	@echo "==> Editable install (includes test extras)"
-	$(PIP) install -e ".[test]"
+	$(PIP) install --break-system-packages -e ".[test]"
 
 install-dist: wheel
 	$(eval LATEST_WHL := $(shell ls -t dist/*.whl | head -n 1))
 	@echo "==> Installing $(LATEST_WHL)"
-	$(PIP) install "$(LATEST_WHL)"
+	$(PIP) install --break-system-packages "$(LATEST_WHL)"
 
 # ── test targets ─────────────────────────────────────────────────────────────
 test: build-ext

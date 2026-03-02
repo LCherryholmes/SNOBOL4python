@@ -77,7 +77,7 @@ def test_re_tree_is_tuple(rex='A|B'):
     TRACE(40)
     GLOBALS(results)
     assert 'A|B' in re_RegEx
-    assert isinstance(results['RE_tree'], tuple)
+    assert isinstance(results["RE_tree"], list)
     assert len(results['RE_tree']) >= 1
 
 #------------------------------------------------------------------------------

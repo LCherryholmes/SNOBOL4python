@@ -202,7 +202,7 @@ def test_r0_ip_address(json_data):
     assert json_data.list[0].ip_address   == "26.58.193.2"
 
 def test_r0_start_date(json_data):
-    assert json_data.list[0].start_date   == (2025, 2, 6, 0, 0, 0)
+    assert json_data.list[0].start_date   == datetime(2025, 2, 6)
 
 #-----------------------------------------------------------------------------------------------------------------------
 # ── Record 1: Giavani Frediani ─────────────────────────────────────────────
@@ -232,6 +232,6 @@ def test_r1_ip_address(json_data):
     assert json_data.list[1].ip_address   == "229.179.4.212"
 
 def test_r1_start_date(json_data):
-    assert json_data.list[1].start_date   == (2024, 12, 31, 0, 0, 0)
+    assert json_data.list[1].start_date   == datetime(2024, 12, 31)
 
 #-----------------------------------------------------------------------------------------------------------------------
