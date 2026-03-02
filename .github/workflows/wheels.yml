@@ -103,7 +103,7 @@ jobs:
     name: "Publish to TestPyPI"
     uses: pypa/gh-action-pypi-publish@release/v1
     with:
-      repository-url: https://test.pypi.org/legacy/    name: "Publish to PyPI"
+      repository-url: https://test.pypi.org/legacy/
     needs: [build-wheels, build-sdist]
     runs-on: ubuntu-latest
     environment: testpypi
