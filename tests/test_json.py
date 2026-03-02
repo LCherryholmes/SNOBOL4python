@@ -2,6 +2,7 @@
 #-----------------------------------------------------------------------------------------------------------------------
 # Parse JSON string
 #-----------------------------------------------------------------------------------------------------------------------
+import pytest
 from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
@@ -154,18 +155,83 @@ def Traverse(tree):
         case _:           raise Exception(f"Traverse ERROR: type {tree[0]} unknown.")
     return result
 #-----------------------------------------------------------------------------------------------------------------------
-TRACE(40)
-GLOBALS(globals())
-print(JSON_sample)
-print()
-if JSON_sample in jRecognizer:
-    pprint(JSON_tree)
-    print()
-    JSON = Traverse(JSON_tree)
-    pprint(vars(JSON))
-    pprint(vars(JSON.list[0]))
-    pprint(vars(JSON.list[1]))
-    print(JSON.list[0].first_name, JSON.list[0].last_name)
-    print(JSON.list[1].first_name, JSON.list[1].last_name)
-else: print("Boo!")
+
+@pytest.fixture(scope="module")
+def json_data():
+    """Parse JSON_sample once and traverse into Python objects."""
+    TRACE(40)
+    GLOBALS(globals())
+    assert JSON_sample in jRecognizer, "JSON_sample failed to parse"
+    return Traverse(JSON_tree)
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+def test_json_recognizes():
+    TRACE(40)
+    GLOBALS(globals())
+    assert JSON_sample in jRecognizer
+
+def test_json_list_length(json_data):
+    assert len(json_data.list) == 2
+
+#-----------------------------------------------------------------------------------------------------------------------
+# ── Record 0: Jeanette Penddreth ───────────────────────────────────────────
+
+def test_r0_id(json_data):
+    assert json_data.list[0].id           == 1
+
+def test_r0_first_name(json_data):
+    assert json_data.list[0].first_name   == "Jeanette"
+
+def test_r0_last_name(json_data):
+    assert json_data.list[0].last_name    == "Penddreth"
+
+def test_r0_email(json_data):
+    assert json_data.list[0].email        == "jpenddreth0@census.gov"
+
+def test_r0_gender(json_data):
+    assert json_data.list[0].gender       == "Female"
+
+def test_r0_average(json_data):
+    assert json_data.list[0].average      == pytest.approx(0.75)
+
+def test_r0_single(json_data):
+    assert json_data.list[0].single       == True
+
+def test_r0_ip_address(json_data):
+    assert json_data.list[0].ip_address   == "26.58.193.2"
+
+def test_r0_start_date(json_data):
+    assert json_data.list[0].start_date   == (2025, 2, 6, 0, 0, 0)
+
+#-----------------------------------------------------------------------------------------------------------------------
+# ── Record 1: Giavani Frediani ─────────────────────────────────────────────
+
+def test_r1_id(json_data):
+    assert json_data.list[1].id           == 2
+
+def test_r1_first_name(json_data):
+    assert json_data.list[1].first_name   == "Giavani"
+
+def test_r1_last_name(json_data):
+    assert json_data.list[1].last_name    == "Frediani"
+
+def test_r1_email(json_data):
+    assert json_data.list[1].email        == "gfrediani1@senate.gov"
+
+def test_r1_gender(json_data):
+    assert json_data.list[1].gender       == "Male"
+
+def test_r1_average(json_data):
+    assert json_data.list[1].average      == pytest.approx(-1.25)
+
+def test_r1_single(json_data):
+    assert json_data.list[1].single       == False
+
+def test_r1_ip_address(json_data):
+    assert json_data.list[1].ip_address   == "229.179.4.212"
+
+def test_r1_start_date(json_data):
+    assert json_data.list[1].start_date   == (2024, 12, 31, 0, 0, 0)
+
 #-----------------------------------------------------------------------------------------------------------------------

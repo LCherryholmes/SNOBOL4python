@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
+import pytest
 from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
 from SNOBOL4python import FENCE, LEN, MARB, MARBNO, NOTANY, POS, REM, RPOS
@@ -11,25 +12,14 @@ TRACE(50)
 GLOBALS(globals())
 #------------------------------------------------------------------------------
 As = (POS(0) + ARBNO(σ('a')) @ 'sequence' + RPOS(0))
-assert True  is ("" in As)
-assert True  is ("a" in As)
-assert True  is ("aa" in As)
-assert True  is ("aaa" in As)
-assert True  is ("aaaa" in As)
 #------------------------------------------------------------------------------
 Alist = ( POS(0)
         + (σ('a') | σ('b'))
         + ARBNO(σ(',') + (σ('a') | σ('b')))
         + RPOS(0)
         )
-assert False is ("" in Alist)
-assert True  is ("a" in Alist)
-assert True  is ("a,a" in Alist)
-assert True  is ("a,a,a" in Alist)
-assert True  is ("a,a,a,a" in Alist)
 #------------------------------------------------------------------------------
 Pairs = POS(0) + ARBNO(σ('AA') | LEN(2) | σ('XX')) + RPOS(0)
-assert False is ('CCXXAA$' in Pairs)
 #------------------------------------------------------------------------------
 PAIRS = \
     ( Θ('pos') + Λ(lambda: print('POS try', pos))
@@ -44,5 +34,64 @@ PAIRS = \
     + RPOS(0)
     + Λ(lambda: print('RPOS got'))
     )
+#------------------------------------------------------------------------------
+# ── As: ARBNO(σ('a')) ──────────────────────────────────────────────────────
+
+@pytest.mark.parametrize("s", ["", "a", "aa", "aaa", "aaaa"])
+def test_as_matches(s):
+    assert s in As
+
+@pytest.mark.parametrize("s", ["b", "ab", "ba", "aab", "aaab"])
+def test_as_no_match(s):
+    assert s not in As
+
+#------------------------------------------------------------------------------
+# ── Alist: comma-separated a/b tokens ──────────────────────────────────────
+
+@pytest.mark.parametrize("s", [
+    "a", "b",
+    "a,a", "a,b", "b,a", "b,b",
+    "a,a,a", "b,b,b",
+    "a,a,a,a",
+])
+def test_alist_matches(s):
+    assert s in Alist
+
+@pytest.mark.parametrize("s", [
+    "",       # empty — at least one element required
+    ",a",     # leading comma
+    "a,",     # trailing comma
+    "a,,a",   # double comma
+    "a,c",    # invalid token 'c'
+    "c",      # completely invalid
+])
+def test_alist_no_match(s):
+    assert s not in Alist
+
+#------------------------------------------------------------------------------
+# ── Pairs: ARBNO of even-length chunks ─────────────────────────────────────
+
+@pytest.mark.parametrize("s", [
+    "",         # zero iterations is valid
+    "AA",
+    "XX",
+    "AB",       # any 2-char chunk via LEN(2)
+    "AAXX",
+    "AABB",
+    "XXAA",
+    "AABBCC",
+])
+def test_pairs_matches(s):
+    assert s in Pairs
+
+@pytest.mark.parametrize("s", [
+    "CCXXAA$",  # odd-length tail '$' cannot be consumed
+    "A",        # single char — LEN(2) requires two
+    "AAA",      # three chars — not evenly divisible into pairs
+])
+def test_pairs_no_match(s):
+    assert s not in Pairs
+
+#------------------------------------------------------------------------------
 # assert False is ('CCXXAA$' in PAIRS)
 #------------------------------------------------------------------------------

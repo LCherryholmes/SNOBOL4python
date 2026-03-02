@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
+import pytest
 import SNOBOL4python
 from SNOBOL4python import GLOBALS, TRACE, ε, σ, π, λ, Λ, ζ, θ, Θ, φ, Φ, α, ω
 from SNOBOL4python import ABORT, ANY, ARB, ARBNO, BAL, BREAK, BREAKX, FAIL
@@ -30,41 +31,67 @@ re_Expression   =   ( nPush()
                     )
 re_RegEx        =   POS(0) + re_Expression + Pop('RE_tree') + RPOS(0)
 #------------------------------------------------------------------------------
-rexs = {
+
+@pytest.mark.parametrize("rex", [
+    # empty and single characters
     "",
     "A",
     "AA",
+    "AAA",
+    # quantifiers
     "A*",
     "A+",
     "A?",
-    "AAA",
+    # alternation
     "A|B",
     "A|BC",
     "AB|C",
+    # grouping with alternation
     "(A|)",
-    "(A|)*",
     "(A|B)*",
     "(A|B)+",
     "(A|B)?",
     "(A|B)C",
+    "(A|)*",
+    # nested grouping
     "A|(BC)",
     "(AB|CD)",
     "(AB*|CD*)",
     "((AB)*|(CD)*)",
     "(A|(BC))",
     "((AB)|C)",
+    "(Ab|(CD))",
+    # complex
     "A(A|B)*B",
-    "(Ab|(CD))"
-}
+])
+def test_re_parses(rex):
+    results = dict()
+    TRACE(40)
+    GLOBALS(results)
+    assert rex in re_RegEx
+
 #------------------------------------------------------------------------------
-from pprint import pprint
-results = dict()
-TRACE(40)
-GLOBALS(results)
-for rex in rexs:
-    print(rex)
-    results.clear()
-    if rex in re_RegEx:
-        pprint(results['RE_tree'], indent=3, width=36)
-        print()
+
+def test_re_tree_is_tuple(rex='A|B'):
+    results = dict()
+    TRACE(40)
+    GLOBALS(results)
+    assert 'A|B' in re_RegEx
+    assert isinstance(results['RE_tree'], tuple)
+    assert len(results['RE_tree']) >= 1
+
+#------------------------------------------------------------------------------
+
+@pytest.mark.parametrize("bad", [
+    "(",    # unmatched open paren
+    ")",    # unmatched close paren
+    "*",    # quantifier with no preceding item
+    "+",    # quantifier with no preceding item
+])
+def test_re_no_parse(bad):
+    results = dict()
+    TRACE(40)
+    GLOBALS(results)
+    assert bad not in re_RegEx
+
 #------------------------------------------------------------------------------
