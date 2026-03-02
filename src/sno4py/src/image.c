@@ -40,6 +40,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "spipat.h"
 #include "spipat_impl.h"
@@ -601,7 +602,13 @@ size_t
 spipat_image_custom(struct state *sp, struct pat *P) {
     //  We build a reference array whose N'th element points to the
     //  pattern element whose Index value is N.
+#ifdef _MSC_VER
+    //  MSVC does not support C99 variable-length arrays — use malloc/free.
+    PE_Ptr *Refs = (PE_Ptr *)malloc(P->P->Index * sizeof(PE_Ptr));
+    if (!Refs) return 0;
+#else
     PE_Ptr Refs[P->P->Index];
+#endif
     spipat_build_ref_array(P->P, Refs);
 
     sp->size--;			/* reserve space for NUL */
@@ -614,6 +621,9 @@ spipat_image_custom(struct state *sp, struct pat *P) {
     if (sp->ptr)
 	*sp->ptr = '\0';
 
+#ifdef _MSC_VER
+    free(Refs);
+#endif
     return sp->len;
 }
 
