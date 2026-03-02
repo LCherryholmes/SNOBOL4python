@@ -40,13 +40,24 @@ jobs:
       - name: Build and install package (with C extension)
         run: pip install ".[test]"
 
+      - name: Check C extension availability
+        id: check_c
+        shell: bash
+        run: |
+          if python -c "import sno4py" 2>/dev/null; then
+            echo "available=true" >> $GITHUB_OUTPUT
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+            echo "::warning::sno4py C extension not available — C backend tests will be skipped"
+          fi
+
       - name: Run tests — pure-Python backend
         run: pytest tests/ -v
         env:
           SNOBOL4_BACKEND: pure
 
-      - name: Run tests — C backend (if extension built successfully)
+      - name: Run tests — C backend
+        if: steps.check_c.outputs.available == 'true'
         run: pytest tests/ -v
         env:
           SNOBOL4_BACKEND: c
-        continue-on-error: true
