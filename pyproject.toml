@@ -1,35 +1,88 @@
+# ============================================================================
+# pyproject.toml — SNOBOL4python build and project metadata
+# ============================================================================
+
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires      = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "SNOBOL4python"
-version = "0.5.0"
+name        = "SNOBOL4python"
+version     = "0.5.0"
 description = "SNOBOL4 string pattern matching for Python — dual-backend (pure-Python and C/SPIPAT)."
-readme = "README.md"
-requires-python = ">=3.10.0"
-license = "GPL-3.0-or-later"
-authors = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]
-keywords = ["Python", "SNOBOL", "SNOBOL4", "SPITBOL", "string", "pattern", "matching", "SPIPAT"]
+readme      = "README.md"
+license     = { text = "GPL-3.0-or-later" }
+requires-python = ">=3.10"
+authors     = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]
+
+keywords = [
+    "SNOBOL", "SNOBOL4", "SPITBOL", "SPIPAT",
+    "pattern matching", "string", "parsing",
+]
+
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: C",
     "Topic :: Text Processing :: General",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
 ]
+
 dependencies = []
 
 [project.optional-dependencies]
-test = ["pytest"]
-# Install the C extension separately; it is not on PyPI yet.
+test = ["pytest>=7.0"]
+dev  = [
+    "pytest>=7.0",
+    "ruff",
+    "mypy",
+    "build",
+    "twine",
+    "cibuildwheel",
+]
+docs = [
+    "mkdocs-material>=9.0",
+    "mkdocstrings[python]>=0.20",
+]
 
 [project.urls]
-Homepage   = "https://github.com/LCherryholmes/SNOBOL4python"
-Repository = "https://github.com/LCherryholmes/SNOBOL4python"
-Issues     = "https://github.com/LCherryholmes/SNOBOL4python/issues"
+Homepage    = "https://github.com/LCherryholmes/SNOBOL4python"
+Repository  = "https://github.com/LCherryholmes/SNOBOL4python"
+Issues      = "https://github.com/LCherryholmes/SNOBOL4python/issues"
+Changelog   = "https://github.com/LCherryholmes/SNOBOL4python/blob/main/CHANGELOG.md"
+
+# ── setuptools package discovery ─────────────────────────────────────────────
 
 [tool.setuptools.packages.find]
 where   = ["src"]
 include = ["SNOBOL4python*"]
 exclude = ["tests*"]
+
+# ── pytest ────────────────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+testpaths   = ["tests", "src/sno4py/tests"]
+addopts     = "-v"
+
+# ── ruff ─────────────────────────────────────────────────────────────────────
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+# ── mypy ─────────────────────────────────────────────────────────────────────
+
+[tool.mypy]
+python_version         = "3.10"
+ignore_missing_imports = true
