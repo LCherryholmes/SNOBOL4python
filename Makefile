@@ -1,19 +1,25 @@
-.PHONY: all clean build install test publish
+PYTHON = python3
+PIP = $(PYTHON) -m pip
+BUILD = $(PYTHON) -m build
 
-all: clean build install test
+.PHONY: all build test install install_dist clean
 
-clean:
-	rm -rf dist/ build/ *.egg-info src/*.egg-info
+all: build
 
 build:
-	python3 -m pip install --upgrade pip build pytest twine
-	python3 -m build
-
-install:
-	python3 -m pip install dist/*.whl --force-reinstall
+	$(BUILD)
 
 test:
-	python3 -m pytest tests/
+	$(PYTHON) -m pytest tests/
 
-publish: clean build test
-	python3 -m twine upload dist/*
+install:
+	$(PIP) install -e .
+
+install_dist: build
+	$(eval LATEST_WHL := $(shell ls -t dist/*.whl | head -n 1))
+	$(PIP) install $(LATEST_WHL)
+
+clean:
+	rm -rf build/ dist/ *.egg-info
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -name "*.so" -delete
