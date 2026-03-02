@@ -11,7 +11,7 @@ name        = "SNOBOL4python"
 version     = "0.5.0"
 description = "SNOBOL4 string pattern matching for Python — dual-backend (pure-Python and C/SPIPAT)."
 readme      = "README.md"
-license     = { text = "GPL-3.0-or-later" }
+license = "GPL-3.0-or-later"
 requires-python = ">=3.10"
 authors     = [{ name = "Lon Jones Cherryholmes", email = "lcherryh@yahoo.com" }]
 
@@ -24,7 +24,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
