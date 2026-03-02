@@ -3,7 +3,7 @@ from setuptools import setup, Extension, find_packages
 def get_sno4py_extension():
     """Defines the C-backend extension module."""
     return Extension(
-        name="SNOBOL4python._backend",
+        name="sno4py",
         sources=[
             "src/sno4py/src/sno4py.c",
             "src/sno4py/src/spipat.c",
