@@ -100,10 +100,13 @@ jobs:
   # 3. Publish everything to PyPI via OIDC Trusted Publisher (no tokens)
   # --------------------------------------------------------------------------
   publish:
-    name: "Publish to PyPI"
+    name: "Publish to TestPyPI"
+    uses: pypa/gh-action-pypi-publish@release/v1
+    with:
+      repository-url: https://test.pypi.org/legacy/    name: "Publish to PyPI"
     needs: [build-wheels, build-sdist]
     runs-on: ubuntu-latest
-    environment: pypi
+    environment: testpypi
     permissions:
       id-token: write          # required for OIDC trusted publishing
 
