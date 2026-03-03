@@ -17,7 +17,12 @@ void *spipat_malloc(size_t size)        { return malloc(size); }
 void  spipat_free_cookie(void *cookie)  { (void)cookie; }
 void  spipat_copy_cookie(void *cookie)  { (void)cookie; }
 
-void __attribute__((noreturn))
+#ifdef _MSC_VER
+__declspec(noreturn)
+#else
+__attribute__((noreturn))
+#endif
+void
 spipat_exception(const char *msg) {
     PyErr_SetString(PyExc_RuntimeError, msg);
     Py_FatalError(msg);
