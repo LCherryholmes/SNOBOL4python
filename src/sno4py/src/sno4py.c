@@ -486,7 +486,9 @@ static PyObject *py_setcur_onm(PyObject *self, PyObject *args) {
  * cookie->obj is a Python str (variable name) or callable returning a
  * PATTERN object.  We call .compile() on it each time to get the C pat.
  */
-static void noop_release(void *obj) { (void)obj; }
+/* Release function for DY_PAT: drops the Python PatternObject ref we kept
+ * alive to protect the underlying spipat pat* during the match. */
+static void rpat_release(void *obj) { Py_DECREF((PyObject *)obj); }
 
 static void
 rpat_cb(void *match_cookie, void *cookie, struct dynamic *d) {
@@ -504,9 +506,6 @@ rpat_cb(void *match_cookie, void *cookie, struct dynamic *d) {
 
     if (!pat_py) { PyErr_Clear(); d->type = DY_UNK; return; }
 
-    /* Call .compile() to get a C Pattern.
-     * Use PyObject_CallMethod (takes a const char* name) to avoid any
-     * reference-counting issues with interned string objects. */
     PyObject *compiled = PyObject_CallMethod(pat_py, "compile", NULL);
     Py_DECREF(pat_py);
     if (!compiled || !PyObject_TypeCheck(compiled, &PatternType)) {
@@ -514,12 +513,13 @@ rpat_cb(void *match_cookie, void *cookie, struct dynamic *d) {
         d->type = DY_UNK; return;
     }
 
+    /* Keep 'compiled' (the PatternObject) alive for the duration of the match
+     * by storing it as the cookie.  rpat_release drops it afterward via
+     * free_dynamic_objects.  This keeps pat->P valid throughout xmatch. */
     d->type = DY_PAT;
-    d->val.pat.p = ((PatternObject *)compiled)->pat;
-    spipat_hold(d->val.pat.p);
-    d->val.pat.release = noop_release;
-    d->val.pat.cookie  = NULL;
-    Py_DECREF(compiled);
+    d->val.pat.p      = ((PatternObject *)compiled)->pat;
+    d->val.pat.release = rpat_release;
+    d->val.pat.cookie  = compiled;   /* owns the ref; NOT Py_DECREF'd here */
 }
 
 static PyObject *py_rpat(PyObject *self, PyObject *args) {
