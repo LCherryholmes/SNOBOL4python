@@ -279,6 +279,7 @@ struct pat *spipat_fence_function(struct pat *P);
 
 void spipat_free(struct pat *Object);
 void spipat_hold(struct pat *Object);
+extern int spipat_stack_size;  /* set via set_match_stack_size(); default 10000 */
 
 // Len
 

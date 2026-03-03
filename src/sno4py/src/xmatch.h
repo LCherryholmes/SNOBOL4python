@@ -71,18 +71,22 @@ XMatchD(struct spipat_match *mp) {
     unsigned Region_Level = 0;
 
     //  The pattern matching failure stack for this call to Match
-    //  Heap-allocated so Stack_Size can be large without blowing the C stack.
-    struct Stack_Entry *_Stack = (struct Stack_Entry *)malloc(Stack_Size * sizeof(struct Stack_Entry));
+    //  Heap-allocated so spipat_stack_size can be large without blowing the C stack.
+    struct Stack_Entry *_Stack = (struct Stack_Entry *)malloc(spipat_stack_size * sizeof(struct Stack_Entry));
+    if (!_Stack) {
+        spipat_exception("spipat: failed to allocate match stack");
+        return SPIPAT_MATCH_EXCEPTION;
+    }
 
-    // Hide the fact that stack is indexed -Stack_Size .. -1
-#define Stack(I) _Stack[Stack_Size+(I)]
+    // Hide the fact that stack is indexed -spipat_stack_size .. -1
+#define Stack(I) _Stack[spipat_stack_size+(I)]
 
     //  Current stack pointer. This points to the top element of the stack
     //  that is currently in use. At the outer level this is the special
     //  entry placed on the stack according to the anchor mode.
     int Stack_Ptr;
 
-#define Stack_First -Stack_Size
+#define Stack_First -spipat_stack_size
     //  This is the initial value of the Stack_Ptr and Stack_Base. The
     //  initial (Stack_First) element of the stack is not used so that
     //  when we pop the last element off, Stack_Ptr is still in range.
@@ -118,7 +122,7 @@ XMatchD(struct spipat_match *mp) {
     //  every possibility except a match of a recursive pattern, where we
     //  make a check at each recursion level.
 
-    if (mp->pattern->Stk >= Stack_Size - 1) {
+    if (mp->pattern->Stk >= spipat_stack_size - 1) {
 	Pattern_Stack_Overflow();
 	goto Match_Fail;		/* XXX Internal_Error */
     }
@@ -754,7 +758,7 @@ XMatchD(struct spipat_match *mp) {
 	Push_Region;
 	IPrintf("%p initiating recursive match\n", Node);
 
-	if ((int)(Stack_Ptr + (*Node->val.PP)->Stk) >= Stack_Size) {
+	if ((int)(Stack_Ptr + (*Node->val.PP)->Stk) >= spipat_stack_size) {
 	    Pattern_Stack_Overflow();
 	    goto Match_Fail;		/* XXX Internal_Error */
 	}
@@ -1082,7 +1086,7 @@ XMatchD(struct spipat_match *mp) {
 		Stack (Stack_Ptr + 1).Node = Node->Pthen;
 		Push_Region;
 		IPrintf("%p initiating recursive match\n", Node);
-		if ((int)(Stack_Ptr + d.val.pat.p->Stk) >= Stack_Size) {
+		if ((int)(Stack_Ptr + d.val.pat.p->Stk) >= spipat_stack_size) {
 		    Pattern_Stack_Overflow();
 		    goto Match_Fail;	/* XXX Internal_Error */
 		}

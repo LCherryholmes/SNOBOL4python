@@ -32,6 +32,7 @@ _mod            = None      # currently active backend module
 __all__ = [
     # meta
     'backend', 'C_AVAILABLE', 'use_c', 'use_pure', 'current_backend',
+    'set_match_stack_size', 'DEFAULT_MATCH_STACK_SIZE',
     # patterns & types
     'F', 'PATTERN', 'STRING', 'NULL', 'Ϩ', 'Γ',
     'ε', 'σ', 'FAIL', 'ABORT', 'SUCCEED',
@@ -87,9 +88,10 @@ def _inject(mod):
     callers who did `from ._backend import *` earlier pick up the new ones.
     We also update the SNOBOL4python package namespace if it's already loaded.
     """
+    _skip = ('backend', 'C_AVAILABLE', 'use_c', 'use_pure', 'current_backend', 'set_match_stack_size', 'DEFAULT_MATCH_STACK_SIZE')
     g = _sys.modules[__name__].__dict__
     for name in __all__:
-        if name in ('backend', 'C_AVAILABLE', 'use_c', 'use_pure', 'current_backend'):
+        if name in _skip:
             continue
         obj = getattr(mod, name, None)
         if obj is not None:
@@ -99,7 +101,7 @@ def _inject(mod):
     pkg_mod = _sys.modules.get('SNOBOL4python')
     if pkg_mod is not None:
         for name in __all__:
-            if name in ('backend', 'C_AVAILABLE', 'use_c', 'use_pure', 'current_backend'):
+            if name in _skip:
                 continue
             obj = getattr(mod, name, None)
             if obj is not None:
@@ -141,6 +143,10 @@ def use_c() -> None:
     """
     mod = _load_backend('c')
     _inject(mod)
+    # Re-apply the stored stack size to the C extension
+    if _match_stack_size != DEFAULT_MATCH_STACK_SIZE:
+        import sno4py as _C
+        _C.set_stack_size(_match_stack_size)
 
 
 def use_pure() -> None:
@@ -158,6 +164,38 @@ def use_pure() -> None:
 def current_backend() -> str:
     """Return 'c' or 'pure'."""
     return _current
+
+
+DEFAULT_MATCH_STACK_SIZE: int = 10_000
+_match_stack_size: int = DEFAULT_MATCH_STACK_SIZE
+
+
+def set_match_stack_size(n: int) -> None:
+    """
+    Set the number of entries in the internal pattern-match backtracking stack.
+
+    The default (10,000) is sufficient for virtually all patterns.  Each entry
+    is 16 bytes, so the default allocates ~160 KB per match call.
+
+    Increase this only if you hit a ``RuntimeError: Pattern stack overflow``
+    with extremely deep or highly recursive patterns.  Decrease it on very
+    memory-constrained systems (minimum 64).
+
+    Takes effect immediately for all subsequent matches.  Has no effect when
+    the pure-Python backend is active (it uses Python's own call stack).
+
+    Example::
+
+        import SNOBOL4python as S4
+        S4.set_match_stack_size(50_000)   # allow deeper backtracking
+    """
+    global _match_stack_size
+    if not isinstance(n, int) or n < 64:
+        raise ValueError("match stack size must be an integer >= 64")
+    _match_stack_size = n
+    if _current == 'c' and C_AVAILABLE:
+        import sno4py as _C
+        _C.set_stack_size(n)
 
 
 # ── property-style shim so ``backend`` reads the live value ──────────────────

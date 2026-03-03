@@ -771,6 +771,19 @@ static PyObject *py_pop(PyObject *self, PyObject *args) {
     Py_DECREF(op); return r;
 }
 
+static PyObject *
+py_set_stack_size(PyObject *self, PyObject *args) {
+    (void)self;
+    int n;
+    if (!PyArg_ParseTuple(args, "i", &n)) return NULL;
+    if (n < 64) {
+        PyErr_SetString(PyExc_ValueError, "match stack size must be at least 64");
+        return NULL;
+    }
+    spipat_stack_size = n;
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef methods[] = {
     /* Stage 1 */
     {"epsilon",    py_epsilon,    METH_NOARGS,  "ε"},
@@ -814,6 +827,7 @@ static PyMethodDef methods[] = {
     {"setcur_imm", py_setcur_imm, METH_VARARGS, "Θ(key)"},
     {"setcur_onm", py_setcur_onm, METH_VARARGS, "θ(key)"},
     {"rpat",       py_rpat,       METH_VARARGS, "ζ(name_or_fn)"},
+    {"set_stack_size", py_set_stack_size, METH_VARARGS, "set_stack_size(n) — set match stack entries (default 10000)"},
     {NULL}
 };
 

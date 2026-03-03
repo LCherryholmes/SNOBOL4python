@@ -55,7 +55,7 @@
 
 // Size used for internal pattern matching stack. Increase this size if
 // complex patterns cause Pattern_Stack_Overflow to occur
-#define Stack_Size 2000000		/* used in xmatch.h */
+int spipat_stack_size = 10000;  /* match stack entries; tunable via set_match_stack_size() */
 
 #if defined(__cplusplus)
 #define DYNAMIC(TYPE, VAR, SIZE) TYPE *VAR = new TYPE[SIZE]

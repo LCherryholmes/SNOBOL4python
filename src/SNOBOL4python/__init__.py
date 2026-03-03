@@ -21,6 +21,7 @@ from .SNOBOL4patterns import (
     SEARCH, MATCH, FULLMATCH,
     # backend control
     C_AVAILABLE, use_c, use_pure, current_backend,
+    set_match_stack_size, DEFAULT_MATCH_STACK_SIZE,
 )
 
 # ── built-in functions ────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ __author__  = 'Lon Jones Cherryholmes'
 __all__ = [
     # backend control
     'C_AVAILABLE', 'use_c', 'use_pure', 'current_backend',
+    'set_match_stack_size', 'DEFAULT_MATCH_STACK_SIZE',
     # environment
     'GLOBALS', 'TRACE',
     # core types
