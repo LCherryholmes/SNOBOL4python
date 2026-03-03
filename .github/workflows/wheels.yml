@@ -1,5 +1,5 @@
 # ============================================================================
-# wheels.yml — Build binary wheels + sdist and publish to TestPyPI
+# wheels.yml — Build binary wheels + sdist and publish to PyPI
 # ============================================================================
 # Triggered by pushing a version tag:  git tag v0.5.0-rc6 && git push --tags
 #
@@ -7,15 +7,15 @@
 #   • cibuildwheel builds manylinux / musllinux / macOS / Windows wheels
 #     for CPython 3.10, 3.11, 3.12 across x86_64 and arm64.
 #   • A pure sdist is also built (for the pure-Python fallback on any platform).
-#   • All artefacts are uploaded to TestPyPI in a single Trusted Publisher job.
+#   • All artefacts are uploaded to PyPI in a single Trusted Publisher job.
 #
 # Prerequisites (one-time setup):
-#   1. On TestPyPI: Settings → Publishing → Add publisher
+#   1. On PyPI: Settings → Publishing → Add publisher
 #        owner:       LCherryholmes
 #        repo:        SNOBOL4python
 #        workflow:    wheels.yml
-#        environment: testpypi
-#   2. On GitHub: Settings → Environments → create "testpypi"
+#        environment: pypi
+#   2. On GitHub: Settings → Environments → create "pypi"
 # ============================================================================
 
 name: Build & Publish Wheels
@@ -92,13 +92,13 @@ jobs:
           path: dist/*.tar.gz
 
   # --------------------------------------------------------------------------
-  # 3. Publish to TestPyPI via OIDC Trusted Publisher (no tokens needed)
+  # 3. Publish to PyPI via OIDC Trusted Publisher (no tokens needed)
   # --------------------------------------------------------------------------
   publish:
-    name: "Publish to TestPyPI"
+    name: "Publish to PyPI"
     needs: [build-wheels, build-sdist]
     runs-on: ubuntu-latest
-    environment: testpypi
+    environment: pypi
     permissions:
       id-token: write
 
@@ -112,7 +112,5 @@ jobs:
       - name: List artefacts
         run: ls -lh dist/
 
-      - name: Publish to TestPyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
