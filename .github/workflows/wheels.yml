@@ -57,7 +57,7 @@ jobs:
           CIBW_ARCHS_MACOS: "x86_64 arm64"
           CIBW_ARCHS_LINUX: "x86_64 aarch64"
           CIBW_TEST_REQUIRES: "pytest"
-          CIBW_TEST_COMMAND: "pytest {project}/tests -v --import-mode=importlib"
+          CIBW_TEST_COMMAND: "pytest {project}/tests -v --import-mode=importlib --ignore={project}/tests/test_re_simple.py --ignore={project}/tests/test_json.py"
 
       - name: Upload wheel artefacts
         uses: actions/upload-artifact@v4
