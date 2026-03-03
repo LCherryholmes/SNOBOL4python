@@ -59,10 +59,25 @@
 
 #if defined(__cplusplus)
 #define DYNAMIC(TYPE, VAR, SIZE) TYPE *VAR = new TYPE[SIZE]
+#elif defined(_MSC_VER)
+//  MSVC does not support C99 VLAs; use _alloca for stack allocation.
+#include <malloc.h>
+#define DYNAMIC(TYPE, VAR, SIZE) TYPE *VAR = (TYPE *)_alloca(sizeof(TYPE)*(SIZE))
 #elif defined(__GNUC__) || __STDC_VERSION__ >= 199901L
 #define DYNAMIC(TYPE, VAR, SIZE) TYPE VAR[SIZE]
 #else
 #define DYNAMIC(TYPE, VAR, SIZE) TYPE *VAR = alloca(sizeof(TYPE)*(SIZE))
+#endif
+
+#ifdef _MSC_VER
+//  MSVC cannot use function pointer types directly in va_arg().
+//  Define typedefs so the va_arg calls compile cleanly.
+typedef bool     (*BF_func_t)(void *, void *);
+typedef void     (*MF_func_t)(VString, void *, void *);
+typedef void     (*CF_func_t)(size_t, void *, void *);
+typedef size_t   (*NF_func_t)(void *, void *);
+typedef VString  (*VF_func_t)(void *, void *);
+typedef void     (*DF_func_t)(void *, void *, struct dynamic *);
 #endif
 
 ////////////////////////
@@ -1893,7 +1908,11 @@ Copy(PE_Ptr P) {
 	DYNAMIC(PE_Ptr, Refs, P->Index);
 	//  References to elements in P, indexed by Index field
 
+#ifdef _MSC_VER
+	PE_Ptr *Copies = (PE_Ptr *)_alloca(sizeof(PE_Ptr) * P->Index);
+#else
 	PE_Ptr Copies[P->Index];
+#endif
 	//  Holds copies of elements of P, indexed by Index field
 
 	spipat_build_ref_array(P, Refs);
@@ -2123,7 +2142,11 @@ new_PE(enum Pattern_Code Code, IndexT Index, PE_Ptr Then, ...) {
 	break;
 
     case PC_Pred_Func:
+#ifdef _MSC_VER
+	Node->val.BF.func = va_arg(ap, BF_func_t);
+#else
 	Node->val.BF.func = va_arg(ap, bool (*)(void *, void *));
+#endif
 	Node->val.BF.cookie = va_arg(ap, void *);
 	break;
 
@@ -2141,7 +2164,11 @@ new_PE(enum Pattern_Code Code, IndexT Index, PE_Ptr Then, ...) {
 
     case PC_Call_Imm:
     case PC_Call_OnM:
+#ifdef _MSC_VER
+	Node->val.MF.func = va_arg(ap, MF_func_t);
+#else
 	Node->val.MF.func = va_arg(ap, void (*)(VString, void *, void *));
+#endif
 	Node->val.MF.cookie = va_arg(ap, void *);
 	break;
 
@@ -2177,7 +2204,11 @@ new_PE(enum Pattern_Code Code, IndexT Index, PE_Ptr Then, ...) {
 	break;
 
     case PC_Setcur_Func:
+#ifdef _MSC_VER
+	Node->val.CF.func = va_arg(ap, CF_func_t);
+#else
 	Node->val.CF.func = va_arg(ap, void (*)(size_t, void *, void *));
+#endif
 	Node->val.CF.cookie = va_arg(ap, void *);
 	break;
 
@@ -2213,7 +2244,11 @@ new_PE(enum Pattern_Code Code, IndexT Index, PE_Ptr Then, ...) {
     case PC_Len_NF:
     case PC_RPos_NF:
     case PC_RTab_NF:
+#ifdef _MSC_VER
+	Node->val.NF.func = va_arg(ap, NF_func_t);
+#else
 	Node->val.NF.func = va_arg(ap, size_t (*)(void *, void *));
+#endif
 	Node->val.NF.cookie = va_arg(ap, void *);
 	break;
 
@@ -2232,13 +2267,21 @@ new_PE(enum Pattern_Code Code, IndexT Index, PE_Ptr Then, ...) {
     case PC_NSpan_VF:
     case PC_Span_VF:
     case PC_String_VF:
+#ifdef _MSC_VER
+	Node->val.VF.func = va_arg(ap, VF_func_t);
+#else
 	Node->val.VF.func = va_arg(ap, VString (*)(void *, void *));
+#endif
 	Node->val.VF.cookie = va_arg(ap, void *);
 	break;
 
     case PC_Dynamic_Func:
+#ifdef _MSC_VER
+	Node->val.DF.func = va_arg(ap, DF_func_t);
+#else
 	Node->val.DF.func = va_arg(ap,
 				   void (*)(void *, void *, struct dynamic *));
+#endif
 	Node->val.DF.cookie = va_arg(ap, void *);
 	break;
 
