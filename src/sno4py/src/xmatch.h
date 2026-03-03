@@ -70,23 +70,24 @@ XMatchD(struct spipat_match *mp) {
     //  debugging, it is the number of saved history stack base values.
     unsigned Region_Level = 0;
 
-    //  The pattern matching failure stack for this call to Match
-    //  Heap-allocated so spipat_stack_size can be large without blowing the C stack.
-    struct Stack_Entry *_Stack = (struct Stack_Entry *)malloc(spipat_stack_size * sizeof(struct Stack_Entry));
+    //  The pattern matching failure stack for this call to Match.
+    //  Heap-allocated so the stack can be large without blowing the C stack.
+    size_t _stack_size = (size_t)spipat_stack_size;
+    struct Stack_Entry *_Stack = (struct Stack_Entry *)malloc(_stack_size * sizeof(struct Stack_Entry));
     if (!_Stack) {
         spipat_exception("spipat: failed to allocate match stack");
         return SPIPAT_MATCH_EXCEPTION;
     }
 
-    // Hide the fact that stack is indexed -spipat_stack_size .. -1
-#define Stack(I) _Stack[spipat_stack_size+(I)]
+    // Hide the fact that stack is indexed -_stack_size .. -1
+#define Stack(I) _Stack[_stack_size+(I)]
 
     //  Current stack pointer. This points to the top element of the stack
     //  that is currently in use. At the outer level this is the special
     //  entry placed on the stack according to the anchor mode.
     int Stack_Ptr;
 
-#define Stack_First -spipat_stack_size
+#define Stack_First (-(int)_stack_size)
     //  This is the initial value of the Stack_Ptr and Stack_Base. The
     //  initial (Stack_First) element of the stack is not used so that
     //  when we pop the last element off, Stack_Ptr is still in range.
@@ -116,15 +117,6 @@ XMatchD(struct spipat_match *mp) {
     if (mp->pattern->P == NULL) {
 	Uninitialized_Pattern();
 	goto Match_Fail;
-    }
-
-    //  Check we have enough stack for this pattern. This check deals with
-    //  every possibility except a match of a recursive pattern, where we
-    //  make a check at each recursion level.
-
-    if (mp->pattern->Stk >= spipat_stack_size - 1) {
-	Pattern_Stack_Overflow();
-	goto Match_Fail;		/* XXX Internal_Error */
     }
 
     //  In anchored mode, the bottom entry on the stack is an abort entry
@@ -758,7 +750,7 @@ XMatchD(struct spipat_match *mp) {
 	Push_Region;
 	IPrintf("%p initiating recursive match\n", Node);
 
-	if ((int)(Stack_Ptr + (*Node->val.PP)->Stk) >= spipat_stack_size) {
+	if ((int)(Stack_Ptr + (*Node->val.PP)->Stk) >= (int)_stack_size) {
 	    Pattern_Stack_Overflow();
 	    goto Match_Fail;		/* XXX Internal_Error */
 	}
@@ -1086,7 +1078,7 @@ XMatchD(struct spipat_match *mp) {
 		Stack (Stack_Ptr + 1).Node = Node->Pthen;
 		Push_Region;
 		IPrintf("%p initiating recursive match\n", Node);
-		if ((int)(Stack_Ptr + d.val.pat.p->Stk) >= spipat_stack_size) {
+		if ((int)(Stack_Ptr + d.val.pat.p->Stk) >= (int)_stack_size) {
 		    Pattern_Stack_Overflow();
 		    goto Match_Fail;	/* XXX Internal_Error */
 		}
