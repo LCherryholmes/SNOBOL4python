@@ -504,10 +504,10 @@ rpat_cb(void *match_cookie, void *cookie, struct dynamic *d) {
 
     if (!pat_py) { PyErr_Clear(); d->type = DY_UNK; return; }
 
-    /* Call .compile() to get a C Pattern */
-    PyObject *compile_str = PyUnicode_InternFromString("compile");
-    PyObject *compiled = PyObject_CallMethodNoArgs(pat_py, compile_str);
-    Py_XDECREF(compile_str);
+    /* Call .compile() to get a C Pattern.
+     * Use PyObject_CallMethod (takes a const char* name) to avoid any
+     * reference-counting issues with interned string objects. */
+    PyObject *compiled = PyObject_CallMethod(pat_py, "compile", NULL);
     Py_DECREF(pat_py);
     if (!compiled || !PyObject_TypeCheck(compiled, &PatternType)) {
         PyErr_Clear(); Py_XDECREF(compiled);
